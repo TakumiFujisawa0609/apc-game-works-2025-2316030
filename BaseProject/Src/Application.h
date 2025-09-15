@@ -1,0 +1,128 @@
+#pragma once
+#include <string>
+#include <chrono>
+
+class Input;
+class SceneController;
+class Camera;
+
+struct Size {
+	int width;//幅
+	int height;//高さ
+};
+
+/// <summary>
+/// アプリケーションの起動と終了を
+/// コントロールするシングルトンクラス
+/// </summary>
+class Application
+{
+private:
+	Application();//コンストラクタをprivateに
+	//コピー＆代入の禁止
+	Application(const Application& app) = delete;
+	void operator=(const Application& app) = delete;
+
+	// 静的インスタンス
+	static Application* instance_;
+
+	// キー入力
+	std::shared_ptr<Input> input_;
+
+	// シーン管理
+	std::shared_ptr<SceneController> controller_;
+
+	// カメラ
+	std::shared_ptr<Camera> camera_;
+
+	// 初期化失敗
+	bool isInitFailed_;
+
+	// 解放失敗
+	bool isReleaseFailed_;
+
+	// FPS計測用変数
+	int frameCount_;
+
+	// FPS
+	int fps_;
+
+	// ウィンドウサイズ
+	Size windowSize_ = { 640,480 };
+
+	// 前フレーム処理を開始した瞬間時刻
+	std::chrono::steady_clock::time_point lastTime_;
+
+	// 前フレームからの経過時間(秒)
+	float deltaTime_;
+
+	// 3D関連の初期化
+	void Init3D(void);
+
+	// Effekseerの初期化
+	void InitEffekseer(void);
+
+
+public:
+
+	// スクリーンサイズ
+	static constexpr int SCREEN_SIZE_X = 1024;
+	static constexpr int SCREEN_SIZE_Y = 640;
+
+	const int TARGET_FPS = 60;
+	const int FRAME_TIME = 1000 / TARGET_FPS; // 1フレームあたりの時間（ミリ秒）
+
+	// データパス関連
+	//-------------------------------------------
+	static const std::wstring PATH_IMAGE;
+	static const std::wstring PATH_MODEL;
+	static const std::wstring PATH_EFFECT;
+	static const std::wstring PATH_SHADER;
+	static const std::wstring PATH_SOUND;
+	//-------------------------------------------
+
+	~Application();//デストラクタ
+
+	// 明示的にインスタンスを生成する
+	static void CreateInstance(void);
+
+	// 静的インスタンスの取得
+	static Application& GetInstance();
+
+	// ウィンドウサイズの取得
+	const Size& GetWindowSize()const;
+
+	/// <summary>
+	/// アプリケーションの初期化
+	/// </summary>
+	/// <returns>true:初期化成功 / false:初期化失敗</returns>
+	void Init(int w = 640, int h = 480);
+
+	/// <summary>
+	/// ゲームを起動する(メインループを実行)
+	/// </summary>
+	void Run();
+
+	/// <summary>
+	/// アプリケーションの終了処理
+	/// </summary>
+	void Terminate();
+
+
+	// 初期化成功／失敗の判定
+	bool IsInitFail(void) const;
+
+	// 解放成功／失敗の判定
+	bool IsReleaseFail(void) const;
+
+	/// <summary>
+	/// 前フレームからの経過時間(秒)を取得する
+	/// </summary>
+	/// <param name=""></param> </param>
+	float GetDeltaTime(void);
+
+
+	// カメラの取得
+	std::shared_ptr<Camera> GetCamera(void);
+};
+
