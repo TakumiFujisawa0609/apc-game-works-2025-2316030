@@ -106,6 +106,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -123,6 +125,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -133,35 +136,73 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="DrawUtil.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Scene\CommandListScene.cpp" />
-    <ClCompile Include="Scene\GameScene.cpp" />
-    <ClCompile Include="Scene\KeyConfigScene.cpp" />
-    <ClCompile Include="Scene\OverScene.cpp" />
-    <ClCompile Include="Scene\PauseScene.cpp" />
-    <ClCompile Include="Scene\Scene.cpp" />
-    <ClCompile Include="Scene\SceneController.cpp" />
-    <ClCompile Include="Scene\SystemSettingScene.cpp" />
-    <ClCompile Include="Scene\TitleScene.cpp" />
-    <ClCompile Include="StringUtiligy.cpp" />
+    <ClCompile Include="Src\Object\Components\Player\PlayerInput.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\OxygenComponent.cpp" />
+    <ClCompile Include="Src\Object\Common\Component.cpp" />
+    <ClCompile Include="Src\Object\Player\Player.cpp" />
+    <ClCompile Include="Src\Manager\Camera.cpp" />
+    <ClCompile Include="Src\Manager\InputManager.cpp" />
+    <ClCompile Include="Src\Manager\Resource.cpp" />
+    <ClCompile Include="Src\Manager\ResourceManager.cpp" />
+    <ClCompile Include="Src\Object\Common\AnimationController.cpp" />
+    <ClCompile Include="Src\Object\Common\Capsule.cpp" />
+    <ClCompile Include="Src\Object\Common\Collider.cpp" />
+    <ClCompile Include="Src\Common\Fader.cpp" />
+    <ClCompile Include="Src\Common\Quaternion.cpp" />
+    <ClCompile Include="Src\Object\Common\Transform.cpp" />
+    <ClCompile Include="Src\Common\Vector2.cpp" />
+    <ClCompile Include="Src\Object\ActorBase.cpp" />
+    <ClCompile Include="Src\Application.cpp" />
+    <ClCompile Include="Src\DrawUtil.cpp" />
+    <ClCompile Include="Src\Input.cpp" />
+    <ClCompile Include="Src\main.cpp" />
+    <ClCompile Include="Src\Scene\CommandListScene.cpp" />
+    <ClCompile Include="Src\Scene\GameScene.cpp" />
+    <ClCompile Include="Src\Scene\KeyConfigScene.cpp" />
+    <ClCompile Include="Src\Scene\OverScene.cpp" />
+    <ClCompile Include="Src\Scene\PauseScene.cpp" />
+    <ClCompile Include="Src\Scene\Scene.cpp" />
+    <ClCompile Include="Src\Manager\SceneController.cpp" />
+    <ClCompile Include="Src\Scene\SystemSettingScene.cpp" />
+    <ClCompile Include="Src\Scene\TitleScene.cpp" />
+    <ClCompile Include="Src\StringUtiligy.cpp" />
+    <ClCompile Include="Src\Utility\AsoUtility.cpp" />
+    <ClCompile Include="Src\Object\Submarine.cpp" />
+    <ClCompile Include="Src\Object\Stage\Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="DrawUtil.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Scene\CommandListScene.h" />
-    <ClInclude Include="Scene\GameScene.h" />
-    <ClInclude Include="Scene\KeyConfigScene.h" />
-    <ClInclude Include="Scene\OverScene.h" />
-    <ClInclude Include="Scene\PauseScene.h" />
-    <ClInclude Include="Scene\Scene.h" />
-    <ClInclude Include="Scene\SceneController.h" />
-    <ClInclude Include="Scene\SystemSettingScene.h" />
-    <ClInclude Include="Scene\TitleScene.h" />
-    <ClInclude Include="StringUtiligy.h" />
+    <ClInclude Include="Src\Object\Components\Player\PlayerInput.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\OxygenComponent.h" />
+    <ClInclude Include="Src\Object\Common\Component.h" />
+    <ClInclude Include="Src\Object\Player\Player.h" />
+    <ClInclude Include="Src\Manager\Camera.h" />
+    <ClInclude Include="Src\Manager\InputManager.h" />
+    <ClInclude Include="Src\Manager\Resource.h" />
+    <ClInclude Include="Src\Manager\ResourceManager.h" />
+    <ClInclude Include="Src\Object\Common\AnimationController.h" />
+    <ClInclude Include="Src\Object\Common\Capsule.h" />
+    <ClInclude Include="Src\Object\Common\Collider.h" />
+    <ClInclude Include="Src\Common\Fader.h" />
+    <ClInclude Include="Src\Common\Quaternion.h" />
+    <ClInclude Include="Src\Object\Common\Transform.h" />
+    <ClInclude Include="Src\Common\Vector2.h" />
+    <ClInclude Include="Src\Object\ActorBase.h" />
+    <ClInclude Include="Src\Application.h" />
+    <ClInclude Include="Src\DrawUtil.h" />
+    <ClInclude Include="Src\Input.h" />
+    <ClInclude Include="Src\Scene\CommandListScene.h" />
+    <ClInclude Include="Src\Scene\GameScene.h" />
+    <ClInclude Include="Src\Scene\KeyConfigScene.h" />
+    <ClInclude Include="Src\Scene\OverScene.h" />
+    <ClInclude Include="Src\Scene\PauseScene.h" />
+    <ClInclude Include="Src\Scene\Scene.h" />
+    <ClInclude Include="Src\Manager\SceneController.h" />
+    <ClInclude Include="Src\Scene\SystemSettingScene.h" />
+    <ClInclude Include="Src\Scene\TitleScene.h" />
+    <ClInclude Include="Src\StringUtiligy.h" />
+    <ClInclude Include="Src\Utility\AsoUtility.h" />
+    <ClInclude Include="Src\Object\Submarine.h" />
+    <ClInclude Include="Src\Object\Stage\Stage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
