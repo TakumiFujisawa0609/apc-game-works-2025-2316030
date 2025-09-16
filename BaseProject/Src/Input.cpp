@@ -43,6 +43,7 @@ void Input::Save()
 
 void Input::Load()
 {
+	// おそらく指定したキーが存在しないために例外スローが発生している
 	int handle = FileRead_open(L"input.conf");
 	if (handle == 0) {
 		return;
@@ -75,9 +76,7 @@ Input::Input()
 	ResetTable();
 	Load();
 	inputListForDisplay_ = {
-		"ok","pause","jump","shot",
-		"up","down","right","left",
-		"moveForward","moveBackward","moveRight","moveLeft"
+		"ok","pause","jump","shot"
 	};
 	
 	// パッド入力の状態を取得する関数の初期化
@@ -144,41 +143,6 @@ void Input::ResetTable()
 	inputTable_["shot"] = { { PeripheralType::keyboard, KEY_INPUT_X },
 		{ PeripheralType::gamepad, PAD_INPUT_Y } ,
 		{PeripheralType::x_analog,(int)AnalogInputType::r_trigger} };
-
-
-	inputTable_["up"] = { { PeripheralType::keyboard, KEY_INPUT_UP },
-		//{ PeripheralType::gamepad, PAD_INPUT_UP },
-		//{PeripheralType::x_analog,(int)AnalogInputType::r_up} 
-	};
-	inputTable_["down"] = { { PeripheralType::keyboard, KEY_INPUT_DOWN },
-		//{ PeripheralType::gamepad, PAD_INPUT_DOWN } ,
-		//{PeripheralType::x_analog,(int)AnalogInputType::r_down}
-	};
-	inputTable_["right"] = { { PeripheralType::keyboard, KEY_INPUT_RIGHT },
-		//{ PeripheralType::gamepad, PAD_INPUT_RIGHT },
-		//{PeripheralType::x_analog,(int)AnalogInputType::r_right}
-	};
-	inputTable_["left"] = { { PeripheralType::keyboard, KEY_INPUT_LEFT},
-		//{ PeripheralType::gamepad, PAD_INPUT_LEFT} ,
-		//{PeripheralType::x_analog,(int)AnalogInputType::r_left} 
-	};
-	
-	inputTable_["moveForward"] = { { PeripheralType::keyboard, KEY_INPUT_W },
-		//{ PeripheralType::gamepad, PAD_INPUT_UP },
-		//{PeripheralType::x_analog,(int)AnalogInputType::l_up}
-	};
-	inputTable_["moveBackward"] = { { PeripheralType::keyboard, KEY_INPUT_S },
-		//{ PeripheralType::gamepad, PAD_INPUT_DOWN } ,
-		//{PeripheralType::x_analog,(int)AnalogInputType::l_down}
-	};
-	inputTable_["moveRight"] = { { PeripheralType::keyboard, KEY_INPUT_D },
-		//{ PeripheralType::gamepad, PAD_INPUT_RIGHT },
-		//{PeripheralType::x_analog,(int)AnalogInputType::l_right}
-	};
-	inputTable_["moveLeft"] = { { PeripheralType::keyboard, KEY_INPUT_A},
-		//{ PeripheralType::gamepad, PAD_INPUT_LEFT} ,
-		//{PeripheralType::x_analog,(int)AnalogInputType::l_left}
-	};
 
 }
 

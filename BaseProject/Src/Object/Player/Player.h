@@ -28,8 +28,20 @@ private:
 	PlayerInput* input_;			// 入力コンポーネント
 
 	float moveSpeed_;	// 移動速度
+	VECTOR moveDir_;		// 移動方向
+	VECTOR movePow_;		// 移動量
+	VECTOR movedPos_;		// 移動後座標
+
+	// 回転
+
+	Quaternion playerRotY_;
+	Quaternion goalQuaRot_;
+	float stepRotTime_;
+
 	float yaw;			// 水平回転（ヨー）
 	float pitch;		// 垂直回転（ピッチ）
 
+	void Rotate(void);
+	void SetGoalRotate(float rotRad);
 };
 

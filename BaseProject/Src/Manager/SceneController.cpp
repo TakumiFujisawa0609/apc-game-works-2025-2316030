@@ -1,4 +1,5 @@
 #include "SceneController.h"
+#include "../Application.h"
 #include"../Scene/Scene.h"
 
 void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
@@ -12,6 +13,8 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 
 	scenes_.back()->Init(input);//シーンの初期化
 	
+	Application::GetInstance().ResetDeltaTime();
+
 	//もし、scene_にすでに値が入っていた場合は
 	//shared_ptrなので、もとのscene_の参照人数が0に
 	//なり、自動で解放されます。

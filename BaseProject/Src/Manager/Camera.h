@@ -39,10 +39,10 @@ public:
 	static constexpr VECTOR RELATIVE_F2C_POS_FOLLOW = { 0.0f, 280.0f, -350.0f };
 
 	// パットの時のカメラの制限
-	static constexpr int PAT_CAMERA_MAX_RX = 100.0f;
-	static constexpr int PAT_CAMERA_MIN_RX = -100.0f;
-	static constexpr int PAT_CAMERA_MAX_RY = 100.0f;
-	static constexpr int PAT_CAMERA_MIN_RY = -100.0f;
+	static constexpr float PAT_CAMERA_MAX_RX = 100.0f;
+	static constexpr float PAT_CAMERA_MIN_RX = -100.0f;
+	static constexpr float PAT_CAMERA_MAX_RY = 100.0f;
+	static constexpr float PAT_CAMERA_MIN_RY = -100.0f;
 
 	// カメラアングルの制限
 	static constexpr float CAMERA_MAX_ANGLE_X = 60.0f;
@@ -113,8 +113,15 @@ public:
 	Quaternion GetQuaRot(void) const;
 	// X回転を抜いたカメラ角度
 	Quaternion GetQuaRotOutX(void) const;
+	
 	// カメラの前方方向
 	VECTOR GetForward(void) const;
+
+	// カメラの右方向
+	VECTOR GetRight(void) const;
+
+	// カメラの上方向
+	VECTOR GetUp(void) const;
 
 	// カメラモードの変更
 	void ChangeMode(MODE mode);
@@ -127,9 +134,6 @@ public:
 
 
 private:
-
-	// 音
-	int lockonSe_;
 
 	// シングルトン参照
 	ResourceManager& resMng_;

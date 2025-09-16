@@ -55,10 +55,6 @@ void Submarine::Update(float deltaTime)
 
 	// モデル制御更新
 	transform_.Update();
-
-	// アニメーション更新
-	//animCtrl_->Update();
-
 }
 
 void Submarine::OnUpdate(float deltaTime)

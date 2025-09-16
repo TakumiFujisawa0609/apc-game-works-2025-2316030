@@ -19,8 +19,6 @@ Camera::Camera(void) : resMng_(ResourceManager::GetInstance())
 	pos_ = AsoUtility::VECTOR_ZERO;
 	targetPos_ = AsoUtility::VECTOR_ZERO;
 	followTransform_ = nullptr;
-	lockonSe_ = -1;
-
 }
 
 Camera::~Camera(void)
@@ -157,9 +155,26 @@ VECTOR Camera::GetForward(void) const
 	return VNorm(VSub(targetPos_, pos_));
 }
 
-void Camera::ChangeMode(MODE mode)
+VECTOR Camera::GetRight(void) const
 {
 
+	VECTOR forward = GetForward();
+	VECTOR up = VGet(0.0f, 1.0f, 0.0f);	// ワールド座標系の上方向
+	VECTOR right = VNorm(VCross(up, forward));
+
+	return right;
+}
+
+VECTOR Camera::GetUp(void) const
+{
+	VECTOR forward = GetForward();
+	VECTOR right = GetRight();
+	VECTOR up = VNorm(VCross(forward, right));
+	return up;
+}
+
+void Camera::ChangeMode(MODE mode)
+{
 	// カメラの初期設定
 	SetDefault();
 
@@ -202,7 +217,6 @@ void Camera::ChangeGameCamera(GAME_CAMERA gameCamera)
 
 void Camera::SetDefault(void)
 {
-
 	// カメラの初期設定
 	pos_ = DEFAULT_CAMERA_POS;
 

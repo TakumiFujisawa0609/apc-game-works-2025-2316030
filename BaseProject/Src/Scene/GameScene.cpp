@@ -64,6 +64,9 @@ void GameScene::NormalDraw()
 	DrawString(10, 10, L"Game Scene", 0xffffff);
 
 
+	stage_->Draw();
+	submarine_->Draw();
+	player_->Draw();
 }
 
 void GameScene::FadeDraw()
@@ -142,7 +145,7 @@ void GameScene::Init(Input& input)
 
 void GameScene::Update(Input& input)
 {
-	int time = Application::GetInstance().GetDeltaTime();
+	float time = Application::GetInstance().GetDeltaTime();
 
 	submarine_->Update(time);
 	stage_->Update(time);
@@ -155,14 +158,6 @@ void GameScene::Update(Input& input)
 
 void GameScene::Draw()
 {
-
 	(this->*draw_)();
 
-	stage_->Draw();
-	submarine_->Draw();
-	player_->Draw();
-
-	int time = Application::GetInstance().GetDeltaTime();
-
-	std::cout << "deltaTime: " << time << std::endl;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <chrono>
+#include <memory>
 
 class Input;
 class SceneController;
@@ -51,7 +51,7 @@ private:
 	Size windowSize_ = { 640,480 };
 
 	// 前フレーム処理を開始した瞬間時刻
-	std::chrono::steady_clock::time_point lastTime_;
+	int lastTime_;
 
 	// 前フレームからの経過時間(秒)
 	float deltaTime_;
@@ -71,6 +71,8 @@ public:
 
 	const int TARGET_FPS = 60;
 	const int FRAME_TIME = 1000 / TARGET_FPS; // 1フレームあたりの時間（ミリ秒）
+
+	const double DELTATIME_DURATION = 1000000000.0;
 
 	// データパス関連
 	//-------------------------------------------
@@ -108,12 +110,14 @@ public:
 	/// </summary>
 	void Terminate();
 
-
 	// 初期化成功／失敗の判定
 	bool IsInitFail(void) const;
 
 	// 解放成功／失敗の判定
 	bool IsReleaseFail(void) const;
+
+	// デルタタイムの更新処理
+	void UpdateDeltaTime(void);
 
 	/// <summary>
 	/// 前フレームからの経過時間(秒)を取得する
@@ -121,6 +125,8 @@ public:
 	/// <param name=""></param> </param>
 	float GetDeltaTime(void);
 
+	// デルタタイムをリセットする
+	void ResetDeltaTime(void);
 
 	// カメラの取得
 	std::shared_ptr<Camera> GetCamera(void);

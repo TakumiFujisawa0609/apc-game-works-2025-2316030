@@ -40,8 +40,6 @@ private:
 
 	std::vector<int> models_;
 
-	//Vector3 cameraPos_;
-
 	std::shared_ptr<Submarine> submarine_;
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Stage> stage_;

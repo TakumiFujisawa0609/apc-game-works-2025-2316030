@@ -78,7 +78,7 @@ void KeyConfigScene::DrawInputList()
 	for (const auto& menuName : systemMenuStringList_) {
 		uint32_t texCol = normal_text_color;
 		int colX = input_list_left + 100;
-		int idx = currentIndex_ - input_.inputListForDisplay_.size();
+		int idx = currentIndex_ - static_cast<int>(input_.inputListForDisplay_.size());
 		if (idx >= 0) {
 			if (systemMenuStringList_[idx]==menuName) {
 				DrawString(input_list_left - indicator_offset + 100 + 1, rowY + 1, L"ÅÀ", 0x000000);

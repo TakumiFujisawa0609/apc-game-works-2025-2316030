@@ -25,6 +25,7 @@ Application::Application() {
 	isReleaseFailed_ = false;
 	frameCount_ = 0;
 	fps_ = 0;
+    lastTime_ = GetNowCount();
 	deltaTime_ = 0.0f;
 }
 
@@ -98,7 +99,6 @@ void Application::Init(int w, int h)
 
 	// 描画先を裏画面に設定
     SetDrawScreen(DX_SCREEN_BACK);
-
 }
 
 void Application::Run()
@@ -108,10 +108,7 @@ void Application::Run()
     while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
         ClearDrawScreen();
 
-        // === デルタタイム更新を最初にする ===
-        auto nowTime = std::chrono::steady_clock::now();
-        deltaTime_ = std::chrono::duration<float>(nowTime - lastTime_).count();
-        lastTime_ = nowTime;
+        UpdateDeltaTime();
 
         input_->Update();
         inputManager.Update();
@@ -127,9 +124,6 @@ void Application::Run()
 
         // シーンごとの描画
         controller_->Draw();
-
-        DrawFormatString(0, 0, GetColor(255, 255, 255), L"time: %.2f", deltaTime_);
-
 
         // 主にポストエフェクト用
         camera_->Draw();
@@ -167,9 +161,22 @@ bool Application::IsReleaseFail(void) const
     return isReleaseFailed_;
 }
 
+void Application::UpdateDeltaTime(void)
+{
+    int now = GetNowCount();
+    deltaTime_ = (now - lastTime_) / 1000.0f;
+    lastTime_ = now;
+}
+
 float Application::GetDeltaTime(void)
 {
     return deltaTime_;
+}
+
+void Application::ResetDeltaTime(void)
+{
+    lastTime_ = GetNowCount();
+    deltaTime_ = 0.0f;
 }
 
 std::shared_ptr<Camera> Application::GetCamera(void)

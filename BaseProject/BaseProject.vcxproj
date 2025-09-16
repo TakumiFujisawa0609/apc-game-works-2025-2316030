@@ -169,6 +169,7 @@
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
     <ClCompile Include="Src\Object\Submarine.cpp" />
     <ClCompile Include="Src\Object\Stage\Stage.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Components\Player\PlayerInput.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Src\Utility\AsoUtility.h" />
     <ClInclude Include="Src\Object\Submarine.h" />
     <ClInclude Include="Src\Object\Stage\Stage.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
