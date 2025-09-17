@@ -12,11 +12,11 @@ public:
 	static constexpr float MOUSE_SENSITIVITY = 0.002f;
 
 	Player(void);
-	virtual ~Player(void);
-	virtual void Init(void) override;
-	virtual void Update(float deltaTime) override;
-	virtual void OnUpdate(float deltaTime) override;
-	virtual void Draw(void) override;
+	~Player(void);
+	void Init(void) override;
+	void Update(float deltaTime) override;
+	void OnUpdate(float deltaTime) override;
+	void Draw(void) override;
 
 	// 酸素コンポーネントの取得
 	OxygenComponent* GetOxygenComp();

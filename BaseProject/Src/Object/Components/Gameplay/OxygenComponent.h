@@ -5,9 +5,9 @@ class OxygenComponent :
 {
 public:
 	OxygenComponent(std::shared_ptr<ActorBase> owner, float max = 100.0f, float depletionRate = 1.0f);
-	virtual ~OxygenComponent();
+	~OxygenComponent();
 	
-	virtual void Update(float deltaTime) override;
+	void Update(float deltaTime) override;
 	
 	// Œ»İ‚Ì_‘f—Ê‚ğæ“¾
 	float GetOxygen() const;

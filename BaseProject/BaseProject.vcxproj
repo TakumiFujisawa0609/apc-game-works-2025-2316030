@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -136,6 +136,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\UI\UIElements\RangedWeaponSlot.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElements\ExChangeSlot.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElements\ItemSlot.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElements\MeleeWeaponSlot.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElements\SlotBase.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElements\OxygenGauge.cpp" />
     <ClCompile Include="Src\Object\Components\Player\PlayerInput.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\OxygenComponent.cpp" />
     <ClCompile Include="Src\Object\Common\Component.cpp" />
@@ -170,8 +177,17 @@
     <ClCompile Include="Src\Object\Submarine.cpp" />
     <ClCompile Include="Src\Object\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIComponent.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElements\WeaponSlot.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\UI\UIElements\RangedWeaponSlot.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElements\ExChangeSlot.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElements\ItemSlot.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElements\MeleeWeaponSlot.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElements\SlotBase.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElements\OxygenGauge.h" />
     <ClInclude Include="Src\Object\Components\Player\PlayerInput.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\OxygenComponent.h" />
     <ClInclude Include="Src\Object\Common\Component.h" />
@@ -205,6 +221,8 @@
     <ClInclude Include="Src\Object\Submarine.h" />
     <ClInclude Include="Src\Object\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Components\UI\UIComponent.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElement.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElements\WeaponSlot.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

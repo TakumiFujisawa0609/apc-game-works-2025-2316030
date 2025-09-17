@@ -23,12 +23,12 @@ public:
 	};
 
 	Submarine(void);
-	virtual ~Submarine(void);
+	~Submarine(void);
 
-	virtual void Init(void) override;
-	virtual void Update(float deltaTime) override;
-	virtual void OnUpdate(float deltaTime) override;
-	virtual void Draw(void) override;
+	void Init(void) override;
+	void Update(float deltaTime) override;
+	void OnUpdate(float deltaTime) override;
+	void Draw(void) override;
 
 private:
 
