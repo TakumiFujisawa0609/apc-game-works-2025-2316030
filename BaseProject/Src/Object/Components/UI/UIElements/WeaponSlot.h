@@ -4,8 +4,8 @@ class WeaponSlot :
     public ExChangeSlot
 {
 public:
-    WeaponSlot(int meleeWeaponId, int rengedWeaponId);
+    //WeaponSlot(int meleeWeaponId, int rengedWeaponId);
 
-    void Draw(void) override;
+    //void Draw(void) override;
 };
 

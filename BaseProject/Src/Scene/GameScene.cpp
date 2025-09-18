@@ -61,12 +61,14 @@ void GameScene::FadeOutUpdate(Input& input)
 
 void GameScene::NormalDraw()
 {
-	DrawString(10, 10, L"Game Scene", 0xffffff);
 
 
 	stage_->Draw();
 	submarine_->Draw();
 	player_->Draw();
+
+	DrawString(10, 0, L"Game Scene", 0xffffff);
+
 }
 
 void GameScene::FadeDraw()

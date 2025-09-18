@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "../../Common/Component.h"
+#include "../../../Common/Component.h"
 
 class UIElement;
 

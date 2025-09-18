@@ -1,5 +1,5 @@
 #include "UIComponent.h"
-#include "UIElement.h"
+#include "../UIElement.h"
 
 UIComponent::UIComponent(std::shared_ptr<ActorBase> owner)
 	:

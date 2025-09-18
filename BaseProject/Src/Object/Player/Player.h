@@ -1,8 +1,12 @@
 #pragma once
 #include "../ActorBase.h"
 
+// “ü—ÍŒn
 class OxygenComponent;
 class PlayerInput;
+
+// •`‰æŒn
+class UIComponent;
 
 class Player : public ActorBase
 {

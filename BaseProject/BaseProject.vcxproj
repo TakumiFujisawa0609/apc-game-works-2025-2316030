@@ -136,6 +136,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Weapon\Knife.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\RangedWeaponSlot.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\ExChangeSlot.cpp" />
@@ -176,11 +179,15 @@
     <ClCompile Include="Src\Utility\AsoUtility.cpp" />
     <ClCompile Include="Src\Object\Submarine.cpp" />
     <ClCompile Include="Src\Object\Stage\Stage.cpp" />
-    <ClCompile Include="Src\Object\Components\UI\UIComponent.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\Components\UIComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\WeaponSlot.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Weapon\Knife.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\RangedWeaponSlot.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\ExChangeSlot.h" />
@@ -220,9 +227,10 @@
     <ClInclude Include="Src\Utility\AsoUtility.h" />
     <ClInclude Include="Src\Object\Submarine.h" />
     <ClInclude Include="Src\Object\Stage\Stage.h" />
-    <ClInclude Include="Src\Object\Components\UI\UIComponent.h" />
+    <ClInclude Include="Src\Object\Components\UI\Components\UIComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElement.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\WeaponSlot.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Weapon\WeaponBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
