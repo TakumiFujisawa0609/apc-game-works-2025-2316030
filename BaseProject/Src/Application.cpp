@@ -7,6 +7,7 @@
 #include"Manager/ResourceManager.h"
 #include"Manager/SceneController.h"
 #include"Scene/TitleScene.h"
+#include"Scene/GameScene.h"
 
 #include "Application.h"
 
@@ -95,7 +96,8 @@ void Application::Init(int w, int h)
     // シーン管理初期化
 	controller_ = std::make_shared<SceneController>();
 	// 最初のシーンを設定
-    controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
+    //controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
+    controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);
 
 	// 描画先を裏画面に設定
     SetDrawScreen(DX_SCREEN_BACK);

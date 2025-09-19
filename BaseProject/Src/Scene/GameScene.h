@@ -7,6 +7,8 @@ class Submarine;
 class Player;
 class Stage;
 
+class PlayerStatusUI;
+
 class GameScene :
     public Scene
 {
@@ -43,6 +45,8 @@ private:
 	std::shared_ptr<Submarine> submarine_;
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Stage> stage_;
+
+	std::shared_ptr<PlayerStatusUI> status_;
 
 public:
 	/// <summary>

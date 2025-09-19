@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <DxLib.h>
+#include "../../../Application.h"
 #include "OxygenComponent.h"
 
 OxygenComponent::OxygenComponent(std::shared_ptr<ActorBase> owner,
@@ -26,6 +28,11 @@ void OxygenComponent::Update(float deltaTime)
 		oxygen_ = 0.0f;
 		isDepleted_ = true; // é_ëfêÿÇÍ
 	}
+
+	int x = Application::SCREEN_SIZE_X / 6;
+	int y = Application::SCREEN_SIZE_Y / 5;
+
+	DrawFormatString(x, y, 0xffffff, L"oxygen=%f", oxygen_);
 }
 
 float OxygenComponent::GetOxygen() const
@@ -48,6 +55,11 @@ void OxygenComponent::Consume(float deltaTime)
 {
 	oxygen_ -= depletionRate_ * deltaTime;
 	if (oxygen_ < 0.0f)oxygen_ = 0.0f;
+}
+
+float OxygenComponent::GetDepletionRate(void) const
+{
+	return depletionRate_;
 }
 
 

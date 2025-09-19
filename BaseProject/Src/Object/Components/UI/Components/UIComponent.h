@@ -11,7 +11,7 @@ class UIComponent :
 public:
     UIComponent(std::shared_ptr<ActorBase> owner);
     ~UIComponent(void);
-    void Update(float deltaTime) override;
+    virtual void Update(float deltaTime) override = 0;
     void Draw(void);
 
     // UI‚Ì’Ç‰Á

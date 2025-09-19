@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\UI\Components\PlayerStatusUI.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Weapon\Knife.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\UI\Components\PlayerStatusUI.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Weapon\Knife.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.h" />

@@ -16,10 +16,13 @@ public:
 	void AddOxygen(float amount);
 
 	// _‘f‚ªØ‚ê‚½‚©‚Ç‚¤‚©
-	bool IsOxygenDepleted() const;
+	bool IsOxygenDepleted(void) const;
 
 	// _‘f‚ÌŒ¸­
 	void Consume(float deltaTime);
+
+	// Œ»İ‚Ì_‘f‚ÌŠ„‡
+	float GetDepletionRate(void) const;
 
 private:
 	float oxygen_;		// Œ»İ‚Ì_‘f—Ê

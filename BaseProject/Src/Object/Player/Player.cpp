@@ -21,7 +21,7 @@ void Player::Init(void)
 	//oxygen_ = std::make_shared<OxygenComponent>();
 	
 	// コンポーネントを生成してアタッチ
-	oxygen_ = AddComponent<OxygenComponent>(100.0f, 2.0f);
+	oxygen_ = AddComponent<OxygenComponent>(100.0f, 1.0f);
 	input_ = AddComponent<PlayerInput>();
 
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
@@ -48,6 +48,8 @@ void Player::Init(void)
 void Player::Update(float deltaTime)
 {
 	ActorBase::Update(deltaTime);
+
+    oxygen_->GetOxygen();
 }
 
 void Player::OnUpdate(float deltaTime)
