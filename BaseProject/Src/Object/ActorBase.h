@@ -2,7 +2,6 @@
 #include <vector>
 #include "../Object/Common/Transform.h"
 class ResourceManager;
-class SceneManager;
 class Component;
 
 class ActorBase :public std::enable_shared_from_this<ActorBase>

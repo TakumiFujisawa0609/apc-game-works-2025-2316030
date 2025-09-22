@@ -9,11 +9,15 @@ public:
 	void Init(void) override;
 	void Update(float deltaTime) override;
 	void Render(void) override;
-	void Use(void) override;	// アイテム使用
 
 private:
 	float oxygenAmount_; // 回復する酸素量
 	float useCooldown_;  // 使用間隔
 
+	virtual void UpdateOnStage(float deltaTime) override;
+	virtual void UpdateInVentory(float deltaTime) override;
+	virtual void UpdateInUse(float deltaTime) override;
+	virtual void UpdateUsedUp(float deltaTime) override;
+	virtual void UpdateDisabled(float deltaTime) override;
 };
 

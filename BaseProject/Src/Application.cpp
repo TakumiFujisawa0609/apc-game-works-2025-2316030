@@ -28,6 +28,7 @@ Application::Application() {
 	fps_ = 0;
     lastTime_ = GetNowCount();
 	deltaTime_ = 0.0f;
+    fontHandle_ = -1;
 }
 
 Application::~Application()
@@ -84,6 +85,12 @@ void Application::Init(int w, int h)
     
 	// 3D描画初期化 
 	Init3D();
+
+     // フォントの初期化
+    SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF16LE);
+
+    // フォントの作成
+    fontHandle_ = CreateFontToHandle(L"メイリオ", 24, 3, DX_FONTTYPE_NORMAL);
 
     // キー制御初期化
 	SetUseDirectInputFlag(TRUE);
@@ -184,6 +191,11 @@ void Application::ResetDeltaTime(void)
 std::shared_ptr<Camera> Application::GetCamera(void)
 {
     return camera_;
+}
+
+int Application::GetFontHandle(void) const
+{
+    return fontHandle_;
 }
 
 void Application::Init3D(void)

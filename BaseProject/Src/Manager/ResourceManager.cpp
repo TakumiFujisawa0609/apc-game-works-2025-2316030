@@ -42,6 +42,14 @@ void ResourceManager::Init(void)
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/Stage.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
+	// ボトルモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
+	resourcesMap_.emplace(SRC::BOTTLE_M, res);
+
+	// ボトルUI
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/bottle/UI_bottle_Img.png");
+	resourcesMap_.emplace(SRC::BOTTLE_I, res);
+
 }
 
 void ResourceManager::Release(void)

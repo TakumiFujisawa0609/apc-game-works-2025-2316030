@@ -14,6 +14,9 @@ public:
 	{
 		SUBMARINE,
 		STAGE,
+		BOTTLE_M,
+		BOTTLE_I,
+
 	};
 
 	// 明示的にインステンスを生成する

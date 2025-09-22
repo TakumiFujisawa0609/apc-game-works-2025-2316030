@@ -62,6 +62,9 @@ private:
 	// Effekseerの初期化
 	void InitEffekseer(void);
 
+	// フォントハンドル
+	int fontHandle_;
+
 
 public:
 
@@ -130,5 +133,9 @@ public:
 
 	// カメラの取得
 	std::shared_ptr<Camera> GetCamera(void);
+
+	// フォントの取得
+	int GetFontHandle(void)const;
+
 };
 

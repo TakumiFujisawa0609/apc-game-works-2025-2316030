@@ -29,10 +29,6 @@ void OxygenComponent::Update(float deltaTime)
 		isDepleted_ = true; // é_ëfêÿÇÍ
 	}
 
-	int x = Application::SCREEN_SIZE_X / 6;
-	int y = Application::SCREEN_SIZE_Y / 5;
-
-	DrawFormatString(x, y, 0xffffff, L"oxygen=%f", oxygen_);
 }
 
 float OxygenComponent::GetOxygen() const
