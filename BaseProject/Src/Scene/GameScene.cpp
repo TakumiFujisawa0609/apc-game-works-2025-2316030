@@ -13,6 +13,8 @@
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 
+#include "../Object/Components/Gameplay/Item/Consumable/OxygenBottle.h"
+
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
 
 #include"../DrawUtil.h"
@@ -70,6 +72,8 @@ void GameScene::NormalDraw()
 	stage_->Draw();
 	submarine_->Draw();
 	player_->Draw();
+	oxygenBottle_->Render();
+
 	status_->Draw();
 
 	DrawString(10, 0, L"Game Scene", 0xffffff);
@@ -81,6 +85,8 @@ void GameScene::FadeDraw()
 	stage_->Draw();
 	submarine_->Draw();
 	player_->Draw();
+
+	oxygenBottle_->Render();
 	status_->Draw();
 
 	float rate = static_cast<float>(frame_) /
@@ -150,6 +156,11 @@ void GameScene::Init(Input& input)
 	stage_ = std::make_shared<Stage>();
 	stage_->Init();
 
+	// Ž_‘fƒ{ƒ“ƒx
+	oxygenBottle_ = std::make_shared<OxygenBottle>(player_);
+
+
+
 	
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
 
@@ -164,6 +175,7 @@ void GameScene::Update(Input& input)
 	submarine_->Update(time);
 	stage_->Update(time);
 	player_->Update(time);
+	oxygenBottle_->Update(time);
 	status_->Update(time);
 
 	(this->*update_)(input);

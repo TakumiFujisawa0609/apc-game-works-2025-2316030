@@ -26,8 +26,8 @@ Submarine::~Submarine(void)
 void Submarine::Init(void)
 {
 	// ƒ‚ƒfƒ‹Šî–{İ’è
-	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::SUBMARINE));
+	//transform_.SetModel(resMng_.LoadModelDuplicate(
+	//	ResourceManager::SRC::SUBMARINE));
 
 	transform_.scl = AsoUtility::VECTOR_ONE;
 	transform_.pos = { 0.0f,0.0f,0.0f };

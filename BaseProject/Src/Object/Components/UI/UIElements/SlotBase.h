@@ -9,7 +9,6 @@ public:
     virtual ~SlotBase(void) = default;
 
     void SetItem(int id);
-    int GetSlotItemId(void) const override;
 
     void Update(float deltaTime) override;
     void Draw(void) override;

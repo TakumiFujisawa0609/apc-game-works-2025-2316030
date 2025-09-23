@@ -5,6 +5,9 @@
 class OxygenComponent;
 class PlayerInput;
 
+// インベントリ
+class Inventory;
+
 // 描画系
 class UIComponent;
 
@@ -27,9 +30,16 @@ public:
 	// 入力コンポーネントの取得
 	PlayerInput* GetInputComp();
 
+	// アイテムの取得条件
+	bool TakeItem(int itemId, int count);
+
+
+
 private:
 	OxygenComponent* oxygen_;	// 酸素コンポーネント
 	PlayerInput* input_;			// 入力コンポーネント
+
+	std::shared_ptr<Inventory> inventory_;		// インベントリ
 
 	float moveSpeed_;	// 移動速度
 	VECTOR moveDir_;		// 移動方向
@@ -47,5 +57,10 @@ private:
 
 	void Rotate(void);
 	void SetGoalRotate(float rotRad);
+
+	// アイテムをインベントリに追加
+	void GiveItem(int itemId, int count);
+
+
 };
 

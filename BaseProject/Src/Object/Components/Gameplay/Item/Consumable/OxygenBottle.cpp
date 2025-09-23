@@ -17,7 +17,7 @@ void OxygenBottle::Init(void)
 	// ÉÇÉfÉãèÓïÒ
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::BOTTLE_M));
-	transform_.scl = AsoUtility::VECTOR_ONE;
+	transform_.scl = { 10.0f,10.0f,10.0f };
 	transform_.pos = { 0.0f,0.0f,0.0f };
 	transform_.quaRot = Quaternion();
 	transform_.Update();
@@ -27,6 +27,10 @@ void OxygenBottle::Init(void)
 
 	// èÛë‘ÇÃèâä˙âª
 	isOnStage_ = true;
+	isEquipment_ = false;
+	isEfficacy_ = false;
+	isDisabled_ = false;
+	ChangeState(STATE::ONSTAGE);
 }
 
 void OxygenBottle::Update(float deltaTime)
@@ -48,6 +52,10 @@ void OxygenBottle::Render(void)
 	{
 		MV1DrawModel(transform_.modelId);
 	}
+
+	MV1DrawModel(transform_.modelId);
+
+	DrawSphere3D(transform_.pos, 10.0f, 16, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 }
 
 void OxygenBottle::UpdateOnStage(float deltaTime)

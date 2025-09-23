@@ -21,7 +21,8 @@ void ExChangeSlot::Draw(void)
 
 void ExChangeSlot::Toggle(void)
 {
-    showFront_ = false;
+    // 現在の状況とは逆にする
+    showFront_ = !showFront_;
     // アイテムスロットが入れ替わったので通知
     NotifyToggle();
 }

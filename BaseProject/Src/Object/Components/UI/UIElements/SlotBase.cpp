@@ -10,11 +10,6 @@ void SlotBase::SetItem(int id)
     itemId_ = id;
 }
 
-int SlotBase::GetSlotItemId(void) const
-{
-    return itemId_;
-}
-
 void SlotBase::Update(float deltaTime)
 {
 }

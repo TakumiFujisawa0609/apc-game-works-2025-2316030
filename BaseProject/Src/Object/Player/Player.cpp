@@ -5,6 +5,7 @@
 #include "../../Manager/InputManager.h"
 #include "../../Object/Components/Gameplay/OxygenComponent.h"
 #include "../../Object/Components/Player/PlayerInput.h"
+#include "Inventory.h"
 #include "Player.h"
 
 Player::Player(void)
@@ -24,6 +25,10 @@ void Player::Init(void)
 	oxygen_ = AddComponent<OxygenComponent>(100.0f, 1.0f);
 	input_ = AddComponent<PlayerInput>();
 
+	// インベントリ生成
+	inventory_ = std::make_shared<Inventory>();
+
+	// モデル情報
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
 	transform_.rot = { 0.0f, 0.0f, 0.0f };
 	transform_.scl = { 1.0f, 1.0f, 1.0f };
@@ -141,6 +146,17 @@ PlayerInput* Player::GetInputComp()
 	return input_;
 }
 
+bool Player::TakeItem(int itemId, int count)
+{
+    if (inventory_->HasItem(itemId) &&
+        inventory_->GetItemCount(itemId) >= count)
+    {
+		inventory_->RemoveItem(itemId, count);
+		return true;
+    }
+    return false;
+}
+
 void Player::Rotate(void)
 {
     stepRotTime_ -= Application::GetInstance().GetDeltaTime();
@@ -167,4 +183,9 @@ void Player::SetGoalRotate(float rotRad)
     }
 
     goalQuaRot_ = axis;
+}
+
+void Player::GiveItem(int itemId, int count)
+{
+	inventory_->AddItem(itemId, count);
 }
