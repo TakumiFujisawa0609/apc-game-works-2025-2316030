@@ -19,8 +19,6 @@ Player::~Player(void)
 
 void Player::Init(void)
 {
-	//oxygen_ = std::make_shared<OxygenComponent>();
-	
 	// コンポーネントを生成してアタッチ
 	oxygen_ = AddComponent<OxygenComponent>(100.0f, 1.0f);
 	input_ = AddComponent<PlayerInput>();
@@ -30,9 +28,10 @@ void Player::Init(void)
 
 	// モデル情報
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
-	transform_.rot = { 0.0f, 0.0f, 0.0f };
 	transform_.scl = { 1.0f, 1.0f, 1.0f };
-
+    transform_.quaRot = Quaternion();
+    transform_.quaRotLocal =
+        Quaternion::Euler({ 0.0f,180.0f,0.0f });
 	transform_.Update();
 
 	SetMousePoint(Application::GetInstance().GetWindowSize().width / 2,
@@ -119,12 +118,6 @@ void Player::OnUpdate(float deltaTime)
         movedPos_ = VAdd(transform_.pos, movePow_);
         transform_.pos = movedPos_;
     }
-
-    // 移動方向に応じた回転
-    Rotate();
-
-    // 回転させる
-    transform_.quaRot = playerRotY_;
     
     // Transform更新
     transform_.Update();
@@ -155,15 +148,6 @@ bool Player::TakeItem(int itemId, int count)
 		return true;
     }
     return false;
-}
-
-void Player::Rotate(void)
-{
-    stepRotTime_ -= Application::GetInstance().GetDeltaTime();
-
-    // 回転の球面補間
-    playerRotY_ = Quaternion::Slerp(
-        playerRotY_, goalQuaRot_, (0.3f - stepRotTime_) / 0.3f);
 }
 
 void Player::SetGoalRotate(float rotRad)

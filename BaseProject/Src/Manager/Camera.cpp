@@ -93,6 +93,8 @@ void Camera::SetBeforeDraw(Input& input)
 		cameraUp_
 	);
 
+	DrawSphere3D(targetPos_, 30.0f, 8, GetColor(0, 0, 0), GetColor(255, 255, 0), true);
+
 	// DXライブラリのカメラとEffekseerのカメラを同期する。
 	Effekseer_Sync3DSetting();
 
@@ -396,7 +398,7 @@ void Camera::SetBeforeDrawFPSMouse(void)
 	};
 
 	// 注視点を更新(カメラ位置 + 前方方向ベクトル)
-	targetPos_ = VAdd(pos_, VScale(forward, 100.0f));
+	targetPos_ = VAdd(pos_, VScale(forward, 200.0f));
 
 	// 上方向は常にY+
 	cameraUp_ = AsoUtility::DIR_U;

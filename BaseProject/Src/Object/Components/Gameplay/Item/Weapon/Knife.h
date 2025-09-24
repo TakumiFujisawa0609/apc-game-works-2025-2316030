@@ -8,7 +8,13 @@ public:
 	~Knife(void) override = default;
 	void Init(void) override;
 	void Update(float deltaTime) override;
-	void Render(void) override;
+	void Draw(void) override;
 	void Attack(void) override;
+
+private:
+
+	virtual void UpdateOnStage(float deltaTime) override;
+	virtual void UpdateInVentory(float deltaTime) override;
+	virtual void UpdateInUse(float deltaTime) override;
 };
 

@@ -16,7 +16,12 @@ public:
 		STAGE,
 		BOTTLE_M,
 		BOTTLE_I,
+		KNIFE_M,
+		KNIFE_I,
+		SPEARGUN_M,
+		SPEARGUN_I,
 
+		BOSS,
 	};
 
 	// 明示的にインステンスを生成する

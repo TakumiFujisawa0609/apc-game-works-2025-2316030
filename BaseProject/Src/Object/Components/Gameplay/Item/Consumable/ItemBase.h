@@ -24,9 +24,12 @@ public:
 	~ItemBase(void) override = default;
 	void Init(void) override = 0;
 	void Update(float deltaTime) override = 0;
-	void Render(void) override = 0;
+	void Draw(void) override = 0;
 
 	virtual int GetImgId(void);
+
+	// プレイヤーの持ち手座標を取得する
+	void SetTargetPos(const Transform* target);
 
 protected:
 	int useCount_;		// 使用回数
@@ -45,6 +48,9 @@ protected:
 
 	// 状態
 	STATE state_;
+
+	// 追従対象の座標
+	const Transform* targetTransform_;
 
 	// それぞれの状態でのアイテムの更新
 	virtual void UpdateState(float deltaTime);

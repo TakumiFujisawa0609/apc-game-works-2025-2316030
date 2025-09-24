@@ -19,6 +19,12 @@ public:
     // 外部へ切り替え通知を行うためのハンドラ登録
     void SetToggleCallback(std::function<void(int itemId, bool isFrontNow)> callBack);
 
+    // デフォルトで最初に来るスロットの中身を取得する
+    int GetFront(void) const;
+
+    // デフォルトで最後に来るスロットの中身を取得する
+    int GetBack(void) const;
+
 private:
     int front_;  // デフォルトで最初に来るスロット
     int back_;   // デフォルトで最後に来るスロット

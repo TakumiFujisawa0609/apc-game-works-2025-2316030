@@ -1,11 +1,11 @@
 #pragma once
 #include "ExChangeSlot.h"
-class ItemSlot :
+class MediumRangeWeaponSlot :
     public ExChangeSlot
 {
 public:
-    ItemSlot(int frontItemId, int backItemId);
-	~ItemSlot(void);
+	MediumRangeWeaponSlot(int frontItemId, int backItemId);
+	~MediumRangeWeaponSlot(void);
 
 	void Update(float deltaTime) override;
 	void Draw(void) override;
@@ -19,6 +19,5 @@ public:
 private:
 
 	float posX_, posY_;
-
 };
 

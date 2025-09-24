@@ -1,3 +1,5 @@
+#include "../../../../../Application.h"
+#include "../../../../../Common/Quaternion.h"
 #include "../../../../../Manager/ResourceManager.h"
 #include "../../../../../Manager/Camera.h"
 #include "../../../../../Utility/AsoUtility.h"
@@ -30,7 +32,7 @@ void OxygenBottle::Init(void)
 	isEquipment_ = false;
 	isEfficacy_ = false;
 	isDisabled_ = false;
-	ChangeState(STATE::ONSTAGE);
+	ChangeState(STATE::ININVENTORY);
 }
 
 void OxygenBottle::Update(float deltaTime)
@@ -45,7 +47,7 @@ void OxygenBottle::Update(float deltaTime)
 	transform_.Update();
 }
 
-void OxygenBottle::Render(void)
+void OxygenBottle::Draw(void)
 {
 	if ((state_ == STATE::ONSTAGE) ||
 		(state_ == STATE::INUSE))
@@ -64,7 +66,6 @@ void OxygenBottle::UpdateOnStage(float deltaTime)
 	// アイテムが拾われる処理
 	
 
-
 	//拾われるとUpdateInVentoryに遷移
 	if (!isOnStage_)
 	{
@@ -75,7 +76,23 @@ void OxygenBottle::UpdateOnStage(float deltaTime)
 void OxygenBottle::UpdateInVentory(float deltaTime)
 {
 	// インベントリに格納されている状態
+	// 場所の調整
+	const auto& camera = Application::GetInstance().GetCamera();
+	VECTOR cameraPos = camera->GetPos();
+	VECTOR forward = camera->GetForward();
+	VECTOR right = camera->GetRight();
+	VECTOR up = camera->GetUp();
+
+	transform_.pos = VAdd(cameraPos, TARGET_POS);
+
+	// 描画のためにワールド行列を作成
+	MATRIX itemWorldMatrix = MGetTranslate(transform_.pos);
+
+	//itemWorldMatrix = MMult(itemWorldMatrix, Quaternion::GetRotationMatrixFromQuaternion(targetTransform_->quaRot));
+	//MATRIX rotationMatrix = Quaternion::GetRotationMatrixFromQuaternion(targetTransform_->quaRot);
+
 	// 現在手に持っているかどうかをスロットを見て判断する
+	// 持っていれば
 
 
 	// 装備しているかどうか
@@ -88,9 +105,9 @@ void OxygenBottle::UpdateInVentory(float deltaTime)
 void OxygenBottle::UpdateInUse(float deltaTime)
 {
 	// 使用中
+	// 画面のどこかにゲージが出る
 
 	// 使用したときの効果(バフ、デバフなど)
-
 
 	// アイテム使用されてアイテムとしての効果を失ったとき
 	if (!isEfficacy_)

@@ -55,7 +55,6 @@ private:
 	float yaw;			// 水平回転（ヨー）
 	float pitch;		// 垂直回転（ピッチ）
 
-	void Rotate(void);
 	void SetGoalRotate(float rotRad);
 
 	// アイテムをインベントリに追加

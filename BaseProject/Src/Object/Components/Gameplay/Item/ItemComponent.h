@@ -17,7 +17,7 @@ public:
 	virtual ~ItemComponent(void) = default;
 	virtual void Init(void) = 0;
 	virtual void Update(float deltaTime) = 0;
-	virtual void Render(void) = 0;
+	virtual void Draw(void) = 0;
 
 	int GetItemId(void)const;
 	ItemType GetItemType(void)const;

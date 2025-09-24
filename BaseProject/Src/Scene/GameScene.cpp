@@ -14,6 +14,11 @@
 #include"../Object/Stage/Stage.h"
 
 #include "../Object/Components/Gameplay/Item/Consumable/OxygenBottle.h"
+#include "../Object/Components/Gameplay/Item/Weapon/Knife.h"
+
+
+#include "../Object/Components/UI/UIElements/ItemSlot.h"
+#include "../Object/Components/UI/UIElements/MediumRangeWeaponSlot.h"
 
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
 
@@ -73,9 +78,11 @@ void GameScene::NormalDraw()
 	submarine_->Draw();
 	player_->Draw();
 	oxygenBottle_->Render();
+	knife_->Render();
 
+	itemSlot_->Draw();
+	rangeWeaponSlot_->Draw();
 	status_->Draw();
-
 	DrawString(10, 0, L"Game Scene", 0xffffff);
 
 }
@@ -87,6 +94,10 @@ void GameScene::FadeDraw()
 	player_->Draw();
 
 	oxygenBottle_->Render();
+	knife_->Render();
+
+	itemSlot_->Draw();
+	rangeWeaponSlot_->Draw();
 	status_->Draw();
 
 	float rate = static_cast<float>(frame_) /
@@ -158,12 +169,23 @@ void GameScene::Init(Input& input)
 
 	// 酸素ボンベ
 	oxygenBottle_ = std::make_shared<OxygenBottle>(player_);
+	oxygenBottle_->Init();
 
+	// ナイフ
+	knife_ = std::make_shared<Knife>();
+	knife_->Init();
 
+	// アイテムスロット
+	itemSlot_ = std::make_shared<ItemSlot>(0,0);
 
-	
+	// 中距離武器スロット
+	rangeWeaponSlot_ = std::make_shared<MediumRangeWeaponSlot>(0, 0);
+
+	// ステータス
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
 
+
+	oxygenBottle_->SetTargetPos(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE);
 }
@@ -175,7 +197,12 @@ void GameScene::Update(Input& input)
 	submarine_->Update(time);
 	stage_->Update(time);
 	player_->Update(time);
+
 	oxygenBottle_->Update(time);
+	knife_->Update(time);
+
+	itemSlot_->Update(time);
+	rangeWeaponSlot_->Update(time);
 	status_->Update(time);
 
 	(this->*update_)(input);

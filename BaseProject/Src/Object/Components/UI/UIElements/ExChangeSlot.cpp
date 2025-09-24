@@ -44,6 +44,16 @@ void ExChangeSlot::SetToggleCallback(std::function<void(int itemId, bool isFront
     onToggle_ = std::move(callBack);
 }
 
+int ExChangeSlot::GetFront(void) const
+{
+    return front_;
+}
+
+int ExChangeSlot::GetBack(void) const
+{
+    return back_;
+}
+
 void ExChangeSlot::NotifyToggle(void)
 {
     if (onToggle_)

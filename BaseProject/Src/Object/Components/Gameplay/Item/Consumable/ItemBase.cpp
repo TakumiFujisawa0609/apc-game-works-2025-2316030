@@ -12,13 +12,19 @@ ItemBase::ItemBase(std::shared_ptr<ActorBase> owner)
 	isEfficacy_(false),
 	isDisabled_(false),
 	resMng_(ResourceManager::GetInstance()),
-	state_(STATE::NONE)
+	state_(STATE::NONE),
+	targetTransform_(nullptr)
 {
 }
 
 int ItemBase::GetImgId(void)
 {
 	return imgId_;
+}
+
+void ItemBase::SetTargetPos(const Transform* target)
+{
+	targetTransform_ = target;
 }
 
 void ItemBase::UpdateState(float deltaTime)

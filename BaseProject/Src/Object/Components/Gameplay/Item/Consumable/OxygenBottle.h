@@ -4,11 +4,16 @@ class OxygenBottle :
     public ItemBase
 {
 public:
+
+	// ’²®—pÀ•W
+	static constexpr VECTOR TARGET_POS = { 5.0f,5.0f, 50.0f };
+
+
 	OxygenBottle(std::shared_ptr<ActorBase> owner);
 	~OxygenBottle(void) override = default;
 	void Init(void) override;
 	void Update(float deltaTime) override;
-	void Render(void) override;
+	void Draw(void) override;
 
 private:
 	float oxygenAmount_; // ‰ñ•œ‚·‚é_‘f—Ê

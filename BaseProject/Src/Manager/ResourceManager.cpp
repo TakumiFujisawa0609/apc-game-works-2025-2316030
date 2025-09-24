@@ -50,6 +50,27 @@ void ResourceManager::Init(void)
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/bottle/UI_bottle_Img.png");
 	resourcesMap_.emplace(SRC::BOTTLE_I, res);
 
+	// ナイフモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Model/Weapon/Melee/Knife/");
+	resourcesMap_.emplace(SRC::KNIFE_M, res);
+
+	// ナイフUI
+	res = std::make_shared<RES>(RES_T::IMG, PATH_MDL + L"Img/Weapon/Melee/Knife/");
+	resourcesMap_.emplace(SRC::KNIFE_I);
+
+	// スピアガンモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Model/Weapon/Medium/Speargun/");
+	resourcesMap_.emplace(SRC::SPEARGUN_M);
+
+	// スピアガンUI
+	res = std::make_shared<RES>(RES_T::IMG, PATH_MDL + L"Img/Weapon/Medium/Speargun/");
+	resourcesMap_.emplace(SRC::SPEARGUN_I);
+
+
+
+	// ボスモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"");
+	resourcesMap_.emplace(SRC::BOSS);
 }
 
 void ResourceManager::Release(void)

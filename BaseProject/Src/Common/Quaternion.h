@@ -87,6 +87,11 @@ public:
 	// 対象方向の回転
 	void ToAngleAxis(float* angle, VECTOR* axis);
 
+	// クォータニオンから回転行列を生成する関数（例）
+	// `qua`はクォータニオン（w, x, y, z）
+	MATRIX GetRotationMatrixFromQuaternion(Quaternion qua);
+
+
 private:
 
 	// 基本ベクトルを取得

@@ -132,7 +132,7 @@
     <ClCompile Include="Src\Object\Components\UI\UIElements\ExChangeSlot.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Components\UI\UIElements\RangedWeaponSlot.cpp">
+    <ClCompile Include="Src\Object\Components\UI\UIElements\MediumRangeWeaponSlot.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp">
@@ -293,7 +293,7 @@
     <ClInclude Include="Src\Object\Components\UI\UIElements\ExChangeSlot.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Components\UI\UIElements\RangedWeaponSlot.h">
+    <ClInclude Include="Src\Object\Components\UI\UIElements\MediumRangeWeaponSlot.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h">

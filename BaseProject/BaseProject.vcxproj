@@ -141,7 +141,7 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Weapon\Knife.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.cpp" />
-    <ClCompile Include="Src\Object\Components\UI\UIElements\RangedWeaponSlot.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElements\MediumRangeWeaponSlot.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\ExChangeSlot.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\ItemSlot.cpp" />
@@ -197,7 +197,7 @@
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Weapon\Knife.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.h" />
-    <ClInclude Include="Src\Object\Components\UI\UIElements\RangedWeaponSlot.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElements\MediumRangeWeaponSlot.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\ExChangeSlot.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\ItemSlot.h" />
