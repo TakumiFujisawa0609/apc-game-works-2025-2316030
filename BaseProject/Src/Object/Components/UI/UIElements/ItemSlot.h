@@ -1,4 +1,7 @@
 #pragma once
+
+#include "../../Gameplay/Item/ItemComponent.h"
+
 #include "ExChangeSlot.h"
 class ItemSlot :
     public ExChangeSlot

@@ -1,15 +1,16 @@
 #pragma once
 #include <map>
 #include <vector>
+#include "../Components/Gameplay/Item/ItemComponent.h"
 
 class Inventory
 {
 public:
-	Inventory(void);
+	Inventory(int size);
 	~Inventory(void);
 
 	// アイテムをインベントリに追加
-	void AddItem(int itemId, int count);
+	void AddItem(std::shared_ptr<ItemComponent> item);
 
 	// アイテムをインベントリから削除
 	void RemoveItem(int itemId, int count);
@@ -28,5 +29,6 @@ private:
 	std::map<int, int> items_; // アイテムIDとその所持数
 	std::map<int, int> weapons_; // アイテムIDとその最大所持数
 	
+	std::vector<std::shared_ptr<ItemComponent>> slots_; // インベントリスロット
 };
 

@@ -4,6 +4,7 @@
 
 MeleeWeaponSlot::MeleeWeaponSlot()
 {
+	weapon_ = nullptr;
 	posX_ = static_cast<float>(Application::SCREEN_SIZE_X * 0.45);
 	posY_ = static_cast<float>(Application::SCREEN_SIZE_Y * 0.67);
 }
@@ -28,4 +29,20 @@ void MeleeWeaponSlot::Draw(void)
 	{
 		DrawGraph(posX_, posY_, front, true);
 	}
+}
+
+bool MeleeWeaponSlot::Equip(ItemComponent* item)
+{
+	// ‹ßÚ•Ší‚©‚Ç‚¤‚©Šm”F
+	if (item->GetItemType() == ItemComponent::ItemType::MELEE_WEAPON)
+	{
+		weapon_ = static_cast<WeaponBase*>(item);
+		return true;
+	}
+	return false;	// ‹ßÚ•Ší‚Å‚Í‚È‚¢‚Ì‚Å‘•”õ‚Å‚«‚È‚¢
+}
+
+bool MeleeWeaponSlot::isEquipped(void) const
+{
+	return weapon_ != nullptr;
 }

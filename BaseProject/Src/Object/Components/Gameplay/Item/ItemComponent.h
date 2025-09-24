@@ -20,12 +20,13 @@ public:
 	virtual void Draw(void) = 0;
 
 	int GetItemId(void)const;
+	int GetCount(void)const;
 	ItemType GetItemType(void)const;
 
 protected:
 	int itemId_;
 	ItemType itemType_;
-	
+	int count_; // Š”
 
 };
 

@@ -13,6 +13,8 @@
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 
+#include "../Object/Player/Inventory.h"
+
 #include "../Object/Components/Gameplay/Item/Consumable/OxygenBottle.h"
 #include "../Object/Components/Gameplay/Item/Weapon/Knife.h"
 
@@ -77,8 +79,8 @@ void GameScene::NormalDraw()
 	stage_->Draw();
 	submarine_->Draw();
 	player_->Draw();
-	oxygenBottle_->Render();
-	knife_->Render();
+	oxygenBottle_->Draw();
+	knife_->Draw();
 
 	itemSlot_->Draw();
 	rangeWeaponSlot_->Draw();
@@ -93,8 +95,8 @@ void GameScene::FadeDraw()
 	submarine_->Draw();
 	player_->Draw();
 
-	oxygenBottle_->Render();
-	knife_->Render();
+	oxygenBottle_->Draw();
+	knife_->Draw();
 
 	itemSlot_->Draw();
 	rangeWeaponSlot_->Draw();
@@ -167,12 +169,15 @@ void GameScene::Init(Input& input)
 	stage_ = std::make_shared<Stage>();
 	stage_->Init();
 
+	// インベントリ
+	inventory_ = std::make_shared<Inventory>(20);
+
 	// 酸素ボンベ
 	oxygenBottle_ = std::make_shared<OxygenBottle>(player_);
 	oxygenBottle_->Init();
 
 	// ナイフ
-	knife_ = std::make_shared<Knife>();
+	knife_ = std::make_shared<Knife>(player_);
 	knife_->Init();
 
 	// アイテムスロット

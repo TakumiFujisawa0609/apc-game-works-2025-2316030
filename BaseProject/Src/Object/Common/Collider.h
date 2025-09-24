@@ -1,13 +1,14 @@
 #pragma once
+#include <DxLib.h>
 class Collider
 {
 
-public :
+public:
 
 	// 衝突種別
 	enum class TYPE
 	{
-		STAGE,
+		STAGE
 	};
 
 	// コンストラクタ
@@ -17,8 +18,8 @@ public :
 	~Collider(void);
 
 	bool IsCollidiingWith(const Collider& other) const;
-	VECTOR GetPushVector(const Collider& other) const;	// 押出ベクトルを返す
-	void SetPosition(const VECTOR& pos);				// モデルと同期
+	VECTOR GetPushVector(const Collider& other) const;
+	void SetPosition(const VECTOR& pos);
 	VECTOR GetPosition(void) const;
 
 	// 衝突種別

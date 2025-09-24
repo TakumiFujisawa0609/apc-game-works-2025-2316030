@@ -7,11 +7,14 @@ class Submarine;
 class Player;
 class Stage;
 
+class Inventory;
+
 class OxygenBottle;
 class Knife;
 
 class ItemSlot;
 class MediumRangeWeaponSlot;
+class MeleeWeaponSlot;
 
 class PlayerStatusUI;
 
@@ -51,6 +54,9 @@ private:
 	std::shared_ptr<Submarine> submarine_;
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Stage> stage_;
+
+	// インベントリ
+	std::shared_ptr<Inventory> inventory_;
 
 	// アイテムスロット
 	std::shared_ptr<ItemSlot> itemSlot_;

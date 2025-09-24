@@ -1,22 +1,40 @@
 #include "Inventory.h"
 
-Inventory::Inventory(void)
+Inventory::Inventory(int size)
 {
 	items_.clear();
 	weapons_.clear();
+	slots_.resize(size, nullptr);
 }
 
 Inventory::~Inventory(void)
 {
 }
 
-void Inventory::AddItem(int itemId, int count)
+void Inventory::AddItem(std::shared_ptr<ItemComponent> item)
 {
-	if (count <= 0)
+	// スタック可能なアイテムを探す
+	for (auto& slot : slots_)
 	{
-		return;
+		if (slot && slot->GetItemId() == item->GetItemId())
+		{
+			// アイテムが既に存在する場合、所持数を増やす
+			items_[item->GetItemId()]++;
+			return;
+		}
 	}
-	items_[itemId] += count;
+
+	// 新しい空のスロットを探して追加する
+	for (size_t i=0;i<slots_.size() ; ++i)
+	{
+		if (slots_[i] == nullptr) // 空のスロットを見つけた場合
+		{
+			slots_[i] = item; // アイテムをスロットに追加
+			items_[item->GetItemId(), item->GetCount()] = 1; // 所持数を1に設定
+			return;
+		}
+		return; // インベントリが満杯の場合は何もしない
+	}
 }
 
 void Inventory::RemoveItem(int itemId, int count)

@@ -23,8 +23,6 @@ void Player::Init(void)
 	oxygen_ = AddComponent<OxygenComponent>(100.0f, 1.0f);
 	input_ = AddComponent<PlayerInput>();
 
-	// インベントリ生成
-	inventory_ = std::make_shared<Inventory>();
 
 	// モデル情報
 	transform_.pos = { 0.0f, 0.0f, 0.0f };
@@ -141,12 +139,12 @@ PlayerInput* Player::GetInputComp()
 
 bool Player::TakeItem(int itemId, int count)
 {
-    if (inventory_->HasItem(itemId) &&
-        inventory_->GetItemCount(itemId) >= count)
-    {
-		inventory_->RemoveItem(itemId, count);
-		return true;
-    }
+  //  if (inventory_->HasItem(itemId) &&
+  //      inventory_->GetItemCount(itemId) >= count)
+  //  {
+		//inventory_->RemoveItem(itemId, count);
+		//return true;
+  //  }
     return false;
 }
 
@@ -171,5 +169,5 @@ void Player::SetGoalRotate(float rotRad)
 
 void Player::GiveItem(int itemId, int count)
 {
-	inventory_->AddItem(itemId, count);
+	//inventory_->AddItem(itemId, count);
 }

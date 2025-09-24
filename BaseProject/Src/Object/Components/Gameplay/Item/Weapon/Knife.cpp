@@ -3,8 +3,6 @@
 #include "../../../../../Manager/ResourceManager.h"
 #include "../../../../../Manager/Camera.h"
 #include "../../../../../Utility/AsoUtility.h"
-#include "../../../../Common/Collider.h"
-#include "../../../../Common/Capsule.h"
 #include "Knife.h"
 
 Knife::Knife(std::shared_ptr<ActorBase> owner)
@@ -33,13 +31,6 @@ void Knife::Init(void)
 	isEfficacy_ = false;
 	isDisabled_ = false;
 	ChangeState(STATE::ININVENTORY);
-
-	// ƒJƒvƒZƒ‹î•ñ
-	capsule_ = std::make_shared<Capsule>(transform_);
-	/*capsule_->SetLocalPosTop();
-	capsule_->SetLocalPosDown();
-	capsule_->SetRadius();*/
-
 
 }
 

@@ -7,6 +7,9 @@ Collider::Collider(TYPE type, int modelId)
 {
 	type_ = type;
 	modelId_ = modelId;
+	// ƒƒ“ƒo•Ï”‚ğ‰Šú‰»
+	center_ = VGet(0.0f, 0.0f, 0.0f);
+	halfSize_ = VGet(0.0f, 0.0f, 0.0f);
 }
 
 Collider::~Collider(void)

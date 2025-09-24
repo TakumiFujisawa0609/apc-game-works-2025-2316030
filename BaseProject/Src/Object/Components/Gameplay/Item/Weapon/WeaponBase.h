@@ -3,8 +3,7 @@
 #include <vector>
 
 class ResourceManager;
-class Collider;
-class Capsule;
+
 
 #include "../ItemComponent.h"
 class WeaponBase :
@@ -29,13 +28,6 @@ public:
 
 	// プレイヤーの持ち手座標を取得する
 	void SetTargetPos(const Transform* target);
-
-	// 衝突判定に用いられるコライダ制御
-	void AddCollider(std::shared_ptr<Collider> collider);
-	void ClearCollider(void);
-
-	// 衝突カプセルの取得
-	const std::shared_ptr<Capsule> GetCapsule(void);
 
 
 protected:
@@ -65,10 +57,6 @@ protected:
 
 	// 状態の変更
 	virtual void ChangeState(STATE state);
-
-	// 衝突判定に用いられるコライダ
-	std::vector<std::shared_ptr<Collider>> colliders_;
-	std::shared_ptr<Capsule> capsule_;
 
 private:
 

@@ -5,8 +5,8 @@
 class OxygenComponent;
 class PlayerInput;
 
-// インベントリ
-class Inventory;
+//// インベントリ
+//class Inventory;
 
 // 描画系
 class UIComponent;
@@ -39,7 +39,7 @@ private:
 	OxygenComponent* oxygen_;	// 酸素コンポーネント
 	PlayerInput* input_;			// 入力コンポーネント
 
-	std::shared_ptr<Inventory> inventory_;		// インベントリ
+	//std::shared_ptr<Inventory> inventory_;		// インベントリ
 
 	float moveSpeed_;	// 移動速度
 	VECTOR moveDir_;		// 移動方向

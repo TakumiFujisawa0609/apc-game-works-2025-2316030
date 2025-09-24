@@ -13,30 +13,13 @@ WeaponBase::WeaponBase(std::shared_ptr<ActorBase> owner)
 	isDisabled_(false),
 	resMng_(ResourceManager::GetInstance()),
 	state_(STATE::NONE),
-	targetTransform_(nullptr),
-	colliders_(-1),
-	capsule_(nullptr)
+	targetTransform_(nullptr)
 {
 }
 
 void WeaponBase::SetTargetPos(const Transform* target)
 {
 	targetTransform_ = target;
-}
-
-void WeaponBase::AddCollider(std::shared_ptr<Collider> collider)
-{
-	colliders_.push_back(collider);
-}
-
-void WeaponBase::ClearCollider(void)
-{
-	colliders_.clear();
-}
-
-const std::shared_ptr<Capsule> WeaponBase::GetCapsule(void)
-{
-	return capsule_;
 }
 
 void WeaponBase::UpdateState(float deltaTime)
