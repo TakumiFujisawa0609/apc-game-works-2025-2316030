@@ -3,9 +3,7 @@
 #include "ItemSlot.h"
 
 
-ItemSlot::ItemSlot(int frontItemId, int backItemId)
-	:
-	ExChangeSlot(frontItemId, backItemId)
+ItemSlot::ItemSlot(void)
 {
 	posX_ = static_cast<float>(Application::SCREEN_SIZE_X * 0.45);
 	posY_ = static_cast<float>(Application::SCREEN_SIZE_Y * 0.67);
@@ -29,22 +27,5 @@ void ItemSlot::Draw(void)
 	DrawBox(posX_, posY_, posX_ + posX_ * 0.1, posY_ + posY_ * 0.1, GetColor(255, 255, 255), true);
 
 	// アイテムスロット
-	int front = ExChangeSlot::GetFront();
-	if (front != 0)
-	{
-		DrawGraph(posX_, posY_, front, true);
-	}
 
-}
-
-void ItemSlot::SetForntSlot(int frontItemId)
-{
-	int front = ExChangeSlot::GetFront();
-	front = frontItemId;
-}
-
-void ItemSlot::SetBackSlot(int backItemId)
-{
-	int back = ExChangeSlot::GetBack();
-	back = backItemId;
 }

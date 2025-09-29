@@ -9,7 +9,6 @@
 #include"../Manager/SceneController.h"//シーンの切り替えに使う
 #include"OverScene.h"//次のシーン
 #include"PauseScene.h"//ポーズシーン
-#include"../Object/Submarine.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 
@@ -18,9 +17,9 @@
 #include "../Object/Components/Gameplay/Item/Consumable/OxygenBottle.h"
 #include "../Object/Components/Gameplay/Item/Weapon/Knife.h"
 
+#include "../Object/Components/Gameplay/OxygenComponent.h"
 
 #include "../Object/Components/UI/UIElements/ItemSlot.h"
-#include "../Object/Components/UI/UIElements/MediumRangeWeaponSlot.h"
 
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
 
@@ -75,31 +74,37 @@ void GameScene::FadeOutUpdate(Input& input)
 void GameScene::NormalDraw()
 {
 
-
+	// オブジェクト
 	stage_->Draw();
-	submarine_->Draw();
 	player_->Draw();
 	oxygenBottle_->Draw();
 	knife_->Draw();
 
+	// スロット
 	itemSlot_->Draw();
-	rangeWeaponSlot_->Draw();
+
+	// プレイヤー状態
 	status_->Draw();
+
+
 	DrawString(10, 0, L"Game Scene", 0xffffff);
 
 }
 
 void GameScene::FadeDraw()
 {
+	// オブジェクト
 	stage_->Draw();
-	submarine_->Draw();
 	player_->Draw();
 
 	oxygenBottle_->Draw();
 	knife_->Draw();
 
+	// スロット
 	itemSlot_->Draw();
-	rangeWeaponSlot_->Draw();
+
+
+	// プレイヤー状態
 	status_->Draw();
 
 	float rate = static_cast<float>(frame_) /
@@ -136,10 +141,30 @@ void GameScene::LoadLocationData()
 	FileRead_close(fHandle);
 }
 
+void GameScene::HandleMouseWheel(int wheelDelta)
+{
+	if (!itemSlot_)
+	{
+		return;
+	}
+	
+
+	if (wheelDelta > 0)
+	{
+		// マウスホイール上回転(アイテムを前に戻す/インデックスを減らす)
+		itemSlot_->CycleByWheel(true);
+
+	}
+	else if (wheelDelta < 0)
+	{
+		// マウスホイール下回転(アイテムを後ろに進める/インデックスを増やす)
+		itemSlot_->CycleByWheel(false);
+	}
+}
+
 GameScene::GameScene(SceneController& controller) :Scene(controller)
 {
-	//imgH_=LoadGraph(L"img/brook.png");
-	//assert(imgH_ >= 0);
+
 	update_ = &GameScene::FadeInUpdate;
 	draw_ = &GameScene::FadeDraw;
 	frame_ = fade_interval;
@@ -157,10 +182,6 @@ GameScene::~GameScene()
 
 void GameScene::Init(Input& input)
 {
-	// 潜水艦
-	submarine_ = std::make_shared<Submarine>();
-	submarine_->Init();
-
 	// プレイヤー
 	player_ = std::make_shared<Player>();
 	player_->Init();
@@ -173,7 +194,7 @@ void GameScene::Init(Input& input)
 	inventory_ = std::make_shared<Inventory>(20);
 
 	// 酸素ボンベ
-	oxygenBottle_ = std::make_shared<OxygenBottle>(player_);
+	oxygenBottle_ = std::make_unique<OxygenBottle>(player_);
 	oxygenBottle_->Init();
 
 	// ナイフ
@@ -181,10 +202,10 @@ void GameScene::Init(Input& input)
 	knife_->Init();
 
 	// アイテムスロット
-	itemSlot_ = std::make_shared<ItemSlot>(0,0);
+	itemSlot_ = std::make_shared<ItemSlot>();
+	itemSlot_->AddItem(oxygenBottle_);// ボトルを格納
 
-	// 中距離武器スロット
-	rangeWeaponSlot_ = std::make_shared<MediumRangeWeaponSlot>(0, 0);
+	// 武器スロット
 
 	// ステータス
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
@@ -199,16 +220,23 @@ void GameScene::Update(Input& input)
 {
 	float time = Application::GetInstance().GetDeltaTime();
 
-	submarine_->Update(time);
+	if (player_->GetOxygenComp()->IsOxygenDepleted())
+	{
+		controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
+		return;
+	}
+
+	// オブジェクト
 	stage_->Update(time);
 	player_->Update(time);
-
 	oxygenBottle_->Update(time);
 	knife_->Update(time);
 
+
 	itemSlot_->Update(time);
-	rangeWeaponSlot_->Update(time);
 	status_->Update(time);
+
+	HandleMouseWheel(GetMouseWheelRotVol());
 
 	(this->*update_)(input);
 

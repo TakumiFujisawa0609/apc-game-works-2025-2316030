@@ -3,7 +3,6 @@
 #include<vector>
 #include<string>
 #include<memory>
-class Submarine;
 class Player;
 class Stage;
 
@@ -13,8 +12,6 @@ class OxygenBottle;
 class Knife;
 
 class ItemSlot;
-class MediumRangeWeaponSlot;
-class MeleeWeaponSlot;
 
 class PlayerStatusUI;
 
@@ -51,7 +48,6 @@ private:
 
 	std::vector<int> models_;
 
-	std::shared_ptr<Submarine> submarine_;
 	std::shared_ptr<Player> player_;
 	std::shared_ptr<Stage> stage_;
 
@@ -61,8 +57,7 @@ private:
 	// アイテムスロット
 	std::shared_ptr<ItemSlot> itemSlot_;
 
-	// 中距離武器スロット
-	std::shared_ptr<MediumRangeWeaponSlot> rangeWeaponSlot_;
+	// 武器スロット
 
 	//酸素ボンベ
 	std::shared_ptr<OxygenBottle> oxygenBottle_;
@@ -71,6 +66,9 @@ private:
 	std::shared_ptr<Knife> knife_;
 
 	std::shared_ptr<PlayerStatusUI> status_;
+
+	// ホイール入力
+	void HandleMouseWheel(int wheelDelta);
 
 public:
 	/// <summary>

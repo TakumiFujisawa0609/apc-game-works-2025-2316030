@@ -9,6 +9,7 @@ public:
 	void Init(void) override;
 	void Update(float deltaTime) override;
 	void Draw(void) override;
+	void Release(void) override;
 	void Attack(void) override;
 
 private:

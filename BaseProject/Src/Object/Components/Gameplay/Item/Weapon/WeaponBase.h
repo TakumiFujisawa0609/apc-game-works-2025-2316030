@@ -24,6 +24,7 @@ public:
 	void Init(void) override = 0;
 	void Update(float deltaTime) override = 0;
 	void Draw(void) override = 0;
+	void Release(void) override = 0;
 	virtual void Attack(void) = 0;	// 攻撃
 
 	// プレイヤーの持ち手座標を取得する

@@ -93,9 +93,6 @@
     <ClCompile Include="Src\Utility\AsoUtility.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Submarine.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Manager\InputManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -129,19 +126,7 @@
     <ClCompile Include="Src\Object\Components\UI\UIElements\ItemSlot.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Components\UI\UIElements\ExChangeSlot.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Components\UI\UIElements\MediumRangeWeaponSlot.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Components\UI\UIElements\MeleeWeaponSlot.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Components\UI\UIElements\WeaponSlot.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.cpp">
@@ -254,9 +239,6 @@
     <ClInclude Include="Src\Utility\AsoUtility.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Submarine.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Manager\InputManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -290,19 +272,7 @@
     <ClInclude Include="Src\Object\Components\UI\UIElements\ItemSlot.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Components\UI\UIElements\ExChangeSlot.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Components\UI\UIElements\MediumRangeWeaponSlot.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Components\UI\UIElements\MeleeWeaponSlot.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Components\UI\UIElements\WeaponSlot.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.h">

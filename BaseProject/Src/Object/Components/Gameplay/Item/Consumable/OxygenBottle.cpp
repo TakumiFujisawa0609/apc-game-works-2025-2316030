@@ -1,3 +1,4 @@
+#include <functional>
 #include "../../../../../Application.h"
 #include "../../../../../Common/Quaternion.h"
 #include "../../../../../Manager/ResourceManager.h"
@@ -60,6 +61,10 @@ void OxygenBottle::Draw(void)
 	DrawSphere3D(transform_.pos, 10.0f, 16, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 }
 
+void OxygenBottle::Release(void)
+{
+}
+
 void OxygenBottle::UpdateOnStage(float deltaTime)
 {
 	// ステージにアイテムが落ちている状態
@@ -83,13 +88,44 @@ void OxygenBottle::UpdateInVentory(float deltaTime)
 	VECTOR right = camera->GetRight();
 	VECTOR up = camera->GetUp();
 
-	transform_.pos = VAdd(cameraPos, TARGET_POS);
+	VECTOR targetPosOffset = {};
 
-	// 描画のためにワールド行列を作成
-	MATRIX itemWorldMatrix = MGetTranslate(transform_.pos);
+	// x軸のオフセット
+	targetPosOffset = VScale(right, TARGET_POS.x);
 
-	//itemWorldMatrix = MMult(itemWorldMatrix, Quaternion::GetRotationMatrixFromQuaternion(targetTransform_->quaRot));
-	//MATRIX rotationMatrix = Quaternion::GetRotationMatrixFromQuaternion(targetTransform_->quaRot);
+	// y軸のオフセット
+	targetPosOffset = VAdd(targetPosOffset, VScale(up, TARGET_POS.y));
+
+	// z軸のオフセット
+	targetPosOffset = VAdd(targetPosOffset, VScale(forward, TARGET_POS.z));
+
+	// ワールド座標における目標位置
+	VECTOR targetPos = VAdd(cameraPos, targetPosOffset);
+
+	transform_.pos = targetPos;
+
+	// 目標１との距離が小さければ強制的に目標位置に設定する
+	const float STOP_THRESHOLD = 0.5f;
+	if (VSize(VSub(targetPos, transform_.pos)) < STOP_THRESHOLD)
+	{
+		// 目標１に固定してガタつきをなくす
+		transform_.pos = targetPos;
+		
+	}
+	else {
+		// スムース速度
+		const float SMOOTH_SPEED = 15.0f;
+
+		// スムースにより滑らかに補間
+		float lerpFactor = 1.0f - std::expf(-SMOOTH_SPEED * deltaTime);
+
+		// 現在位置から目標位置へ補間
+		transform_.pos = AsoUtility::Lerp(transform_.pos, targetPos, lerpFactor);
+
+	}
+	
+	// アイテムの回転をカメラの向きに合わせる
+	transform_.quaRot = camera->GetQuaRotOutX();
 
 	// 現在手に持っているかどうかをスロットを見て判断する
 	// 持っていれば

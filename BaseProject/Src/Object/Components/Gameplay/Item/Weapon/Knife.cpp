@@ -50,6 +50,10 @@ void Knife::Draw(void)
 	MV1DrawModel(transform_.modelId);
 }
 
+void Knife::Release(void)
+{
+}
+
 void Knife::Attack(void)
 {
 

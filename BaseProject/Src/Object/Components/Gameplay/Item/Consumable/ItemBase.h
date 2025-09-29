@@ -25,6 +25,7 @@ public:
 	void Init(void) override = 0;
 	void Update(float deltaTime) override = 0;
 	void Draw(void) override = 0;
+	void Release(void) override = 0;
 
 	virtual int GetImgId(void);
 

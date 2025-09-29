@@ -1,23 +1,18 @@
 #pragma once
 
-#include "../../Gameplay/Item/ItemComponent.h"
+#include "../../Gameplay/Item/Consumable/ItemBase.h"
 
-#include "ExChangeSlot.h"
+#include "SlotBase.h"
 class ItemSlot :
-    public ExChangeSlot
+	public SlotBase
 {
 public:
-    ItemSlot(int frontItemId, int backItemId);
+    ItemSlot(void);
 	~ItemSlot(void);
 
 	void Update(float deltaTime) override;
 	void Draw(void) override;
 
-	// 前のスロットに格納する
-	void SetForntSlot(int frontItemId);
-
-	// 後ろのスロットに格納する
-	void SetBackSlot(int backItemId);
 
 private:
 
