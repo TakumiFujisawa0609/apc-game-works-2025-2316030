@@ -9,7 +9,9 @@ class Stage;
 class Inventory;
 
 class OxygenBottle;
+class HandLight;
 class Knife;
+class Radio;
 
 class ItemSlot;
 
@@ -57,18 +59,23 @@ private:
 	// アイテムスロット
 	std::shared_ptr<ItemSlot> itemSlot_;
 
-	// 武器スロット
-
 	//酸素ボンベ
 	std::shared_ptr<OxygenBottle> oxygenBottle_;
+
+	// ハンドライト
+	std::shared_ptr<HandLight> light_;
 
 	// ナイフ
 	std::shared_ptr<Knife> knife_;
 
+	// ラジオ
+	std::shared_ptr<Radio> radio_;
+
+	// プレイヤーの状態
 	std::shared_ptr<PlayerStatusUI> status_;
 
 	// ホイール入力
-	void HandleMouseWheel(int wheelDelta);
+	void HandleMouseWheel(Input& input);
 
 public:
 	/// <summary>

@@ -4,33 +4,32 @@
 #include "../../../../../Manager/ResourceManager.h"
 #include "../../../../../Manager/Camera.h"
 #include "../../../../../Utility/AsoUtility.h"
-#include "OxygenBottle.h"
+#include "Radio.h"
 
-OxygenBottle::OxygenBottle(std::shared_ptr<ActorBase> owner)
+Radio::Radio(std::shared_ptr<ActorBase> owner)
 	:
-	ItemBase(owner),
-	oxygenAmount_(0.0f),
-	useCooldown_(0.0f)
+	ItemBase(owner)
 {
 	itemType_ = ItemType::CONSUMABLE;
 }
 
-OxygenBottle::~OxygenBottle(void)
+Radio::~Radio(void)
 {
 }
 
-void OxygenBottle::Init(void)
+void Radio::Init(void)
 {
 	// モデル情報
 	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::BOTTLE_M));
-	transform_.scl = { 10.0f,10.0f,10.0f };
+		ResourceManager::SRC::RADIO_M));
+	transform_.scl = { 0.05f,0.05f,0.05f };
 	transform_.pos = { 0.0f,0.0f,0.0f };
 	transform_.quaRot = Quaternion();
+	transform_.quaRotLocal = Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(90.0f), 0.0f });;
 	transform_.Update();
 
 	// UI画像
-	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::BOTTLE_I);
+	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::RADIO_I);
 
 	// 状態の初期化
 	isOnStage_ = true;
@@ -40,7 +39,7 @@ void OxygenBottle::Init(void)
 	ChangeState(STATE::ININVENTORY);
 }
 
-void OxygenBottle::Update(float deltaTime)
+void Radio::Update(float deltaTime)
 {
 	// モデル情報の動機
 
@@ -49,9 +48,10 @@ void OxygenBottle::Update(float deltaTime)
 
 	// モデルの更新
 	transform_.Update();
+
 }
 
-void OxygenBottle::Draw(void)
+void Radio::Draw(void)
 {
 	if (IsCurrentSelected())
 	{
@@ -59,14 +59,13 @@ void OxygenBottle::Draw(void)
 		return;
 	}
 
-	//DrawSphere3D(transform_.pos, 10.0f, 16, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 }
 
-void OxygenBottle::UpdateOnStage(float deltaTime)
+void Radio::UpdateOnStage(float deltaTime)
 {
 	// ステージにアイテムが落ちている状態
 	// アイテムが拾われる処理
-	
+
 
 	//拾われるとUpdateInVentoryに遷移
 	if (!isOnStage_)
@@ -75,7 +74,7 @@ void OxygenBottle::UpdateOnStage(float deltaTime)
 	}
 }
 
-void OxygenBottle::UpdateInVentory(float deltaTime)
+void Radio::UpdateInVentory(float deltaTime)
 {
 	// 追従
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
@@ -91,28 +90,15 @@ void OxygenBottle::UpdateInVentory(float deltaTime)
 	}
 }
 
-void OxygenBottle::UpdateInUse(float deltaTime)
+void Radio::UpdateInUse(float deltaTime)
 {
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
 }
 
-void OxygenBottle::UpdateUsedUp(float deltaTime)
+void Radio::UpdateUsedUp(float deltaTime)
 {
-	// アイテムが今後使用できなくなった場合
-
 }
 
-void OxygenBottle::UpdateDisabled(float deltaTime)
+void Radio::UpdateDisabled(float deltaTime)
 {
-	// 一時的に使えない状態
-
-	// 時間経過などで使える状態になったとき
-	if (!isDisabled_)
-	{
-		// インベントリへ
-		ChangeState(STATE::ININVENTORY);
-	}
-
 }
-
-

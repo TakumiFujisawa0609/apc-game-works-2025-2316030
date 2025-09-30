@@ -9,7 +9,8 @@
 #include "../../Gameplay/Item/Consumable/ItemBase.h"
 
 class SlotBase :
-    public UIElement
+    public UIElement,
+	public std::enable_shared_from_this<SlotBase>
 {
 public:
     SlotBase(void);
@@ -23,12 +24,21 @@ public:
 	bool AddItem(std::shared_ptr<U> item)
 	{
 		static_assert(std::is_base_of_v<ItemComponent, U>, "U must be derived from ItemComponent");
-		std::shared_ptr<ItemComponent> compatibleItem(static_pointer_cast<ItemComponent>(item));
+		std::shared_ptr<ItemComponent> compatibleItem = std::static_pointer_cast<ItemComponent>(item);
+		int newIndex = static_cast<int>(storage_.size());
 		storage_.push_back(compatibleItem);
+		if (std::shared_ptr<ItemBase> itemBase = std::static_pointer_cast<ItemBase>(compatibleItem))
+		{
+			itemBase->SetOwnerSlot(shared_from_this(), newIndex);
+		}
 		if (currentSelectedIndex_ == -1)
 		{
 			currentSelectedIndex_ = 0; // 最初のアイテムが追加された場合、選択インデックスを更新
 		}
+		// 現在のインデックス
+		int currentIndex = currentSelectedIndex_;
+
+			
 		return true; // スロットが満杯で追加に失敗
 	}
 
@@ -37,6 +47,8 @@ public:
 
 	// 循環切り替えする
 	void CycleByWheel(bool scrollUp);
+
+	int GetCurrentSelectedIndex(void);
 
 protected:
     

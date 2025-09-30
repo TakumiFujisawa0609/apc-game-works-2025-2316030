@@ -25,7 +25,7 @@ void Inventory::AddItem(std::shared_ptr<ItemComponent> item)
 	}
 
 	// 新しい空のスロットを探して追加する
-	for (size_t i=0;i<slots_.size() ; ++i)
+	for (size_t i = 0; i < slots_.size(); ++i)
 	{
 		if (slots_[i] == nullptr) // 空のスロットを見つけた場合
 		{

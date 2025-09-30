@@ -93,7 +93,7 @@ void Camera::SetBeforeDraw(Input& input)
 		cameraUp_
 	);
 
-	DrawSphere3D(targetPos_, 5.0f, 8, GetColor(0, 0, 0), GetColor(255, 255, 0), true);
+	//DrawSphere3D(targetPos_, 5.0f, 8, GetColor(0, 0, 0), GetColor(255, 255, 0), true);
 
 	// DXライブラリのカメラとEffekseerのカメラを同期する。
 	Effekseer_Sync3DSetting();

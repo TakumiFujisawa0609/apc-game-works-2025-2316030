@@ -18,7 +18,6 @@ public:
 	virtual void Init(void) = 0;
 	virtual void Update(float deltaTime) = 0;
 	virtual void Draw(void) = 0;
-	virtual void Release(void) = 0;
 
 	int GetItemId(void)const;
 	int GetCount(void)const;

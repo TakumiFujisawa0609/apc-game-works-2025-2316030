@@ -39,7 +39,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::SUBMARINE, res);
 
 	// ステージ
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/Stage.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/MainPlanet.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
 	// ボトルモデル
@@ -50,23 +50,33 @@ void ResourceManager::Init(void)
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/bottle/UI_bottle_Img.png");
 	resourcesMap_.emplace(SRC::BOTTLE_I, res);
 
-	//// ナイフモデル
-	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Model/Weapon/Melee/Knife/Kukri Knife.mv1");
-	//resourcesMap_.emplace(SRC::KNIFE_M, res);
+	// ナイフモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Knife/Knife.mv1");
+	resourcesMap_.emplace(SRC::KNIFE_M, res);
 
-	//// ナイフUI
-	//res = std::make_shared<RES>(RES_T::IMG, PATH_MDL + L"Img/Weapon/Melee/Knife/");
-	//resourcesMap_.emplace(SRC::KNIFE_I);
+	// ナイフUI
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Img/Weapon/Melee/Knife/");
+	resourcesMap_.emplace(SRC::KNIFE_I, res);
 
-	//// スピアガンモデル
-	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Model/Weapon/Medium/Speargun/MetalJavelin.mv1");
-	//resourcesMap_.emplace(SRC::SPEARGUN_M);
+	// フラッシュライトモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Flashlight/flashlight.mv1");
+	resourcesMap_.emplace(SRC::FLASHLIGHT_M, res);
 
-	//// スピアガンUI
-	//res = std::make_shared<RES>(RES_T::IMG, PATH_MDL + L"Img/Weapon/Medium/Speargun/");
-	//resourcesMap_.emplace(SRC::SPEARGUN_I);
+	// フラッシュライトUI
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/Flashlight/flashlight.png");
+	resourcesMap_.emplace(SRC::FLASHLIGHT_I, res);
 
+	// ラジオモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Radio/Radio.mv1");
+	resourcesMap_.emplace(SRC::RADIO_M, res);
 
+	// ラジオUI
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/Radio/radio.png");
+	resourcesMap_.emplace(SRC::RADIO_I, res);
+
+	// ラジオモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/alphaltFloor.mv1");
+	resourcesMap_.emplace(SRC::ALPHALTFLOOR, res);
 
 	//// ボスモデル
 	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"");

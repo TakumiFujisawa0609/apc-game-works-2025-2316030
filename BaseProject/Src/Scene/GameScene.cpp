@@ -5,6 +5,7 @@
 #include"../Application.h"
 #include"../Input.h"//入力用
 #include"../Manager/Camera.h"
+#include"../Manager/InputManager.h"
 #include"../Manager/ResourceManager.h"//リソース管理用
 #include"../Manager/SceneController.h"//シーンの切り替えに使う
 #include"OverScene.h"//次のシーン
@@ -15,7 +16,9 @@
 #include "../Object/Player/Inventory.h"
 
 #include "../Object/Components/Gameplay/Item/Consumable/OxygenBottle.h"
-#include "../Object/Components/Gameplay/Item/Weapon/Knife.h"
+#include "../Object/Components/Gameplay/Item/Consumable/HandLight.h"
+#include "../Object/Components/Gameplay/Item/Consumable/Knife.h"
+#include "../Object/Components/Gameplay/Item/Consumable/Radio.h"
 
 #include "../Object/Components/Gameplay/OxygenComponent.h"
 
@@ -78,7 +81,9 @@ void GameScene::NormalDraw()
 	stage_->Draw();
 	player_->Draw();
 	oxygenBottle_->Draw();
+	light_->Draw();
 	knife_->Draw();
+	radio_->Draw();
 
 	// スロット
 	itemSlot_->Draw();
@@ -98,7 +103,9 @@ void GameScene::FadeDraw()
 	player_->Draw();
 
 	oxygenBottle_->Draw();
+	light_->Draw();
 	knife_->Draw();
+	radio_->Draw();
 
 	// スロット
 	itemSlot_->Draw();
@@ -141,24 +148,29 @@ void GameScene::LoadLocationData()
 	FileRead_close(fHandle);
 }
 
-void GameScene::HandleMouseWheel(int wheelDelta)
+void GameScene::HandleMouseWheel(Input& input)
 {
 	if (!itemSlot_)
 	{
 		return;
 	}
 	
+	auto& ins = InputManager::GetInstance();
+	static int wheelCounter = 0;
+	int wheelDelta = ins.GetWheelDelta();
+	wheelCounter += wheelDelta;
 
-	if (wheelDelta > 0)
+	if (wheelCounter > 3)
 	{
 		// マウスホイール上回転(アイテムを前に戻す/インデックスを減らす)
 		itemSlot_->CycleByWheel(true);
-
+		wheelCounter = 0;
 	}
-	else if (wheelDelta < 0)
+	else if (wheelDelta <= -3)
 	{
 		// マウスホイール下回転(アイテムを後ろに進める/インデックスを増やす)
 		itemSlot_->CycleByWheel(false);
+		wheelCounter = 0;
 	}
 }
 
@@ -187,31 +199,45 @@ void GameScene::Init(Input& input)
 	player_->Init();
 
 	// ステージ
-	stage_ = std::make_shared<Stage>();
+	stage_ = std::make_shared<Stage>(*player_);
 	stage_->Init();
 
 	// インベントリ
 	inventory_ = std::make_shared<Inventory>(20);
 
 	// 酸素ボンベ
-	oxygenBottle_ = std::make_unique<OxygenBottle>(player_);
+	oxygenBottle_ = std::make_shared<OxygenBottle>(player_);
 	oxygenBottle_->Init();
+
+	// ハンドライト
+	light_ = std::make_shared<HandLight>(player_);
+	light_->Init();
 
 	// ナイフ
 	knife_ = std::make_shared<Knife>(player_);
 	knife_->Init();
 
+	// ラジオ
+	radio_ = std::make_shared<Radio>(player_);
+	radio_->Init();
+
+
 	// アイテムスロット
 	itemSlot_ = std::make_shared<ItemSlot>();
-	itemSlot_->AddItem(oxygenBottle_);// ボトルを格納
+	itemSlot_->AddItem(oxygenBottle_);
+	itemSlot_->AddItem(radio_);
+	itemSlot_->AddItem(knife_);
+	itemSlot_->AddItem(light_);
 
-	// 武器スロット
 
 	// ステータス
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
 
 
 	oxygenBottle_->SetTargetPos(&player_->GetTransform());
+	light_->SetTargetPos(&player_->GetTransform());
+	knife_->SetTargetPos(&player_->GetTransform());
+	radio_->SetTargetPos(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE);
 }
@@ -229,17 +255,21 @@ void GameScene::Update(Input& input)
 	// オブジェクト
 	stage_->Update(time);
 	player_->Update(time);
-	oxygenBottle_->Update(time);
-	knife_->Update(time);
 
-
+	// スロット
 	itemSlot_->Update(time);
+	HandleMouseWheel(input);
+
+	// アイテム
+	oxygenBottle_->Update(time);
+	light_->Update(time);
+	knife_->Update(time);
+	radio_->Update(time);
+
+
 	status_->Update(time);
 
-	HandleMouseWheel(GetMouseWheelRotVol());
-
 	(this->*update_)(input);
-
 }
 
 void GameScene::Draw()

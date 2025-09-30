@@ -1,9 +1,13 @@
 #pragma once
+#include<memory>
 #include "../../../../Common/Transform.h"
+//#include "../../../UI/UIElements/SlotBase.h"
 
 #include "../ItemComponent.h"
 
+
 class ResourceManager;
+class SlotBase;
 
 class ItemBase :
     public ItemComponent
@@ -25,12 +29,20 @@ public:
 	void Init(void) override = 0;
 	void Update(float deltaTime) override = 0;
 	void Draw(void) override = 0;
-	void Release(void) override = 0;
 
 	virtual int GetImgId(void);
 
 	// プレイヤーの持ち手座標を取得する
 	void SetTargetPos(const Transform* target);
+
+	// スロット番号を設定する
+	void SetOwnerSlot(std::shared_ptr<SlotBase> slot, int index);
+
+	// アイテムが現在選択されているか確認する
+	bool IsCurrentSelected(void) const;
+
+	// 状態の変更
+	virtual void ChangeState(STATE state);
 
 protected:
 	int useCount_;		// 使用回数
@@ -61,7 +73,10 @@ protected:
 	virtual void UpdateUsedUp(float deltaTime) = 0;
 	virtual void UpdateDisabled(float deltaTime) = 0;
 
-	// 状態の変更
-	virtual void ChangeState(STATE state);
+	// プレイヤーに追従
+	virtual void FollowTarget(float deltaTime,VECTOR targetPos);
+	
+	std::weak_ptr<SlotBase> ownerSlot_;
+	int slotIndex_;
 };
 

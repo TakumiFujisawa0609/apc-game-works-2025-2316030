@@ -6,15 +6,14 @@ class OxygenBottle :
 public:
 
 	// í≤êÆópç¿ïW
-	static constexpr VECTOR TARGET_POS = { 20.0f,-25.0f, 30.0f };
+	static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 30.0f };
 
 
 	OxygenBottle(std::shared_ptr<ActorBase> owner);
-	~OxygenBottle(void) override = default;
+	~OxygenBottle(void) override;
 	void Init(void) override;
 	void Update(float deltaTime) override;
 	void Draw(void) override;
-	void Release(void) override;
 
 private:
 	float oxygenAmount_; // âÒïúÇ∑ÇÈé_ëfó 
@@ -26,4 +25,3 @@ private:
 	virtual void UpdateUsedUp(float deltaTime) override;
 	virtual void UpdateDisabled(float deltaTime) override;
 };
-

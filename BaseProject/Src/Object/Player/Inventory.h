@@ -24,7 +24,6 @@ public:
 	// 所持しているアイテムIDのリストを返す
 	std::vector<int> GetAllItemIds() const;
 
-
 private:
 	std::map<int, int> items_; // アイテムIDとその所持数
 	std::map<int, int> weapons_; // アイテムIDとその最大所持数

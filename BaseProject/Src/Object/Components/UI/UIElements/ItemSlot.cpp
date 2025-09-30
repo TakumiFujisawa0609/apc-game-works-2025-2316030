@@ -24,8 +24,15 @@ void ItemSlot::Update(float deltaTime)
 void ItemSlot::Draw(void)
 {
 	// 枠
-	DrawBox(posX_, posY_, posX_ + posX_ * 0.1, posY_ + posY_ * 0.1, GetColor(255, 255, 255), true);
+	//DrawBox(posX_, posY_, posX_ + posX_ * 0.1, posY_ + posY_ * 0.1, GetColor(255, 255, 255), true);
 
-	// アイテムスロット
+}
 
+int ItemSlot::GetSelectedUIHandle(void) const
+{
+	if (currentSelectedIndex_ != -1 && currentSelectedIndex_ < storage_.size())
+	{
+		return storage_[currentSelectedIndex_]->GetItemId();
+	}
+	return -1;
 }

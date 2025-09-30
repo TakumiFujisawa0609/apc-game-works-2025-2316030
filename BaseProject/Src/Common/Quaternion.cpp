@@ -286,14 +286,6 @@ Quaternion Quaternion::LookRotation(VECTOR dir, VECTOR up)
     }
     if ((m00 >= m11) && (m00 >= m22))
     {
-        // xÇ∆wÇ™ãtÅH
-        //auto num7 = sqrt(((1.0f + m00) - m11) - m22);
-        //auto num4 = 0.5f / num7;
-        //quaternion.x = 0.5f * num7;
-        //quaternion.y = (m01 + m10) * num4;
-        //quaternion.z = (m02 + m20) * num4;
-        //quaternion.w = (m12 - m21) * num4;
-        //return quaternion.Normalized();
         auto num7 = sqrt(((1.0f + m00) - m11) - m22);
         auto num4 = 0.5f / num7;
         quaternion.x = ((double)m12 - m21) * num4;
@@ -324,7 +316,6 @@ Quaternion Quaternion::LookRotation(VECTOR dir, VECTOR up)
 
 Quaternion Quaternion::GetRotation(MATRIX mat)
 {
-
     Quaternion ret;
 
     float s;

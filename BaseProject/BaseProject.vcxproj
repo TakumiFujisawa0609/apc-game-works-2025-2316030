@@ -136,9 +136,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Radio.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Knife.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\HandLight.cpp" />
     <ClCompile Include="Src\Object\Player\Inventory.cpp" />
     <ClCompile Include="Src\Object\Components\UI\Components\PlayerStatusUI.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Weapon\Knife.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp" />
@@ -184,12 +186,13 @@
     <ClCompile Include="Src\Object\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Components\UI\Components\UIComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Radio.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Knife.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\HandLight.h" />
     <ClInclude Include="Src\Object\Player\Inventory.h" />
     <ClInclude Include="Src\Object\Components\UI\Components\PlayerStatusUI.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Weapon\Knife.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h" />
@@ -234,7 +237,6 @@
     <ClInclude Include="Src\Object\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Components\UI\Components\UIComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElement.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Weapon\WeaponBase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

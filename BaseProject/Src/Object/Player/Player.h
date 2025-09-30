@@ -11,6 +11,9 @@ class PlayerInput;
 // 描画系
 class UIComponent;
 
+class Collider;
+class Capsule;
+
 class Player : public ActorBase
 {
 public:
@@ -33,6 +36,10 @@ public:
 	// アイテムの取得条件
 	bool TakeItem(int itemId, int count);
 
+	void AddCollider(std::shared_ptr<Collider> collider);	// コライダ追加
+	void ClearCollider(void);								// コライダ全削除
+
+	const std::shared_ptr<Capsule> GetCapsule(void) const;	// 衝突用カプセルの取得
 
 
 private:
@@ -60,6 +67,20 @@ private:
 	// アイテムをインベントリに追加
 	void GiveItem(int itemId, int count);
 
+	std::vector<std::shared_ptr<Collider>> colliders_;		// 衝突判定に用いられるコライダ
+	std::shared_ptr<Capsule> capsule_;						// プレイヤー当たり判定カプセル
 
+	VECTOR gravHitPosDown_;				// 下方向の接地判定座標
+	VECTOR gravHitPosUp_;				// 上方向の接地判定座標
+
+	// ジャンプ量
+	VECTOR jumpPow_;
+	// ジャンプ状態であるか
+	bool isJump_;
+
+	void Collision(void);
+	void CollisionCapsule(void);
+	void CollisionGravity(void);
+	void CalcGravityPow(void);
 };
 

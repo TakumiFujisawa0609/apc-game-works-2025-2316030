@@ -1,11 +1,13 @@
 #pragma once
 #include "../ActorBase.h"
 
+class Player;
+
 class Stage :
     public ActorBase
 {
 public:
-	Stage(void);
+	Stage(Player& player);
 	virtual ~Stage(void);
 	virtual void Init(void) override;
 	virtual void Update(float deltaTime) override;
@@ -13,6 +15,7 @@ public:
 	virtual void Draw(void) override;
 
 private:
+	Player& player_;
 
 };
 

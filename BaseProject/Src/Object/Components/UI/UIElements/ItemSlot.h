@@ -12,6 +12,7 @@ public:
 
 	void Update(float deltaTime) override;
 	void Draw(void) override;
+	int GetSelectedUIHandle(void)const;
 
 
 private:
