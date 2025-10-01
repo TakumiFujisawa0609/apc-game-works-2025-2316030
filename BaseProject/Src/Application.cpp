@@ -59,7 +59,7 @@ const Size& Application::GetWindowSize() const
 void Application::Init(int w, int h)
 {
     // アプリケーションの初期設定
-    SetWindowText(L"UNDER THE SEA");
+    SetWindowText(L"LURK");
 
     // ウィンドウサイズ
     windowSize_ = { w,h };

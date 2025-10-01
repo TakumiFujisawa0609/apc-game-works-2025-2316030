@@ -77,6 +77,9 @@ private:
 	// ホイール入力
 	void HandleMouseWheel(Input& input);
 
+	// 光源ハンドル
+	int pointLightH_;
+
 public:
 	/// <summary>
 	/// シーン初期化(の際にシーンコントローラも代入)

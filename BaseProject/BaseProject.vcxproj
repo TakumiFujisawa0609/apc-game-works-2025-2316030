@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\LightManager.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Radio.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Knife.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\HandLight.cpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\LightManager.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Radio.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Knife.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\HandLight.h" />
@@ -246,6 +248,40 @@
     <None Include="Src\Shader\Common\Vertex\VertexInput.hlsli" />
     <None Include="Src\Shader\Common\Vertex\VertexInputType.hlsli" />
     <None Include="Src\Shader\Common\Vertex\VertexShader3DHeader.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\Shader\Model\FlashLightPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\Model\FlashLightVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\Model\PlayerPointLightVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\Model\PlayerPointLightPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)/Data/Shader/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
