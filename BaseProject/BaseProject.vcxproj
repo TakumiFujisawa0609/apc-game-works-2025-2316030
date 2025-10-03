@@ -113,6 +113,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(DXLIB_DIR)</AdditionalLibraryDirectories>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -126,6 +127,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,7 +144,7 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\HandLight.cpp" />
     <ClCompile Include="Src\Object\Player\Inventory.cpp" />
     <ClCompile Include="Src\Object\Components\UI\Components\PlayerStatusUI.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Lockpick.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\ItemSlot.cpp" />
@@ -187,6 +189,7 @@
     <ClCompile Include="Src\Object\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Components\UI\Components\UIComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
+    <ClCompile Include="Src\Scene\UnlickScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Manager\LightManager.h" />
@@ -195,7 +198,7 @@
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\HandLight.h" />
     <ClInclude Include="Src\Object\Player\Inventory.h" />
     <ClInclude Include="Src\Object\Components\UI\Components\PlayerStatusUI.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Lockpick.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\ItemSlot.h" />
@@ -239,6 +242,7 @@
     <ClInclude Include="Src\Object\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Components\UI\Components\UIComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElement.h" />
+    <ClInclude Include="Src\Scene\UnlickScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

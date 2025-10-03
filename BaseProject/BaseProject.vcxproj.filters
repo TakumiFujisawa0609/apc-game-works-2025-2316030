@@ -132,7 +132,7 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.cpp">
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Lockpick.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Components\UI\Components\PlayerStatusUI.cpp">
@@ -166,6 +166,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Manager\LightManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene\UnlickScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -284,7 +287,7 @@
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\OxygenBottle.h">
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Lockpick.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Components\UI\Components\PlayerStatusUI.h">
@@ -318,6 +321,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Manager\LightManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\UnlickScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

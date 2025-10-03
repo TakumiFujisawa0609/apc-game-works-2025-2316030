@@ -19,6 +19,9 @@ Camera::Camera(void) : resMng_(ResourceManager::GetInstance())
 	pos_ = AsoUtility::VECTOR_ZERO;
 	targetPos_ = AsoUtility::VECTOR_ZERO;
 	followTransform_ = nullptr;
+	changeCameraAngles_ = AsoUtility::VECTOR_ZERO;
+	saveAngles_ = AsoUtility::VECTOR_ZERO;
+	isChangeMode_ = false;
 }
 
 Camera::~Camera(void)
@@ -28,7 +31,7 @@ Camera::~Camera(void)
 void Camera::Init(void)
 {
 
-	ChangeMode(MODE::FIXED_POINT);
+	ChangeMode(MODE::FIXED_POINT, AsoUtility::VECTOR_ZERO, false);
 	ChangeGameCamera(GAME_CAMERA::MOUSE);
 }
 
@@ -127,6 +130,12 @@ void Camera::MouseMove(float* x_m, float* y_m, const float fov_per)
 	}
 }
 
+Camera::MODE Camera::GetCameraMode(void)
+{
+	return mode_;
+}
+
+
 VECTOR Camera::GetPos(void) const
 {
 	return pos_;
@@ -175,14 +184,28 @@ VECTOR Camera::GetUp(void) const
 	return up;
 }
 
-void Camera::ChangeMode(MODE mode)
+void Camera::ChangeMode(MODE mode, VECTOR angle, bool isAngles)
 {
+	if (mode_ == MODE::FPS_MOUSE)
+	{
+		saveAngles_ = angle;
+	}
+
 	// カメラの初期設定
 	SetDefault();
 
 	// カメラモードの変更
 	mode_ = mode;
 
+	// カメラアングルの変更
+	changeCameraAngles_ = angle;
+
+	// 角度を保存した値に一度だけ復元する
+	if (isAngles)
+	{
+		RestoreAnglesOnce();
+	}
+	
 	// 変更時の初期化処理
 	switch (mode_)
 	{
@@ -200,6 +223,7 @@ void Camera::ChangeMode(MODE mode)
 		break;
 	}
 
+	isChangeMode_ = true;
 }
 
 void Camera::ChangeGameCamera(GAME_CAMERA gameCamera)
@@ -405,4 +429,11 @@ void Camera::SetBeforeDrawFPSMouse(void)
 
 	// 毎フレームマウスを中央に戻す
 	SetMousePoint(centerX, centerY);
+}
+
+void Camera::RestoreAnglesOnce(void)
+{
+	angles_ = saveAngles_;
+
+	saveAngles_ = AsoUtility::VECTOR_ONE;
 }

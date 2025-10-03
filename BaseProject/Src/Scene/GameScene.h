@@ -8,7 +8,7 @@ class Stage;
 
 class Inventory;
 
-class OxygenBottle;
+class Lockpick;
 class HandLight;
 class Knife;
 class Radio;
@@ -60,7 +60,7 @@ private:
 	std::shared_ptr<ItemSlot> itemSlot_;
 
 	//酸素ボンベ
-	std::shared_ptr<OxygenBottle> oxygenBottle_;
+	std::shared_ptr<Lockpick> oxygenBottle_;
 
 	// ハンドライト
 	std::shared_ptr<HandLight> light_;
@@ -77,8 +77,8 @@ private:
 	// ホイール入力
 	void HandleMouseWheel(Input& input);
 
-	// 光源ハンドル
-	int pointLightH_;
+	// メインカメラがfps視点であるがどうか
+	bool isFps_;
 
 public:
 	/// <summary>

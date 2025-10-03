@@ -4,22 +4,22 @@
 #include "../../../../../Manager/ResourceManager.h"
 #include "../../../../../Manager/Camera.h"
 #include "../../../../../Utility/AsoUtility.h"
-#include "OxygenBottle.h"
+#include "Lockpick.h"
 
-OxygenBottle::OxygenBottle(std::shared_ptr<ActorBase> owner)
+Lockpick::Lockpick(std::shared_ptr<ActorBase> owner)
 	:
 	ItemBase(owner),
-	oxygenAmount_(0.0f),
-	useCooldown_(0.0f)
+	isUse_(false),
+	angles_(0.0f)
 {
 	itemType_ = ItemType::CONSUMABLE;
 }
 
-OxygenBottle::~OxygenBottle(void)
+Lockpick::~Lockpick(void)
 {
 }
 
-void OxygenBottle::Init(void)
+void Lockpick::Init(void)
 {
 	// モデル情報
 	transform_.SetModel(resMng_.LoadModelDuplicate(
@@ -40,7 +40,7 @@ void OxygenBottle::Init(void)
 	ChangeState(STATE::ININVENTORY);
 }
 
-void OxygenBottle::Update(float deltaTime)
+void Lockpick::Update(float deltaTime)
 {
 	// モデル情報の動機
 
@@ -51,7 +51,7 @@ void OxygenBottle::Update(float deltaTime)
 	transform_.Update();
 }
 
-void OxygenBottle::Draw(void)
+void Lockpick::Draw(void)
 {
 	if (IsCurrentSelected())
 	{
@@ -59,10 +59,16 @@ void OxygenBottle::Draw(void)
 		return;
 	}
 
-	//DrawSphere3D(transform_.pos, 10.0f, 16, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
+
 }
 
-void OxygenBottle::UpdateOnStage(float deltaTime)
+bool Lockpick::IsUse(bool use)
+{
+	isUse_ = use;
+	return isUse_;
+}
+
+void Lockpick::UpdateOnStage(float deltaTime)
 {
 	// ステージにアイテムが落ちている状態
 	// アイテムが拾われる処理
@@ -75,7 +81,7 @@ void OxygenBottle::UpdateOnStage(float deltaTime)
 	}
 }
 
-void OxygenBottle::UpdateInVentory(float deltaTime)
+void Lockpick::UpdateInVentory(float deltaTime)
 {
 	// 追従
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
@@ -91,18 +97,24 @@ void OxygenBottle::UpdateInVentory(float deltaTime)
 	}
 }
 
-void OxygenBottle::UpdateInUse(float deltaTime)
+void Lockpick::UpdateInUse(float deltaTime)
 {
+	// プレイヤーに追尾
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
+
+	if (isUse_)
+	{
+
+	}
 }
 
-void OxygenBottle::UpdateUsedUp(float deltaTime)
+void Lockpick::UpdateUsedUp(float deltaTime)
 {
 	// アイテムが今後使用できなくなった場合
 
 }
 
-void OxygenBottle::UpdateDisabled(float deltaTime)
+void Lockpick::UpdateDisabled(float deltaTime)
 {
 	// 一時的に使えない状態
 
@@ -113,6 +125,10 @@ void OxygenBottle::UpdateDisabled(float deltaTime)
 		ChangeState(STATE::ININVENTORY);
 	}
 
+}
+
+void Lockpick::UpdateUnlock(float deltaTime)
+{
 }
 
 

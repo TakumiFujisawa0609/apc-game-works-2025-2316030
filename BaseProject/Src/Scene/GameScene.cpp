@@ -4,18 +4,20 @@
 
 #include"../Application.h"
 #include"../Input.h"//入力用
+#include"../Utility/AsoUtility.h"
 #include"../Manager/Camera.h"
 #include"../Manager/InputManager.h"
 #include"../Manager/ResourceManager.h"//リソース管理用
 #include"../Manager/SceneController.h"//シーンの切り替えに使う
 #include"OverScene.h"//次のシーン
 #include"PauseScene.h"//ポーズシーン
+#include"UnlickScene.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Stage/Stage.h"
 
 #include "../Object/Player/Inventory.h"
 
-#include "../Object/Components/Gameplay/Item/Consumable/OxygenBottle.h"
+#include "../Object/Components/Gameplay/Item/Consumable/Lockpick.h"
 #include "../Object/Components/Gameplay/Item/Consumable/HandLight.h"
 #include "../Object/Components/Gameplay/Item/Consumable/Knife.h"
 #include "../Object/Components/Gameplay/Item/Consumable/Radio.h"
@@ -55,12 +57,30 @@ void GameScene::NormalUpdate(Input& input)
 		frame_ = 0;
 		return;
 	}
-	if (input.IsTriggered("pause")) {
-		controller_.PushScene(std::make_shared<PauseScene>(controller_));
+	//if (input.IsTriggered("pause")) {
+	//	controller_.PushScene(std::make_shared<PauseScene>(controller_));
+	//	return;
+	//}
+
+	const auto& camera = Application::GetInstance().GetCamera();
+	VECTOR prevAngle_ = {};
+	auto& ins = InputManager::GetInstance();
+	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	{
+		controller_.PushScene(std::make_shared<UnlickScene>(controller_));
+		prevAngle_ = camera->GetAngles();
+		isFps_ = false;
 		return;
 	}
 
+	if (!isFps_ &&
+		camera->GetCameraMode() != Camera::MODE::FPS_MOUSE)
+	{
+		camera->SetFollow(&player_->GetTransform());
+		camera->ChangeMode(Camera::MODE::FPS_MOUSE, prevAngle_, true);
 
+		isFps_ = true;
+	}
 	
 }
 
@@ -91,7 +111,9 @@ void GameScene::NormalDraw()
 	// プレイヤー状態
 	status_->Draw();
 
+	const auto& angles_ = Application::GetInstance().GetCamera()->GetAngles();
 
+	DrawFormatString(0, 52, GetColor(0, 0, 0), L"cAngle=(%.2f,%.2f,%.2f)", angles_.x, angles_.y, angles_.z);
 	DrawString(10, 0, L"Game Scene", 0xffffff);
 
 }
@@ -160,13 +182,13 @@ void GameScene::HandleMouseWheel(Input& input)
 	int wheelDelta = ins.GetWheelDelta();
 	wheelCounter += wheelDelta;
 
-	if (wheelCounter > 3)
+	if (wheelCounter > 1)
 	{
 		// マウスホイール上回転(アイテムを前に戻す/インデックスを減らす)
 		itemSlot_->CycleByWheel(true);
 		wheelCounter = 0;
 	}
-	else if (wheelDelta <= -3)
+	else if (wheelDelta <= -1)
 	{
 		// マウスホイール下回転(アイテムを後ろに進める/インデックスを増やす)
 		itemSlot_->CycleByWheel(false);
@@ -206,7 +228,7 @@ void GameScene::Init(Input& input)
 	inventory_ = std::make_shared<Inventory>(20);
 
 	// 酸素ボンベ
-	oxygenBottle_ = std::make_shared<OxygenBottle>(player_);
+	oxygenBottle_ = std::make_shared<Lockpick>(player_);
 	oxygenBottle_->Init();
 
 	// ハンドライト
@@ -239,7 +261,8 @@ void GameScene::Init(Input& input)
 	knife_->SetTargetPos(&player_->GetTransform());
 	radio_->SetTargetPos(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
-	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE);
+	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
+	isFps_ = true;
 }
 
 void GameScene::Update(Input& input)

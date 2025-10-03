@@ -124,7 +124,7 @@ public:
 	VECTOR GetUp(void) const;
 
 	// カメラモードの変更
-	void ChangeMode(MODE mode);
+	void ChangeMode(MODE mode, VECTOR angle, bool isAngles);
 	void ChangeGameCamera(GAME_CAMERA gameCamera);
 
 	// 追従対象の設定
@@ -132,6 +132,11 @@ public:
 
 	void MouseMove(float* x_m, float* y_m, const float fov_per);
 
+	// カメラモード取得
+	MODE GetCameraMode(void);
+
+	// 角度を保存した値に一度だけ復元する
+	void RestoreAnglesOnce(void);
 
 private:
 
@@ -165,6 +170,18 @@ private:
 	// カメラの上方向
 	VECTOR cameraUp_;
 
+	// カメラモード変更時のカメラアングル
+	VECTOR changeCameraAngles_;
+
+	// カメラの角度保存用
+	VECTOR saveAngles_;
+
+	// カメラのモードを切り替えたかどうか
+	bool isChangeMode_;
+
+	// カメラアングルの復元が必要かを示すフラグ
+	bool isRestoreAngleNeeded_;
+
 	// カメラを初期位置に戻す
 	void SetDefault(void);
 
@@ -179,6 +196,5 @@ private:
 	void SetBeforeDrawFollow(Input& input);
 	void SetBeforeDrawFollowMouse(Input& input);
 	void SetBeforeDrawFPSMouse(void);
-
 };
 
