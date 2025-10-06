@@ -10,6 +10,7 @@ HandLight::HandLight(std::shared_ptr<ActorBase> owner)
 	:
 	ItemBase(owner)
 {
+	mName_ = L"HandLight";
 	itemType_ = ItemType::CONSUMABLE;
 }
 
@@ -19,17 +20,18 @@ HandLight::~HandLight(void)
 
 void HandLight::Init(void)
 {
+
 	// ƒ‚ƒfƒ‹î•ñ
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::FLASHLIGHT_M));
-	transform_.scl = { 0.05f,0.05f,0.05f };
-	transform_.pos = { 0.0f,0.0f,0.0f };
-	transform_.quaRot = Quaternion();
-	transform_.quaRotLocal = Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(-90.0f), 0.0f});;
-	transform_.Update();
+	InitModel(
+		INIT_POS,
+		INIT_SCL,
+		INIT_QUAROTLOCAL);
 
 	// UI‰æ‘œ
 	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::FLASHLIGHT_I);
+
 
 	// ó‘Ô‚Ì‰Šú‰»
 	isOnStage_ = true;
@@ -111,3 +113,5 @@ void HandLight::UpdateDisabled(float deltaTime)
 		ChangeState(STATE::ININVENTORY);
 	}
 }
+
+

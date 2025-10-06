@@ -73,10 +73,15 @@ protected:
 	virtual void UpdateUsedUp(float deltaTime) = 0;
 	virtual void UpdateDisabled(float deltaTime) = 0;
 
+	// モデル情報初期化
+	virtual void InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal);
+
 	// プレイヤーに追従
 	virtual void FollowTarget(float deltaTime,VECTOR targetPos);
 	
-	std::weak_ptr<SlotBase> ownerSlot_;
-	int slotIndex_;
+	// アイテムスロット
+	std::weak_ptr<SlotBase> ownerSlot_;		// 
+	int slotIndex_;							// スロット数
+
 };
 

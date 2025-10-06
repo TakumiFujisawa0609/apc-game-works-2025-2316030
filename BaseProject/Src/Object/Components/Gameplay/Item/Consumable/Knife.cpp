@@ -10,6 +10,7 @@ Knife::Knife(std::shared_ptr<ActorBase> owner)
 	:
 	ItemBase(owner)
 {
+	mName_ = L"Knife";
 	itemType_ = ItemType::CONSUMABLE;
 }
 
@@ -22,14 +23,14 @@ void Knife::Init(void)
 	// ƒ‚ƒfƒ‹î•ñ
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::KNIFE_M));
-	transform_.scl = { 0.05f,0.05f,0.05f };
-	transform_.pos = { 0.0f,0.0f,0.0f };
-	transform_.quaRot = Quaternion();
-	transform_.quaRotLocal = Quaternion::Euler({ AsoUtility::Deg2RadF(15.0f), AsoUtility::Deg2RadF(-25.0f), AsoUtility::Deg2RadF(110.0f) });;
-	transform_.Update();
+	InitModel(
+		INIT_POS,
+		INIT_SCL,
+		INIT_QUAROTLOCAL);
 
 	// UI‰æ‘œ
 	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::KNIFE_I);
+
 
 	// ó‘Ô‚Ì‰Šú‰»
 	isOnStage_ = true;

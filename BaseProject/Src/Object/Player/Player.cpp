@@ -60,7 +60,7 @@ void Player::Init(void)
     capsule_ = std::make_shared<Capsule>(transform_);
     capsule_->SetLocalPosTop({ 0.0f,50.0f,0.0f });
     capsule_->SetLocalPosDown({ 0.0f,-200.0f,0.0f });
-    capsule_->SetRadius(20.0f);
+    capsule_->SetRadius(40.0f);
 
 
 

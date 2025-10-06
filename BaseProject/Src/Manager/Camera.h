@@ -135,6 +135,9 @@ public:
 	// カメラモード取得
 	MODE GetCameraMode(void);
 
+	// カメラの角度を一時的に保持する
+	void SaveAngles(VECTOR save);
+
 	// 角度を保存した値に一度だけ復元する
 	void RestoreAnglesOnce(void);
 

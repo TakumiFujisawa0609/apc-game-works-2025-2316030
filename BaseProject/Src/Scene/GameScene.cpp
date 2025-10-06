@@ -22,6 +22,8 @@
 #include "../Object/Components/Gameplay/Item/Consumable/Knife.h"
 #include "../Object/Components/Gameplay/Item/Consumable/Radio.h"
 
+#include "../Object/Components/Gameplay/Item/Consumable/Wire.h"
+
 #include "../Object/Components/Gameplay/OxygenComponent.h"
 
 #include "../Object/Components/UI/UIElements/ItemSlot.h"
@@ -57,18 +59,23 @@ void GameScene::NormalUpdate(Input& input)
 		frame_ = 0;
 		return;
 	}
-	//if (input.IsTriggered("pause")) {
-	//	controller_.PushScene(std::make_shared<PauseScene>(controller_));
-	//	return;
-	//}
 
 	const auto& camera = Application::GetInstance().GetCamera();
 	VECTOR prevAngle_ = {};
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
-		controller_.PushScene(std::make_shared<UnlickScene>(controller_));
+		std::shared_ptr<UnlickScene> us = std::make_shared<UnlickScene>(controller_);
+		us->SetPlayer(player_);
+
+		std::shared_ptr<Wire> wire = std::make_shared<Wire>(player_);
+		us->SetWire(wire);
+
+		us->SetLockPick(lockpick_);
+
+		controller_.PushScene(us);
 		prevAngle_ = camera->GetAngles();
+		camera->SaveAngles(prevAngle_);
 		isFps_ = false;
 		return;
 	}
@@ -77,7 +84,7 @@ void GameScene::NormalUpdate(Input& input)
 		camera->GetCameraMode() != Camera::MODE::FPS_MOUSE)
 	{
 		camera->SetFollow(&player_->GetTransform());
-		camera->ChangeMode(Camera::MODE::FPS_MOUSE, prevAngle_, true);
+		camera->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, true);
 
 		isFps_ = true;
 	}
@@ -100,7 +107,7 @@ void GameScene::NormalDraw()
 	// オブジェクト
 	stage_->Draw();
 	player_->Draw();
-	oxygenBottle_->Draw();
+	lockpick_->Draw();
 	light_->Draw();
 	knife_->Draw();
 	radio_->Draw();
@@ -124,7 +131,7 @@ void GameScene::FadeDraw()
 	stage_->Draw();
 	player_->Draw();
 
-	oxygenBottle_->Draw();
+	lockpick_->Draw();
 	light_->Draw();
 	knife_->Draw();
 	radio_->Draw();
@@ -138,7 +145,7 @@ void GameScene::FadeDraw()
 
 	float rate = static_cast<float>(frame_) /
 					static_cast<float>(fade_interval);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, rate * 255);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));
 	DrawBox(0, 0, 640, 480, 0x000000,true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
@@ -162,9 +169,9 @@ void GameScene::LoadLocationData()
 		uint8_t nameSize = 0;
 		FileRead_read(&nameSize, sizeof(nameSize), fHandle);
 		location.name.resize(nameSize);
-		FileRead_read(location.name.data(), location.name.size(), fHandle);
-		FileRead_read(&location.pos, sizeof(location.pos), fHandle);
-		FileRead_read(&location.angle, sizeof(location.angle), fHandle);
+		FileRead_read(location.name.data(), static_cast<int>(location.name.size()), static_cast<int>(fHandle));
+		FileRead_read(&location.pos, sizeof(location.pos), static_cast<int>(fHandle));
+		FileRead_read(&location.angle, sizeof(location.angle), static_cast<int>(fHandle));
 	}
 	
 	FileRead_close(fHandle);
@@ -202,7 +209,9 @@ GameScene::GameScene(SceneController& controller) :Scene(controller)
 	update_ = &GameScene::FadeInUpdate;
 	draw_ = &GameScene::FadeDraw;
 	frame_ = fade_interval;
-	
+	isFps_ = true;
+	imgH_ = -1;
+
 	int sw, sh, depth;
 	GetScreenState(&sw, &sh, &depth);
 
@@ -228,8 +237,8 @@ void GameScene::Init(Input& input)
 	inventory_ = std::make_shared<Inventory>(20);
 
 	// 酸素ボンベ
-	oxygenBottle_ = std::make_shared<Lockpick>(player_);
-	oxygenBottle_->Init();
+	lockpick_ = std::make_shared<Lockpick>(player_);
+	lockpick_->Init();
 
 	// ハンドライト
 	light_ = std::make_shared<HandLight>(player_);
@@ -246,7 +255,7 @@ void GameScene::Init(Input& input)
 
 	// アイテムスロット
 	itemSlot_ = std::make_shared<ItemSlot>();
-	itemSlot_->AddItem(oxygenBottle_);
+	itemSlot_->AddItem(lockpick_);
 	itemSlot_->AddItem(radio_);
 	itemSlot_->AddItem(knife_);
 	itemSlot_->AddItem(light_);
@@ -256,7 +265,7 @@ void GameScene::Init(Input& input)
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
 
 
-	oxygenBottle_->SetTargetPos(&player_->GetTransform());
+	lockpick_->SetTargetPos(&player_->GetTransform());
 	light_->SetTargetPos(&player_->GetTransform());
 	knife_->SetTargetPos(&player_->GetTransform());
 	radio_->SetTargetPos(&player_->GetTransform());
@@ -284,7 +293,7 @@ void GameScene::Update(Input& input)
 	HandleMouseWheel(input);
 
 	// アイテム
-	oxygenBottle_->Update(time);
+	lockpick_->Update(time);
 	light_->Update(time);
 	knife_->Update(time);
 	radio_->Update(time);

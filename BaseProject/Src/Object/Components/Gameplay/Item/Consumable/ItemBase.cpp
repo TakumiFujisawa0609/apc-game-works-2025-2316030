@@ -97,6 +97,19 @@ void ItemBase::ChangeState(STATE state)
 	}
 }
 
+void ItemBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)
+{
+	// モデルの設定
+	transform_.pos = { pos.x,pos.y,pos.z };
+	transform_.scl = { scl.x,scl.y,scl.z };
+	transform_.quaRot = Quaternion();
+	transform_.quaRotLocal = Quaternion::Euler({ AsoUtility::Deg2RadF(quaRotLocal.x),
+		AsoUtility::Deg2RadF(quaRotLocal.y),AsoUtility::Deg2RadF(quaRotLocal.z) });
+
+	// モデル情報の更新
+	transform_.Update();
+}
+
 void ItemBase::FollowTarget(float deltaTime, VECTOR targetPos)
 {
 	// インベントリに格納されている状態
@@ -152,3 +165,4 @@ void ItemBase::FollowTarget(float deltaTime, VECTOR targetPos)
 	// 常にカメラの注視点方向をアイテムが向くようにする
 	transform_.quaRot = Quaternion::LookRotation(lookRotation, AsoUtility::AXIS_Y);
 }
+

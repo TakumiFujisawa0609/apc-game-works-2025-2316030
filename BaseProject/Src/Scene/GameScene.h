@@ -42,8 +42,8 @@ private:
 	};
 	struct Location {
 		std::string name;//メッシュ名
-		Vector3 pos;//場所
-		Vector3 angle;//回転
+		Vector3 pos = {};//場所
+		Vector3 angle = {};//回転
 	};
 	std::vector<Location> locationData_;
 	void LoadLocationData();//配置データを読み込む
@@ -59,8 +59,8 @@ private:
 	// アイテムスロット
 	std::shared_ptr<ItemSlot> itemSlot_;
 
-	//酸素ボンベ
-	std::shared_ptr<Lockpick> oxygenBottle_;
+	// ロックピック
+	std::shared_ptr<Lockpick> lockpick_;
 
 	// ハンドライト
 	std::shared_ptr<HandLight> light_;

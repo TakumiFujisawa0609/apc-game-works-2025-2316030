@@ -6,6 +6,9 @@
 #include"../Application.h"
 #include"../Input.h"
 #include"GameScene.h"
+#include "../Object/Player/Player.h"
+#include "../Object/Components/Gameplay/Item/Consumable/Wire.h"
+#include "../Object/Components/Gameplay/Item/Consumable/Lockpick.h"
 #include "UnlickScene.h"
 
 using namespace std;
@@ -19,6 +22,9 @@ namespace {
 UnlickScene::UnlickScene(SceneController& controller)
 	:
 	Scene(controller),
+	player_(nullptr),
+	wire_(nullptr),
+	lockpick_(nullptr),
 	frame_(0),
 	update_(&UnlickScene::AppearUpdate),
 	draw_(&UnlickScene::ProcessDraw)
@@ -32,6 +38,9 @@ UnlickScene::~UnlickScene(void)
 
 void UnlickScene::Init(Input& input)
 {
+
+	wire_->Init();
+
 }
 
 void UnlickScene::Update(Input& input)
@@ -42,6 +51,21 @@ void UnlickScene::Update(Input& input)
 void UnlickScene::Draw(void)
 {
 	(this->*draw_)();
+}
+
+void UnlickScene::SetPlayer(std::shared_ptr<Player> player)
+{
+	player_ = player;
+}
+
+void UnlickScene::SetWire(std::shared_ptr<Wire> wire)
+{
+	wire_ = wire;
+}
+
+void UnlickScene::SetLockPick(std::shared_ptr<Lockpick> lPick)
+{
+	lockpick_ = lPick;
 }
 
 void UnlickScene::AppearUpdate(Input& input)
@@ -57,11 +81,29 @@ void UnlickScene::NormalUpdate(Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTrgDown(KEY_INPUT_SPACE)) {
+	if (ins.IsTrgDown(KEY_INPUT_SPACE)) 
+	{
 		update_ = &UnlickScene::DisappearUpdate;
 		draw_ = &UnlickScene::ProcessDraw;
 		return;
 	}
+
+	// 
+	float time = Application::GetInstance().GetDeltaTime();
+
+	
+	wire_->Update(time);
+
+	if (ins.IsTrgDown(KEY_INPUT_A))
+	{
+		// ロックピック、鍵穴ともに回転
+		lockpick_->UpdateUnlock(time);
+
+	}
+
+	// 指定の角度に到達したら解錠完了
+	
+
 }
 
 void UnlickScene::DisappearUpdate(Input& input)
@@ -82,7 +124,7 @@ void UnlickScene::ProcessDraw()
 	float rate = static_cast<float>(frame_) /
 		static_cast<float>(appear_interval);
 
-	frameHalfHeight *= rate;
+	frameHalfHeight *= static_cast<int>(rate);
 
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
@@ -115,4 +157,14 @@ void UnlickScene::NormalDraw()
 
 void UnlickScene::LockPickingDraw(void)
 {
+	// 鍵枠
+	
+	// 鍵穴
+
+	// ロックピック
+	lockpick_->Draw();
+
+	// 針金
+	wire_->Draw();
+	
 }

@@ -25,6 +25,11 @@ void Fader::SetFade(STATE state)
 
 Fader::Fader(void) : resMng_(ResourceManager::GetInstance())
 {
+	state_ = STATE::NONE;
+	loadingBarFrame_ = -1;
+	loadImg_ = -1;
+	isPreEnd_ = false;
+	alpha_ = -1;
 }
 
 Fader::~Fader(void)
@@ -153,7 +158,7 @@ void Fader::Draw(void)
 				// ‰e‚Ì‹éŒ`iŠÛ‚İ‚ÍŒ³‚Æ“¯‚¶‚Å‰º”¼•ª‚¾‚¯“h‚è‚Â‚Ô‚µj
 				DrawRoundRect(x, shadowTop, filledRight, y + barHeight, cornerRadiusX, cornerRadiusY, GetColor(0, 0, 0), TRUE);
 
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_);
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha_));
 			}
 			else if (filledWidth > 0)
 			{
@@ -164,7 +169,7 @@ void Fader::Draw(void)
 				int shadowY = y + barHeight / 2;
 				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 				DrawBox(x, shadowY, filledRight, y + barHeight, GetColor(0, 0, 0), TRUE);
-				SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha_);
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha_));
 			}
 
 			// ”’‚¢˜giŠpŠÛj¦“h‚è‚Â‚Ô‚µ‚È‚µ

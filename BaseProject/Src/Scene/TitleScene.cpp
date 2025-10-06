@@ -44,7 +44,7 @@ void TitleScene::FadeDraw()
 	//フェードしつつ0～1の範囲の値の「割合」を計算している
 	float rate = static_cast<float>(frame_) / 
 					static_cast<float>(fade_interval);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, rate * 255);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));
 	DrawBox(0, 0, 640, 480, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }

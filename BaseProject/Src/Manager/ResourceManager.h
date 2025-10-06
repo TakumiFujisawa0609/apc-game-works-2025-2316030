@@ -22,9 +22,11 @@ public:
 		FLASHLIGHT_I,
 		RADIO_M,
 		RADIO_I,
-		ALPHALTFLOOR,
+		LOCKPICK_M,
+		LOCKPICK_I,
+		WIRE_M,
+		KEYHOLE_M,
 
-		BOSS,
 	};
 
 	// 明示的にインステンスを生成する

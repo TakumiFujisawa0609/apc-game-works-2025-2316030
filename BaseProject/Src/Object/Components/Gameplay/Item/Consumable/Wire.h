@@ -1,30 +1,37 @@
 #pragma once
 #include "ItemBase.h"
-class Knife :
+class Wire :
     public ItemBase
 {
 public:
     static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
     static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
-    static constexpr VECTOR INIT_QUAROTLOCAL = { 15.0f,-25.0f,110.0f };    // 初期ローカル回転
+    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
 
-    // 調整用座標
-    static constexpr VECTOR TARGET_POS = { 15.0f,-15.0f, 35.0f };
-
-    Knife(std::shared_ptr<ActorBase> owner);
-    ~Knife(void);
+    Wire(std::shared_ptr<ActorBase> owner);
+    ~Wire();
 
     void Init(void) override;
     void Update(float deltaTime) override;
     void Draw(void) override;
 
+    // 現在の角度を取得
+    float GetCurrentAngle(void);
+
+    // 正解の角度を取得
+    float GetGoalAngle(void);
+
+
 private:
+
+
+    float currentAngle_;        // 現在の角度
+    float goalAngle_;           // 正解の角度
 
     virtual void UpdateOnStage(float deltaTime) override;
     virtual void UpdateInVentory(float deltaTime) override;
     virtual void UpdateInUse(float deltaTime) override;
     virtual void UpdateUsedUp(float deltaTime) override;
     virtual void UpdateDisabled(float deltaTime) override;
-
 };
 

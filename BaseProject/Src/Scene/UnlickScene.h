@@ -1,5 +1,10 @@
 #pragma once
 #include "Scene.h"
+
+class Player;
+class Lockpick;
+class Wire;
+
 class UnlickScene :
     public Scene
 {
@@ -11,8 +16,17 @@ public:
     virtual void Update(Input& input)override;
     virtual void Draw(void)override;
 
+    void SetPlayer(std::shared_ptr<Player> player);
+    void SetWire(std::shared_ptr<Wire> wire);
+    void SetLockPick(std::shared_ptr<Lockpick> lPick);
+
 private:
-    int frame_ = 0;
+
+    std::shared_ptr<Player> player_;
+    std::shared_ptr<Wire> wire_;
+    std::shared_ptr<Lockpick> lockpick_;
+
+    int frame_ = 0;         // 毎フレーム計測用
 
     using UpdateFunc_t = void (UnlickScene::*)(Input& input);
     using DrawFunc_t = void (UnlickScene::*)(void);

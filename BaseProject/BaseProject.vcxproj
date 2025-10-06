@@ -190,6 +190,7 @@
     <ClCompile Include="Src\Object\Components\UI\Components\UIComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
     <ClCompile Include="Src\Scene\UnlickScene.cpp" />
+    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Manager\LightManager.h" />
@@ -243,6 +244,7 @@
     <ClInclude Include="Src\Object\Components\UI\Components\UIComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElement.h" />
     <ClInclude Include="Src\Scene\UnlickScene.h" />
+    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

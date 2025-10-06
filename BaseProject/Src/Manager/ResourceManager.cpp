@@ -74,13 +74,22 @@ void ResourceManager::Init(void)
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/Radio/radio.png");
 	resourcesMap_.emplace(SRC::RADIO_I, res);
 
-	// ラジオモデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/alphaltFloor.mv1");
-	resourcesMap_.emplace(SRC::ALPHALTFLOOR, res);
+	// ロックピックモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
+	resourcesMap_.emplace(SRC::LOCKPICK_M, res);
 
-	//// ボスモデル
-	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"");
-	//resourcesMap_.emplace(SRC::BOSS);
+	// ロックピックUI
+	res = std::make_shared<RES>(RES_T::IMG, PATH_MDL + L"Stage/alphaltFloor.mv1");
+	resourcesMap_.emplace(SRC::LOCKPICK_I, res);
+
+	// 針金モデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
+	resourcesMap_.emplace(SRC::WIRE_M, res);
+
+	// 針金モデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
+	resourcesMap_.emplace(SRC::KEYHOLE_M, res);
+
 }
 
 void ResourceManager::Release(void)

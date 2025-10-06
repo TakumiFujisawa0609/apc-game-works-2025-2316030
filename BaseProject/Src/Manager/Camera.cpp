@@ -22,6 +22,7 @@ Camera::Camera(void) : resMng_(ResourceManager::GetInstance())
 	changeCameraAngles_ = AsoUtility::VECTOR_ZERO;
 	saveAngles_ = AsoUtility::VECTOR_ZERO;
 	isChangeMode_ = false;
+	isRestoreAngleNeeded_ = false;
 }
 
 Camera::~Camera(void)
@@ -135,6 +136,11 @@ Camera::MODE Camera::GetCameraMode(void)
 	return mode_;
 }
 
+void Camera::SaveAngles(VECTOR save)
+{
+	saveAngles_ = save;
+}
+
 
 VECTOR Camera::GetPos(void) const
 {
@@ -186,10 +192,10 @@ VECTOR Camera::GetUp(void) const
 
 void Camera::ChangeMode(MODE mode, VECTOR angle, bool isAngles)
 {
-	if (mode_ == MODE::FPS_MOUSE)
-	{
-		saveAngles_ = angle;
-	}
+	//if (mode_ == MODE::FPS_MOUSE)
+	//{
+	//	saveAngles_ = angle;
+	//}
 
 	// ƒJƒƒ‰‚Ì‰Šúİ’è
 	SetDefault();
@@ -252,7 +258,7 @@ void Camera::SetDefault(void)
 	// ƒJƒƒ‰‚Ìã•ûŒü
 	cameraUp_ = AsoUtility::DIR_U;
 
-	angles_.x = AsoUtility::Deg2RadF(30.0f);
+	angles_.x = AsoUtility::Deg2RadF(0.0f);
 	angles_.y = 0.0f;
 	angles_.z = 0.0f;
 
