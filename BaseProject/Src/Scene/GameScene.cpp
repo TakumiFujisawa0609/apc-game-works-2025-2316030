@@ -73,21 +73,19 @@ void GameScene::NormalUpdate(Input& input)
 
 		us->SetLockPick(lockpick_);
 
-		controller_.PushScene(us);
+		controller_.PushScene(us, input);
 		prevAngle_ = camera->GetAngles();
 		camera->SaveAngles(prevAngle_);
+		camera->SetOperableCamera(false);
 		isFps_ = false;
 		return;
 	}
 
-	if (!isFps_ &&
-		camera->GetCameraMode() != Camera::MODE::FPS_MOUSE)
-	{
-		camera->SetFollow(&player_->GetTransform());
-		camera->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, true);
-
-		isFps_ = true;
-	}
+	//if (!isFps_ &&
+	//	camera->GetCameraMode() != Camera::MODE::FPS_MOUSE)
+	//{
+	//	isFps_ = true;
+	//}
 	
 }
 

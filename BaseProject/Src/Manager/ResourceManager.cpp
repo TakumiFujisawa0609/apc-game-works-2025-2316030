@@ -86,9 +86,13 @@ void ResourceManager::Init(void)
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
 	resourcesMap_.emplace(SRC::WIRE_M, res);
 
-	// 針金モデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
-	resourcesMap_.emplace(SRC::KEYHOLE_M, res);
+	// 鍵穴プレート
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"KeyHole/EscutcheonPlate.png");
+	resourcesMap_.emplace(SRC::E_PLATE_I, res);
+
+	// 鍵穴
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"KeyHole/KeyHole.png");
+	resourcesMap_.emplace(SRC::KEYHOLE_I, res);
 
 }
 

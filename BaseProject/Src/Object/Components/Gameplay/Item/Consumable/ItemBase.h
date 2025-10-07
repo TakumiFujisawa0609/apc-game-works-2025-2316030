@@ -30,6 +30,9 @@ public:
 	void Update(float deltaTime) override = 0;
 	void Draw(void) override = 0;
 
+	const Transform& GetTransform(void) const;
+
+	// 画像IDを取得
 	virtual int GetImgId(void);
 
 	// プレイヤーの持ち手座標を取得する

@@ -9,6 +9,8 @@
 #include "../Object/Player/Player.h"
 #include "../Object/Components/Gameplay/Item/Consumable/Wire.h"
 #include "../Object/Components/Gameplay/Item/Consumable/Lockpick.h"
+#include "../Object/Components/PuzzleElements/KeyholePlate.h"
+#include "../Object/Components/PuzzleElements/Keyhole.h"
 #include "UnlickScene.h"
 
 using namespace std;
@@ -29,7 +31,7 @@ UnlickScene::UnlickScene(SceneController& controller)
 	update_(&UnlickScene::AppearUpdate),
 	draw_(&UnlickScene::ProcessDraw)
 {
-	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT, AsoUtility::VECTOR_ZERO,false);
+
 }
 
 UnlickScene::~UnlickScene(void)
@@ -38,9 +40,16 @@ UnlickScene::~UnlickScene(void)
 
 void UnlickScene::Init(Input& input)
 {
-
+	// 針金の初期化
 	wire_->Init();
 
+	// 鍵穴プレートの初期化
+	keyholePlate_ = std::make_shared<KeyholePlate>(player_);
+	keyholePlate_->Init();
+
+	// 鍵穴の初期化
+	keyhole_ = std::make_shared<Keyhole>(player_);
+	keyhole_->Init();
 }
 
 void UnlickScene::Update(Input& input)
@@ -88,28 +97,43 @@ void UnlickScene::NormalUpdate(Input& input)
 		return;
 	}
 
-	// 
+	// 時間の取得
 	float time = Application::GetInstance().GetDeltaTime();
 
+	// 針金のマウス移動による回転
+	wire_->UpdateExplore(time);
 	
-	wire_->Update(time);
-
 	if (ins.IsTrgDown(KEY_INPUT_A))
 	{
-		// ロックピック、鍵穴ともに回転
-		lockpick_->UpdateUnlock(time);
 
+		if (!wire_->IsDifference())
+		{
+			// ロックレベルを設定
+			lockpick_->SetLockLevel(wire_->GetLockLevel());
+			
+			// ロックピック、鍵穴ともに回転
+			lockpick_->UpdateUnlock(time);
+		}
+
+		// 解錠後
 	}
-
-	// 指定の角度に到達したら解錠完了
 	
 
+
+	// 指定の角度に到達したら解錠完了
+	lockpick_->UpdateUnlock(time);
+
+	keyhole_->SetAngle(lockpick_->GetTransform().quaRotLocal.z);
+
+	keyhole_->Update(time);
 }
 
 void UnlickScene::DisappearUpdate(Input& input)
 {
 	if (--frame_ <= 0) {
-		controller_.PopScene();
+		const auto& camera = Application::GetInstance().GetCamera();
+		camera->SetOperableCamera(true);
+		controller_.PopScene(input);
 		return;
 	}
 }
@@ -158,8 +182,10 @@ void UnlickScene::NormalDraw()
 void UnlickScene::LockPickingDraw(void)
 {
 	// 鍵枠
+	keyholePlate_->Draw();
 	
 	// 鍵穴
+	keyhole_->Draw();
 
 	// ロックピック
 	lockpick_->Draw();

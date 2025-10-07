@@ -1,4 +1,5 @@
 #include <functional>
+#include <algorithm>
 #include "../../../../../Application.h"
 #include "../../../../../Common/Quaternion.h"
 #include "../../../../../Manager/ResourceManager.h"
@@ -10,7 +11,9 @@ Lockpick::Lockpick(std::shared_ptr<ActorBase> owner)
 	:
 	ItemBase(owner),
 	isUse_(false),
-	angles_(0.0f)
+	angle_(0.0f),
+	lLevel_(-1),
+	rotRate_(0.0f)
 {
 	mName_ = L"LockPick";
 	itemType_ = ItemType::CONSUMABLE;
@@ -33,6 +36,7 @@ void Lockpick::Init(void)
 	// UI‰æ‘œ
 	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::BOTTLE_I);
 
+	angle_ = static_cast<float>(transform_.quaRotLocal.z);
 
 	// ó‘Ô‚Ì‰Šú‰»
 	isOnStage_ = true;
@@ -129,8 +133,34 @@ void Lockpick::UpdateDisabled(float deltaTime)
 
 }
 
+float Lockpick::CalculateRotRate(void)
+{
+
+	// Šp“x‚Ì·
+	float diffAngle = angle_ - MIN_ANGLE;
+
+	// Š„‡ŒvZ
+	float ratio = diffAngle / TOTAL_RANGE;
+
+	return std::clamp(ratio, 0.0f, 1.0f);
+}
+
 void Lockpick::UpdateUnlock(float deltaTime)
 {
+	// ‰ñ“]Š„‡
+
+
+	transform_.Update();
+}
+
+void Lockpick::SetLockLevel(int level)
+{
+	lLevel_ = level;
+}
+
+float Lockpick::GetRotationRate(void)
+{
+	return rotRate_;
 }
 
 

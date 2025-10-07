@@ -45,7 +45,7 @@ void Player::Init(void)
 	SetMousePoint(Application::GetInstance().GetWindowSize().width / 2,
 		Application::GetInstance().GetWindowSize().height / 2);
 
-	moveSpeed_ = 5.0f; // ˆÚ“®‘¬“x
+	moveSpeed_ = MOVE_WALK_SPEED; // ˆÚ“®‘¬“x
     moveDir_ = AsoUtility::VECTOR_ZERO; // ˆÚ“®•ûŒü
     movedPos_ = transform_.pos;
 
@@ -117,6 +117,15 @@ void Player::OnUpdate(float deltaTime)
 
     //if (ins.IsNew(KEY_INPUT_SPACE)) moveDir_ = VAdd(moveDir_, up);
     //if (ins.IsNew(KEY_INPUT_LSHIFT)) moveDir_ = VAdd(moveDir_, VScale(up, -1.0f));
+
+    if (ins.IsNew(KEY_INPUT_LSHIFT))
+    {
+        moveSpeed_ = MOVE_RUN_SPEED;
+    }
+    else
+    {
+        moveSpeed_ = MOVE_WALK_SPEED;
+    }
 
     if (!AsoUtility::EqualsVZero(moveDir_))
     {

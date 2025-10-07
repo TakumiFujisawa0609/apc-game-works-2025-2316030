@@ -7,7 +7,7 @@ class Component
 {
 public:
 	Component(std::shared_ptr<ActorBase> owner, const std::wstring name = L"Component");
-	virtual ~Component() = default;
+	virtual ~Component(void) = default;
 
 	// 毎フレーム状態を更新する
 	virtual void Update(float deltaTime) = 0;

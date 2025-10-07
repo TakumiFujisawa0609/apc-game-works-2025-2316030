@@ -10,19 +10,19 @@
 #include "../Object/Common/Transform.h"
 #include "Camera.h"
 
-Camera::Camera(void) : resMng_(ResourceManager::GetInstance())
+Camera::Camera(void) 
+	: 
+	resMng_(ResourceManager::GetInstance()),
+	cameraUp_({}),
+	gameCamera_(GAME_CAMERA::NONE),
+	targetPos_({}),
+	followTransform_(nullptr),
+	changeCameraAngles_({}),
+	saveAngles_({}),
+	isChangeMode_(false),
+	isRestoreAngleNeeded_(false),
+	isOperable_(true)
 {
-	angles_ = VECTOR();
-	cameraUp_ = VECTOR();
-	mode_ = MODE::NONE;
-	gameCamera_ = GAME_CAMERA::NONE;
-	pos_ = AsoUtility::VECTOR_ZERO;
-	targetPos_ = AsoUtility::VECTOR_ZERO;
-	followTransform_ = nullptr;
-	changeCameraAngles_ = AsoUtility::VECTOR_ZERO;
-	saveAngles_ = AsoUtility::VECTOR_ZERO;
-	isChangeMode_ = false;
-	isRestoreAngleNeeded_ = false;
 }
 
 Camera::~Camera(void)
@@ -409,32 +409,37 @@ void Camera::SetBeforeDrawFPSMouse(void)
 	// マウス感度
 	float sensitivity = 0.002f;
 
-	// 視点角度に反映
-	angles_.y += dx * sensitivity;	// 水平回転
-	angles_.x -= dy * sensitivity;	// 垂直回転
+	// 操作可能時のみ
+	if (isOperable_)
+	{
+		// 視点角度に反映
+		angles_.y += dx * sensitivity;	// 水平回転
+		angles_.x -= dy * sensitivity;	// 垂直回転
 
-	// 垂直回転の制限
-	if (angles_.x > AsoUtility::Deg2RadF(89.0f))angles_.x = AsoUtility::Deg2RadF(89.0f);
-	if (angles_.x < AsoUtility::Deg2RadF(-89.0f))angles_.x = AsoUtility::Deg2RadF(-89.0f);
+		// 垂直回転の制限
+		if (angles_.x > AsoUtility::Deg2RadF(89.0f))angles_.x = AsoUtility::Deg2RadF(89.0f);
+		if (angles_.x < AsoUtility::Deg2RadF(-89.0f))angles_.x = AsoUtility::Deg2RadF(-89.0f);
 
-	// 位置(FPSなのでfollowTransformがあればそこを基準にする)
-	pos_ = followTransform_ ? followTransform_->pos : pos_;
+		// 位置(FPSなのでfollowTransformがあればそこを基準にする)
+		pos_ = followTransform_ ? followTransform_->pos : pos_;
 
-	// 前方方向ベクトルを計算
-	VECTOR forward = {
-		cosf(angles_.x) * sinf(angles_.y),
-		sinf(angles_.x),
-		cosf(angles_.x) * cosf(angles_.y)
-	};
+		// 前方方向ベクトルを計算
+		VECTOR forward = {
+			cosf(angles_.x) * sinf(angles_.y),
+			sinf(angles_.x),
+			cosf(angles_.x) * cosf(angles_.y)
+		};
 
-	// 注視点を更新(カメラ位置 + 前方方向ベクトル)
-	targetPos_ = VAdd(pos_, VScale(forward, 200.0f));
+		// 注視点を更新(カメラ位置 + 前方方向ベクトル)
+		targetPos_ = VAdd(pos_, VScale(forward, 200.0f));
 
-	// 上方向は常にY+
-	cameraUp_ = AsoUtility::DIR_U;
+		// 上方向は常にY+
+		cameraUp_ = AsoUtility::DIR_U;
 
-	// 毎フレームマウスを中央に戻す
-	SetMousePoint(centerX, centerY);
+		// 毎フレームマウスを中央に戻す
+		SetMousePoint(centerX, centerY);
+
+	}
 }
 
 void Camera::RestoreAnglesOnce(void)
@@ -442,4 +447,9 @@ void Camera::RestoreAnglesOnce(void)
 	angles_ = saveAngles_;
 
 	saveAngles_ = AsoUtility::VECTOR_ONE;
+}
+
+void Camera::SetOperableCamera(bool operable)
+{
+	isOperable_ = operable;
 }

@@ -4,6 +4,8 @@
 class Player;
 class Lockpick;
 class Wire;
+class KeyholePlate;
+class Keyhole;
 
 class UnlickScene :
     public Scene
@@ -25,6 +27,8 @@ private:
     std::shared_ptr<Player> player_;
     std::shared_ptr<Wire> wire_;
     std::shared_ptr<Lockpick> lockpick_;
+    std::shared_ptr<KeyholePlate> keyholePlate_;
+    std::shared_ptr<Keyhole> keyhole_;
 
     int frame_ = 0;         // 毎フレーム計測用
 

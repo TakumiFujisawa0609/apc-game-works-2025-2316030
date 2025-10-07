@@ -19,16 +19,16 @@ const std::wstring Application::PATH_EFFECT = L"Data/Effect/";
 const std::wstring Application::PATH_SHADER = L"Data/Shader/";
 const std::wstring Application::PATH_SOUND = L"Data/Sound/";
 
-//unsigned int lastTime = GetNowCount(); // ミリ秒単位の現在時間
-
-Application::Application() {
-    isInitFailed_ = false;
-	isReleaseFailed_ = false;
-	frameCount_ = 0;
-	fps_ = 0;
-    lastTime_ = GetNowCount();
-	deltaTime_ = 0.0f;
-    fontHandle_ = -1;
+Application::Application() 
+    :
+    isInitFailed_(false),
+    isReleaseFailed_(false),
+    frameCount_(0),
+    fps_(0),
+    lastTime_(-1),
+    deltaTime_(0.0f),
+    fontHandle_(-1)
+{
 }
 
 Application::~Application()
@@ -102,6 +102,7 @@ void Application::Init(int w, int h)
 
     // シーン管理初期化
 	controller_ = std::make_shared<SceneController>();
+
 	// 最初のシーンを設定
     //controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
     controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);

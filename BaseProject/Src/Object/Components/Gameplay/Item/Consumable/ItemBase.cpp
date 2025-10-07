@@ -23,6 +23,11 @@ ItemBase::ItemBase(std::shared_ptr<ActorBase> owner)
 {
 }
 
+const Transform& ItemBase::GetTransform(void) const
+{
+	return transform_;
+}
+
 int ItemBase::GetImgId(void)
 {
 	return imgId_;

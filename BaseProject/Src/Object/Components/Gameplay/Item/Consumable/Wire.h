@@ -6,7 +6,15 @@ class Wire :
 public:
     static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
     static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
-    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
+    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,90.0f,0.0f };    // 初期ローカル回転
+
+    static constexpr float MOUSE_SENSITIVITY = 0.35f;                  // マウス感度
+    static constexpr float MAX_ROT_Z = 180.0f;                         // 最大回転度数
+    static constexpr float MIN_ROT_Z = 0.0f;                           // 最小回転度数
+
+    static constexpr float FIRST_LOCK = 20.f;                          // 一つ目のロック
+    static constexpr float SECOND_LOCK = 15.0f;                        // 2つ目のロック
+    static constexpr float THIRD_LOCK = 8.0f;                         // 3つ目のロック
 
     Wire(std::shared_ptr<ActorBase> owner);
     ~Wire();
@@ -21,12 +29,28 @@ public:
     // 正解の角度を取得
     float GetGoalAngle(void);
 
+    // ワイヤーを動かして探る
+    void UpdateExplore(float deltaTime);
+
+    /// <summary>
+    /// 差分が0の時にtrueを返す
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
+    bool IsDifference(void);
+
+    int GetLockLevel(void);
 
 private:
 
 
     float currentAngle_;        // 現在の角度
     float goalAngle_;           // 正解の角度
+
+    int lastMousePosX_;         // 前フレームのマウスx座標
+    bool isDifference_;         // 現在の角度と正解の角度の差分が0であるか
+
+    int lockLevel_;             // 
 
     virtual void UpdateOnStage(float deltaTime) override;
     virtual void UpdateInVentory(float deltaTime) override;

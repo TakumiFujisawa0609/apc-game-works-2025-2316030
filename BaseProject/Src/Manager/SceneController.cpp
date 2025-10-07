@@ -33,12 +33,15 @@ void SceneController::Draw()
 	}
 }
 
-void SceneController::PushScene(std::shared_ptr<Scene> scene)
+void SceneController::PushScene(std::shared_ptr<Scene> scene, Input& input)
 {
 	scenes_.push_back(scene);
+
+	// ’Ç‰Á‚³‚ê‚½ƒV[ƒ“‚Ì‰Šú‰»
+	scenes_.back()->Init(input);
 }
 
-void SceneController::PopScene()
+void SceneController::PopScene(Input& input)
 {
 	if (scenes_.size() > 1) {
 		scenes_.pop_back();

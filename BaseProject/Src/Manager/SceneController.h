@@ -34,12 +34,12 @@ public:
 	/// シーンを新しく「積む」
 	/// </summary>
 	/// <param name="scene"></param>
-	void PushScene(std::shared_ptr<Scene> scene);
+	void PushScene(std::shared_ptr<Scene> scene, Input& input);
 
 	/// <summary>
 	/// 最後に追加したシーンを削除する
 	/// </summary>
-	void PopScene();
+	void PopScene(Input& input);
 
 	/// <summary>
 	/// 強制的に特定のシーンに飛ぶ。積んでてもリセットされる

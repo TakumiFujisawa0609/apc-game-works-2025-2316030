@@ -25,7 +25,8 @@ public:
 		LOCKPICK_M,
 		LOCKPICK_I,
 		WIRE_M,
-		KEYHOLE_M,
+		E_PLATE_I,
+		KEYHOLE_I,
 
 	};
 

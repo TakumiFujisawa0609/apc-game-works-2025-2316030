@@ -138,6 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\PuzzleElements\Keyhole.cpp" />
+    <ClCompile Include="Src\Object\Components\PuzzleElements\KeyholePlate.cpp" />
     <ClCompile Include="Src\Manager\LightManager.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Radio.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Knife.cpp" />
@@ -193,6 +195,8 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\PuzzleElements\Keyhole.h" />
+    <ClInclude Include="Src\Object\Components\PuzzleElements\KeyholePlate.h" />
     <ClInclude Include="Src\Manager\LightManager.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Radio.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Knife.h" />

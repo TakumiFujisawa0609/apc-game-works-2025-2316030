@@ -18,8 +18,9 @@ class Player : public ActorBase
 {
 public:
 
-	// マウス感度
-	static constexpr float MOUSE_SENSITIVITY = 0.002f;
+	static constexpr float MOVE_WALK_SPEED = 5.0f;
+	static constexpr float MOVE_RUN_SPEED = 10.0f;
+	static constexpr float MOUSE_SENSITIVITY = 0.002f;			// マウス感度
 
 	Player(void);
 	~Player(void);

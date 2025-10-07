@@ -2,14 +2,18 @@
 #include "Transform.h"
 #include "Capsule.h"
 
-Capsule::Capsule(const Transform& parent) : transformParent_(parent)
+Capsule::Capsule(const Transform& parent) 
+	: 
+	transformParent_(parent)
 {
 	radius_ = 0.0f;
 	localPosTop_ = { 0.0f, 0.0f, 0.0f };
 	localPosDown_ = { 0.0f, 0.0f, 0.0f };
 }
 
-Capsule::Capsule(const Capsule& base, const Transform& parent) : transformParent_(parent)
+Capsule::Capsule(const Capsule& base, const Transform& parent) 
+	: 
+	transformParent_(parent)
 {
 	radius_ = base.GetRadius();
 	localPosTop_ = base.GetLocalPosTop();
@@ -22,7 +26,6 @@ Capsule::~Capsule(void)
 
 void Capsule::Draw(void)
 {
-
 	// è„ÇÃãÖëÃ
 	VECTOR pos1 = GetPosTop();
 	DrawSphere3D(pos1, radius_, 5, COLOR, COLOR, false);

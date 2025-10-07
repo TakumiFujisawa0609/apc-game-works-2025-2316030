@@ -20,7 +20,7 @@ void SystemSettingScene::Init(Input& input)
 void SystemSettingScene::Update(Input& input)
 {
 	if (input.IsTriggered("ok")) {
-		controller_.PopScene();
+		controller_.PopScene(input);
 		return;
 	}
 }

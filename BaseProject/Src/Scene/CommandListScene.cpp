@@ -20,7 +20,7 @@ void CommandListScene::Init(Input& input)
 void CommandListScene::Update(Input& input)
 {
 	if (input.IsTriggered("ok")) {
-		controller_.PopScene();
+		controller_.PopScene(input);
 	}
 }
 

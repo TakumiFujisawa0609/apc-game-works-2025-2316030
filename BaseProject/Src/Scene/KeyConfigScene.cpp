@@ -292,10 +292,10 @@ KeyConfigScene::KeyConfigScene(SceneController& controller, Input& input) :
 	
 	systemMenuTable_[L"SAVE&EXIT"] = [this]() {
 		CommitInputTable();
-		controller_.PopScene();
+		controller_.PopScene(input_);
 	};
 	systemMenuTable_[L"CANCEL&EXIT"] = [this]() {
-		controller_.PopScene();
+		controller_.PopScene(input_);
 	};
 	systemMenuTable_[L"RESET"] = [this]() {
 		input_.ResetTable();

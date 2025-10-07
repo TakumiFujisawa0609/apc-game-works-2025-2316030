@@ -28,7 +28,7 @@ void PauseScene::AppearUpdate(Input& input)
 void PauseScene::DisappearUpdate(Input& input)
 {
 	if (--frame_ <= 0) {
-		controller_.PopScene();
+		controller_.PopScene(input);
 		return;
 	}
 }
@@ -131,7 +131,7 @@ PauseScene::PauseScene(SceneController& controller):
 					L"タイトルに戻る"
 				};
 	menuFuncTable_={
-		{L"コマンド表",[this](Input&) {
+		/*{L"コマンド表",[this](Input&) {
 				controller_.PushScene(make_shared<CommandListScene>(controller_));
 			}
 		},
@@ -148,7 +148,7 @@ PauseScene::PauseScene(SceneController& controller):
 		},
 		{L"タイトルに戻る",[this](Input&) {
 				controller_.JumpScene(make_shared<TitleScene>(controller_));
-			}},
+			}},*/
 	};
 }
 

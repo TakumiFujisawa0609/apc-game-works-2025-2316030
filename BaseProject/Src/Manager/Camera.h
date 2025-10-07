@@ -141,6 +141,9 @@ public:
 	// 角度を保存した値に一度だけ復元する
 	void RestoreAnglesOnce(void);
 
+	// カメラの操作が可能かどうかを設定する
+	void SetOperableCamera(bool operable);
+
 private:
 
 	// シングルトン参照
@@ -184,6 +187,9 @@ private:
 
 	// カメラアングルの復元が必要かを示すフラグ
 	bool isRestoreAngleNeeded_;
+
+	// カメラが操作可能状態であるか
+	bool isOperable_;
 
 	// カメラを初期位置に戻す
 	void SetDefault(void);

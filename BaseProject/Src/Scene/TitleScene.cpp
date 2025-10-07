@@ -55,7 +55,10 @@ void TitleScene::NormalDraw()
 	DrawString(10, 10, L"Title Scene", 0xffffff);
 }
 
-TitleScene::TitleScene(SceneController& controller):Scene(controller)
+TitleScene::TitleScene(SceneController& controller)
+	:
+	Scene(controller),
+	titleH_(-1)
 {
 	//titleH_=LoadGraph(L"img/fukuro.png");
 	//assert(titleH_);
