@@ -59,7 +59,7 @@ const Size& Application::GetWindowSize() const
 void Application::Init(int w, int h)
 {
     // アプリケーションの初期設定
-    SetWindowText(L"UNDER THE SEA");
+    SetWindowText(L"LURK");
 
     // ウィンドウサイズ
     windowSize_ = { w,h };
@@ -103,8 +103,8 @@ void Application::Init(int w, int h)
     // シーン管理初期化
 	controller_ = std::make_shared<SceneController>();
 	// 最初のシーンを設定
-    //controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
-    controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);
+    controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
+    //controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);
 
 	// 描画先を裏画面に設定
     SetDrawScreen(DX_SCREEN_BACK);
