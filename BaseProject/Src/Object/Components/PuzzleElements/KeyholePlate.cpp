@@ -41,13 +41,12 @@ void KeyholePlate::Update(float deltaTime)
 
 void KeyholePlate::Draw(void)
 {
-	ClearDrawScreen();
 	DrawRotaGraph(
 		pos_.x,
 		pos_.y,
 		extRate_,
 		angle_,
 		imgH_,
-		false,
+		true,
 		false);
 }

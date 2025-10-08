@@ -72,8 +72,8 @@ void PauseScene::ProcessDraw()
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//”’˜g
-	DrawBoxAA(margin_size, centerY - frameHalfHeight,
-		wsize.width - margin_size, centerY + frameHalfHeight,
+	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(centerY - frameHalfHeight),
+		static_cast<float>(wsize.width - margin_size), static_cast<float>(centerY + frameHalfHeight),
 		0xfffffff, false, 3.0f);
 }
 
@@ -88,8 +88,8 @@ void PauseScene::NormalDraw()
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//”’˜g
-	DrawBoxAA(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
+	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
+		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
 		0xfffffff, false, 3.0f);
 	DrawString(margin_size + 10, margin_size + 10, L"Pause Scene", 0x0000ff);
 	DrawMenuList();

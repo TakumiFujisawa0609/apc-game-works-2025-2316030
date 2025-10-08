@@ -13,7 +13,9 @@ Wire::Wire(std::shared_ptr<ActorBase> owner)
     currentAngle_(0.0f),
     goalAngle_(0.0f),
     lastMousePosX_(-1),
-    isDifference_(false)
+    isDifference_(false),
+    lockLevel_(-1),
+    isDefault_(false)
 {
 }
 
@@ -24,7 +26,7 @@ Wire::~Wire()
 void Wire::Init(void)
 {
     transform_.SetModel(resMng_.LoadModelDuplicate(
-        ResourceManager::SRC::KNIFE_M));
+        ResourceManager::SRC::WIRE_M));
     InitModel(
         INIT_POS,
         INIT_SCL,
@@ -61,6 +63,8 @@ void Wire::Update(float deltaTime)
 
 void Wire::Draw(void)
 {
+    MV1DrawModel(transform_.modelId);
+
     auto& size = Application::GetInstance().GetWindowSize();
     DrawFormatString(size.width - 200, 64, GetColor(255, 255, 255), L"gAngle=(%.2f)", goalAngle_);
     DrawFormatString(size.width - 200, 80, GetColor(255, 255, 255), L"cAngle_=(%.2f)", currentAngle_);
@@ -79,6 +83,12 @@ float Wire::GetGoalAngle(void)
 
 void Wire::UpdateExplore(float deltaTime)
 {
+    if (isDefault_)
+    {
+        SetDefault();
+    }
+
+    // 現在の角度を更新
     currentAngle_ = static_cast<float>(transform_.quaRotLocal.z);
 
     // マウスをx方向に動かしてtrasnform_.quaRot.zを動かす
@@ -155,6 +165,16 @@ int Wire::GetLockLevel(void)
     
 }
 
+bool Wire::GetDefault(void)
+{
+    return isDefault_;
+}
+
+void Wire::SetIsDefault(bool flag)
+{
+    isDefault_ = flag;
+}
+
 void Wire::UpdateOnStage(float deltaTime)
 {
 }
@@ -173,4 +193,23 @@ void Wire::UpdateUsedUp(float deltaTime)
 
 void Wire::UpdateDisabled(float deltaTime)
 {
+}
+
+void Wire::SetDefault(void)
+{
+    // 座標
+    transform_.pos = { UNLOCK_POS };
+
+    // ローカル回転
+    transform_.quaRotLocal = {
+        Quaternion::Euler(
+                AsoUtility::Deg2RadF(0.0f),
+                AsoUtility::Deg2RadF(0.0f),
+                AsoUtility::Deg2RadF(0.0f) )
+    };
+
+    transform_.Update();
+
+    // 一度だけ呼び出す
+    isDefault_ = false;
 }

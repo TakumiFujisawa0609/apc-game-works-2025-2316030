@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../../Application.h"
+#include "../../../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
 #include "Keyhole.h"
 
@@ -37,6 +38,12 @@ void Keyhole::Init(void)
 
 void Keyhole::Update(float deltaTime)
 {
+	auto& ins = InputManager::GetInstance();
+
+	if (ins.IsTrgDown(KEY_INPUT_A))
+	{
+		angle_++;
+	}
 }
 
 void Keyhole::Draw(void)
@@ -47,7 +54,7 @@ void Keyhole::Draw(void)
 		extRate_,
 		angle_,
 		imgH_,
-		true,
+		false,
 		false);
 }
 

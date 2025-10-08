@@ -5,17 +5,21 @@ class Lockpick :
 {
 public:
 	static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
-	static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
-	static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
+	static constexpr VECTOR INIT_SCL = { 0.05f,0.1f,0.05f };           // 初期拡大率
+	static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,0.0f,15.0f };    // 初期ローカル回転
 
 	// 調整用座標
-	static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 30.0f };
+	static constexpr VECTOR TARGET_POS = { 15.0f,-13.0f, 30.0f };
 
-	static constexpr float MIN_ANGLE = 180.0f;
-	static constexpr float MAX_ANGLE = 270.0f;
+	// 制限度数
+	static constexpr float MIN_ANGLE = 180.0f;		// 下限
+	static constexpr float MAX_ANGLE = 270.0f;		// 上限
 
 	// 全体の範囲
 	static constexpr float TOTAL_RANGE = MAX_ANGLE - MIN_ANGLE;
+
+	// 解錠中の座標
+	static constexpr VECTOR UNLOCK_POS = { 0.0f,0.0f,15.0f };
 
 	Lockpick(std::shared_ptr<ActorBase> owner);
 	~Lockpick(void) override;
@@ -35,12 +39,21 @@ public:
 	// 回転割合を取得
 	float GetRotationRate(void);
 
+	bool GetDefault(void);
+
+	void SetIsDefault(bool flag);
+
+	void SetIsUnlocking(bool flag);
+
 private:
 
 	bool isUse_;				// 使用可能かどうか
 	float angle_;				// 角度
 	int lLevel_;				// 施錠レベル
 	float rotRate_;				// 回転割合
+
+	bool isDefault_;			// デフォルト状態をセット
+	bool isUnlocking_;			// 解錠中であるか否か
 
 	virtual void UpdateOnStage(float deltaTime) override;
 	virtual void UpdateInVentory(float deltaTime) override;
@@ -50,4 +63,7 @@ private:
 
 	// 回転割合の計算
 	float CalculateRotRate(void);
+
+	// 初期状態に戻す
+	void SetDefault(void);
 };

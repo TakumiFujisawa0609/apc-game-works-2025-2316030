@@ -5,8 +5,9 @@ class Wire :
 {
 public:
     static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
-    static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
-    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,90.0f,0.0f };    // 初期ローカル回転
+    static constexpr VECTOR INIT_SCL = { 1.0f,5.0f,1.0f };           // 初期拡大率
+    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,0.0f,0.0f };    // 初期ローカル回転
+
 
     static constexpr float MOUSE_SENSITIVITY = 0.35f;                  // マウス感度
     static constexpr float MAX_ROT_Z = 180.0f;                         // 最大回転度数
@@ -15,6 +16,8 @@ public:
     static constexpr float FIRST_LOCK = 20.f;                          // 一つ目のロック
     static constexpr float SECOND_LOCK = 15.0f;                        // 2つ目のロック
     static constexpr float THIRD_LOCK = 8.0f;                         // 3つ目のロック
+
+    static constexpr VECTOR UNLOCK_POS = { 0.0f,0.0f,15.0f };
 
     Wire(std::shared_ptr<ActorBase> owner);
     ~Wire();
@@ -40,6 +43,12 @@ public:
     bool IsDifference(void);
 
     int GetLockLevel(void);
+    
+    // 初期状態に戻すかどうか
+    bool GetDefault(void);
+
+    // 初期状態を設定
+    void SetIsDefault(bool flag);
 
 private:
 
@@ -50,12 +59,16 @@ private:
     int lastMousePosX_;         // 前フレームのマウスx座標
     bool isDifference_;         // 現在の角度と正解の角度の差分が0であるか
 
-    int lockLevel_;             // 
+    int lockLevel_;             // 解錠レベル
+    bool isDefault_;            // 初期状態に戻すかどうか
 
     virtual void UpdateOnStage(float deltaTime) override;
     virtual void UpdateInVentory(float deltaTime) override;
     virtual void UpdateInUse(float deltaTime) override;
     virtual void UpdateUsedUp(float deltaTime) override;
     virtual void UpdateDisabled(float deltaTime) override;
+
+    // 初期状態に戻す
+    void SetDefault(void);
 };
 

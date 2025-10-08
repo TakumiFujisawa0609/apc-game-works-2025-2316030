@@ -75,15 +75,15 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::RADIO_I, res);
 
 	// ロックピックモデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Lockpick/Lockpick.mv1");
 	resourcesMap_.emplace(SRC::LOCKPICK_M, res);
 
 	// ロックピックUI
-	res = std::make_shared<RES>(RES_T::IMG, PATH_MDL + L"Stage/alphaltFloor.mv1");
+	res = std::make_shared<RES>(RES_T::IMG, PATH_MDL + L"Item/alphaltFloor.mv1");
 	resourcesMap_.emplace(SRC::LOCKPICK_I, res);
 
 	// 針金モデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Wire/wire.mv1");
 	resourcesMap_.emplace(SRC::WIRE_M, res);
 
 	// 鍵穴プレート

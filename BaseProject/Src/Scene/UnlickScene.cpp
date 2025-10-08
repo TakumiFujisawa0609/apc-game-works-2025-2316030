@@ -42,6 +42,7 @@ void UnlickScene::Init(Input& input)
 {
 	// 針金の初期化
 	wire_->Init();
+	wire_->SetIsDefault(true);
 
 	// 鍵穴プレートの初期化
 	keyholePlate_ = std::make_shared<KeyholePlate>(player_);
@@ -50,6 +51,11 @@ void UnlickScene::Init(Input& input)
 	// 鍵穴の初期化
 	keyhole_ = std::make_shared<Keyhole>(player_);
 	keyhole_->Init();
+	keyhole_->SetAngle(static_cast<float>(lockpick_->GetTransform().quaRotLocal.z));
+	
+	// ロックピックの初期化
+	lockpick_->SetIsDefault(true);
+	lockpick_->SetIsUnlocking(true);
 }
 
 void UnlickScene::Update(Input& input)
@@ -123,7 +129,7 @@ void UnlickScene::NormalUpdate(Input& input)
 	// 指定の角度に到達したら解錠完了
 	lockpick_->UpdateUnlock(time);
 
-	keyhole_->SetAngle(lockpick_->GetTransform().quaRotLocal.z);
+	//keyhole_->SetAngle(lockpick_->GetTransform().quaRotLocal.z);
 
 	keyhole_->Update(time);
 }
@@ -131,6 +137,7 @@ void UnlickScene::NormalUpdate(Input& input)
 void UnlickScene::DisappearUpdate(Input& input)
 {
 	if (--frame_ <= 0) {
+		lockpick_->SetIsUnlocking(false);
 		const auto& camera = Application::GetInstance().GetCamera();
 		camera->SetOperableCamera(true);
 		controller_.PopScene(input);
@@ -157,8 +164,8 @@ void UnlickScene::ProcessDraw()
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//白枠
-	DrawBoxAA(margin_size, centerY - frameHalfHeight,
-		wsize.width - margin_size, centerY + frameHalfHeight,
+	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(centerY - frameHalfHeight),
+		static_cast<float>(wsize.width - margin_size), static_cast<float>(centerY + frameHalfHeight),
 		0xfffffff, false, 3.0f);
 }
 
@@ -172,8 +179,8 @@ void UnlickScene::NormalDraw()
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//白枠
-	DrawBoxAA(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
+	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
+		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
 		0xfffffff, false, 3.0f);
 	DrawString(margin_size + 10, margin_size + 10, L"Pause Scene", 0x0000ff);
 	LockPickingDraw();
@@ -181,6 +188,8 @@ void UnlickScene::NormalDraw()
 
 void UnlickScene::LockPickingDraw(void)
 {
+	ClearDrawScreen();
+
 	// 鍵枠
 	keyholePlate_->Draw();
 	

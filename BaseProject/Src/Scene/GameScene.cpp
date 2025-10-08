@@ -81,12 +81,7 @@ void GameScene::NormalUpdate(Input& input)
 		return;
 	}
 
-	//if (!isFps_ &&
-	//	camera->GetCameraMode() != Camera::MODE::FPS_MOUSE)
-	//{
-	//	isFps_ = true;
-	//}
-	
+
 }
 
 void GameScene::FadeOutUpdate(Input& input)

@@ -35,8 +35,8 @@ void SystemSettingScene::Draw()
 		0xaaaaff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//ê¬
-	DrawBoxAA(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
+	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
+		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
 		0x0000ff, false, 3.0f);
 	DrawString(margin_size + 10, margin_size + 10, L"ÉVÉXÉeÉÄê›íË", 0xff0000);
 }

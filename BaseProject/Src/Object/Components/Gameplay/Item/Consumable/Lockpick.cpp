@@ -13,7 +13,9 @@ Lockpick::Lockpick(std::shared_ptr<ActorBase> owner)
 	isUse_(false),
 	angle_(0.0f),
 	lLevel_(-1),
-	rotRate_(0.0f)
+	rotRate_(0.0f),
+	isDefault_(false),
+	isUnlocking_(false)
 {
 	mName_ = L"LockPick";
 	itemType_ = ItemType::CONSUMABLE;
@@ -27,7 +29,7 @@ void Lockpick::Init(void)
 {
 	// モデル情報
 	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::BOTTLE_M));
+		ResourceManager::SRC::LOCKPICK_M));
 	InitModel(
 		INIT_POS,
 		INIT_SCL,
@@ -59,7 +61,8 @@ void Lockpick::Update(float deltaTime)
 
 void Lockpick::Draw(void)
 {
-	if (IsCurrentSelected())
+	if (IsCurrentSelected() ||
+		isUnlocking_)
 	{
 		MV1DrawModel(transform_.modelId);
 		return;
@@ -145,8 +148,32 @@ float Lockpick::CalculateRotRate(void)
 	return std::clamp(ratio, 0.0f, 1.0f);
 }
 
+void Lockpick::SetDefault(void)
+{
+	// 座標
+	transform_.pos = { UNLOCK_POS };
+
+	// ローカル回転
+	transform_.quaRotLocal = {
+		Quaternion::Euler(
+				AsoUtility::Deg2RadF(0.0f),
+				AsoUtility::Deg2RadF(0.0f),
+				AsoUtility::Deg2RadF(0.0f))
+	};
+
+	transform_.Update();
+
+	// 一度だけ呼び出す
+	isDefault_ = false;
+}
+
 void Lockpick::UpdateUnlock(float deltaTime)
 {
+	if (isDefault_)
+	{
+		SetDefault();
+	}
+
 	// 回転割合
 
 
@@ -161,6 +188,21 @@ void Lockpick::SetLockLevel(int level)
 float Lockpick::GetRotationRate(void)
 {
 	return rotRate_;
+}
+
+bool Lockpick::GetDefault(void)
+{
+	return isDefault_;
+}
+
+void Lockpick::SetIsDefault(bool flag)
+{
+	isDefault_ = flag;
+}
+
+void Lockpick::SetIsUnlocking(bool flag)
+{
+	isUnlocking_ = flag;
 }
 
 
