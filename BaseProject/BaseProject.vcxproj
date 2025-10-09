@@ -138,6 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\Enemy\EnemyMoveComponent.cpp" />
+    <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\Keyhole.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\KeyholePlate.cpp" />
     <ClCompile Include="Src\Manager\LightManager.cpp" />
@@ -195,6 +197,8 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\Enemy\EnemyMoveComponent.h" />
+    <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\Keyhole.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\KeyholePlate.h" />
     <ClInclude Include="Src\Manager\LightManager.h" />

@@ -18,12 +18,13 @@ class Player : public ActorBase
 {
 public:
 
-	static constexpr float MOVE_WALK_SPEED = 5.0f;
-	static constexpr float MOVE_RUN_SPEED = 10.0f;
+	static constexpr float MOVE_WALK_SPEED = 5.0f;				// 歩きスピード
+	static constexpr float MOVE_RUN_SPEED = 10.0f;				// 走りスピード
 	static constexpr float MOUSE_SENSITIVITY = 0.002f;			// マウス感度
 
 	Player(void);
 	~Player(void);
+
 	void Init(void) override;
 	void Update(float deltaTime) override;
 	void OnUpdate(float deltaTime) override;
@@ -31,6 +32,7 @@ public:
 
 	// 酸素コンポーネントの取得
 	OxygenComponent* GetOxygenComp();
+
 	// 入力コンポーネントの取得
 	PlayerInput* GetInputComp();
 
@@ -44,7 +46,8 @@ public:
 
 
 private:
-	OxygenComponent* oxygen_;	// 酸素コンポーネント
+
+	OxygenComponent* oxygen_;		// 酸素コンポーネント
 	PlayerInput* input_;			// 入力コンポーネント
 
 	//std::shared_ptr<Inventory> inventory_;		// インベントリ
@@ -55,7 +58,6 @@ private:
 	VECTOR movedPos_;		// 移動後座標
 
 	// 回転
-
 	Quaternion playerRotY_;
 	Quaternion goalQuaRot_;
 	float stepRotTime_;
@@ -76,6 +78,7 @@ private:
 
 	// ジャンプ量
 	VECTOR jumpPow_;
+
 	// ジャンプ状態であるか
 	bool isJump_;
 

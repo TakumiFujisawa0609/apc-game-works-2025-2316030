@@ -12,9 +12,13 @@
 
 Player::Player(void)
     :
+    oxygen_(nullptr),
+    input_(nullptr),
+    moveSpeed_(0.0f),
     moveDir_({}),
     movePow_({}),
     movedPos_({}),
+    stepRotTime_(0.0f),
     gravHitPosDown_({}),
     gravHitPosUp_({}),
     jumpPow_({0.0f,30.0f,0.0f}),
@@ -32,7 +36,6 @@ void Player::Init(void)
 	// コンポーネントを生成してアタッチ
 	oxygen_ = AddComponent<OxygenComponent>(100.0f, 1.0f);
 	input_ = AddComponent<PlayerInput>();
-
 
 	// モデル情報
 	transform_.pos = { 0.0f, 200.0f, 0.0f };
@@ -61,8 +64,6 @@ void Player::Init(void)
     capsule_->SetLocalPosTop({ 0.0f,50.0f,0.0f });
     capsule_->SetLocalPosDown({ 0.0f,-200.0f,0.0f });
     capsule_->SetRadius(40.0f);
-
-
 
 }
 
