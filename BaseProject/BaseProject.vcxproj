@@ -138,6 +138,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\Charactor\CharactorComponent.cpp" />
+    <ClCompile Include="Src\Object\Charactor.cpp" />
+    <ClCompile Include="Src\Object\Components\Enemy\EnemyChaseComponent.cpp" />
+    <ClCompile Include="Src\Object\Enemy\Patrol\PatrolPath.cpp" />
+    <ClCompile Include="Src\Object\Enemy\Patrol\PatrolNode.cpp" />
     <ClCompile Include="Src\Object\Components\Enemy\EnemyMoveComponent.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\Keyhole.cpp" />
@@ -197,6 +202,11 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\Charactor\CharactorComponent.h" />
+    <ClInclude Include="Src\Object\Charactor.h" />
+    <ClInclude Include="Src\Object\Components\Enemy\EnemyChaseComponent.h" />
+    <ClInclude Include="Src\Object\Enemy\Patrol\PatrolPath.h" />
+    <ClInclude Include="Src\Object\Enemy\Patrol\PatrolNode.h" />
     <ClInclude Include="Src\Object\Components\Enemy\EnemyMoveComponent.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\Keyhole.h" />

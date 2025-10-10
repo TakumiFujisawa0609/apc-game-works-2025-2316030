@@ -3,7 +3,7 @@
 
 UIComponent::UIComponent(std::shared_ptr<ActorBase> owner)
 	:
-	Component(owner,L"UIComponet")
+	Component(owner)
 {
 }
 

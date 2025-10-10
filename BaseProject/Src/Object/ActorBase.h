@@ -4,7 +4,10 @@
 class ResourceManager;
 class Component;
 
-class ActorBase :public std::enable_shared_from_this<ActorBase>
+class Collider;
+class Capsule;
+
+class ActorBase : public std::enable_shared_from_this<ActorBase>
 {
 
 public:

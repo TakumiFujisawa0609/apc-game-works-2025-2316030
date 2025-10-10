@@ -6,7 +6,7 @@
 OxygenComponent::OxygenComponent(std::shared_ptr<ActorBase> owner,
 	float max, float depletionRate)
     :
-	Component(owner, L"OxygenComponent"),
+	Component(owner),
 	oxygen_(max),
 	maxOxygen_(max),
 	depletionRate_(depletionRate),

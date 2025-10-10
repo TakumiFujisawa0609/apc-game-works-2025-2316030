@@ -4,7 +4,8 @@
 #include "PlayerInput.h"
 
 PlayerInput::PlayerInput(std::shared_ptr<ActorBase> owner)
-	: Component(owner,L"pInput"),
+	: 
+	Component(owner),
 	moveForward_(0.0f),
 	moveRight_(0.0f),
 	mouseDeltaX_(0.0f),

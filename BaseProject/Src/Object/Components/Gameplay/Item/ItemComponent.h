@@ -23,10 +23,13 @@ public:
 	int GetCount(void)const;
 	ItemType GetItemType(void)const;
 
+	// コンポーネントの識別名を取得
+	const std::wstring& GetName(void) const;
+
 protected:
 	int itemId_;
 	ItemType itemType_;
 	int count_; // 所持数
-
+	std::wstring mName_; // コンポーネントの識別名
 };
 

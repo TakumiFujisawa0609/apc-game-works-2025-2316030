@@ -54,18 +54,18 @@ void Input::Load()
 	Header header = {};
 	FileRead_read(&header, sizeof(header), handle);
 	//データ部
-	for (int i = 0; i < header.dataSize;++i) {
+	for (int i = 0; i < header.dataSize; ++i) {
 		//イベント名
 		uint8_t nameSize = 0;
-		FileRead_read(&nameSize, sizeof(nameSize),handle);
+		FileRead_read(&nameSize, sizeof(nameSize), handle);
 		std::string eventName;
 		eventName.resize(nameSize);
-		FileRead_read(eventName.data(), eventName.size(),handle);
+		FileRead_read(eventName.data(), eventName.size(), handle);
 		//データ部
 		uint32_t rowSize = 0;
 		FileRead_read(&rowSize, sizeof(rowSize), handle);
 		std::vector<InputState> rowData(rowSize);
-		FileRead_read(rowData.data(), sizeof(InputState)*rowSize,handle);
+		FileRead_read(rowData.data(), sizeof(InputState) * rowSize, handle);
 		inputTable_[eventName] = rowData;
 	}
 	FileRead_close(handle);

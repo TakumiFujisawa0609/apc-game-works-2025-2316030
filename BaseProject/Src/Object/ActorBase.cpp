@@ -3,7 +3,8 @@
 #include "ActorBase.h"
 
 ActorBase::ActorBase(void)
-	: resMng_(ResourceManager::GetInstance())
+	:
+	resMng_(ResourceManager::GetInstance())
 {
 }
 
@@ -28,5 +29,6 @@ const Transform& ActorBase::GetTransform(void) const
 
 void ActorBase::OnUpdate(float deltaTime)
 {
+    // Šî’êƒNƒ‰ƒX‚Å‚Í‰½‚à‘‚©‚È‚¢
 }
 

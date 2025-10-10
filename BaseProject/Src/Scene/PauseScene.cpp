@@ -63,7 +63,7 @@ void PauseScene::ProcessDraw()
 	float rate = static_cast<float>(frame_) / 
 					static_cast<float>(appear_interval);
 
-	frameHalfHeight *= rate;
+	frameHalfHeight *= static_cast<int>(rate);
 
 	//”’‚Á‚Û‚¢ƒZƒƒtƒ@ƒ“
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);

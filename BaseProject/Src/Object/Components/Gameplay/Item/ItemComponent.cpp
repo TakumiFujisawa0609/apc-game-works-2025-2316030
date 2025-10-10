@@ -24,3 +24,8 @@ ItemComponent::ItemType ItemComponent::GetItemType(void) const
 {
 	return itemType_;
 }
+
+const std::wstring& ItemComponent::GetName(void) const
+{
+	return mName_;
+}

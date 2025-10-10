@@ -1,5 +1,5 @@
 #pragma once
-#include "../ActorBase.h"
+#include "../Charactor.h"
 
 // 入力系
 class OxygenComponent;
@@ -14,7 +14,7 @@ class UIComponent;
 class Collider;
 class Capsule;
 
-class Player : public ActorBase
+class Player : public Charactor
 {
 public:
 
@@ -39,10 +39,10 @@ public:
 	// アイテムの取得条件
 	bool TakeItem(int itemId, int count);
 
-	void AddCollider(std::shared_ptr<Collider> collider);	// コライダ追加
-	void ClearCollider(void);								// コライダ全削除
+	//void AddCollider(std::shared_ptr<Collider> collider);	// コライダ追加
+	//void ClearCollider(void);								// コライダ全削除
 
-	const std::shared_ptr<Capsule> GetCapsule(void) const;	// 衝突用カプセルの取得
+	//const std::shared_ptr<Capsule> GetCapsule(void) const;	// 衝突用カプセルの取得
 
 
 private:
@@ -52,15 +52,15 @@ private:
 
 	//std::shared_ptr<Inventory> inventory_;		// インベントリ
 
-	float moveSpeed_;	// 移動速度
-	VECTOR moveDir_;		// 移動方向
-	VECTOR movePow_;		// 移動量
-	VECTOR movedPos_;		// 移動後座標
+	//float moveSpeed_;	// 移動速度
+	//VECTOR moveDir_;		// 移動方向
+	//VECTOR movePow_;		// 移動量
+	//VECTOR movedPos_;		// 移動後座標
 
-	// 回転
-	Quaternion playerRotY_;
-	Quaternion goalQuaRot_;
-	float stepRotTime_;
+	//// 回転
+	//Quaternion playerRotY_;
+	//Quaternion goalQuaRot_;
+	//float stepRotTime_;
 
 	float yaw;			// 水平回転（ヨー）
 	float pitch;		// 垂直回転（ピッチ）
@@ -70,21 +70,21 @@ private:
 	// アイテムをインベントリに追加
 	void GiveItem(int itemId, int count);
 
-	std::vector<std::shared_ptr<Collider>> colliders_;		// 衝突判定に用いられるコライダ
-	std::shared_ptr<Capsule> capsule_;						// プレイヤー当たり判定カプセル
+	//std::vector<std::shared_ptr<Collider>> colliders_;		// 衝突判定に用いられるコライダ
+	//std::shared_ptr<Capsule> capsule_;						// プレイヤー当たり判定カプセル
 
-	VECTOR gravHitPosDown_;				// 下方向の接地判定座標
-	VECTOR gravHitPosUp_;				// 上方向の接地判定座標
+	//VECTOR gravHitPosDown_;				// 下方向の接地判定座標
+	//VECTOR gravHitPosUp_;				// 上方向の接地判定座標
 
-	// ジャンプ量
-	VECTOR jumpPow_;
+	//// ジャンプ量
+	//VECTOR jumpPow_;
 
-	// ジャンプ状態であるか
-	bool isJump_;
+	//// ジャンプ状態であるか
+	//bool isJump_;
 
-	void Collision(void);
-	void CollisionCapsule(void);
-	void CollisionGravity(void);
-	void CalcGravityPow(void);
+	virtual void Collision(void);
+	virtual void CollisionCapsule(void);
+	virtual void CollisionGravity(void);
+	virtual void CalcGravityPow(void);
 };
 

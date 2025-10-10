@@ -13,16 +13,7 @@
 Player::Player(void)
     :
     oxygen_(nullptr),
-    input_(nullptr),
-    moveSpeed_(0.0f),
-    moveDir_({}),
-    movePow_({}),
-    movedPos_({}),
-    stepRotTime_(0.0f),
-    gravHitPosDown_({}),
-    gravHitPosUp_({}),
-    jumpPow_({0.0f,30.0f,0.0f}),
-    isJump_(false)
+    input_(nullptr)
 {
 	
 }
@@ -52,7 +43,7 @@ void Player::Init(void)
     moveDir_ = AsoUtility::VECTOR_ZERO; // 移動方向
     movedPos_ = transform_.pos;
 
-    playerRotY_ = Quaternion();
+    startRotY_ = Quaternion();
     goalQuaRot_ = Quaternion();
     stepRotTime_ = 0.0f;
 
@@ -181,21 +172,6 @@ bool Player::TakeItem(int itemId, int count)
     return false;
 }
 
-void Player::AddCollider(std::shared_ptr<Collider> collider)
-{
-    colliders_.push_back(collider);
-}
-
-void Player::ClearCollider(void)
-{
-    colliders_.clear();
-}
-
-const std::shared_ptr<Capsule> Player::GetCapsule(void) const
-{
-    return capsule_;
-}
-
 void Player::SetGoalRotate(float rotRad)
 {
     VECTOR angeles = Application::GetInstance().GetCamera()->GetAngles();
@@ -229,99 +205,15 @@ void Player::Collision(void)
 
 void Player::CollisionCapsule(void)
 {
-    // カプセルを移動させる
-    Transform trans = Transform(transform_);
-    trans.pos = movedPos_;
-    trans.Update();
-    Capsule cap = Capsule(*capsule_, trans);
-
-    // カプセルとの衝突判定
-    for (const auto& c : colliders_)
-    {
-        auto hits = MV1CollCheck_Capsule(
-            c->modelId_, -1,
-            cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
-
-        for (int i = 0; i < hits.HitNum; i++)
-        {
-            auto hit = hits.Dim[i];
-            for (int tryCnt = 0; tryCnt < 10; tryCnt++)
-            {
-                int pHit = HitCheck_Capsule_Triangle(
-                    cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
-                    hit.Position[0], hit.Position[1], hit.Position[2]);
-                if (pHit)
-                {
-                    movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
-
-                    // カプセルを移動させる
-                    trans.pos = movedPos_;
-                    trans.Update();
-                    continue;
-                }
-                break;
-            }
-        }
-        MV1CollResultPolyDimTerminate(hits);
-    }
+    Charactor::CollisionCapsule();
 }
 
 void Player::CollisionGravity(void)
 {
-    // ジャンプ量を加算
-    movedPos_ = VAdd(movedPos_, jumpPow_);
-
-    // 重力方向
-    VECTOR dirGravity = AsoUtility::DIR_D;
-
-    // 重力方向の反対
-    VECTOR dirUpGravity = AsoUtility::DIR_U;
-
-    // 重力の強さ
-    float gravityPow = 25.0f;
-
-    // 頭上判定時の押出力
-    float checkPow = 10.0f;
-    gravHitPosUp_ = VAdd(movedPos_, VScale(dirUpGravity, gravityPow));
-
-    //天井衝突チェックのために広めに2.0fをかけて判定をとる
-    gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * 2.0f));
-    gravHitPosDown_ = VAdd(movedPos_, VScale(dirGravity, checkPow));
-    for (const auto& c : colliders_)
-    {
-        // 地面との衝突
-        auto hit = MV1CollCheck_Line(
-            c->modelId_, -1, gravHitPosUp_, gravHitPosDown_);
-
-        if (hit.HitFlag > 0 && VDot(dirGravity, jumpPow_) > 0.9f)
-        {
-            // 衝突地点から、少し上に移動
-            movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 2.0f));
-
-            // ジャンプリセット
-            jumpPow_ = AsoUtility::VECTOR_ZERO;
-            isJump_ = false;
-        }
-    }
+    Charactor::CollisionGravity();
 }
 
 void Player::CalcGravityPow(void)
 {
-    // 重力方向
-    VECTOR dirGravity = AsoUtility::DIR_D;
-
-    // 重力の強さ
-    float gravityPow = 25.0f;
-
-    // 重力
-    VECTOR gravity = VScale(dirGravity, gravityPow);
-    jumpPow_ = VAdd(jumpPow_, gravity);
-
-    // 内積
-    float dot = VDot(dirGravity, jumpPow_);
-    if (dot >= 0.0f)
-    {
-        // 重力方向と反対方向(マイナス)でなければ、ジャンプ力を無くす
-        jumpPow_ = gravity;
-    }
+    Charactor::CalcGravityPow();
 }

@@ -13,7 +13,7 @@ OxygenGauge::OxygenGauge(OxygenComponent& oxygen)
 {
 	gaugeCenterX_ = static_cast<float>(Application::SCREEN_SIZE_X * 0.05);
 	gaugeCenterY_ = static_cast<float>(Application::SCREEN_SIZE_Y * 0.68);
-	gaugeRadius_ = std::min(gaugeCenterX_, gaugeCenterY_) * 0.5;
+	gaugeRadius_ = std::min(gaugeCenterX_, gaugeCenterY_) * 0.5f;
 
 }
 

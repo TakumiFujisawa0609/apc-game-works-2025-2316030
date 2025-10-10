@@ -1,19 +1,16 @@
 #include "../../Application.h"
+#include "../../Utility/AsoUtility.h"
+#include "../Common/Capsule.h"
+#include "../Components/Enemy/EnemyMoveComponent.h"
+#include "../Components/Enemy/EnemyChaseComponent.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(void)
     :
-    moveSpeed_(0.0f),
-    moveDir_({}),
-    movePow_({}),
-    movedPos_({}),
-    startRotY_({}),
-    goalQuaRot_({}),
-    stepRotTime_(0.0f),
-    gravHitPosDown_({}),
-    gravHitPosUp_({}),
-    jumpPow_({ 0.0f,30.0f,0.0f }),
-    isJump_(false)
+    moveComponent_(nullptr),
+    chaseComponent_(nullptr),
+    isHearingSound_(false),
+    isPlayerInSight_(false)
 {
 }
 
@@ -23,11 +20,22 @@ EnemyBase::~EnemyBase(void)
 
 void EnemyBase::Init(void)
 {
+    // モデル情報
+
+    // 状態の初期化
+
+    // 移動コンポーネント
+    moveComponent_ = AddCharactorComponent<EnemyMoveComponent>();
+
+    // 追跡コンポ―ネント
+    chaseComponent_ = AddCharactorComponent<EnemyChaseComponent>();
+
+    // モデルの更新
+    transform_.Update();
 }
 
 void EnemyBase::Update(float deltaTime)
 {
-
 
     // モデルの更新
     transform_.Update();
@@ -42,47 +50,45 @@ void EnemyBase::Draw(void)
     MV1DrawModel(transform_.modelId);
 }
 
-void EnemyBase::AddCollider(std::shared_ptr<Collider> collider)
+void EnemyBase::SetObstacle(std::vector<std::shared_ptr<Transform>> obstacle)
 {
-    colliders_.push_back(collider);
+    //chaseComponent_->SetObstacle(obstacle);
 }
 
-void EnemyBase::ClearCollider(void)
+void EnemyBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)
 {
-    colliders_.clear();
-}
+    // モデルの設定
+    transform_.pos = { pos.x,pos.y,pos.z };
+    transform_.scl = { scl.x,scl.y,scl.z };
+    transform_.quaRot = Quaternion();
+    transform_.quaRotLocal = Quaternion::Euler({ AsoUtility::Deg2RadF(quaRotLocal.x),
+        AsoUtility::Deg2RadF(quaRotLocal.y),AsoUtility::Deg2RadF(quaRotLocal.z) });
 
-const std::shared_ptr<Capsule> EnemyBase::GetCapsule(void) const
-{
-    return capsule_;
+    // モデル情報の更新
+    transform_.Update();
 }
 
 void EnemyBase::Rotate(void)
 {
-    stepRotTime_ -= Application::GetInstance().GetDeltaTime();
-
-    // 回転の球面補間
-    startRotY_ = Quaternion::Slerp(
-        startRotY_, goalQuaRot_, (TIME_ROT - stepRotTime_) / TIME_ROT);
+    Charactor::Rotate();
 }
 
 void EnemyBase::Collision(void)
 {
-
-    CollisionCapsule();
-
-    CollisionGravity();
+    Charactor::Collision();
 }
 
 void EnemyBase::CollisionCapsule(void)
 {
-
+    Charactor::CollisionCapsule();
 }
 
 void EnemyBase::CollisionGravity(void)
 {
+    Charactor::CollisionGravity();
 }
 
 void EnemyBase::CalcGravityPow(void)
 {
+    Charactor::CalcGravityPow();
 }
