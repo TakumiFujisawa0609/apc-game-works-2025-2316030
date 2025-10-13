@@ -25,6 +25,15 @@ Charactor::~Charactor()
 	transform_.Release();
 }
 
+void Charactor::Update(float deltaTime)
+{
+    for (auto& comp : charaComponents_)
+    {
+        comp->Update(deltaTime);
+    }
+    OnUpdate(deltaTime);
+}
+
 void Charactor::AddCollider(std::shared_ptr<Collider> collider)
 {
 	colliders_.push_back(collider);
@@ -83,7 +92,7 @@ void Charactor::CollisionCapsule(void)
                     hit.Position[0], hit.Position[1], hit.Position[2]);
                 if (pHit)
                 {
-                    movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+                    movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 0.01f));
 
                     // ƒJƒvƒZƒ‹‚ðˆÚ“®‚³‚¹‚é
                     trans.pos = movedPos_;

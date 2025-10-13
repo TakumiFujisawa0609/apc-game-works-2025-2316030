@@ -3,9 +3,9 @@
 #include "../../../Manager/InputManager.h"
 #include "PlayerInput.h"
 
-PlayerInput::PlayerInput(std::shared_ptr<ActorBase> owner)
+PlayerInput::PlayerInput(std::shared_ptr<Charactor> owner)
 	: 
-	Component(owner),
+	CharactorComponent(owner),
 	moveForward_(0.0f),
 	moveRight_(0.0f),
 	mouseDeltaX_(0.0f),
@@ -36,8 +36,6 @@ void PlayerInput::Update(float deltaTime)
 
 	mouseDeltaX_ = static_cast<float>(mx - Application::GetInstance().GetWindowSize().width / 2);
 	mouseDeltaY_ = static_cast<float>(my - Application::GetInstance().GetWindowSize().height / 2);
-
-
 }
 
 float PlayerInput::GetMoveForward(void) const

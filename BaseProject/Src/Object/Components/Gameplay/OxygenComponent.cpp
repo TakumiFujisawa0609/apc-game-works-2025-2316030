@@ -3,10 +3,10 @@
 #include "../../../Application.h"
 #include "OxygenComponent.h"
 
-OxygenComponent::OxygenComponent(std::shared_ptr<ActorBase> owner,
+OxygenComponent::OxygenComponent(std::shared_ptr<Charactor> owner,
 	float max, float depletionRate)
     :
-	Component(owner),
+	CharactorComponent(owner),
 	oxygen_(max),
 	maxOxygen_(max),
 	depletionRate_(depletionRate),

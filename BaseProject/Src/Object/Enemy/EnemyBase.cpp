@@ -7,8 +7,8 @@
 
 EnemyBase::EnemyBase(void)
     :
-    moveComponent_(nullptr),
-    chaseComponent_(nullptr),
+    //moveComponent_(nullptr),
+    //chaseComponent_(nullptr),
     isHearingSound_(false),
     isPlayerInSight_(false)
 {
@@ -34,6 +34,10 @@ void EnemyBase::Init(void)
     transform_.Update();
 }
 
+void EnemyBase::InitComponents(void)
+{
+}
+
 void EnemyBase::Update(float deltaTime)
 {
 
@@ -52,7 +56,7 @@ void EnemyBase::Draw(void)
 
 void EnemyBase::SetObstacle(std::vector<std::shared_ptr<Transform>> obstacle)
 {
-    //chaseComponent_->SetObstacle(obstacle);
+    chaseComponent_->SetObstacle(obstacle);
 }
 
 void EnemyBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)

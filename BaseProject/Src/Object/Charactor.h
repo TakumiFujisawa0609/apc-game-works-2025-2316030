@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "ActorBase.h"
 #include "Components/Charactor/CharactorComponent.h"
@@ -6,31 +6,45 @@
 //class CharactorComponent;
 
 class Charactor :
-	public ActorBase,
-	public std::enable_shared_from_this<Charactor>
+	public ActorBase
 {
 public:
-	static constexpr float TIME_ROT = 1.0f;		// ‰ñ“]Š®—¹‚·‚é‚Ü‚Å‚ÌŠÔ
+	
+	static constexpr float TIME_ROT = 1.0f;		// å›è»¢å®Œäº†ã™ã‚‹ã¾ã§ã®æ™‚é–“
 
 	Charactor(void);
 	virtual ~Charactor();
 
 	virtual void Init(void) = 0;
+	virtual void InitComponents(void) = 0; // ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆåˆæœŸåŒ–
 	virtual void Update(float deltaTime) = 0;
 	virtual void Draw(void) = 0;
 
-	virtual void AddCollider(std::shared_ptr<Collider> collider);	// ƒRƒ‰ƒCƒ_’Ç‰Á
-	virtual void ClearCollider(void);								// ƒRƒ‰ƒCƒ_‘Síœ
+	virtual void AddCollider(std::shared_ptr<Collider> collider);	// ã‚³ãƒ©ã‚¤ãƒ€è¿½åŠ 
+	virtual void ClearCollider(void);								// ã‚³ãƒ©ã‚¤ãƒ€å…¨å‰Šé™¤
 
-	virtual const std::shared_ptr<Capsule> GetCapsule(void) const;	// Õ“Ë—pƒJƒvƒZƒ‹‚Ìæ“¾
+	virtual const std::shared_ptr<Capsule> GetCapsule(void) const;	// è¡çªç”¨ã‚«ãƒ—ã‚»ãƒ«ã®å–å¾—
 
-	// ƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì’Ç‰Á
+	// ActorBase ã® shared_from_this() ã‚’ Charactor å‹ã«ãƒ€ã‚¦ãƒ³ã‚­ãƒ£ã‚¹ãƒˆã™ã‚‹
+	std::shared_ptr<Charactor> shared_from_this()
+	{
+		// ActorBase ã® shared_from_this() ã‚’å‘¼ã³å‡ºã—ã€static_pointer_cast ã§å‹ã‚’å¤‰æ›´
+		return std::static_pointer_cast<Charactor>(ActorBase::shared_from_this());
+	}
+
+	// const ç‰ˆã‚‚åŒæ§˜ã«ä¿®æ­£
+	std::shared_ptr<const Charactor> shared_from_this() const
+	{
+		return std::static_pointer_cast<const Charactor>(ActorBase::shared_from_this());
+	}
+
+	// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®è¿½åŠ 
 	template<typename T, typename... Args>
 	T* AddCharactorComponent(Args&&... args)
 	{
-		auto chara_owner = std::enable_shared_from_this<Charactor>::shared_from_this();
-
-		auto comp = std::make_unique<T>(chara_owner, std::forward<Args>(args)...);
+		
+		std::shared_ptr<Charactor> ownerPtr = shared_from_this();
+		auto comp = std::make_unique<T>(ownerPtr, std::forward<Args>(args)...);
 		T* ptr = comp.get();
 		charaComponents_.emplace_back(std::move(comp));
 		return ptr;
@@ -38,43 +52,43 @@ public:
 
 protected:
 
-	float moveSpeed_;	    // ˆÚ“®‘¬“x
-	VECTOR moveDir_;		// ˆÚ“®•ûŒü
-	VECTOR movePow_;		// ˆÚ“®—Ê
-	VECTOR movedPos_;		// ˆÚ“®ŒãÀ•W
+	float moveSpeed_;	    // ç§»å‹•é€Ÿåº¦
+	VECTOR moveDir_;		// ç§»å‹•æ–¹å‘
+	VECTOR movePow_;		// ç§»å‹•é‡
+	VECTOR movedPos_;		// ç§»å‹•å¾Œåº§æ¨™
 
-	// ‰ñ“]
-	Quaternion startRotY_;			// ‰ñ“]‚Ìn“_
-	Quaternion goalQuaRot_;			// ‰ñ“]‚ÌI“_
-	float stepRotTime_;				// ‰ñ“]ŠÔ
+	// å›è»¢
+	Quaternion startRotY_;			// å›è»¢ã®å§‹ç‚¹
+	Quaternion goalQuaRot_;			// å›è»¢ã®çµ‚ç‚¹
+	float stepRotTime_;				// å›è»¢æ™‚é–“
 
-	std::vector<std::shared_ptr<Collider>> colliders_;		// Õ“Ë”»’è‚É—p‚¢‚ç‚ê‚éƒRƒ‰ƒCƒ_
-	std::shared_ptr<Capsule> capsule_;						// ƒvƒŒƒCƒ„[“–‚½‚è”»’èƒJƒvƒZƒ‹
+	std::vector<std::shared_ptr<Collider>> colliders_;		// è¡çªåˆ¤å®šã«ç”¨ã„ã‚‰ã‚Œã‚‹ã‚³ãƒ©ã‚¤ãƒ€
+	std::shared_ptr<Capsule> capsule_;						// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å½“ãŸã‚Šåˆ¤å®šã‚«ãƒ—ã‚»ãƒ«
 
-	VECTOR gravHitPosDown_;				// ‰º•ûŒü‚ÌÚ’n”»’èÀ•W
-	VECTOR gravHitPosUp_;				// ã•ûŒü‚ÌÚ’n”»’èÀ•W
+	VECTOR gravHitPosDown_;				// ä¸‹æ–¹å‘ã®æ¥åœ°åˆ¤å®šåº§æ¨™
+	VECTOR gravHitPosUp_;				// ä¸Šæ–¹å‘ã®æ¥åœ°åˆ¤å®šåº§æ¨™
 
-	// y²•ûŒü‚Ì•Ï‰»ˆÚ“®—Ê
+	// yè»¸æ–¹å‘ã®å¤‰åŒ–ç§»å‹•é‡
 	VECTOR velocityY_;
 
-	// y•ûŒü‚ÉˆÚ“®’†‚©
+	// yæ–¹å‘ã«ç§»å‹•ä¸­ã‹
 	bool isVelocityY_;
 
-	// ”h¶ƒNƒ‰ƒX‚Å“Æ©ˆ—
+	// æ´¾ç”Ÿã‚¯ãƒ©ã‚¹ã§ç‹¬è‡ªå‡¦ç†
 	virtual void OnUpdate(float deltaTime) = 0;
 
-	// ‰ñ“]ˆ—
+	// å›è»¢å‡¦ç†
 	virtual void Rotate(void);
 
-	virtual void Collision(void);               // Õ“Ë”»’è
-	virtual void CollisionCapsule(void);        // ƒJƒvƒZƒ‹‚Æ‚ÌÕ“Ë”»’è
-	virtual void CollisionGravity(void);        // d—Í‚Æ‚ÌÕ“Ë”»’è
-	virtual void CalcGravityPow(void);          // d—Í‰ÁZˆ—
+	virtual void Collision(void);               // è¡çªåˆ¤å®š
+	virtual void CollisionCapsule(void);        // ã‚«ãƒ—ã‚»ãƒ«ã¨ã®è¡çªåˆ¤å®š
+	virtual void CollisionGravity(void);        // é‡åŠ›ã¨ã®è¡çªåˆ¤å®š
+	virtual void CalcGravityPow(void);          // é‡åŠ›åŠ ç®—å‡¦ç†
 
 
 private:
 
-	// ƒRƒ“ƒ|[ƒlƒ“ƒgŒQ
+	// ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆç¾¤
 	std::vector<std::unique_ptr<CharactorComponent>> charaComponents_;
 };
 

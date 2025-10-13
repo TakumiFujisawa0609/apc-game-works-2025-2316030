@@ -5,7 +5,7 @@ class Wire :
 {
 public:
     static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
-    static constexpr VECTOR INIT_SCL = { 1.0f,5.0f,1.0f };           // 初期拡大率
+    static constexpr VECTOR INIT_SCL = { 1.0f,1.0f,1.0f };           // 初期拡大率
     static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,0.0f,0.0f };    // 初期ローカル回転
 
 
@@ -17,7 +17,7 @@ public:
     static constexpr float SECOND_LOCK = 15.0f;                        // 2つ目のロック
     static constexpr float THIRD_LOCK = 8.0f;                         // 3つ目のロック
 
-    static constexpr VECTOR UNLOCK_POS = { 0.0f,0.0f,15.0f };
+    static constexpr VECTOR UNLOCK_POS = { 0.0f,0.0f,150.0f };
 
     Wire(std::shared_ptr<ActorBase> owner);
     ~Wire();

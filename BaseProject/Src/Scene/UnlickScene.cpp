@@ -45,11 +45,11 @@ void UnlickScene::Init(Input& input)
 	wire_->SetIsDefault(true);
 
 	// 鍵穴プレートの初期化
-	keyholePlate_ = std::make_shared<KeyholePlate>(player_);
+	keyholePlate_ = std::make_shared<KeyholePlate>();
 	keyholePlate_->Init();
 
 	// 鍵穴の初期化
-	keyhole_ = std::make_shared<Keyhole>(player_);
+	keyhole_ = std::make_shared<Keyhole>();
 	keyhole_->Init();
 	keyhole_->SetAngle(static_cast<float>(lockpick_->GetTransform().quaRotLocal.z));
 	
@@ -118,7 +118,14 @@ void UnlickScene::NormalUpdate(Input& input)
 			lockpick_->SetLockLevel(wire_->GetLockLevel());
 			
 			// ロックピック、鍵穴ともに回転
+			lockpick_->SetIsSuccess(true);
 			lockpick_->UpdateUnlock(time);
+
+
+			// クリア判定を出す
+			update_ = &UnlickScene::DisappearUpdate;
+			draw_ = &UnlickScene::ProcessDraw;
+			return;
 		}
 
 		// 解錠後
@@ -128,8 +135,6 @@ void UnlickScene::NormalUpdate(Input& input)
 
 	// 指定の角度に到達したら解錠完了
 	lockpick_->UpdateUnlock(time);
-
-	//keyhole_->SetAngle(lockpick_->GetTransform().quaRotLocal.z);
 
 	keyhole_->Update(time);
 }
@@ -188,13 +193,12 @@ void UnlickScene::NormalDraw()
 
 void UnlickScene::LockPickingDraw(void)
 {
-	ClearDrawScreen();
+
+	// 鍵穴
+	keyhole_->Draw();
 
 	// 鍵枠
 	keyholePlate_->Draw();
-	
-	// 鍵穴
-	keyhole_->Draw();
 
 	// ロックピック
 	lockpick_->Draw();

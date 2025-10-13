@@ -1,14 +1,15 @@
 #include <DxLib.h>
+#include <memory>
 #include "../../Application.h"
 #include "../../Utility/AsoUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Manager/InputManager.h"
 #include "../Common/Collider.h"
 #include "../Common/Capsule.h"
-#include "../../Object/Components/Gameplay/OxygenComponent.h"
-#include "../../Object/Components/Player/PlayerInput.h"
 #include "Inventory.h"
 #include "Player.h"
+#include "../../Object/Components/Gameplay/OxygenComponent.h"
+#include "../../Object/Components/Player/PlayerInput.h"
 
 Player::Player(void)
     :
@@ -24,10 +25,6 @@ Player::~Player(void)
 
 void Player::Init(void)
 {
-	// コンポーネントを生成してアタッチ
-	oxygen_ = AddComponent<OxygenComponent>(100.0f, 1.0f);
-	input_ = AddComponent<PlayerInput>();
-
 	// モデル情報
 	transform_.pos = { 0.0f, 200.0f, 0.0f };
 	transform_.scl = { 1.0f, 1.0f, 1.0f };
@@ -53,14 +50,21 @@ void Player::Init(void)
     // カプセルコライダ
     capsule_ = std::make_shared<Capsule>(transform_);
     capsule_->SetLocalPosTop({ 0.0f,50.0f,0.0f });
-    capsule_->SetLocalPosDown({ 0.0f,-200.0f,0.0f });
+    capsule_->SetLocalPosDown({ 0.0f,-400.0f,0.0f });
     capsule_->SetRadius(40.0f);
 
 }
 
+void Player::InitComponents(void)
+{
+    // コンポーネントを生成してアタッチ
+    oxygen_ = AddCharactorComponent<OxygenComponent>(100.0f, 1.0f);
+    input_ = AddCharactorComponent<PlayerInput>();
+}
+
 void Player::Update(float deltaTime)
 {
-	ActorBase::Update(deltaTime);
+	Charactor::Update(deltaTime);
 
     oxygen_->GetOxygen();
 }
@@ -107,8 +111,6 @@ void Player::OnUpdate(float deltaTime)
     if (ins.IsNew(KEY_INPUT_D)) moveDir_ = VAdd(moveDir_, right);
     if (ins.IsNew(KEY_INPUT_A)) moveDir_ = VAdd(moveDir_, VScale(right, -1.0f));
 
-    //if (ins.IsNew(KEY_INPUT_SPACE)) moveDir_ = VAdd(moveDir_, up);
-    //if (ins.IsNew(KEY_INPUT_LSHIFT)) moveDir_ = VAdd(moveDir_, VScale(up, -1.0f));
 
     if (ins.IsNew(KEY_INPUT_LSHIFT))
     {
@@ -139,6 +141,7 @@ void Player::OnUpdate(float deltaTime)
         movedPos_ = VAdd(transform_.pos, movePow_);
         Collision();
         transform_.pos = movedPos_;
+        transform_.pos.y = 189.0f;
     }
     
     // Transform更新
@@ -163,12 +166,6 @@ PlayerInput* Player::GetInputComp()
 
 bool Player::TakeItem(int itemId, int count)
 {
-  //  if (inventory_->HasItem(itemId) &&
-  //      inventory_->GetItemCount(itemId) >= count)
-  //  {
-		//inventory_->RemoveItem(itemId, count);
-		//return true;
-  //  }
     return false;
 }
 
@@ -200,7 +197,17 @@ void Player::Collision(void)
 {
     CollisionCapsule();
 
-    CollisionGravity();
+    /*if (transform_.pos.y > 189.0f)
+    {*/
+        CollisionGravity();
+	//}
+    //else
+    //{
+    //    // 地面に到達したらy座標を固定
+    //    transform_.pos.y = 189.0f;
+    //    velocityY_ = AsoUtility::VECTOR_ZERO;
+    //    isVelocityY_ = false;
+    //}
 }
 
 void Player::CollisionCapsule(void)

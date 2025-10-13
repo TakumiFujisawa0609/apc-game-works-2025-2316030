@@ -1,10 +1,10 @@
 #pragma once
-#include "../../Common/Component.h"
+#include "../Charactor/CharactorComponent.h"
 class OxygenComponent :
-    public Component
+    public CharactorComponent
 {
 public:
-	OxygenComponent(std::shared_ptr<ActorBase> owner, float max = 100.0f, float depletionRate = 1.0f);
+	OxygenComponent(std::shared_ptr<Charactor> owner, float max = 100.0f, float depletionRate = 1.0f);
 	~OxygenComponent();
 	
 	void Update(float deltaTime) override;

@@ -5,7 +5,7 @@ class Lockpick :
 {
 public:
 	static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
-	static constexpr VECTOR INIT_SCL = { 0.05f,0.1f,0.05f };           // 初期拡大率
+	static constexpr VECTOR INIT_SCL = { 15.0f,15.0f,15.0f };           // 初期拡大率
 	static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,0.0f,15.0f };    // 初期ローカル回転
 
 	// 調整用座標
@@ -45,6 +45,8 @@ public:
 
 	void SetIsUnlocking(bool flag);
 
+	void SetIsSuccess(bool flag);
+
 private:
 
 	bool isUse_;				// 使用可能かどうか
@@ -54,6 +56,7 @@ private:
 
 	bool isDefault_;			// デフォルト状態をセット
 	bool isUnlocking_;			// 解錠中であるか否か
+	bool isSuccess_;			// 解錠に成功したか否か
 
 	virtual void UpdateOnStage(float deltaTime) override;
 	virtual void UpdateInVentory(float deltaTime) override;

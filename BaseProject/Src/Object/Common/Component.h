@@ -6,7 +6,6 @@ class ActorBase;
 class Component
 {
 public:
-	//Component(std::shared_ptr<ActorBase> owner, const std::wstring name = L"Component");
 	Component(std::shared_ptr<ActorBase> owner);
 	virtual ~Component(void) = default;
 

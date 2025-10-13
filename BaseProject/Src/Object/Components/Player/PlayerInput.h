@@ -1,10 +1,10 @@
 #pragma once
-#include "../../Common/Component.h"
+#include "../Charactor/CharactorComponent.h"
 class PlayerInput :
-    public Component
+    public CharactorComponent
 {
 public:
-	PlayerInput(std::shared_ptr<ActorBase> owner);
+	PlayerInput(std::shared_ptr<Charactor> owner);
 	virtual ~PlayerInput(void);
 	virtual void Update(float deltaTime) override;
 

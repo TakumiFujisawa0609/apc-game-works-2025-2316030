@@ -19,6 +19,7 @@ public:
     ~EnemyBase(void);
 
     void Init(void) override;
+    void InitComponents(void) override;
     void Update(float deltaTime) override;
     void OnUpdate(float deltaTime) override;
     void Draw(void) override;

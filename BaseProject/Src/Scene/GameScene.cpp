@@ -67,9 +67,7 @@ void GameScene::NormalUpdate(Input& input)
 	{
 		std::shared_ptr<UnlickScene> us = std::make_shared<UnlickScene>(controller_);
 		us->SetPlayer(player_);
-
-		std::shared_ptr<Wire> wire = std::make_shared<Wire>(player_);
-		us->SetWire(wire);
+		us->SetWire(wire_);
 
 		us->SetLockPick(lockpick_);
 
@@ -102,8 +100,8 @@ void GameScene::NormalDraw()
 	player_->Draw();
 	lockpick_->Draw();
 	light_->Draw();
-	knife_->Draw();
-	radio_->Draw();
+	//knife_->Draw();
+	//radio_->Draw();
 
 	// スロット
 	itemSlot_->Draw();
@@ -126,8 +124,8 @@ void GameScene::FadeDraw()
 
 	lockpick_->Draw();
 	light_->Draw();
-	knife_->Draw();
-	radio_->Draw();
+	//knife_->Draw();
+	//radio_->Draw();
 
 	// スロット
 	itemSlot_->Draw();
@@ -220,6 +218,7 @@ void GameScene::Init(Input& input)
 {
 	// プレイヤー
 	player_ = std::make_shared<Player>();
+	player_->InitComponents();
 	player_->Init();
 
 	// ステージ
@@ -237,20 +236,23 @@ void GameScene::Init(Input& input)
 	light_ = std::make_shared<HandLight>(player_);
 	light_->Init();
 
-	// ナイフ
-	knife_ = std::make_shared<Knife>(player_);
-	knife_->Init();
+	//// ナイフ
+	//knife_ = std::make_shared<Knife>(player_);
+	//knife_->Init();
 
-	// ラジオ
-	radio_ = std::make_shared<Radio>(player_);
-	radio_->Init();
+	//// ラジオ
+	//radio_ = std::make_shared<Radio>(player_);
+	//radio_->Init();
+
+	wire_ = std::make_shared<Wire>(player_);
+	wire_->Init();
 
 
 	// アイテムスロット
 	itemSlot_ = std::make_shared<ItemSlot>();
 	itemSlot_->AddItem(lockpick_);
-	itemSlot_->AddItem(radio_);
-	itemSlot_->AddItem(knife_);
+	//itemSlot_->AddItem(radio_);
+	//itemSlot_->AddItem(knife_);
 	itemSlot_->AddItem(light_);
 
 
@@ -260,8 +262,8 @@ void GameScene::Init(Input& input)
 
 	lockpick_->SetTargetPos(&player_->GetTransform());
 	light_->SetTargetPos(&player_->GetTransform());
-	knife_->SetTargetPos(&player_->GetTransform());
-	radio_->SetTargetPos(&player_->GetTransform());
+	//knife_->SetTargetPos(&player_->GetTransform());
+	//radio_->SetTargetPos(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
 	isFps_ = true;
@@ -288,8 +290,8 @@ void GameScene::Update(Input& input)
 	// アイテム
 	lockpick_->Update(time);
 	light_->Update(time);
-	knife_->Update(time);
-	radio_->Update(time);
+	//knife_->Update(time);
+	//radio_->Update(time);
 
 
 	status_->Update(time);

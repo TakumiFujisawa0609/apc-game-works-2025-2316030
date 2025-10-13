@@ -1,5 +1,6 @@
 ﻿#include <random>
 #include <chrono>
+#include <cmath>
 #include "../../../../../Application.h"
 #include "../../../../../Common/Quaternion.h"
 #include "../../../../../Manager/ResourceManager.h"
@@ -25,12 +26,24 @@ Wire::~Wire()
 
 void Wire::Init(void)
 {
+    // モデル情報
     transform_.SetModel(resMng_.LoadModelDuplicate(
         ResourceManager::SRC::WIRE_M));
-    InitModel(
-        INIT_POS,
-        INIT_SCL,
-        INIT_QUAROTLOCAL);
+
+    auto camera = Application::GetInstance().GetCamera();
+    // ① カメラの位置から
+    VECTOR camPos = camera->GetPos();
+
+    // ② カメラの「前方ベクトル」（GetForward）を計算し
+    VECTOR forward = camera->GetForward();
+
+    // ③ 前方に適切な距離（例: 300.0f）だけ進んだ地点をモデルの位置とする
+    // この位置が、カメラの向きにかかわらず画面中央になります
+    VECTOR modelPos = VAdd(camPos, VScale(forward, 200.0f));
+
+    transform_.pos = modelPos;
+    transform_.scl = { 100.0f,100.0f,100.0f };
+    transform_.quaRot = camera->GetQuaRot();
 
     // UI画像
     imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::KNIFE_I);
@@ -89,7 +102,7 @@ void Wire::UpdateExplore(float deltaTime)
     }
 
     // 現在の角度を更新
-    currentAngle_ = static_cast<float>(transform_.quaRotLocal.z);
+    currentAngle_ = static_cast<float>(transform_.quaRotLocal.x);
 
     // マウスをx方向に動かしてtrasnform_.quaRot.zを動かす
     int mx, my;
@@ -99,10 +112,10 @@ void Wire::UpdateExplore(float deltaTime)
     float deltaX = static_cast<float>(mx - lastMousePosX_);
 
     // マウスによるz軸のローカル回転
-    transform_.quaRotLocal.z += -deltaX * MOUSE_SENSITIVITY;
+    transform_.quaRotLocal.x += -deltaX * MOUSE_SENSITIVITY;
 
     // ローカル回転の制限
-    float thresholdRotZ = static_cast<float>(transform_.quaRotLocal.z);
+    float thresholdRotZ = static_cast<float>(transform_.quaRotLocal.x);
     if (thresholdRotZ > MAX_ROT_Z)
     {
         thresholdRotZ = MAX_ROT_Z;
@@ -113,12 +126,11 @@ void Wire::UpdateExplore(float deltaTime)
     }
 
     // マウス座標の更新
-    //mx = lastMousePosX_;
     lastMousePosX_ = mx;
 
     // 判定の更新
-    transform_.quaRotLocal.z = static_cast<double>(thresholdRotZ);
-    currentAngle_ = static_cast<float>(transform_.quaRotLocal.z);
+    transform_.quaRotLocal.x= static_cast<double>(thresholdRotZ);
+    currentAngle_ = static_cast<float>(transform_.quaRotLocal.x);
 
     // モデルの更新
     transform_.Update();
@@ -126,8 +138,8 @@ void Wire::UpdateExplore(float deltaTime)
 
 bool Wire::IsDifference(void)
 {
-    float diffAngle_ = goalAngle_ - currentAngle_;
-    if (diffAngle_ == 0.0f)
+    float diffAngle_ = std::abs(goalAngle_ - currentAngle_);
+    if (diffAngle_ <= 10.0f)
     {
         return true;
     }
@@ -198,14 +210,29 @@ void Wire::UpdateDisabled(float deltaTime)
 void Wire::SetDefault(void)
 {
     // 座標
-    transform_.pos = { UNLOCK_POS };
+    auto camera = Application::GetInstance().GetCamera();
+    // ① カメラの位置から
+    VECTOR camPos = camera->GetPos();
+
+    // ② カメラの「前方ベクトル」（GetForward）を計算し
+    VECTOR forward = camera->GetForward();
+
+    // ③ 前方に適切な距離（例: 300.0f）だけ進んだ地点をモデルの位置とする
+    // この位置が、カメラの向きにかかわらず画面中央になります
+    VECTOR modelPos = VAdd(camPos, VScale(forward, 220.0f));
+
+    //transform_.pos = modelPos;
+    transform_.pos = { 0.0f,0.0f ,-1000.0f };
+    //transform_.pos.y += 60.0f;
+    transform_.scl = { 0.0f,0.0f,0.0f };
+    transform_.quaRot = Quaternion::LookRotation(camera->GetForward());
 
     // ローカル回転
     transform_.quaRotLocal = {
         Quaternion::Euler(
+                AsoUtility::Deg2RadF(120.0f),
                 AsoUtility::Deg2RadF(0.0f),
-                AsoUtility::Deg2RadF(0.0f),
-                AsoUtility::Deg2RadF(0.0f) )
+                AsoUtility::Deg2RadF(0.0f))
     };
 
     transform_.Update();

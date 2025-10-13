@@ -1,5 +1,6 @@
 #include <functional>
 #include <algorithm>
+#include <cmath>
 #include "../../../../../Application.h"
 #include "../../../../../Common/Quaternion.h"
 #include "../../../../../Manager/ResourceManager.h"
@@ -15,7 +16,8 @@ Lockpick::Lockpick(std::shared_ptr<ActorBase> owner)
 	lLevel_(-1),
 	rotRate_(0.0f),
 	isDefault_(false),
-	isUnlocking_(false)
+	isUnlocking_(false),
+	isSuccess_(false)
 {
 	mName_ = L"LockPick";
 	itemType_ = ItemType::CONSUMABLE;
@@ -67,7 +69,7 @@ void Lockpick::Draw(void)
 		MV1DrawModel(transform_.modelId);
 		return;
 	}
-
+	DrawSphere3D(transform_.pos, 80.0f, 32, GetColor(255, 0, 0), GetColor(0, 255, 255), TRUE);
 
 }
 
@@ -98,6 +100,7 @@ void Lockpick::UpdateInVentory(float deltaTime)
 	// 現在手に持っているかどうかをスロットを見て判断する
 	// 持っていれば
 
+	transform_.scl = { 15.0f,15.0f,15.0f };
 
 	// 装備しているかどうか
 	if (isEquipment_)
@@ -151,14 +154,28 @@ float Lockpick::CalculateRotRate(void)
 void Lockpick::SetDefault(void)
 {
 	// 座標
-	transform_.pos = { UNLOCK_POS };
+	auto camera = Application::GetInstance().GetCamera();
+	// ① カメラの位置から
+	VECTOR camPos = camera->GetPos();
+
+	// ② カメラの「前方ベクトル」（GetForward）を計算し
+	VECTOR forward = camera->GetForward();
+
+	// ③ 前方に適切な距離（例: 300.0f）だけ進んだ地点をモデルの位置とする
+	// この位置が、カメラの向きにかかわらず画面中央になります
+	VECTOR modelPos = VAdd(camPos, VScale(forward, 200.0f));
+
+	transform_.pos = modelPos;
+	transform_.pos.y -= 60.0f;
+	transform_.scl = { 100.0f,100.0f,100.0f };
+	transform_.quaRot = Quaternion::LookRotation(camera->GetForward());
 
 	// ローカル回転
 	transform_.quaRotLocal = {
 		Quaternion::Euler(
+				AsoUtility::Deg2RadF(-90.0f),
 				AsoUtility::Deg2RadF(0.0f),
-				AsoUtility::Deg2RadF(0.0f),
-				AsoUtility::Deg2RadF(0.0f))
+				AsoUtility::Deg2RadF(90.0f))
 	};
 
 	transform_.Update();
@@ -175,7 +192,30 @@ void Lockpick::UpdateUnlock(float deltaTime)
 	}
 
 	// 回転割合
+	if (isUnlocking_ && isSuccess_)
+	{
+		//// 目標角度を例えば -30度 (度からラジアンに変換)
+		//const float GOAL_ROT = AsoUtility::Deg2RadF(-30.0f);
+		//// 回転速度
+		//const float ROT_SPEED = 5.0f * deltaTime; // 適当な値
 
+		//// 現在のZ回転を取得
+		//float currentRotZ = static_cast<float>(transform_.quaRotLocal.z);
+
+		//// 目標に向かって徐々に回転
+		//currentRotZ = AsoUtility::MoveToAngle(currentRotZ, GOAL_ROT, ROT_SPEED);
+
+		//// 回転の適用
+		//transform_.quaRotLocal.z = static_cast<double>(currentRotZ);
+
+		//// 回転完了判定（回転がほぼ目標に達したら、次のシーン遷移などに備える）
+		//if (std::abs(currentRotZ - GOAL_ROT) < 0.01f)
+		//{
+		//	// 解錠完了
+		//	isUnlocking_ = false;
+		//	// 次のシーンへの遷移ロジックをUnlickScene::NormalUpdateに記述
+		//}
+	}
 
 	transform_.Update();
 }
@@ -203,6 +243,11 @@ void Lockpick::SetIsDefault(bool flag)
 void Lockpick::SetIsUnlocking(bool flag)
 {
 	isUnlocking_ = flag;
+}
+
+void Lockpick::SetIsSuccess(bool flag)
+{
+	isSuccess_ = flag;
 }
 
 

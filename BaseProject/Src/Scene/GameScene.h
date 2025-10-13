@@ -13,6 +13,8 @@ class HandLight;
 class Knife;
 class Radio;
 
+class Wire;
+
 class ItemSlot;
 
 class PlayerStatusUI;
@@ -70,6 +72,9 @@ private:
 
 	// ラジオ
 	std::shared_ptr<Radio> radio_;
+
+	// ワイヤー
+	std::shared_ptr<Wire> wire_;
 
 	// プレイヤーの状態
 	std::shared_ptr<PlayerStatusUI> status_;

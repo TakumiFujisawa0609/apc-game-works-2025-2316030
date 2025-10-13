@@ -39,7 +39,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::SUBMARINE, res);
 
 	// ステージ
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/MainPlanet.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
 	// ボトルモデル
@@ -75,7 +75,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::RADIO_I, res);
 
 	// ロックピックモデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Lockpick/Lockpick.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Lockpick/folding.mv1");
 	resourcesMap_.emplace(SRC::LOCKPICK_M, res);
 
 	// ロックピックUI
@@ -83,15 +83,15 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::LOCKPICK_I, res);
 
 	// 針金モデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Wire/wire.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Wire/hook.mv1");
 	resourcesMap_.emplace(SRC::WIRE_M, res);
 
 	// 鍵穴プレート
-	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"KeyHole/EscutcheonPlate.png");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/plate.mv1");
 	resourcesMap_.emplace(SRC::E_PLATE_I, res);
 
 	// 鍵穴
-	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"KeyHole/KeyHole.png");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/keyhole.mv1");
 	resourcesMap_.emplace(SRC::KEYHOLE_I, res);
 
 }
