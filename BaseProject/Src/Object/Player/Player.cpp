@@ -4,6 +4,7 @@
 #include "../../Utility/AsoUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Manager/InputManager.h"
+#include "../../Manager/ResourceManager.h"
 #include "../Common/Collider.h"
 #include "../Common/Capsule.h"
 #include "Inventory.h"
@@ -21,12 +22,14 @@ Player::Player(void)
 
 Player::~Player(void)
 {
+    DeleteSoundMem(walkSH_);
+    DeleteSoundMem(runSH_);
 }
 
 void Player::Init(void)
 {
 	// モデル情報
-	transform_.pos = { 0.0f, 200.0f, 0.0f };
+	transform_.pos = { -2244.0f, 200.0f, 2200.0f };
 	transform_.scl = { 1.0f, 1.0f, 1.0f };
     transform_.quaRot = Quaternion();
     transform_.quaRotLocal =
@@ -48,17 +51,23 @@ void Player::Init(void)
 	pitch = 0.0f;     // 垂直回転（ピッチ）
 
     // カプセルコライダ
-    capsule_ = std::make_shared<Capsule>(transform_);
-    capsule_->SetLocalPosTop({ 0.0f,50.0f,0.0f });
-    capsule_->SetLocalPosDown({ 0.0f,-400.0f,0.0f });
-    capsule_->SetRadius(40.0f);
+    capsule_ = std::make_unique<Capsule>(transform_);
+    capsule_->SetLocalPosTop({ 0.0f, 110.0f, 0.0f });
+    capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
+    capsule_->SetRadius(20.0f);
 
+    walkSH_ = resMng_.Load(ResourceManager::SRC::WALK_SE).handleId_;
+    ChangeVolumeSoundMem(255, walkSH_);
+    isWalkSH_ = false;
+    runSH_ = resMng_.Load(ResourceManager::SRC::RUN_SE).handleId_;
+    ChangeVolumeSoundMem(255, runSH_);
+    isRunSH_ = false;
 }
 
 void Player::InitComponents(void)
 {
     // コンポーネントを生成してアタッチ
-    oxygen_ = AddCharactorComponent<OxygenComponent>(100.0f, 1.0f);
+    oxygen_ = AddCharactorComponent<OxygenComponent>(60.0f, 1.0f);
     input_ = AddCharactorComponent<PlayerInput>();
 }
 
@@ -77,7 +86,7 @@ void Player::OnUpdate(float deltaTime)
     // Quaternion更新
     Quaternion qYaw = Quaternion::AngleAxis(AsoUtility::Deg2RadF(angles.y), AsoUtility::AXIS_Y);
     Quaternion qPitch = Quaternion::AngleAxis(AsoUtility::Deg2RadF(angles.x), AsoUtility::AXIS_X);
-    
+
     // プレイヤーの回転をカメラと同期
     transform_.quaRot = qYaw.Mult(qPitch);
 
@@ -98,21 +107,23 @@ void Player::OnUpdate(float deltaTime)
 
     // 回転したい角度
     double rotRad = 0.0;
-    
+
     // 移動方向のリセット
     moveDir_ = AsoUtility::VECTOR_ZERO;
 
     // 入力関連
     auto& ins = InputManager::GetInstance();
-    
+
+    DINPUT_JOYSTATE pad;
+    GetJoypadDirectInputState(DX_INPUT_PAD1, &pad);
+
     // 前後左右入力
-    if (ins.IsNew(KEY_INPUT_W)) moveDir_ = VAdd(moveDir_, forward);
-    if (ins.IsNew(KEY_INPUT_S)) moveDir_ = VAdd(moveDir_, VScale(forward, -1.0f));
-    if (ins.IsNew(KEY_INPUT_D)) moveDir_ = VAdd(moveDir_, right);
-    if (ins.IsNew(KEY_INPUT_A)) moveDir_ = VAdd(moveDir_, VScale(right, -1.0f));
+    if (ins.IsNew(KEY_INPUT_W) || pad.Y < -500) moveDir_ = VAdd(moveDir_, forward);
+    if (ins.IsNew(KEY_INPUT_S) || pad.Y > 500) moveDir_ = VAdd(moveDir_, VScale(forward, -1.0f));
+    if (ins.IsNew(KEY_INPUT_D) || pad.X > 500) moveDir_ = VAdd(moveDir_, right);
+    if (ins.IsNew(KEY_INPUT_A) || pad.X < -500) moveDir_ = VAdd(moveDir_, VScale(right, -1.0f));
 
-
-    if (ins.IsNew(KEY_INPUT_LSHIFT))
+    if (ins.IsNew(KEY_INPUT_LSHIFT) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
     {
         moveSpeed_ = MOVE_RUN_SPEED;
     }
@@ -131,27 +142,54 @@ void Player::OnUpdate(float deltaTime)
 
         // 移動量
         movePow_ = VScale(direction, moveSpeed_);
-        
+
         // 回転処理
         SetGoalRotate(rotRad);
 
-        // 重力計算
-        CalcGravityPow();
-
-        movedPos_ = VAdd(transform_.pos, movePow_);
-        Collision();
-        transform_.pos = movedPos_;
-        transform_.pos.y = 189.0f;
+        if (moveSpeed_ == MOVE_RUN_SPEED)
+        {
+            if (!isRunSH_)
+            {
+                StopSoundMem(walkSH_);
+                PlaySoundMem(runSH_, DX_PLAYTYPE_LOOP, true);
+                isRunSH_ = true;
+            }
+        }
+        else
+        {
+            if (!isWalkSH_)
+            {
+                StopSoundMem(runSH_);
+                PlaySoundMem(walkSH_, DX_PLAYTYPE_LOOP, true);
+                isWalkSH_ = true;
+            }
+        }
     }
-    
+    else
+    {
+        movePow_ = AsoUtility::VECTOR_ZERO;
+
+        StopSoundMem(runSH_);
+        isRunSH_ = false;
+        StopSoundMem(walkSH_);
+        isWalkSH_ = false;
+    }
+
+    // 重力計算
+    CalcGravityPow();
+
+    Collision();
+
+
     // Transform更新
     transform_.Update();
+
 }
 
 void Player::Draw(void)
 {
-	DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
-    DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
+	//DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+    //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
 }
 
 OxygenComponent* Player::GetOxygenComp()
@@ -167,6 +205,16 @@ PlayerInput* Player::GetInputComp()
 bool Player::TakeItem(int itemId, int count)
 {
     return false;
+}
+
+int Player::GetWalkSH(void)
+{
+    return walkSH_;
+}
+
+int Player::GetRunSH(void)
+{
+    return runSH_;
 }
 
 void Player::SetGoalRotate(float rotRad)
@@ -195,24 +243,56 @@ void Player::GiveItem(int itemId, int count)
 
 void Player::Collision(void)
 {
+    // 現在座標を起点に移動後座標を決める
+    movedPos_ = VAdd(transform_.pos, movePow_);
+
+    // 衝突(カプセル)
     CollisionCapsule();
 
-    /*if (transform_.pos.y > 189.0f)
-    {*/
-        CollisionGravity();
-	//}
-    //else
-    //{
-    //    // 地面に到達したらy座標を固定
-    //    transform_.pos.y = 189.0f;
-    //    velocityY_ = AsoUtility::VECTOR_ZERO;
-    //    isVelocityY_ = false;
-    //}
+    // 衝突(重力)
+    CollisionGravity();
+
+    // 移動
+    transform_.pos = movedPos_;
 }
 
 void Player::CollisionCapsule(void)
 {
-    Charactor::CollisionCapsule();
+    // カプセルを移動させる
+    Transform trans = Transform(transform_);
+    trans.pos = movedPos_;
+    trans.Update();
+    Capsule cap = Capsule(*capsule_, trans);
+
+    // カプセルとの衝突判定
+    for (const auto& c : colliders_)
+    {
+        auto hits = MV1CollCheck_Capsule(
+            c->modelId_, -1,
+            cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
+
+        for (int i = 0; i < hits.HitNum; i++)
+        {
+            auto hit = hits.Dim[i];
+            for (int tryCnt = 0; tryCnt < 10; tryCnt++)
+            {
+                int pHit = HitCheck_Capsule_Triangle(
+                    cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
+                    hit.Position[0], hit.Position[1], hit.Position[2]);
+                if (pHit)
+                {
+                    movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+
+                    // カプセルを移動させる
+                    trans.pos = movedPos_;
+                    trans.Update();
+                    continue;
+                }
+                break;
+            }
+        }
+        MV1CollResultPolyDimTerminate(hits);
+    }
 }
 
 void Player::CollisionGravity(void)

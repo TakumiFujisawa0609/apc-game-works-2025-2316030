@@ -50,8 +50,9 @@ public:
     // ‰Šúó‘Ô‚ğİ’è
     void SetIsDefault(bool flag);
 
-private:
+    bool isGameClear(void);
 
+private:
 
     float currentAngle_;        // Œ»İ‚ÌŠp“x
     float goalAngle_;           // ³‰ğ‚ÌŠp“x
@@ -61,6 +62,8 @@ private:
 
     int lockLevel_;             // ‰ğùƒŒƒxƒ‹
     bool isDefault_;            // ‰Šúó‘Ô‚É–ß‚·‚©‚Ç‚¤‚©
+
+    bool isGameClear_;          // 
 
     virtual void UpdateOnStage(float deltaTime) override;
     virtual void UpdateInVentory(float deltaTime) override;

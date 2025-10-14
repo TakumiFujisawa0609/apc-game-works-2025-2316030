@@ -27,7 +27,12 @@ public:
 		WIRE_M,
 		E_PLATE_I,
 		KEYHOLE_I,
-
+		TITLE,
+		GAMEOVER,
+		GAMECLEAR,
+		DECIDE_SE,
+		RUN_SE,
+		WALK_SE
 	};
 
 	// 明示的にインステンスを生成する

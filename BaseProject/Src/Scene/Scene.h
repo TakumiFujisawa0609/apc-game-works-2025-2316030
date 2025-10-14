@@ -1,6 +1,8 @@
 #pragma once
 class Input;
 class SceneController;
+class ResourceManager;
+
 /// <summary>
 /// ゲームシーンの基底クラス(純粋仮想クラス)
 /// </summary>
@@ -8,6 +10,9 @@ class Scene
 {
 protected:
 	SceneController& controller_;///持ち主の参照
+	// リソース管理
+	ResourceManager& resMng_;
+
 public:
 	/// <summary>
 	/// シーン初期化(の際にシーンコントローラも代入)

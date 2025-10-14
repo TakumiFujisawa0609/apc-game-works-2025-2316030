@@ -109,10 +109,10 @@ void UnlickScene::NormalUpdate(Input& input)
 	// 針金のマウス移動による回転
 	wire_->UpdateExplore(time);
 	
-	if (ins.IsTrgDown(KEY_INPUT_A))
+	if (ins.IsTrgDown(KEY_INPUT_A)|| ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
 	{
 
-		if (!wire_->IsDifference())
+		if (wire_->IsDifference())
 		{
 			// ロックレベルを設定
 			lockpick_->SetLockLevel(wire_->GetLockLevel());
@@ -128,15 +128,14 @@ void UnlickScene::NormalUpdate(Input& input)
 			return;
 		}
 
-		// 解錠後
 	}
 	
 
 
-	// 指定の角度に到達したら解錠完了
-	lockpick_->UpdateUnlock(time);
+	//// 指定の角度に到達したら解錠完了
+	//lockpick_->UpdateUnlock(time);
 
-	keyhole_->Update(time);
+	//keyhole_->Update(time);
 }
 
 void UnlickScene::DisappearUpdate(Input& input)
@@ -187,7 +186,7 @@ void UnlickScene::NormalDraw()
 	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
 		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
 		0xfffffff, false, 3.0f);
-	DrawString(margin_size + 10, margin_size + 10, L"Pause Scene", 0x0000ff);
+	//DrawString(margin_size + 10, margin_size + 10, L"Pause Scene", 0x0000ff);
 	LockPickingDraw();
 }
 

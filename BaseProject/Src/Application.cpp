@@ -104,8 +104,8 @@ void Application::Init(int w, int h)
 	controller_ = std::make_shared<SceneController>();
 
 	// Å‰‚ÌƒV[ƒ“‚ğİ’è
-    //controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
-    controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);
+    controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
+    //controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);
 
 	// •`‰ææ‚ğ— ‰æ–Ê‚Éİ’è
     SetDrawScreen(DX_SCREEN_BACK);

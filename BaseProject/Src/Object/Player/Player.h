@@ -42,6 +42,10 @@ public:
 	// アイテムの取得条件
 	bool TakeItem(int itemId, int count);
 
+	int GetWalkSH(void);
+
+	int GetRunSH(void);
+
 private:
 
 	OxygenComponent* oxygen_;		// 酸素コンポーネント
@@ -49,6 +53,11 @@ private:
 
 	float yaw;			// 水平回転（ヨー）
 	float pitch;		// 垂直回転（ピッチ）
+
+	int walkSH_;
+	bool isWalkSH_;
+	int runSH_;
+	bool isRunSH_;
 
 	void SetGoalRotate(float rotRad);
 

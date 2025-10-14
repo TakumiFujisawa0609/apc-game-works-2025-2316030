@@ -126,7 +126,7 @@ void Input::ResetTable()
 {
 	inputTable_ = {
 		{ "ok",{
-			{ PeripheralType::keyboard, KEY_INPUT_RETURN },
+			{ PeripheralType::keyboard, KEY_INPUT_SPACE },
 				{ PeripheralType::gamepad,PAD_INPUT_A },//Aボタン
 				//{ PeripheralType::mouse,MOUSE_INPUT_LEFT }
 		}//左クリック

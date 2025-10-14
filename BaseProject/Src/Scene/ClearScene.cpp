@@ -1,4 +1,4 @@
-#include "OverScene.h"
+#include "ClearScene.h"
 #include<DxLib.h>
 #include<cassert>
 #include "../Application.h"
@@ -8,39 +8,72 @@
 #include"../Input.h"
 #include"TitleScene.h"
 
-
 namespace {
 	constexpr int fade_interval = 60;
 }
 
-void OverScene::FadeInUpadte(Input&)
+ClearScene::ClearScene(SceneController& controller)
+	:
+	Scene(controller)
 {
-	if (--frame_ <=0) {
-		update_ = &OverScene::NormalUpadte;
-		draw_ = &OverScene::NormalDraw;
+}
+
+ClearScene::~ClearScene()
+{
+}
+
+void ClearScene::Init(Input& input)
+{
+	// クリア画像を初期化
+		//imgH_ = LoadGraph(L"img/hasuta.png");
+	//assert(imgH_ >= 0);
+	update_ = &ClearScene::FadeInUpadte;
+	draw_ = &ClearScene::FadeDraw;
+	frame_ = fade_interval;
+	imgH_ = resMng_.Load(ResourceManager::SRC::GAMECLEAR).handleId_;
+	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
+	ChangeVolumeSoundMem(255, soundH_);
+}
+
+void ClearScene::Update(Input& input)
+{
+	(this->*update_)(input);
+}
+
+void ClearScene::Draw(void)
+{
+	(this->*draw_)();
+}
+
+void ClearScene::FadeInUpadte(Input& input)
+{
+	if (--frame_ <= 0) {
+		update_ = &ClearScene::NormalUpadte;
+		draw_ = &ClearScene::NormalDraw;
 	}
 }
 
-void OverScene::NormalUpadte(Input& input)
+void ClearScene::NormalUpadte(Input& input)
 {
 	auto& ins = InputManager::GetInstance();
+
 	if (input.IsTriggered("ok") || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) {
 		frame_ = 0;
-		update_ = &OverScene::FadeOutUpadte;
-		draw_ = &OverScene::FadeDraw;
+		update_ = &ClearScene::FadeOutUpadte;
+		draw_ = &ClearScene::FadeDraw;
 		PlaySoundMem(soundH_, DX_PLAYTYPE_NORMAL, true);
 	}
 }
 
-void OverScene::FadeOutUpadte(Input& input)
+void ClearScene::FadeOutUpadte(Input& input)
 {
 	if (++frame_ >= fade_interval) {
-		controller_.ChangeScene(std::make_shared<TitleScene>(controller_),input);
+		controller_.ChangeScene(std::make_shared<TitleScene>(controller_), input);
 		return;
 	}
 }
 
-void OverScene::NormalDraw()
+void ClearScene::NormalDraw()
 {
 	auto size = Application::GetInstance().GetWindowSize();
 	DrawRotaGraph(size.width / 2, size.height / 2 * 0.8f, 0.5, 0.0, imgH_, true);
@@ -61,47 +94,14 @@ void OverScene::NormalDraw()
 
 	// 描画関数でテキストを表示
 	DrawString(draw_x, draw_y, text_to_display, color);
-
-	//DrawString(10, 10, L"Gameover Scene", 0xffffff);
 }
 
-void OverScene::FadeDraw()
+void ClearScene::FadeDraw()
 {
 	float rate = static_cast<float>(frame_) /
-					static_cast<float>(fade_interval);	
+		static_cast<float>(fade_interval);
 	//DrawRotaGraph(320, 240, 1.0f, 0.0f, imgH_, true);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, rate * 255);
 	DrawBox(0, 0, 640, 480, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-}
-
-OverScene::OverScene(SceneController& controller) :Scene(controller)
-{
-	//imgH_ = LoadGraph(L"img/hasuta.png");
-	//assert(imgH_ >= 0);
-	update_ = &OverScene::FadeInUpadte;
-	draw_ = &OverScene::FadeDraw;
-	frame_ = fade_interval;
-}
-
-OverScene::~OverScene()
-{
-}
-
-void OverScene::Init(Input& input)
-{
-	imgH_ = resMng_.Load(ResourceManager::SRC::GAMEOVER).handleId_;
-	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
-	ChangeVolumeSoundMem(255, soundH_);
-}
-
-void OverScene::Update(Input& input)
-{
-	(this->*update_)(input);
-}
-
-void OverScene::Draw()
-{
-	(this->*draw_)();
 }

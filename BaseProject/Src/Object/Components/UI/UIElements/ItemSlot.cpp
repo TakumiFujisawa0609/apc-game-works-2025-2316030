@@ -26,7 +26,7 @@ void ItemSlot::Draw(void)
 
 
 	auto& size = Application::GetInstance().GetWindowSize();
-	DrawFormatString(size.width - 200, 32, GetColor(255, 5, 5), storage_[currentSelectedIndex_]->GetName().c_str());
+	//DrawFormatString(size.width - 200, 32, GetColor(255, 5, 5), storage_[currentSelectedIndex_]->GetName().c_str());
 }
 
 int ItemSlot::GetSelectedUIHandle(void) const

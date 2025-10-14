@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\CharactorComponent.cpp" />
     <ClCompile Include="Src\Object\Charactor.cpp" />
     <ClCompile Include="Src\Object\Components\Enemy\EnemyChaseComponent.cpp" />
@@ -202,6 +203,7 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\detail\abi_macros.hpp" />

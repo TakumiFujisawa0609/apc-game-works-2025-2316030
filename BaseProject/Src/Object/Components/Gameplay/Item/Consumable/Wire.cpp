@@ -16,7 +16,8 @@ Wire::Wire(std::shared_ptr<ActorBase> owner)
     lastMousePosX_(-1),
     isDifference_(false),
     lockLevel_(-1),
-    isDefault_(false)
+    isDefault_(false),
+    isGameClear_(false)
 {
 }
 
@@ -79,9 +80,12 @@ void Wire::Draw(void)
     MV1DrawModel(transform_.modelId);
 
     auto& size = Application::GetInstance().GetWindowSize();
-    DrawFormatString(size.width - 200, 64, GetColor(255, 255, 255), L"gAngle=(%.2f)", goalAngle_);
-    DrawFormatString(size.width - 200, 80, GetColor(255, 255, 255), L"cAngle_=(%.2f)", currentAngle_);
-    DrawFormatString(size.width - 200, 96, GetColor(255, 255, 255), L"rLocal_=(%.2f)", transform_.quaRotLocal.z);
+    //DrawFormatString(size.width - 200, 64, GetColor(255, 255, 255), L"gAngle=(%.2f)", goalAngle_);
+    //DrawFormatString(size.width - 200, 80, GetColor(255, 255, 255), L"cAngle_=(%.2f)", currentAngle_);
+    DrawFormatString(size.width - 200, 64, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
+    DrawFormatString(size.width - 200, 80, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
+
+    //DrawFormatString(size.width - 200, 96, GetColor(255, 255, 255), L"rLocal_=(%.2f)", transform_.quaRotLocal.z);
 }
 
 float Wire::GetCurrentAngle(void)
@@ -114,6 +118,27 @@ void Wire::UpdateExplore(float deltaTime)
     // マウスによるz軸のローカル回転
     transform_.quaRotLocal.x += -deltaX * MOUSE_SENSITIVITY;
 
+    // マウス座標の更新
+    lastMousePosX_ = mx;
+    for (int padIndex = 0; padIndex < 4; ++padIndex)
+    {
+        // ゲームパッドによる操作
+        DINPUT_JOYSTATE inputState;
+        if (GetJoypadDirectInputState(DX_INPUT_PAD1, &inputState)==0)
+        {
+            float lStickX_Raw = static_cast<float>(inputState.X);
+            float lStickX = lStickX_Raw / 32767.0f;
+
+            // デッドゾーン処理
+            if (fabsf(lStickX) < -500) // 閾値 0.2f は調整してください
+            {
+                lStickX = 0.0f;
+            }
+
+            // ゲームパッドによる回転量を合計に加算
+            transform_.quaRotLocal.x += -lStickX * 0.8;
+        }
+    }
     // ローカル回転の制限
     float thresholdRotZ = static_cast<float>(transform_.quaRotLocal.x);
     if (thresholdRotZ > MAX_ROT_Z)
@@ -124,9 +149,6 @@ void Wire::UpdateExplore(float deltaTime)
     {
         thresholdRotZ = MIN_ROT_Z;
     }
-
-    // マウス座標の更新
-    lastMousePosX_ = mx;
 
     // 判定の更新
     transform_.quaRotLocal.x= static_cast<double>(thresholdRotZ);
@@ -139,12 +161,14 @@ void Wire::UpdateExplore(float deltaTime)
 bool Wire::IsDifference(void)
 {
     float diffAngle_ = std::abs(goalAngle_ - currentAngle_);
-    if (diffAngle_ <= 10.0f)
+    if (diffAngle_ <= 3.0f)
     {
+        isGameClear_ = true;
         return true;
     }
     else
     {
+        isGameClear_ = false;
         return false;
     }
 }
@@ -185,6 +209,11 @@ bool Wire::GetDefault(void)
 void Wire::SetIsDefault(bool flag)
 {
     isDefault_ = flag;
+}
+
+bool Wire::isGameClear(void)
+{
+    return isGameClear_;
 }
 
 void Wire::UpdateOnStage(float deltaTime)

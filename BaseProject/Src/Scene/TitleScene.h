@@ -6,6 +6,8 @@ class TitleScene :
 private:
 	int titleH_;
 	int frame_ = 0;
+	int soundH_;
+
 	//メンバ関数ポインタ型の別名を定義
 	using UpdateFunc_t = void (TitleScene::*)(Input&);
 	using DrawFunc_t = void(TitleScene::*)();

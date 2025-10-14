@@ -39,7 +39,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::SUBMARINE, res);
 
 	// ステージ
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage2.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
 	// ボトルモデル
@@ -93,6 +93,30 @@ void ResourceManager::Init(void)
 	// 鍵穴
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/keyhole.mv1");
 	resourcesMap_.emplace(SRC::KEYHOLE_I, res);
+
+	// タイトル
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Scene/title.png");
+	resourcesMap_.emplace(SRC::TITLE, res);
+
+	// ゲームオーバー
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Scene/gameOver.png");
+	resourcesMap_.emplace(SRC::GAMEOVER, res);
+
+	// ゲームクリア
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Scene/gameClear.png");
+	resourcesMap_.emplace(SRC::GAMECLEAR, res);
+
+	// 決定SE
+	res = std::make_shared<RES>(RES_T::SOUND, PATH_SND + L"decide.mp3");
+	resourcesMap_.emplace(SRC::DECIDE_SE, res);
+
+	// 走り
+	res = std::make_shared<RES>(RES_T::SOUND, PATH_SND + L"run.mp3");
+	resourcesMap_.emplace(SRC::RUN_SE, res);
+
+	// 歩き
+	res = std::make_shared<RES>(RES_T::SOUND, PATH_SND + L"walk.mp3");
+	resourcesMap_.emplace(SRC::WALK_SE, res);
 
 }
 

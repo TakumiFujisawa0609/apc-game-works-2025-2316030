@@ -259,7 +259,7 @@ void Camera::SetDefault(void)
 	cameraUp_ = AsoUtility::DIR_U;
 
 	angles_.x = AsoUtility::Deg2RadF(0.0f);
-	angles_.y = 0.0f;
+	angles_.y = AsoUtility::Deg2RadF(110.0f);
 	angles_.z = 0.0f;
 
 	rot_ = Quaternion();
@@ -423,6 +423,7 @@ void Camera::SetBeforeDrawFPSMouse(void)
 		// 位置(FPSなのでfollowTransformがあればそこを基準にする)
 		pos_ = followTransform_ ? followTransform_->pos : pos_;
 
+		pos_.y += 80.0f;
 		// 前方方向ベクトルを計算
 		VECTOR forward = {
 			cosf(angles_.x) * sinf(angles_.y),
@@ -439,6 +440,83 @@ void Camera::SetBeforeDrawFPSMouse(void)
 		// 毎フレームマウスを中央に戻す
 		SetMousePoint(centerX, centerY);
 
+
+
+		// 値を小さくするほど、回転速度が遅くなります。
+		const float GAMEPAD_SENSITIVITY = 0.025f;
+
+		// 【要定義】スティックの最大値で割るための定数（-1000 ～ 1000 の範囲を想定）
+		const float MAX_ANALOG_VALUE = 1000.0f;
+
+		// 【要定義】デッドゾーンの閾値（スティックの遊び、ノイズ対策）
+		const int DEADZONE_THRESHOLD = 200; // -200 から 200 の範囲は無視
+
+		DINPUT_JOYSTATE input;
+
+		// 入力状態を取得
+		if (GetJoypadDirectInputState(DX_INPUT_PAD1, &input) == 0)
+		{
+			int rx = input.Rx;
+
+			// デッドゾーン処理
+			if (abs(rx) < DEADZONE_THRESHOLD)
+			{
+				rx = 0;
+			}
+
+			if (rx != 0)
+			{
+				// スティック値を正規化 (-1.0f ～ 1.0f)
+				float normalizedRx = (float)rx / MAX_ANALOG_VALUE;
+
+				// 視点角度に反映: angles_.y は水平回転
+				angles_.y += normalizedRx * GAMEPAD_SENSITIVITY;
+			}
+
+			// -----------------------------------------------------------------
+			// 2. 垂直回転 (右スティックの Y軸: Ry)
+			// -----------------------------------------------------------------
+			int ry = input.Ry;
+
+			// デッドゾーン処理
+			if (abs(ry) < DEADZONE_THRESHOLD)
+			{
+				ry = 0;
+			}
+
+			if (ry != 0)
+			{
+				// スティック値を正規化 (-1.0f ～ 1.0f)
+				float normalizedRy = (float)ry / MAX_ANALOG_VALUE;
+
+				// 垂直回転の加算（元のコードの角度制限部分を統合し、感度を適用）
+				// Rx, Ryは正の値で右/下方向を指すことが多いが、
+				// カメラの Y軸回転(angles_.x)は '下方向' が角度減少、'上方向' が角度増加になるように調整が必要
+				// マウス操作と合わせる場合: マウス 'dy' は '下移動' で正、'angles_.x' は減少 (-dy)
+				// ゲームパッド 'ry' は '下倒し' で正、'angles_.x' は減少 (-normalizedRy) とします。
+				float deltaAngleX = -normalizedRy * GAMEPAD_SENSITIVITY;
+
+				// 角度制限を考慮して加算
+				float newAngleX = angles_.x + deltaAngleX;
+
+				// 垂直回転の制限
+				float minRad = AsoUtility::Deg2RadF(-89.0f);
+				float maxRad = AsoUtility::Deg2RadF(89.0f);
+
+				if (newAngleX > maxRad)
+				{
+					angles_.x = maxRad;
+				}
+				else if (newAngleX < minRad)
+				{
+					angles_.x = minRad;
+				}
+				else
+				{
+					angles_.x = newAngleX;
+				}
+			}
+		}
 	}
 }
 

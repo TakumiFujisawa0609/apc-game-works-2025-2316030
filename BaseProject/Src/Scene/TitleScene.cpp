@@ -2,7 +2,10 @@
 #include<DxLib.h>
 #include<memory>
 #include<cassert>
+#include "../Application.h"
+#include "../Manager/InputManager.h"
 #include"../Manager/SceneController.h"
+#include"../Manager/ResourceManager.h"
 #include"GameScene.h"
 #include"../Input.h"
 namespace {
@@ -20,10 +23,13 @@ void TitleScene::FadeInUpdate(Input&)
 
 void TitleScene::NormalUpdate(Input& input)
 {
-	if (input.IsTriggered("ok")) {
+	auto& ins = InputManager::GetInstance();
+
+	if (input.IsTriggered("ok") || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) {
 		update_ = &TitleScene::FadeOutUpdate;
 		draw_ = &TitleScene::FadeDraw;
 		frame_ = 0;
+		PlaySoundMem(soundH_, DX_PLAYTYPE_NORMAL, true);
 		return;
 	}
 
@@ -51,8 +57,28 @@ void TitleScene::FadeDraw()
 
 void TitleScene::NormalDraw()
 {
-	//DrawRotaGraph(320, 240, 1.0f, 0.0f, titleH_, true);
-	DrawString(10, 10, L"Title Scene", 0xffffff);
+
+	auto size = Application::GetInstance().GetWindowSize();
+	DrawRotaGraph(size.width / 2, static_cast<int>(size.height / 2 * 0.8f), 0.4, 0.0, titleH_, true);
+
+
+	const TCHAR* text_to_display = _T("Space or Aボタン");
+	int text_width = GetDrawStringWidth(text_to_display, _tcslen(text_to_display));
+
+	// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
+	int draw_x = (size.width / 2) - (text_width / 2);
+
+	// Y座標: 画面全体の高さの 4分の3 の位置
+	int draw_y = (size.height * 3) / 4;
+
+	// 3. テキストを描画
+
+	// 赤色で描画
+	int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)
+
+	// 描画関数でテキストを表示
+	DrawString(draw_x, draw_y, text_to_display, color);
+	//DrawString(10, 10, L"Title Scene", 0xffffff);
 }
 
 TitleScene::TitleScene(SceneController& controller)
@@ -62,18 +88,21 @@ TitleScene::TitleScene(SceneController& controller)
 {
 	//titleH_=LoadGraph(L"img/fukuro.png");
 	//assert(titleH_);
-	update_ = &TitleScene::FadeInUpdate;
-	draw_ = &TitleScene::FadeDraw;
-	frame_ = fade_interval;
+
 }
 
 TitleScene::~TitleScene()
 {
-	DeleteGraph(titleH_);
 }
 
 void TitleScene::Init(Input& input)
 {
+	update_ = &TitleScene::FadeInUpdate;
+	draw_ = &TitleScene::FadeDraw;
+	frame_ = fade_interval;
+	titleH_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
+	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
+	ChangeVolumeSoundMem(255, soundH_);
 }
 
 void TitleScene::Update(Input& input)
