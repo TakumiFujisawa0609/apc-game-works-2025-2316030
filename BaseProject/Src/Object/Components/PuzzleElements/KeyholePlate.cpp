@@ -20,10 +20,11 @@ void KeyholePlate::Init(void)
 		ResourceManager::SRC::E_PLATE_I));
 
 	auto camera = Application::GetInstance().GetCamera();
-	// ① カメラの位置から
+
+	// カメラの取得
 	VECTOR camPos = camera->GetPos();
 
-	// ② カメラの「前方ベクトル」（GetForward）を計算し
+	// カメラの前ベクトル
 	VECTOR forward = camera->GetForward();
 
 	// ③ 前方に適切な距離（例: 300.0f）だけ進んだ地点をモデルの位置とする

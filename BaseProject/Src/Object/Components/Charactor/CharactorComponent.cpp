@@ -1,4 +1,4 @@
-#include "../../Charactor.h"
+#include "../../ObjectBase/Charactor.h"
 #include "CharactorComponent.h"
 
 CharactorComponent::CharactorComponent(std::shared_ptr<Charactor> owner)

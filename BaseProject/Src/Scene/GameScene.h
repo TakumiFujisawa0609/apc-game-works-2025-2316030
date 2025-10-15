@@ -22,6 +22,29 @@ class PlayerStatusUI;
 class GameScene :
     public Scene
 {
+public:
+	/// <summary>
+	/// シーン初期化(の際にシーンコントローラも代入)
+	/// </summary>
+	/// <param name="controller"></param>
+	GameScene(SceneController& controller);
+	~GameScene();
+
+	/// <summary>
+	/// シーン開始時に一度だけ呼ばれる初期化関数
+	/// </summary>
+	/// <param name="input">入力クラス</param>
+	virtual void Init(Input& input)override;
+	/// <summary>
+	/// 毎フレーム状態を更新する
+	/// </summary>
+	/// <param name="input">入力クラス</param>
+	void Update(Input& input) override;
+
+	/// <summary>
+	/// 毎フレーム描画する
+	/// </summary>
+	virtual void Draw(void) override;
 private:
 	int imgH_;
 	int frame_ = 0;
@@ -84,29 +107,5 @@ private:
 
 	// メインカメラがfps視点であるがどうか
 	bool isFps_;
-
-public:
-	/// <summary>
-	/// シーン初期化(の際にシーンコントローラも代入)
-	/// </summary>
-	/// <param name="controller"></param>
-	GameScene(SceneController& controller);
-	~GameScene();
-
-	/// <summary>
-	/// シーン開始時に一度だけ呼ばれる初期化関数
-	/// </summary>
-	/// <param name="input">入力クラス</param>
-	virtual void Init(Input& input)override;
-	/// <summary>
-	/// 毎フレーム状態を更新する
-	/// </summary>
-	/// <param name="input">入力クラス</param>
-	void Update(Input& input) override;
-
-	/// <summary>
-	/// 毎フレーム描画する
-	/// </summary>
-	virtual void Draw(void) override;
 };
 

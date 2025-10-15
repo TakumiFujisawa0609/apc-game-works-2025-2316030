@@ -16,6 +16,55 @@ namespace {
 	constexpr int margin_size = 20;//ポーズメニュー枠の余白
 }
 
+PauseScene::PauseScene(SceneController& controller) :
+	Scene(controller),
+	frame_(0),
+	update_(&PauseScene::AppearUpdate),
+	draw_(&PauseScene::ProcessDraw)
+{
+	menuList_ = {
+					L"コマンド表",
+					L"設定メニュー",
+					L"キーコンフィグ",
+					L"戻る",
+					L"タイトルに戻る"
+	};
+	menuFuncTable_ = {
+		/*{L"コマンド表",[this](Input&) {
+				controller_.PushScene(make_shared<CommandListScene>(controller_));
+			}
+		},
+		{L"設定メニュー",[this](Input&) {
+				controller_.PushScene(make_shared<SystemSettingScene>(controller_));
+				}},
+		{L"キーコンフィグ",[this](Input& input) {
+				controller_.PushScene(make_shared<KeyConfigScene>(controller_,input));
+			}},
+		{L"戻る",[this](Input&) {
+				update_ = &PauseScene::DisappearUpdate;
+				draw_ = &PauseScene::ProcessDraw;
+			}
+		},
+		{L"タイトルに戻る",[this](Input&) {
+				controller_.JumpScene(make_shared<TitleScene>(controller_));
+			}},*/
+	};
+}
+
+void PauseScene::Init(Input& input)
+{
+}
+
+void PauseScene::Update(Input& input)
+{
+	(this->*update_)(input);
+}
+
+void PauseScene::Draw()
+{
+	(this->*draw_)();
+}
+
 void PauseScene::AppearUpdate(Input& input)
 {
 	if (++frame_ >= appear_interval) {
@@ -41,9 +90,9 @@ void PauseScene::NormalUpdate(Input& input)
 		return;
 	}
 	if (input.IsTriggered("up")) {
-		currentIndex_=(currentIndex_+ menuList_.size() -1)%menuList_.size();
+		currentIndex_ = (currentIndex_ + menuList_.size() - 1) % menuList_.size();
 	}else if (input.IsTriggered("down")) {
-		currentIndex_=(currentIndex_+1)%menuList_.size();
+		currentIndex_ = (currentIndex_ + 1) % menuList_.size();
 	}
 	if (input.IsTriggered("ok")) {
 		auto selectedName = menuList_[currentIndex_];
@@ -115,53 +164,4 @@ void PauseScene::DrawMenuList()
 		lineY += input_list_row_height;
 	}
 	
-}
-
-PauseScene::PauseScene(SceneController& controller):
-	Scene(controller),
-	frame_(0),
-	update_(&PauseScene::AppearUpdate),
-	draw_(&PauseScene::ProcessDraw)
-{
-	menuList_ = { 
-					L"コマンド表",
-					L"設定メニュー",
-					L"キーコンフィグ",
-					L"戻る",
-					L"タイトルに戻る"
-				};
-	menuFuncTable_={
-		/*{L"コマンド表",[this](Input&) {
-				controller_.PushScene(make_shared<CommandListScene>(controller_));
-			}
-		},
-		{L"設定メニュー",[this](Input&) {
-				controller_.PushScene(make_shared<SystemSettingScene>(controller_));
-				}},
-		{L"キーコンフィグ",[this](Input& input) {
-				controller_.PushScene(make_shared<KeyConfigScene>(controller_,input));
-			}},
-		{L"戻る",[this](Input&) {
-				update_ = &PauseScene::DisappearUpdate;
-				draw_ = &PauseScene::ProcessDraw;
-			}
-		},
-		{L"タイトルに戻る",[this](Input&) {
-				controller_.JumpScene(make_shared<TitleScene>(controller_));
-			}},*/
-	};
-}
-
-void PauseScene::Init(Input& input)
-{
-}
-
-void PauseScene::Update(Input& input)
-{
-	(this->*update_)(input);
-}
-
-void PauseScene::Draw()
-{
-	(this->*draw_)();
 }

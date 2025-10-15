@@ -138,13 +138,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\CharactorComponent.cpp" />
-    <ClCompile Include="Src\Object\Charactor.cpp" />
-    <ClCompile Include="Src\Object\Components\Enemy\EnemyChaseComponent.cpp" />
+    <ClCompile Include="Src\Object\ObjectBase\Charactor.cpp" />
+    <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyChaseComponent.cpp" />
     <ClCompile Include="Src\Object\Enemy\Patrol\PatrolPath.cpp" />
     <ClCompile Include="Src\Object\Enemy\Patrol\PatrolNode.cpp" />
-    <ClCompile Include="Src\Object\Components\Enemy\EnemyMoveComponent.cpp" />
+    <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyMoveComponent.cpp" />
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\Keyhole.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\KeyholePlate.cpp" />
@@ -159,8 +160,8 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\ItemSlot.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\SlotBase.cpp" />
-    <ClCompile Include="Src\Object\Components\UI\UIElements\OxygenGauge.cpp" />
-    <ClCompile Include="Src\Object\Components\Player\PlayerInput.cpp" />
+    <ClCompile Include="Src\Object\Components\UI\UIElements\TimeGauge.cpp" />
+    <ClCompile Include="Src\Object\Components\Charactor\Player\PlayerInput.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\OxygenComponent.cpp" />
     <ClCompile Include="Src\Object\Common\Component.cpp" />
     <ClCompile Include="Src\Object\Player\Player.cpp" />
@@ -175,7 +176,7 @@
     <ClCompile Include="Src\Common\Quaternion.cpp" />
     <ClCompile Include="Src\Object\Common\Transform.cpp" />
     <ClCompile Include="Src\Common\Vector2.cpp" />
-    <ClCompile Include="Src\Object\ActorBase.cpp" />
+    <ClCompile Include="Src\Object\ObjectBase\ActorBase.cpp" />
     <ClCompile Include="Src\Application.cpp" />
     <ClCompile Include="Src\DrawUtil.cpp" />
     <ClCompile Include="Src\Input.cpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
@@ -251,11 +253,11 @@
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="Src\Object\Components\Charactor\CharactorComponent.h" />
-    <ClInclude Include="Src\Object\Charactor.h" />
-    <ClInclude Include="Src\Object\Components\Enemy\EnemyChaseComponent.h" />
+    <ClInclude Include="Src\Object\ObjectBase\Charactor.h" />
+    <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyChaseComponent.h" />
     <ClInclude Include="Src\Object\Enemy\Patrol\PatrolPath.h" />
     <ClInclude Include="Src\Object\Enemy\Patrol\PatrolNode.h" />
-    <ClInclude Include="Src\Object\Components\Enemy\EnemyMoveComponent.h" />
+    <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyMoveComponent.h" />
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\Keyhole.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\KeyholePlate.h" />
@@ -270,8 +272,8 @@
     <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\ItemSlot.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\SlotBase.h" />
-    <ClInclude Include="Src\Object\Components\UI\UIElements\OxygenGauge.h" />
-    <ClInclude Include="Src\Object\Components\Player\PlayerInput.h" />
+    <ClInclude Include="Src\Object\Components\UI\UIElements\TimeGauge.h" />
+    <ClInclude Include="Src\Object\Components\Charactor\Player\PlayerInput.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\OxygenComponent.h" />
     <ClInclude Include="Src\Object\Common\Component.h" />
     <ClInclude Include="Src\Object\Player\Player.h" />
@@ -286,7 +288,7 @@
     <ClInclude Include="Src\Common\Quaternion.h" />
     <ClInclude Include="Src\Object\Common\Transform.h" />
     <ClInclude Include="Src\Common\Vector2.h" />
-    <ClInclude Include="Src\Object\ActorBase.h" />
+    <ClInclude Include="Src\Object\ObjectBase\ActorBase.h" />
     <ClInclude Include="Src\Application.h" />
     <ClInclude Include="Src\DrawUtil.h" />
     <ClInclude Include="Src\Input.h" />

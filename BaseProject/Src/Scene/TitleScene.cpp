@@ -12,6 +12,40 @@ namespace {
 	constexpr int fade_interval = 60;
 }
 
+TitleScene::TitleScene(SceneController& controller)
+	:
+	Scene(controller),
+	titleH_(-1)
+{
+	//titleH_=LoadGraph(L"img/fukuro.png");
+	//assert(titleH_);
+
+}
+
+TitleScene::~TitleScene()
+{
+}
+
+void TitleScene::Init(Input& input)
+{
+	update_ = &TitleScene::FadeInUpdate;
+	draw_ = &TitleScene::FadeDraw;
+	frame_ = fade_interval;
+	titleH_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
+	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
+	ChangeVolumeSoundMem(255, soundH_);
+}
+
+void TitleScene::Update(Input& input)
+{
+	(this->*update_)(input);
+}
+
+void TitleScene::Draw()
+{
+	(this->*draw_)();
+}
+
 void TitleScene::FadeInUpdate(Input&)
 {
 	--frame_;
@@ -79,38 +113,4 @@ void TitleScene::NormalDraw()
 	// 描画関数でテキストを表示
 	DrawString(draw_x, draw_y, text_to_display, color);
 	//DrawString(10, 10, L"Title Scene", 0xffffff);
-}
-
-TitleScene::TitleScene(SceneController& controller)
-	:
-	Scene(controller),
-	titleH_(-1)
-{
-	//titleH_=LoadGraph(L"img/fukuro.png");
-	//assert(titleH_);
-
-}
-
-TitleScene::~TitleScene()
-{
-}
-
-void TitleScene::Init(Input& input)
-{
-	update_ = &TitleScene::FadeInUpdate;
-	draw_ = &TitleScene::FadeDraw;
-	frame_ = fade_interval;
-	titleH_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
-	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
-	ChangeVolumeSoundMem(255, soundH_);
-}
-
-void TitleScene::Update(Input& input)
-{
-	(this->*update_)(input);
-}
-
-void TitleScene::Draw()
-{
-	(this->*draw_)();
 }

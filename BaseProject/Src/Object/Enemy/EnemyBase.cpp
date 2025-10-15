@@ -1,8 +1,8 @@
 #include "../../Application.h"
 #include "../../Utility/AsoUtility.h"
 #include "../Common/Capsule.h"
-#include "../Components/Enemy/EnemyMoveComponent.h"
-#include "../Components/Enemy/EnemyChaseComponent.h"
+#include "../Components/Charactor/Enemy/EnemyMoveComponent.h"
+#include "../Components/Charactor/Enemy/EnemyChaseComponent.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(void)

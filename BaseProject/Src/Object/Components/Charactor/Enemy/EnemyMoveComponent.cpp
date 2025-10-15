@@ -1,5 +1,5 @@
-#include "../../ActorBase.h"
-#include "../../Common/Transform.h"
+#include "../Object/ObjectBase/ActorBase.h"
+#include "../../../Common/Transform.h"
 #include "EnemyMoveComponent.h"
 
 EnemyMoveComponent::EnemyMoveComponent(std::shared_ptr<Charactor> owner)

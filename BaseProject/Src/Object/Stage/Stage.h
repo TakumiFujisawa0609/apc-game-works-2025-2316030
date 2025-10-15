@@ -1,5 +1,5 @@
 #pragma once
-#include "../ActorBase.h"
+#include "../ObjectBase/ActorBase.h"
 
 class Player;
 

@@ -1,7 +1,7 @@
 #include "../Application.h"
 #include "../Utility/AsoUtility.h"
-#include "Common/Capsule.h"
-#include "Common/Collider.h"
+#include "../Common/Capsule.h"
+#include "../Common/Collider.h"
 #include "Charactor.h"
 
 Charactor::Charactor(void)

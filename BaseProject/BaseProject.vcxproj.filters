@@ -57,7 +57,7 @@
     <ClCompile Include="Src\Scene\TitleScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\ActorBase.cpp">
+    <ClCompile Include="Src\Object\ObjectBase\ActorBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Common\AnimationController.cpp">
@@ -108,7 +108,7 @@
     <ClCompile Include="Src\Object\Components\Gameplay\OxygenComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Components\Player\PlayerInput.cpp">
+    <ClCompile Include="Src\Object\Components\Charactor\Player\PlayerInput.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Components\UI\Components\UIComponent.cpp">
@@ -117,7 +117,7 @@
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Components\UI\UIElements\OxygenGauge.cpp">
+    <ClCompile Include="Src\Object\Components\UI\UIElements\TimeGauge.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Components\UI\UIElements\SlotBase.cpp">
@@ -183,7 +183,7 @@
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Components\Enemy\EnemyMoveComponent.cpp">
+    <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyMoveComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Enemy\Patrol\PatrolNode.cpp">
@@ -192,16 +192,19 @@
     <ClCompile Include="Src\Object\Enemy\Patrol\PatrolPath.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Components\Enemy\EnemyChaseComponent.cpp">
+    <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyChaseComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Charactor.cpp">
+    <ClCompile Include="Src\Object\ObjectBase\Charactor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Components\Charactor\CharactorComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Scene\ClearScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -245,7 +248,7 @@
     <ClInclude Include="Src\Scene\TitleScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\ActorBase.h">
+    <ClInclude Include="Src\Object\ObjectBase\ActorBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Common\AnimationController.h">
@@ -296,7 +299,7 @@
     <ClInclude Include="Src\Object\Components\Gameplay\OxygenComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Components\Player\PlayerInput.h">
+    <ClInclude Include="Src\Object\Components\Charactor\Player\PlayerInput.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Components\UI\Components\UIComponent.h">
@@ -305,7 +308,7 @@
     <ClInclude Include="Src\Object\Components\UI\UIElement.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Components\UI\UIElements\OxygenGauge.h">
+    <ClInclude Include="Src\Object\Components\UI\UIElements\TimeGauge.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Components\UI\UIElements\SlotBase.h">
@@ -371,7 +374,7 @@
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Components\Enemy\EnemyMoveComponent.h">
+    <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyMoveComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Enemy\Patrol\PatrolNode.h">
@@ -380,10 +383,10 @@
     <ClInclude Include="Src\Object\Enemy\Patrol\PatrolPath.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Components\Enemy\EnemyChaseComponent.h">
+    <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyChaseComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Charactor.h">
+    <ClInclude Include="Src\Object\ObjectBase\Charactor.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Components\Charactor\CharactorComponent.h">
@@ -528,6 +531,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Scene\ClearScene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

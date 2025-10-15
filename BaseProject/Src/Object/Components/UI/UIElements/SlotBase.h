@@ -57,7 +57,6 @@ protected:
 	std::vector<std::shared_ptr<ItemComponent>> storage_;
 	int currentSelectedIndex_;
 
-
 	// zŠÂØ‚è‘Ö‚¦‚ğŒvZ‚·‚é
 	void UpdateIndex(int direction);
 };

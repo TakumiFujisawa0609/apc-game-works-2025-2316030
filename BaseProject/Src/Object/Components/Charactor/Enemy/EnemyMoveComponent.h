@@ -1,5 +1,5 @@
 #pragma once
-#include "../Charactor/CharactorComponent.h"
+#include "../CharactorComponent.h"
 class EnemyMoveComponent :
     public CharactorComponent
 {

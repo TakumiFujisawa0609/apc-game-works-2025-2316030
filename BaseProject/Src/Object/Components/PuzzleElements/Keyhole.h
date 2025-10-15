@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Common/Component.h"
-#include "../../ActorBase.h"
+#include "../../ObjectBase/ActorBase.h"
 
 
 class Keyhole :

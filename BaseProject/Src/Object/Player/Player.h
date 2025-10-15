@@ -1,8 +1,8 @@
 #pragma once
-#include "../Charactor.h"
+#include "../ObjectBase/Charactor.h"
 
 // 入力系
-class OxygenComponent;
+class TimeLimitComponent;
 class PlayerInput;
 
 //// インベントリ
@@ -33,8 +33,8 @@ public:
 	void OnUpdate(float deltaTime) override;
 	void Draw(void) override;
 
-	// 酸素コンポーネントの取得
-	OxygenComponent* GetOxygenComp();
+	// 制限時間コンポーネントの取得
+	TimeLimitComponent* GetTimeLimitComp();
 
 	// 入力コンポーネントの取得
 	PlayerInput* GetInputComp();
@@ -48,7 +48,7 @@ public:
 
 private:
 
-	OxygenComponent* oxygen_;		// 酸素コンポーネント
+	TimeLimitComponent* tLimit_;		// 酸素コンポーネント
 	PlayerInput* input_;			// 入力コンポーネント
 
 	float yaw;			// 水平回転（ヨー）

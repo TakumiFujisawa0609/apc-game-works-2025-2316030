@@ -1,14 +1,14 @@
 #include "../../../Player/Player.h"
-#include "../UIElements/OxygenGauge.h"
+#include "../UIElements/\TimeGauge.h"
 #include "PlayerStatusUI.h"
 
-PlayerStatusUI::PlayerStatusUI(std::shared_ptr<ActorBase> owner,Player& player)
+PlayerStatusUI::PlayerStatusUI(std::shared_ptr<ActorBase> owner, Player& player)
 	:
 	UIComponent(owner),
 	player_(player)
 {
 	// é_ëfÉQÅ[ÉW
-	oxygen_ = AddElement<OxygenGauge>(*player_.GetOxygenComp());
+	tGauge_ = AddElement<TimeGauge>(*player_.GetTimeLimitComp());
 
 }
 

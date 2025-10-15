@@ -1,20 +1,20 @@
 #pragma once
 #include "../UIElement.h"
 
-class OxygenComponent;
+class TimeLimitComponent;
 
-class OxygenGauge :
+class TimeGauge :
     public UIElement
 {
 public:
-    OxygenGauge(OxygenComponent& oxygen_);
-    ~OxygenGauge(void);
+    TimeGauge(TimeLimitComponent& tLimit);
+    ~TimeGauge(void);
 
     void Update(float deltaTime) override;
     void Draw(void) override;
 
 private:
-    OxygenComponent& oxygen_;
+    TimeLimitComponent& tLimit_;        // ŠÔ§ŒÀ
     
     // UI•`‰æÀ•W
     float gaugeCenterX_, gaugeCenterY_;     // ƒQ[ƒW•”•ª

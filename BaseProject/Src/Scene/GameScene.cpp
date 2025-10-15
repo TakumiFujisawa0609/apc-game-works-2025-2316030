@@ -43,6 +43,94 @@ namespace {
 	}
 }
 
+
+GameScene::GameScene(SceneController& controller) :Scene(controller)
+{
+
+	update_ = &GameScene::FadeInUpdate;
+	draw_ = &GameScene::FadeDraw;
+	frame_ = fade_interval;
+	isFps_ = true;
+	imgH_ = -1;
+
+	int sw, sh, depth;
+	GetScreenState(&sw, &sh, &depth);
+
+}
+
+GameScene::~GameScene()
+{
+
+}
+
+void GameScene::Init(Input& input)
+{
+	// プレイヤー
+	player_ = std::make_shared<Player>();
+	player_->InitComponents();
+	player_->Init();
+
+	// ステージ
+	stage_ = std::make_shared<Stage>(*player_);
+	stage_->Init();
+
+	// インベントリ
+	inventory_ = std::make_shared<Inventory>(20);
+
+	// 酸素ボンベ
+	lockpick_ = std::make_shared<Lockpick>(player_);
+	lockpick_->Init();
+
+	// ハンドライト
+	light_ = std::make_shared<HandLight>(player_);
+	light_->Init();
+
+	wire_ = std::make_shared<Wire>(player_);
+	wire_->Init();
+
+	// アイテムスロット
+	itemSlot_ = std::make_shared<ItemSlot>();
+	itemSlot_->AddItem(lockpick_);
+	itemSlot_->AddItem(light_);
+
+	// ステータス
+	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
+
+	lockpick_->SetTargetPos(&player_->GetTransform());
+	light_->SetTargetPos(&player_->GetTransform());
+	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
+	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
+	isFps_ = true;
+}
+
+void GameScene::Update(Input& input)
+{
+	float time = Application::GetInstance().GetDeltaTime();
+
+	// オブジェクト
+	stage_->Update(time);
+	player_->Update(time);
+
+	// スロット
+	itemSlot_->Update(time);
+	HandleMouseWheel(input);
+
+	// アイテム
+	lockpick_->Update(time);
+	light_->Update(time);
+
+	status_->Update(time);
+
+	(this->*update_)(input);
+}
+
+void GameScene::Draw()
+{
+	(this->*draw_)();
+
+}
+
+
 void GameScene::FadeInUpdate(Input& input)
 {
 	if (--frame_ <= 0) {
@@ -55,7 +143,7 @@ void GameScene::NormalUpdate(Input& input)
 {
 	++frame_;
 
-	if (player_->GetOxygenComp()->IsOxygenDepleted())
+	if (player_->GetTimeLimitComp()->IsTimeDepleted())
 	{
 		controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
 		return;
@@ -283,90 +371,4 @@ void GameScene::HandleMouseWheel(Input& input)
 		itemSlot_->CycleByWheel(false);
 		wheelCounter = 0;
 	}
-}
-
-GameScene::GameScene(SceneController& controller) :Scene(controller)
-{
-
-	update_ = &GameScene::FadeInUpdate;
-	draw_ = &GameScene::FadeDraw;
-	frame_ = fade_interval;
-	isFps_ = true;
-	imgH_ = -1;
-
-	int sw, sh, depth;
-	GetScreenState(&sw, &sh, &depth);
-
-}
-
-GameScene::~GameScene()
-{
-	
-}
-
-void GameScene::Init(Input& input)
-{
-	// プレイヤー
-	player_ = std::make_shared<Player>();
-	player_->InitComponents();
-	player_->Init();
-
-	// ステージ
-	stage_ = std::make_shared<Stage>(*player_);
-	stage_->Init();
-
-	// インベントリ
-	inventory_ = std::make_shared<Inventory>(20);
-
-	// 酸素ボンベ
-	lockpick_ = std::make_shared<Lockpick>(player_);
-	lockpick_->Init();
-
-	// ハンドライト
-	light_ = std::make_shared<HandLight>(player_);
-	light_->Init();
-
-	wire_ = std::make_shared<Wire>(player_);
-	wire_->Init();
-
-	// アイテムスロット
-	itemSlot_ = std::make_shared<ItemSlot>();
-	itemSlot_->AddItem(lockpick_);
-	itemSlot_->AddItem(light_);
-
-	// ステータス
-	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
-
-	lockpick_->SetTargetPos(&player_->GetTransform());
-	light_->SetTargetPos(&player_->GetTransform());
-	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
-	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
-	isFps_ = true;
-}
-
-void GameScene::Update(Input& input)
-{
-	float time = Application::GetInstance().GetDeltaTime();
-
-	// オブジェクト
-	stage_->Update(time);
-	player_->Update(time);
-
-	// スロット
-	itemSlot_->Update(time);
-	HandleMouseWheel(input);
-
-	// アイテム
-	lockpick_->Update(time);
-	light_->Update(time);
-
-	status_->Update(time);
-
-	(this->*update_)(input);
-}
-
-void GameScene::Draw()
-{
-	(this->*draw_)();
-
 }

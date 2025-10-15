@@ -3,57 +3,57 @@
 #include "../../../Application.h"
 #include "OxygenComponent.h"
 
-OxygenComponent::OxygenComponent(std::shared_ptr<Charactor> owner,
+TimeLimitComponent::TimeLimitComponent(std::shared_ptr<Charactor> owner,
 	float max, float depletionRate)
     :
 	CharactorComponent(owner),
-	oxygen_(max),
-	maxOxygen_(max),
+	value_(max),
+	maxValue_(max),
 	depletionRate_(depletionRate),
 	isDepleted_(false)
 {
 }
 
-OxygenComponent::~OxygenComponent()
+TimeLimitComponent::~TimeLimitComponent()
 {
 }
 
-void OxygenComponent::Update(float deltaTime)
+void TimeLimitComponent::Update(float deltaTime)
 {
 	if (isDepleted_) return;
 
-	// é_ëfÇ™å∏è≠Ç∑ÇÈèàóù
-	oxygen_ -= depletionRate_ * deltaTime;
-	if (oxygen_ < 0.0f) {
-		oxygen_ = 0.0f;
+	// éûä‘Ç™å∏è≠Ç∑ÇÈèàóù
+	value_ -= depletionRate_ * deltaTime;
+	if (value_ < 0.0f) {
+		value_ = 0.0f;
 		isDepleted_ = true; // é_ëfêÿÇÍ
 	}
 
 }
 
-float OxygenComponent::GetOxygen() const
+float TimeLimitComponent::GetTimeValue(void) const
 {
-    return oxygen_;
+    return value_;
 }
 
-void OxygenComponent::AddOxygen(float amount)
+void TimeLimitComponent::AddTimeValue(float amount)
 {
 	if (isDepleted_) return;
-	oxygen_ = std::clamp(oxygen_ + amount, 0.0f, maxOxygen_);
+	value_ = std::clamp(value_ + amount, 0.0f, maxValue_);
 }
 
-bool OxygenComponent::IsOxygenDepleted() const
+bool TimeLimitComponent::IsTimeDepleted() const
 {
 	return isDepleted_;
 }
 
-void OxygenComponent::Consume(float deltaTime)
+void TimeLimitComponent::Consume(float deltaTime)
 {
-	oxygen_ -= depletionRate_ * deltaTime;
-	if (oxygen_ < 0.0f)oxygen_ = 0.0f;
+	value_ -= depletionRate_ * deltaTime;
+	if (value_ < 0.0f)value_ = 0.0f;
 }
 
-float OxygenComponent::GetDepletionRate(void) const
+float TimeLimitComponent::GetDepletionRate(void) const
 {
 	return depletionRate_;
 }

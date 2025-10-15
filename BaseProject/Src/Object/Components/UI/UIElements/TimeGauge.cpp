@@ -5,11 +5,11 @@
 #include <DxLib.h>
 #include "../../../../Application.h"
 #include "../../Gameplay/OxygenComponent.h"
-#include "OxygenGauge.h"
+#include "TimeGauge.h"
 
-OxygenGauge::OxygenGauge(OxygenComponent& oxygen)
+TimeGauge::TimeGauge(TimeLimitComponent& tLimit)
 	:
-	oxygen_(oxygen)
+	tLimit_(tLimit)
 {
 	gaugeCenterX_ = static_cast<float>(Application::SCREEN_SIZE_X * 0.05);
 	gaugeCenterY_ = static_cast<float>(Application::SCREEN_SIZE_Y * 0.68);
@@ -17,19 +17,19 @@ OxygenGauge::OxygenGauge(OxygenComponent& oxygen)
 
 }
 
-OxygenGauge::~OxygenGauge()
+TimeGauge::~TimeGauge()
 {
 }
 
-void OxygenGauge::Update(float deltaTime)
+void TimeGauge::Update(float deltaTime)
 {
 
 }
 
-void OxygenGauge::Draw(void)
+void TimeGauge::Draw(void)
 {
 	// 酸素値の割合に基づいてゲージが減る部分を計算
-	float oxygenRatio = oxygen_.GetDepletionRate() / 100.0f;
+	float oxygenRatio = tLimit_.GetDepletionRate() / 100.0f;
 	int rectHight = static_cast<int>(gaugeRadius_ * 2 * oxygenRatio);
 	int rectY = static_cast<int>(gaugeCenterY_ + gaugeRadius_ - rectHight);
 
@@ -49,7 +49,7 @@ void OxygenGauge::Draw(void)
 	// 酸素値のテキスト描画
 	//----------------------------------------------------------------------------------------------
 	wchar_t oxygenTextBuff[16];
-	swprintf_s(oxygenTextBuff, L"%d", static_cast<int>(oxygen_.GetOxygen()));
+	swprintf_s(oxygenTextBuff, L"%d", static_cast<int>(tLimit_.GetTimeValue()));
 	std::wstring oxygenText(oxygenTextBuff);
 
 	// テキストをゲージ中央に配置するための計算

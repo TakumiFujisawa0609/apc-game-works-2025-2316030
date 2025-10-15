@@ -9,6 +9,12 @@ class Input;
 class PauseScene :
     public Scene
 {
+public:
+    PauseScene(SceneController& controller);
+    virtual void Init(Input& input)override;
+    virtual void Update(Input& input)override;
+    virtual void Draw(void)override;
+
 private:
     int frame_ = 0;
     int currentIndex_ = 0;
@@ -34,13 +40,6 @@ private:
 
     //メニューのリストを表示する
     void DrawMenuList();
-
-
-public:
-    PauseScene(SceneController& controller);
-    virtual void Init(Input& input)override;
-    virtual void Update(Input& input)override;
-    virtual void Draw(void)override;
 
 };
 

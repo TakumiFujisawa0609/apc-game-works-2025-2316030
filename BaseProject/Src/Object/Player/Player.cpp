@@ -10,11 +10,11 @@
 #include "Inventory.h"
 #include "Player.h"
 #include "../../Object/Components/Gameplay/OxygenComponent.h"
-#include "../../Object/Components/Player/PlayerInput.h"
+#include "../../Object/Components/Charactor/Player/PlayerInput.h"
 
 Player::Player(void)
     :
-    oxygen_(nullptr),
+    tLimit_(nullptr),
     input_(nullptr)
 {
 	
@@ -67,7 +67,7 @@ void Player::Init(void)
 void Player::InitComponents(void)
 {
     // コンポーネントを生成してアタッチ
-    oxygen_ = AddCharactorComponent<OxygenComponent>(60.0f, 1.0f);
+    tLimit_ = AddCharactorComponent<TimeLimitComponent>(60.0f, 1.0f);
     input_ = AddCharactorComponent<PlayerInput>();
 }
 
@@ -75,7 +75,7 @@ void Player::Update(float deltaTime)
 {
 	Charactor::Update(deltaTime);
 
-    oxygen_->GetOxygen();
+    tLimit_->GetTimeValue();
 }
 
 void Player::OnUpdate(float deltaTime)
@@ -180,7 +180,6 @@ void Player::OnUpdate(float deltaTime)
 
     Collision();
 
-
     // Transform更新
     transform_.Update();
 
@@ -188,13 +187,17 @@ void Player::OnUpdate(float deltaTime)
 
 void Player::Draw(void)
 {
-	//DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+
+#ifdef DEBUG
+    //DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
+#endif // DEBUG
+
 }
 
-OxygenComponent* Player::GetOxygenComp()
+TimeLimitComponent* Player::GetTimeLimitComp()
 {
-	return oxygen_;
+	return tLimit_;
 }
 
 PlayerInput* Player::GetInputComp()

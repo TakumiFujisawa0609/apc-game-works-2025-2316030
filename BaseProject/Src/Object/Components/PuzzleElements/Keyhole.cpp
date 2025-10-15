@@ -32,8 +32,6 @@ void Keyhole::Init(void)
 	VECTOR modelPos = VAdd(camPos, VScale(forward, 200.0f));
 
 	transform_.pos = modelPos;
-	//transform_.pos.x -= 3.5f;
-	transform_.pos.y += 3.5f;
 	transform_.scl = { 66.0f,66.0f,66.0f };
 	transform_.quaRot = Quaternion::LookRotation(camera->GetForward());;
 	transform_.quaRotLocal = Quaternion::Euler({ AsoUtility::Deg2RadF(0.0f),

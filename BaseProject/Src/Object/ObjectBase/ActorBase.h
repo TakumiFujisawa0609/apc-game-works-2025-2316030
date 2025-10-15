@@ -47,6 +47,6 @@ protected:
 
 private:
 
-	// コンポーネント群
+	// アクターコンポーネント群
 	std::vector<std::unique_ptr<Component>> components_;
 };

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Charactor.h"
+#include "../ObjectBase/Charactor.h"
 
 class Collider;
 class Capsule;

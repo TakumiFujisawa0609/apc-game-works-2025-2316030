@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "ActorBase.h"
-#include "Components/Charactor/CharactorComponent.h"
+#include "../Components/Charactor/CharactorComponent.h"
 
 //class CharactorComponent;
 
@@ -25,14 +25,11 @@ public:
 
 	virtual const std::shared_ptr<Capsule> GetCapsule(void) const;	// 衝突用カプセルの取得
 
-	// ActorBase の shared_from_this() を Charactor 型にダウンキャストする
 	std::shared_ptr<Charactor> shared_from_this()
 	{
-		// ActorBase の shared_from_this() を呼び出し、static_pointer_cast で型を変更
 		return std::static_pointer_cast<Charactor>(ActorBase::shared_from_this());
 	}
 
-	// const 版も同様に修正
 	std::shared_ptr<const Charactor> shared_from_this() const
 	{
 		return std::static_pointer_cast<const Charactor>(ActorBase::shared_from_this());
@@ -42,7 +39,6 @@ public:
 	template<typename T, typename... Args>
 	T* AddCharactorComponent(Args&&... args)
 	{
-		
 		std::shared_ptr<Charactor> ownerPtr = shared_from_this();
 		auto comp = std::make_unique<T>(ownerPtr, std::forward<Args>(args)...);
 		T* ptr = comp.get();
@@ -88,7 +84,7 @@ protected:
 
 private:
 
-	// コンポーネント群
+	// キャラクターコンポーネント群
 	std::vector<std::unique_ptr<CharactorComponent>> charaComponents_;
 };
 

@@ -1,6 +1,6 @@
 #include <DxLib.h>
-#include "../../../Application.h"
-#include "../../../Manager/InputManager.h"
+#include "../../../../Application.h"
+#include "../../../../Manager/InputManager.h"
 #include "PlayerInput.h"
 
 PlayerInput::PlayerInput(std::shared_ptr<Charactor> owner)

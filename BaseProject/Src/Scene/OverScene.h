@@ -3,7 +3,27 @@
 class OverScene :
     public Scene
 {
-	private:
+public:
+	OverScene(SceneController& controller);
+	~OverScene();
+	/// <summary>
+	/// シーン開始時に一度だけ呼ばれる初期化関数
+	/// </summary>
+	/// <param name="input">入力クラス</param>
+	virtual void Init(Input& input)override;
+
+	/// <summary>
+	/// 毎フレーム状態を更新する
+	/// </summary>
+	/// <param name="input">入力クラス</param>
+	virtual void Update(Input& input)override;
+
+	/// <summary>
+	/// 毎フレーム描画する
+	/// </summary>
+	virtual void Draw(void)override;
+
+private:
 		int imgH_ = 0;
 		int frame_ = 0;
 		int soundH_;
@@ -20,24 +40,5 @@ class OverScene :
 		void NormalDraw();
 		void FadeDraw();
 
-	public:
-		OverScene(SceneController& controller);
-		~OverScene();
-		/// <summary>
-		/// シーン開始時に一度だけ呼ばれる初期化関数
-		/// </summary>
-		/// <param name="input">入力クラス</param>
-		virtual void Init(Input& input)override;
-
-		/// <summary>
-		/// 毎フレーム状態を更新する
-		/// </summary>
-		/// <param name="input">入力クラス</param>
-		virtual void Update(Input& input)override;
-
-		/// <summary>
-		/// 毎フレーム描画する
-		/// </summary>
-		virtual void Draw(void)override;
 };
 

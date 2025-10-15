@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "../Charactor/CharactorComponent.h"
+#include "../CharactorComponent.h"
 
 class Transform;
 class EnemyChaseComponent :

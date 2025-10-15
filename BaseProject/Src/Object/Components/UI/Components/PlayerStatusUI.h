@@ -2,7 +2,7 @@
 #include "UIComponent.h"
 
 class Player;
-class OxygenGauge;
+class TimeGauge;
 
 
 class PlayerStatusUI :
@@ -21,7 +21,7 @@ private:
     Player& player_;
 
     // é_ëfÉQÅ[ÉWUI
-    OxygenGauge* oxygen_;
+    TimeGauge* tGauge_;
 
 };
 

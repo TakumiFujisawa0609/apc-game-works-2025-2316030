@@ -13,6 +13,37 @@ namespace {
 	constexpr int fade_interval = 60;
 }
 
+OverScene::OverScene(SceneController& controller) :Scene(controller)
+{
+	//imgH_ = LoadGraph(L"img/hasuta.png");
+	//assert(imgH_ >= 0);
+	update_ = &OverScene::FadeInUpadte;
+	draw_ = &OverScene::FadeDraw;
+	frame_ = fade_interval;
+}
+
+OverScene::~OverScene()
+{
+}
+
+void OverScene::Init(Input& input)
+{
+	imgH_ = resMng_.Load(ResourceManager::SRC::GAMEOVER).handleId_;
+	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
+	ChangeVolumeSoundMem(255, soundH_);
+}
+
+void OverScene::Update(Input& input)
+{
+	(this->*update_)(input);
+}
+
+void OverScene::Draw()
+{
+	(this->*draw_)();
+}
+
+
 void OverScene::FadeInUpadte(Input&)
 {
 	if (--frame_ <=0) {
@@ -74,34 +105,4 @@ void OverScene::FadeDraw()
 	DrawBox(0, 0, 640, 480, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-}
-
-OverScene::OverScene(SceneController& controller) :Scene(controller)
-{
-	//imgH_ = LoadGraph(L"img/hasuta.png");
-	//assert(imgH_ >= 0);
-	update_ = &OverScene::FadeInUpadte;
-	draw_ = &OverScene::FadeDraw;
-	frame_ = fade_interval;
-}
-
-OverScene::~OverScene()
-{
-}
-
-void OverScene::Init(Input& input)
-{
-	imgH_ = resMng_.Load(ResourceManager::SRC::GAMEOVER).handleId_;
-	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
-	ChangeVolumeSoundMem(255, soundH_);
-}
-
-void OverScene::Update(Input& input)
-{
-	(this->*update_)(input);
-}
-
-void OverScene::Draw()
-{
-	(this->*draw_)();
 }

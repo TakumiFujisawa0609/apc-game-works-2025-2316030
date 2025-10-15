@@ -18,6 +18,116 @@ namespace {
 	constexpr int analog_trigger_threshold = 128;//アナログトリガーの閾値
 }
 
+KeyConfigScene::KeyConfigScene(SceneController& controller, Input& input) :
+	Scene(controller),
+	input_(input),
+	update_(&KeyConfigScene::NormalUpdate)
+{
+	ReloadTable();
+
+	keyboardNameTable_[KEY_INPUT_A] = L"Ａキー";
+	keyboardNameTable_[KEY_INPUT_B] = L"Ｂキー";
+	keyboardNameTable_[KEY_INPUT_C] = L"Ｃキー";
+	keyboardNameTable_[KEY_INPUT_D] = L"Ｄキー";
+	keyboardNameTable_[KEY_INPUT_E] = L"Ｅキー";
+	keyboardNameTable_[KEY_INPUT_F] = L"Ｆキー";
+	keyboardNameTable_[KEY_INPUT_G] = L"Ｇキー";
+	keyboardNameTable_[KEY_INPUT_H] = L"Ｈキー";
+	keyboardNameTable_[KEY_INPUT_I] = L"Ｉキー";
+	keyboardNameTable_[KEY_INPUT_J] = L"Ｊキー";
+	keyboardNameTable_[KEY_INPUT_K] = L"Ｋキー";
+	keyboardNameTable_[KEY_INPUT_L] = L"Ｌキー";
+	keyboardNameTable_[KEY_INPUT_M] = L"Ｍキー";
+	keyboardNameTable_[KEY_INPUT_N] = L"Ｎキー";
+	keyboardNameTable_[KEY_INPUT_O] = L"Ｏキー";
+	keyboardNameTable_[KEY_INPUT_P] = L"Ｐキー";
+	keyboardNameTable_[KEY_INPUT_Q] = L"Ｑキー";
+	keyboardNameTable_[KEY_INPUT_R] = L"Ｒキー";
+	keyboardNameTable_[KEY_INPUT_S] = L"Ｓキー";
+	keyboardNameTable_[KEY_INPUT_T] = L"Ｔキー";
+	keyboardNameTable_[KEY_INPUT_U] = L"Ｕキー";
+	keyboardNameTable_[KEY_INPUT_V] = L"Ｖキー";
+	keyboardNameTable_[KEY_INPUT_W] = L"Ｗキー";
+	keyboardNameTable_[KEY_INPUT_X] = L"Ｘキー";
+	keyboardNameTable_[KEY_INPUT_Y] = L"Ｙキー";
+	keyboardNameTable_[KEY_INPUT_Z] = L"Ｚキー";
+	keyboardNameTable_[KEY_INPUT_BACK] = L"BSキー";
+	keyboardNameTable_[KEY_INPUT_TAB] = L"Tabキー";
+	keyboardNameTable_[KEY_INPUT_RETURN] = L"Enterキー";
+	keyboardNameTable_[KEY_INPUT_ESCAPE] = L"Escキー";
+	keyboardNameTable_[KEY_INPUT_SPACE] = L"スペースキー";
+	keyboardNameTable_[KEY_INPUT_F1] = L"Ｆ１キー";
+	keyboardNameTable_[KEY_INPUT_F2] = L"Ｆ２キー";
+	keyboardNameTable_[KEY_INPUT_F3] = L"Ｆ３キー";
+	keyboardNameTable_[KEY_INPUT_F4] = L"Ｆ４キー";
+	keyboardNameTable_[KEY_INPUT_F5] = L"Ｆ５キー";
+
+	padNameTable_[PAD_INPUT_A] = L"Ａボタン";
+	padNameTable_[PAD_INPUT_B] = L"Ｂボタン";
+	padNameTable_[PAD_INPUT_C] = L"Ｘボタン";
+	padNameTable_[PAD_INPUT_X] = L"Ｙボタン";
+	padNameTable_[PAD_INPUT_Y] = L"Ｌボタン";
+	padNameTable_[PAD_INPUT_Z] = L"Ｒボタン";
+	padNameTable_[PAD_INPUT_L] = L"セレクトボタン";
+	padNameTable_[PAD_INPUT_R] = L"スタートボタン";
+	padNameTable_[PAD_INPUT_START] = L"Ｌスティック";
+	padNameTable_[PAD_INPUT_M] = L"Ｒスティック";
+
+	analogNameTable_[(int)AnalogInputType::l_up] = L"左レバー上";
+	analogNameTable_[(int)AnalogInputType::l_down] = L"左レバー下";
+	analogNameTable_[(int)AnalogInputType::l_left] = L"左レバー左";
+	analogNameTable_[(int)AnalogInputType::l_right] = L"左レバー右";
+	analogNameTable_[(int)AnalogInputType::r_up] = L"右レバー上";
+	analogNameTable_[(int)AnalogInputType::r_down] = L"右レバー下";
+	analogNameTable_[(int)AnalogInputType::r_left] = L"右レバー左";
+	analogNameTable_[(int)AnalogInputType::r_right] = L"右レバー右";
+	analogNameTable_[(int)AnalogInputType::l_trigger] = L"左トリガー";
+	analogNameTable_[(int)AnalogInputType::r_trigger] = L"右トリガー";
+
+	systemMenuTable_[L"SAVE&EXIT"] = [this]() {
+		CommitInputTable();
+		controller_.PopScene(input_);
+	};
+	systemMenuTable_[L"CANCEL&EXIT"] = [this]() {
+		controller_.PopScene(input_);
+	};
+	systemMenuTable_[L"RESET"] = [this]() {
+		input_.ResetTable();
+		ReloadTable();
+	};
+
+	systemMenuStringList_ = { L"RESET",L"SAVE&EXIT" ,L"CANCEL&EXIT" };
+
+}
+
+void KeyConfigScene::Init(Input& input)
+{
+}
+
+void KeyConfigScene::Update(Input& input)
+{
+	(this->*update_)(input);
+
+}
+
+void KeyConfigScene::Draw()
+{
+	const Size& wsize = Application::GetInstance().GetWindowSize();
+	//緑っぽいセロファン
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 240);
+	DrawBox(margin_size, margin_size,
+		wsize.width - margin_size, wsize.height - margin_size,
+		0xaaffaa, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	//緑
+	DrawBoxAA(margin_size, margin_size,
+		wsize.width - margin_size, wsize.height - margin_size,
+		0x00ff00, false, 3.0f);
+	DrawString(margin_size + 10, margin_size + 10, L"キーコンフィグ", 0x000000);
+
+	DrawInputList();
+}
+
 void KeyConfigScene::DrawInputList()
 {
 	int rowY = input_list_top;//最初のY座標
@@ -224,119 +334,9 @@ void KeyConfigScene::EdittingUpdate(Input& input)
 	lastPadState_ = currentPadState_;
 }
 
-KeyConfigScene::KeyConfigScene(SceneController& controller, Input& input) :
-	Scene(controller),
-	input_(input),
-	update_(&KeyConfigScene::NormalUpdate)
-{
-	ReloadTable();
-
-	keyboardNameTable_[KEY_INPUT_A] = L"Ａキー";
-	keyboardNameTable_[KEY_INPUT_B] = L"Ｂキー";
-	keyboardNameTable_[KEY_INPUT_C] = L"Ｃキー";
-	keyboardNameTable_[KEY_INPUT_D] = L"Ｄキー";
-	keyboardNameTable_[KEY_INPUT_E] = L"Ｅキー";
-	keyboardNameTable_[KEY_INPUT_F] = L"Ｆキー";
-	keyboardNameTable_[KEY_INPUT_G] = L"Ｇキー";
-	keyboardNameTable_[KEY_INPUT_H] = L"Ｈキー";
-	keyboardNameTable_[KEY_INPUT_I] = L"Ｉキー";
-	keyboardNameTable_[KEY_INPUT_J] = L"Ｊキー";
-	keyboardNameTable_[KEY_INPUT_K] = L"Ｋキー";
-	keyboardNameTable_[KEY_INPUT_L] = L"Ｌキー";
-	keyboardNameTable_[KEY_INPUT_M] = L"Ｍキー";
-	keyboardNameTable_[KEY_INPUT_N] = L"Ｎキー";
-	keyboardNameTable_[KEY_INPUT_O] = L"Ｏキー";
-	keyboardNameTable_[KEY_INPUT_P] = L"Ｐキー";
-	keyboardNameTable_[KEY_INPUT_Q] = L"Ｑキー";
-	keyboardNameTable_[KEY_INPUT_R] = L"Ｒキー";
-	keyboardNameTable_[KEY_INPUT_S] = L"Ｓキー";
-	keyboardNameTable_[KEY_INPUT_T] = L"Ｔキー";
-	keyboardNameTable_[KEY_INPUT_U] = L"Ｕキー";
-	keyboardNameTable_[KEY_INPUT_V] = L"Ｖキー";
-	keyboardNameTable_[KEY_INPUT_W] = L"Ｗキー";
-	keyboardNameTable_[KEY_INPUT_X] = L"Ｘキー";
-	keyboardNameTable_[KEY_INPUT_Y] = L"Ｙキー";
-	keyboardNameTable_[KEY_INPUT_Z] = L"Ｚキー";
-	keyboardNameTable_[KEY_INPUT_BACK] = L"BSキー";
-	keyboardNameTable_[KEY_INPUT_TAB] = L"Tabキー";
-	keyboardNameTable_[KEY_INPUT_RETURN] = L"Enterキー";
-	keyboardNameTable_[KEY_INPUT_ESCAPE] = L"Escキー";
-	keyboardNameTable_[KEY_INPUT_SPACE] = L"スペースキー";
-	keyboardNameTable_[KEY_INPUT_F1] = L"Ｆ１キー";
-	keyboardNameTable_[KEY_INPUT_F2] = L"Ｆ２キー";
-	keyboardNameTable_[KEY_INPUT_F3] = L"Ｆ３キー";
-	keyboardNameTable_[KEY_INPUT_F4] = L"Ｆ４キー";
-	keyboardNameTable_[KEY_INPUT_F5] = L"Ｆ５キー";
-
-	padNameTable_[PAD_INPUT_A] = L"Ａボタン";
-	padNameTable_[PAD_INPUT_B] = L"Ｂボタン";
-	padNameTable_[PAD_INPUT_C] = L"Ｘボタン";
-	padNameTable_[PAD_INPUT_X] = L"Ｙボタン";
-	padNameTable_[PAD_INPUT_Y] = L"Ｌボタン";
-	padNameTable_[PAD_INPUT_Z] = L"Ｒボタン";
-	padNameTable_[PAD_INPUT_L] = L"セレクトボタン";
-	padNameTable_[PAD_INPUT_R] = L"スタートボタン";
-	padNameTable_[PAD_INPUT_START] = L"Ｌスティック";
-	padNameTable_[PAD_INPUT_M] = L"Ｒスティック";
-
-	analogNameTable_[(int)AnalogInputType::l_up] = L"左レバー上";
-	analogNameTable_[(int)AnalogInputType::l_down] = L"左レバー下";
-	analogNameTable_[(int)AnalogInputType::l_left] = L"左レバー左";
-	analogNameTable_[(int)AnalogInputType::l_right] = L"左レバー右";
-	analogNameTable_[(int)AnalogInputType::r_up] = L"右レバー上";
-	analogNameTable_[(int)AnalogInputType::r_down] = L"右レバー下";
-	analogNameTable_[(int)AnalogInputType::r_left] = L"右レバー左";
-	analogNameTable_[(int)AnalogInputType::r_right] = L"右レバー右";
-	analogNameTable_[(int)AnalogInputType::l_trigger] = L"左トリガー";
-	analogNameTable_[(int)AnalogInputType::r_trigger] = L"右トリガー";
-	
-	systemMenuTable_[L"SAVE&EXIT"] = [this]() {
-		CommitInputTable();
-		controller_.PopScene(input_);
-	};
-	systemMenuTable_[L"CANCEL&EXIT"] = [this]() {
-		controller_.PopScene(input_);
-	};
-	systemMenuTable_[L"RESET"] = [this]() {
-		input_.ResetTable();
-		ReloadTable();
-	};
-
-	systemMenuStringList_ = { L"RESET",L"SAVE&EXIT" ,L"CANCEL&EXIT" };
-
-}
-
 void KeyConfigScene::ReloadTable()
 {
 	tempInputTable_ = input_.inputTable_;
-}
-
-void KeyConfigScene::Init(Input& input)
-{
-}
-
-void KeyConfigScene::Update(Input& input)
-{
-	(this->*update_)(input);
-
-}
-
-void KeyConfigScene::Draw()
-{
-	const Size& wsize = Application::GetInstance().GetWindowSize();
-	//緑っぽいセロファン
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 240);
-	DrawBox(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
-		0xaaffaa, true);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	//緑
-	DrawBoxAA(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
-		0x00ff00, false, 3.0f);
-	DrawString(margin_size + 10, margin_size + 10, L"キーコンフィグ", 0x000000);
-	
-	DrawInputList();
 }
 
 void KeyConfigScene::CommitInputTable()
