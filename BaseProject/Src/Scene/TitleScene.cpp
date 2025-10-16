@@ -9,7 +9,7 @@
 #include"GameScene.h"
 #include"../Input.h"
 namespace {
-	constexpr int fade_interval = 60;
+	constexpr int fade_interval = 30;
 }
 
 TitleScene::TitleScene(SceneController& controller)

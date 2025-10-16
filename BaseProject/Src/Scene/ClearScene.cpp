@@ -9,7 +9,7 @@
 #include"TitleScene.h"
 
 namespace {
-	constexpr int fade_interval = 60;
+	constexpr int fade_interval = 30;
 }
 
 ClearScene::ClearScene(SceneController& controller)

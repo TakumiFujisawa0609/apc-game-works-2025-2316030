@@ -1,3 +1,4 @@
+#include "DxLib.h"
 #include "SceneController.h"
 #include "../Application.h"
 #include"../Scene/Scene.h"
@@ -10,6 +11,9 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 	else {
 		scenes_.back() = scene;
 	}
+
+	// 描画先を裏画面に設定
+	SetDrawScreen(DX_SCREEN_BACK);
 
 	scenes_.back()->Init(input);//シーンの初期化
 	
@@ -36,6 +40,9 @@ void SceneController::Draw()
 void SceneController::PushScene(std::shared_ptr<Scene> scene, Input& input)
 {
 	scenes_.push_back(scene);
+
+	// 描画先を裏画面に設定
+	SetDrawScreen(DX_SCREEN_BACK);
 
 	// 追加されたシーンの初期化
 	scenes_.back()->Init(input);

@@ -65,6 +65,9 @@ private:
 	// フォントハンドル
 	int fontHandle_;
 
+	void DrawFrameRate(void);
+
+	void DrawDrawCall(void);
 
 public:
 

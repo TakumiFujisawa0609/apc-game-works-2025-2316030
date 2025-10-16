@@ -13,6 +13,8 @@ protected:
 	// リソース管理
 	ResourceManager& resMng_;
 
+	int drawCall_;		// ドローコール
+
 public:
 	/// <summary>
 	/// シーン初期化(の際にシーンコントローラも代入)

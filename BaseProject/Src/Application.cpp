@@ -107,8 +107,6 @@ void Application::Init(int w, int h)
     //controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
     controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);
 
-	// 描画先を裏画面に設定
-    SetDrawScreen(DX_SCREEN_BACK);
 }
 
 void Application::Run()
@@ -137,6 +135,14 @@ void Application::Run()
 
         // 主にポストエフェクト用
         camera_->Draw();
+
+#ifdef DEBUG
+
+        DrawFrameRate();
+        DrawDrawCall();
+
+#endif // DEBUG
+
 
         ScreenFlip();
     }
@@ -222,8 +228,8 @@ void Application::Init3D(void)
 
     // フォグ設定
     SetFogEnable(true);
-    SetFogColor(5, 5, 5);
-    SetFogStartEnd(10000.0f, 20000.0f);
+    SetFogColor(255, 255, 255);
+    SetFogStartEnd(100.0f, 20000.0f);
 }
 
 void Application::InitEffekseer(void)
@@ -236,4 +242,12 @@ void Application::InitEffekseer(void)
     SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
 
     Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+}
+
+void Application::DrawFrameRate(void)
+{
+}
+
+void Application::DrawDrawCall(void)
+{
 }

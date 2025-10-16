@@ -34,7 +34,7 @@
 #include"../DrawUtil.h"
 
 namespace {
-	constexpr int fade_interval = 60;
+	constexpr int fade_interval = 30;
 	float DegreeToRadian(float degree) {
 		//0`360¨0`2ƒÎ
 		//0`180¨0`ƒÎ

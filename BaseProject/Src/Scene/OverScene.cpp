@@ -10,7 +10,7 @@
 
 
 namespace {
-	constexpr int fade_interval = 60;
+	constexpr int fade_interval = 30;
 }
 
 OverScene::OverScene(SceneController& controller) :Scene(controller)
