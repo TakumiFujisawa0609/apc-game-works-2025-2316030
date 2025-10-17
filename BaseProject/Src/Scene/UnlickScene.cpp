@@ -96,7 +96,7 @@ void UnlickScene::NormalUpdate(Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTrgDown(KEY_INPUT_SPACE)) 
+	if (ins.IsTrgDown(KEY_INPUT_SPACE)||ins.IsClickMouseLeft()) 
 	{
 		update_ = &UnlickScene::DisappearUpdate;
 		draw_ = &UnlickScene::ProcessDraw;
@@ -129,8 +129,6 @@ void UnlickScene::NormalUpdate(Input& input)
 		}
 
 	}
-	
-
 
 	//// Žw’è‚ÌŠp“x‚É“ž’B‚µ‚½‚ç‰ðùŠ®—¹
 	//lockpick_->UpdateUnlock(time);
@@ -192,6 +190,7 @@ void UnlickScene::NormalDraw()
 
 void UnlickScene::LockPickingDraw(void)
 {
+	SetUseZBufferFlag(false);
 
 	// Œ®ŒŠ
 	keyhole_->Draw();
@@ -205,4 +204,5 @@ void UnlickScene::LockPickingDraw(void)
 	// j‹à
 	wire_->Draw();
 	
+	SetUseZBufferFlag(true);
 }

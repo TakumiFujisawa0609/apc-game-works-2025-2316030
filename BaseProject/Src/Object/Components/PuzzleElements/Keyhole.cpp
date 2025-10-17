@@ -8,6 +8,8 @@
 #include "Keyhole.h"
 
 Keyhole::Keyhole(void)
+	:
+	isSuccess_(false)
 {
 }
 
@@ -17,40 +19,15 @@ Keyhole::~Keyhole(void)
 
 void Keyhole::Init(void)
 {
-	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::KEYHOLE_I));
+	// 使用する画像の初期化
+	imgH_ = resMng_.Load(ResourceManager::SRC::KEYHOLE).handleId_;
 
-	auto camera = Application::GetInstance().GetCamera();
-	// ① カメラの位置から
-	VECTOR camPos = camera->GetPos();
-
-	// ② カメラの「前方ベクトル」（GetForward）を計算し
-	VECTOR forward = camera->GetForward();
-
-	// ③ 前方に適切な距離（例: 300.0f）だけ進んだ地点をモデルの位置とする
-	// この位置が、カメラの向きにかかわらず画面中央になります
-	VECTOR modelPos = VAdd(camPos, VScale(forward, 200.0f));
-
-	transform_.pos = modelPos;
-	transform_.scl = { 66.0f,66.0f,66.0f };
-	transform_.quaRot = Quaternion::LookRotation(camera->GetForward());;
-	transform_.quaRotLocal = Quaternion::Euler({ AsoUtility::Deg2RadF(0.0f),
-		AsoUtility::Deg2RadF(90.0f),AsoUtility::Deg2RadF(0.0f) });
-
-	isSuccess_ = false;
-
-	// モデル情報の更新
-	transform_.Update();
+	// 2D情報の初期化
+	InitImg(0.0f, 0.0f, 0.25f, 0.0f);
 }
 
-void Keyhole::Update(float deltaTime)
+void Keyhole::OnUpdate(float deltaTime)
 {
-	//auto& ins = InputManager::GetInstance();
-
-	//if (ins.IsTrgDown(KEY_INPUT_A))
-	//{
-	//	
-	//}
 	if (isSuccess_)
 	{
 		//// 目標角度を例えば 90度 (度からラジアンに変換)
@@ -74,23 +51,11 @@ void Keyhole::Update(float deltaTime)
 		//	// UnlickSceneでシーン遷移をトリガーするフラグを立てる
 		//}
 	}
-
-
-
-	// モデルの更新
-	transform_.Update();
-}
-
-void Keyhole::OnUpdate(float deltaTime)
-{
 }
 
 void Keyhole::Draw(void)
 {
-	MV1DrawModel(transform_.modelId);
-	//DrawSphere3D(transform_.pos, 80.0f, 32, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
-
-
+	PlazzleElementBase::Draw();
 }
 
 void Keyhole::SetAngle(float angle)

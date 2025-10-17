@@ -92,6 +92,7 @@ public:
 	MATRIX GetRotationMatrixFromQuaternion(Quaternion qua);
 
 
+
 private:
 
 	// 基本ベクトルを取得

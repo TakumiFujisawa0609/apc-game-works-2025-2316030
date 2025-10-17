@@ -47,7 +47,7 @@ void Wire::Init(void)
     transform_.quaRot = camera->GetQuaRot();
 
     // UI画像
-    imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::KNIFE_I);
+    //imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::KNIFE_I);
 
     // 現在の角度
     currentAngle_ = static_cast<float>(transform_.quaRotLocal.z);
@@ -77,13 +77,16 @@ void Wire::Update(float deltaTime)
 
 void Wire::Draw(void)
 {
+
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+
     MV1DrawModel(transform_.modelId);
 
     auto& size = Application::GetInstance().GetWindowSize();
-    //DrawFormatString(size.width - 200, 64, GetColor(255, 255, 255), L"gAngle=(%.2f)", goalAngle_);
-    //DrawFormatString(size.width - 200, 80, GetColor(255, 255, 255), L"cAngle_=(%.2f)", currentAngle_);
     DrawFormatString(size.width - 200, 64, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
     DrawFormatString(size.width - 200, 80, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
+
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
 
     //DrawFormatString(size.width - 200, 96, GetColor(255, 255, 255), L"rLocal_=(%.2f)", transform_.quaRotLocal.z);
 }

@@ -9,7 +9,7 @@ std::wstring StringUtiligy::GetWStringFromString(const std::string& str)
     auto length = MultiByteToWideChar(CP_ACP,//現在のコードページ
                         MB_PRECOMPOSED | MB_ERR_INVALID_CHARS,//エラッたら情報を返す
                         str.c_str(),//元の文字列へのポインタ
-                        str.length(),//元の文字列の長さ
+                        (int)str.length(),//元の文字列の長さ
                         nullptr,
                         0);//最後の引数をnullptr,0にすることで
                             //wstringに必要な文字列数を返している
@@ -22,8 +22,8 @@ std::wstring StringUtiligy::GetWStringFromString(const std::string& str)
     MultiByteToWideChar(CP_ACP,
         MB_PRECOMPOSED | MB_ERR_INVALID_CHARS,
         str.c_str(),
-        str.length(),
+        (int)str.length(),
         ret.data(),//得られたワイド文字列を入れるアドレス
-        ret.size());//得られたワイド文字列を入れるメモリサイズ
+        (int)ret.size());//得られたワイド文字列を入れるメモリサイズ
     return ret;
 }

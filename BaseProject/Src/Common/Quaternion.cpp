@@ -632,10 +632,10 @@ void Quaternion::ToAngleAxis(float* angle, VECTOR* axis)
 
 MATRIX Quaternion::GetRotationMatrixFromQuaternion(Quaternion qua)
 {
-    float x = qua.x;
-    float y = qua.y;
-    float z = qua.z;
-    float w = qua.w;
+    float x = static_cast<float>(qua.x);
+    float y = static_cast<float>(qua.y);
+    float z = static_cast<float>(qua.z);
+    float w = static_cast<float>(qua.w);
 
     float xx = x * x;
     float yy = y * y;

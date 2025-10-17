@@ -29,7 +29,7 @@ Player::~Player(void)
 void Player::Init(void)
 {
 	// ÉÇÉfÉãèÓïÒ
-	transform_.pos = { -2244.0f, 200.0f, 2200.0f };
+	transform_.pos = { -2000.0f, 200.0f, -1500.0f };
 	transform_.scl = { 1.0f, 1.0f, 1.0f };
     transform_.quaRot = Quaternion();
     transform_.quaRotLocal =
@@ -144,7 +144,7 @@ void Player::OnUpdate(float deltaTime)
         movePow_ = VScale(direction, moveSpeed_);
 
         // âÒì]èàóù
-        SetGoalRotate(rotRad);
+        SetGoalRotate(static_cast<float>(rotRad));
 
         if (moveSpeed_ == MOVE_RUN_SPEED)
         {
@@ -188,8 +188,9 @@ void Player::OnUpdate(float deltaTime)
 void Player::Draw(void)
 {
 
-#ifdef DEBUG
-    //DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+#ifdef _DEBUG
+    DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
 #endif // DEBUG
 

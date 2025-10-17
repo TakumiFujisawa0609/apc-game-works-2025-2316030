@@ -9,3 +9,13 @@ Scene::Scene(SceneController& controller)
 	resMng_(ResourceManager::GetInstance())
 {
 }
+
+int Scene::GetRenderTarget(void)
+{
+	return newRT_;
+}
+
+void Scene::SetRenderTarget(int handle)
+{
+	newRT_ = handle;
+}

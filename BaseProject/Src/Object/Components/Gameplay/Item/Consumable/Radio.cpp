@@ -21,15 +21,15 @@ Radio::~Radio(void)
 void Radio::Init(void)
 {
 	// ƒ‚ƒfƒ‹î•ñ
-	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::RADIO_M));
+	//transform_.SetModel(resMng_.LoadModelDuplicate(
+	//	ResourceManager::SRC::RADIO_M));
 	InitModel(
 		INIT_POS,
 		INIT_SCL,
 		INIT_QUAROTLOCAL);
 
 	// UI‰æ‘œ
-	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::RADIO_I);
+	//imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::RADIO_I);
 
 
 	// ó‘Ô‚Ì‰Šú‰»

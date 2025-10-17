@@ -21,15 +21,15 @@ Knife::~Knife(void)
 void Knife::Init(void)
 {
 	// ƒ‚ƒfƒ‹î•ñ
-	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::KNIFE_M));
+	//transform_.SetModel(resMng_.LoadModelDuplicate(
+	//	ResourceManager::SRC::KNIFE_M));
 	InitModel(
 		INIT_POS,
 		INIT_SCL,
 		INIT_QUAROTLOCAL);
 
-	// UI‰æ‘œ
-	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::KNIFE_I);
+	//// UI‰æ‘œ
+	//imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::KNIFE_I);
 
 
 	// ó‘Ô‚Ì‰Šú‰»

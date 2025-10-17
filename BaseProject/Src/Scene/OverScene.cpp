@@ -74,10 +74,10 @@ void OverScene::FadeOutUpadte(Input& input)
 void OverScene::NormalDraw()
 {
 	auto size = Application::GetInstance().GetWindowSize();
-	DrawRotaGraph(size.width / 2, size.height / 2 * 0.8f, 0.5, 0.0, imgH_, true);
+	DrawRotaGraph(size.width / 2, static_cast<int>(size.height / 2 * 0.8f), 0.5, 0.0, imgH_, true);
 
 	const TCHAR* text_to_display = _T("Space or Aボタン");
-	int text_width = GetDrawStringWidth(text_to_display, _tcslen(text_to_display));
+	int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
 	// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
 	int draw_x = (size.width / 2) - (text_width / 2);
@@ -101,7 +101,7 @@ void OverScene::FadeDraw()
 	float rate = static_cast<float>(frame_) /
 					static_cast<float>(fade_interval);	
 	//DrawRotaGraph(320, 240, 1.0f, 0.0f, imgH_, true);
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, rate * 255);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));
 	DrawBox(0, 0, 640, 480, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 

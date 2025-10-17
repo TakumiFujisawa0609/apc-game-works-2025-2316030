@@ -12,7 +12,8 @@ class SceneController
 {
 private:
 	std::list<std::shared_ptr<Scene>> scenes_;//次はここをlist化します
-
+	
+	int oldRT_;			// 最初の描画先
 
 public:
 	/// <summary>
@@ -46,9 +47,6 @@ public:
 	/// </summary>
 	/// <param name="scene">ジャンプ先シーン</param>
 	void JumpScene(std::shared_ptr<Scene> scene);
-
-
-
 
 };
 

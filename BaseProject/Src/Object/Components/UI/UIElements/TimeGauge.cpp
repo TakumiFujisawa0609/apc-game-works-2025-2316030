@@ -35,7 +35,7 @@ void TimeGauge::Draw(void)
 
 	// 塗りつぶす円(画像)の描画(シェーダ)を使って
 	//テクスチャ座標＋v方向に向かって見えないようにする
-	DrawCircle(gaugeCenterX_, gaugeCenterY_, gaugeRadius_,  GetColor(0, 250, 154), true);
+	DrawCircle(static_cast<int>(gaugeCenterX_), static_cast<int>(gaugeCenterY_), static_cast<int>(gaugeRadius_),  GetColor(0, 250, 154), true);
 
 	// 塗りつぶすされた円の上部を別の色で上書き
 	// この円を酸素値の減少に合わせて描画することによって、上から減っていくように見せる
@@ -44,7 +44,7 @@ void TimeGauge::Draw(void)
 
 	// ゲージの外枠(リングを描画)
 	//このリングは常に全体が表示される
-	DrawCircle(gaugeCenterX_, gaugeCenterY_, gaugeRadius_, GetColor(0, 255, 255), false);
+	DrawCircle(static_cast<int>(gaugeCenterX_), static_cast<int>(gaugeCenterY_), static_cast<int>(gaugeRadius_), GetColor(0, 255, 255), false);
 
 	// 酸素値のテキスト描画
 	//----------------------------------------------------------------------------------------------
@@ -53,10 +53,10 @@ void TimeGauge::Draw(void)
 	std::wstring oxygenText(oxygenTextBuff);
 
 	// テキストをゲージ中央に配置するための計算
-	int textWidth = GetDrawStringWidthToHandle(oxygenText.c_str(), wcslen(oxygenText.c_str()), Application::GetInstance().GetFontHandle());
-	int textX = gaugeCenterX_ - textWidth / 2;
+	int textWidth = GetDrawStringWidthToHandle(oxygenText.c_str(), static_cast<int>(wcslen(oxygenText.c_str())), static_cast<int>(Application::GetInstance().GetFontHandle()));
+	int textX = static_cast<int>(gaugeCenterX_) - textWidth / 2;
 
 	// ワイド文字列描画関数を使用
-	DrawStringToHandle(textX, gaugeCenterY_-12, oxygenText.c_str(), GetColor(0, 0, 0), Application::GetInstance().GetFontHandle());
+	DrawStringToHandle(textX, static_cast<int>(gaugeCenterY_ - 12), oxygenText.c_str(), GetColor(0, 0, 0), Application::GetInstance().GetFontHandle());
 	//----------------------------------------------------------------------------------------------
 }

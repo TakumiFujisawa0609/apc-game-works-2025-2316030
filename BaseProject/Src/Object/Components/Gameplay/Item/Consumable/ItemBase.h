@@ -50,7 +50,7 @@ public:
 protected:
 	int useCount_;		// 使用回数
 	int maxUseCount_;	// 最大使用回数
-	int imgId_;			// UI用画像
+	int imgH_;			// 画像ハンドル
 	bool isOnStage_;	// ステージにあるかどうか
 	bool isEquipment_;	// 装備中かどうか
 	bool isEfficacy_;	// 効果があるかどうか

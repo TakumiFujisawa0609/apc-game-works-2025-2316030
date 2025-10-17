@@ -185,7 +185,7 @@ void GameScene::NormalUpdate(Input& input)
 	if (DistanceSq <= CombinedRadiusSq)
 	{
 		const TCHAR* text_to_display = _T("右クリック or Aボタン");
-		int text_width = GetDrawStringWidth(text_to_display, _tcslen(text_to_display));
+		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
 		auto size = Application::GetInstance().GetWindowSize();
 		// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
@@ -234,6 +234,9 @@ void GameScene::FadeOutUpdate(Input& input)
 void GameScene::NormalDraw()
 {
 
+	// 深度バイアスをリセット(通常は0.0f)
+	
+
 	// オブジェクト
 	stage_->Draw();
 	player_->Draw();
@@ -276,7 +279,7 @@ void GameScene::NormalDraw()
 	if (DistanceSq <= CombinedRadiusSq)
 	{
 		const TCHAR* text_to_display = _T("右クリック or Aボタン");
-		int text_width = GetDrawStringWidth(text_to_display, _tcslen(text_to_display));
+		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
 		auto size = Application::GetInstance().GetWindowSize();
 		// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く

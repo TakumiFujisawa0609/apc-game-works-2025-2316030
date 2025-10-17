@@ -97,7 +97,7 @@ void TitleScene::NormalDraw()
 
 
 	const TCHAR* text_to_display = _T("Space or Aボタン");
-	int text_width = GetDrawStringWidth(text_to_display, _tcslen(text_to_display));
+	int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
 	// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
 	int draw_x = (size.width / 2) - (text_width / 2);

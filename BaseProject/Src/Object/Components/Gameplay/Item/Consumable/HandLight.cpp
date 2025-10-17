@@ -30,7 +30,7 @@ void HandLight::Init(void)
 		INIT_QUAROTLOCAL);
 
 	// UI‰æ‘œ
-	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::FLASHLIGHT_I);
+	imgH_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::FLASHLIGHT_I);
 
 
 	// ó‘Ô‚Ì‰Šú‰»

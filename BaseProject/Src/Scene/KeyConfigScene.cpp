@@ -120,8 +120,8 @@ void KeyConfigScene::Draw()
 		0xaaffaa, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//緑
-	DrawBoxAA(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
+	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
+		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
 		0x00ff00, false, 3.0f);
 	DrawString(margin_size + 10, margin_size + 10, L"キーコンフィグ", 0x000000);
 
@@ -238,7 +238,7 @@ void KeyConfigScene::NormalUpdate(Input& input)
 	}
 	
 	if (input.IsTriggered("up")) {
-		currentIndex_ = (currentIndex_ + inputRowSize - 1) % inputRowSize;
+		currentIndex_ = static_cast<int>((currentIndex_ + inputRowSize - 1) % inputRowSize);
 	}
 	if (input.IsTriggered("down")) {
 		currentIndex_ = (currentIndex_ + 1) % inputRowSize;

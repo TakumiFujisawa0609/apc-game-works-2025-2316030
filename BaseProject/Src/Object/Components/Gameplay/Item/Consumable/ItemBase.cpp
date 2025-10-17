@@ -10,7 +10,7 @@ ItemBase::ItemBase(std::shared_ptr<ActorBase> owner)
 	ItemComponent(owner),
 	useCount_(0),
 	maxUseCount_(0),
-	imgId_(-1),
+	imgH_(-1),
 	isOnStage_(false),
 	isEquipment_(false),
 	isEfficacy_(false),
@@ -30,7 +30,7 @@ const Transform& ItemBase::GetTransform(void) const
 
 int ItemBase::GetImgId(void)
 {
-	return imgId_;
+	return imgH_;
 }
 
 void ItemBase::SetTargetPos(const Transform* target)

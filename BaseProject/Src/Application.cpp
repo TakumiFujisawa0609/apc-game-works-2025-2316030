@@ -27,6 +27,7 @@ Application::Application()
     fps_(0),
     lastTime_(-1),
     deltaTime_(0.0f),
+    startTime_(-1),
     fontHandle_(-1)
 {
 }
@@ -113,6 +114,9 @@ void Application::Run()
 {
     auto& inputManager = InputManager::GetInstance();
 
+    // FPS計測用
+    startTime_ = GetNowCount();
+
     while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
         ClearDrawScreen();
 
@@ -136,13 +140,16 @@ void Application::Run()
         // 主にポストエフェクト用
         camera_->Draw();
 
-#ifdef DEBUG
+        // FPSカウント更新
+        frameCount_++;
+        CalcFrameRate();
+
+#ifdef _DEBUG
 
         DrawFrameRate();
         DrawDrawCall();
 
 #endif // DEBUG
-
 
         ScreenFlip();
     }
@@ -225,7 +232,6 @@ void Application::Init3D(void)
     // ライトの設定
     ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
 
-
     // フォグ設定
     SetFogEnable(true);
     SetFogColor(255, 255, 255);
@@ -244,10 +250,29 @@ void Application::InitEffekseer(void)
     Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 }
 
+void Application::CalcFrameRate(void)
+{
+    int now = GetNowCount();
+    if (now - startTime_ >= 1000)
+    {
+        fps_ = frameCount_;
+        frameCount_ = 0;
+        startTime_ = now;
+    }
+}
+
 void Application::DrawFrameRate(void)
 {
+    int color = GetColor(0, 255, 0);
+    if (fps_ < 30)color = GetColor(255, 0, 0);
+    else if (fps_ < 55)color = GetColor(255, 255, 0);
+
+    DrawFormatString(windowSize_.width - 150, 0, color, L"FPS : %d", fps_);
+    DrawFormatString(windowSize_.width - 150, 16, color, L"deltaTime : %2f", deltaTime_);
 }
 
 void Application::DrawDrawCall(void)
 {
+    DrawFormatString(windowSize_.width - 150, 32, GetColor(255, 255, 255), L"DrawCall = %d", GetDrawCallCount());
+
 }

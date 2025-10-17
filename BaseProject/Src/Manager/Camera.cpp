@@ -31,7 +31,7 @@ Camera::~Camera(void)
 
 void Camera::Init(void)
 {
-
+	SetCameraNearFar(1.0f, 1000.0f);
 	ChangeMode(MODE::FIXED_POINT, AsoUtility::VECTOR_ZERO, false);
 	ChangeGameCamera(GAME_CAMERA::MOUSE);
 }

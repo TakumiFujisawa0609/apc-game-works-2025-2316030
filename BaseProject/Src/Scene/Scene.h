@@ -13,7 +13,7 @@ protected:
 	// リソース管理
 	ResourceManager& resMng_;
 
-	int drawCall_;		// ドローコール
+	int newRT_;			// scene画面の描画先
 
 public:
 	/// <summary>
@@ -40,5 +40,20 @@ public:
 	/// 毎フレーム描画する
 	/// </summary>
 	virtual void Draw(void) = 0;
+
+
+	/// <summary>
+	/// レンダーターゲットの取得
+	/// </summary>
+	/// <param name=""></param>
+	/// <returns></returns>
+	int GetRenderTarget(void);
+
+
+	/// <summary>
+	/// レンダーターゲットを設定する
+	/// </summary>
+	/// <param name="handle"></param>
+	void SetRenderTarget(int handle);
 };
 

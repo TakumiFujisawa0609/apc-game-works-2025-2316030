@@ -38,7 +38,7 @@ void Lockpick::Init(void)
 		INIT_QUAROTLOCAL);
 
 	// UI‰æ‘œ
-	imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::BOTTLE_I);
+	imgH_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::BOTTLE_I);
 
 	angle_ = static_cast<float>(transform_.quaRotLocal.z);
 

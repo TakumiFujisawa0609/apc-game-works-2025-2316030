@@ -56,6 +56,9 @@ private:
 	// 前フレームからの経過時間(秒)
 	float deltaTime_;
 
+	// fps計測用の変数
+	int startTime_;
+
 	// 3D関連の初期化
 	void Init3D(void);
 
@@ -64,6 +67,8 @@ private:
 
 	// フォントハンドル
 	int fontHandle_;
+
+	void CalcFrameRate(void);
 
 	void DrawFrameRate(void);
 

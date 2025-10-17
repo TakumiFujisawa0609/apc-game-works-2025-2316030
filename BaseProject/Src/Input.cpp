@@ -22,7 +22,7 @@ void Input::Save()
 	//ヘッダ部
 	Header header = {};
 	header.version = 1.00f;
-	header.dataSize= inputTable_.size();
+	header.dataSize= static_cast<uint32_t>(inputTable_.size());
 	std::copy_n("kycf", 4, header.signature);
 	fwrite(&header, sizeof(header), 1, fp);
 	//データ部
@@ -33,7 +33,7 @@ void Input::Save()
 		fwrite(&nameSize, sizeof(nameSize), 1, fp);
 		fwrite(eventName.data(), sizeof(char), nameSize, fp);
 		//データ部
-		uint32_t rowSize = row.second.size();
+		uint32_t rowSize = static_cast<uint32_t>(row.second.size());
 		fwrite(&rowSize, sizeof(rowSize), 1, fp);
 		fwrite(row.second.data(), sizeof(InputState), rowSize, fp);
 	}
@@ -54,13 +54,13 @@ void Input::Load()
 	Header header = {};
 	FileRead_read(&header, sizeof(header), handle);
 	//データ部
-	for (int i = 0; i < header.dataSize; ++i) {
+	for (uint32_t i = 0; i < header.dataSize; ++i) {
 		//イベント名
 		uint8_t nameSize = 0;
 		FileRead_read(&nameSize, sizeof(nameSize), handle);
 		std::string eventName;
 		eventName.resize(nameSize);
-		FileRead_read(eventName.data(), eventName.size(), handle);
+		FileRead_read(eventName.data(), static_cast<int>(eventName.size()), handle);
 		//データ部
 		uint32_t rowSize = 0;
 		FileRead_read(&rowSize, sizeof(rowSize), handle);

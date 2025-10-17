@@ -1,18 +1,22 @@
 #pragma once
 #include "../../Common/Component.h"
-#include "../../ObjectBase/ActorBase.h"
+#include "PlazzleElementBase.h"
 
 
 class Keyhole :
-    public ActorBase
+    public PlazzleElementBase
 {
 public:
+
+
+    static constexpr float DISTANCE = 200.0f;
+    static constexpr VECTOR SIZE = { 66.0f,66.0f,66.0f };
+    static constexpr VECTOR QUAROT_LOCAL = { 0.0f,90.0f,0.0f };
 
     Keyhole(void);
     virtual ~Keyhole(void);
 
     void Init(void);
-    void Update(float deltaTime)override;
 	void OnUpdate(float deltaTime)override;
     void Draw(void);
 

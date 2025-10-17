@@ -16,38 +16,11 @@ KeyholePlate::~KeyholePlate(void)
 
 void KeyholePlate::Init(void)
 {
-	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::E_PLATE_I));
+	// 使用する画像の初期化
+	imgH_ = resMng_.Load(ResourceManager::SRC::E_PLATE).handleId_;
 
-	auto camera = Application::GetInstance().GetCamera();
-
-	// カメラの取得
-	VECTOR camPos = camera->GetPos();
-
-	// カメラの前ベクトル
-	VECTOR forward = camera->GetForward();
-
-	// ③ 前方に適切な距離（例: 300.0f）だけ進んだ地点をモデルの位置とする
-	// この位置が、カメラの向きにかかわらず画面中央になります
-	VECTOR modelPos = VAdd(camPos, VScale(forward, 300.0f));
-
-	transform_.pos = modelPos;
-	transform_.scl = { 200.0f,200.0f,200.0f };
-	transform_.quaRot = Quaternion::LookRotation(camera->GetForward());
-	transform_.quaRotLocal = Quaternion::Euler({ AsoUtility::Deg2RadF(0.0f),
-		AsoUtility::Deg2RadF(90.0f),AsoUtility::Deg2RadF(0.0f) });
-
-	// モデル情報の更新
-	transform_.Update();
-}
-
-void KeyholePlate::Update(float deltaTime)
-{
-	auto camera = Application::GetInstance().GetCamera();
-	transform_.quaRot = camera->GetQuaRot();
-
-	// モデルの更新
-	transform_.Update();
+	// 2D情報の初期化
+	InitImg(0.0f, 0.0f, 0.25f, 0.0f);
 }
 
 void KeyholePlate::OnUpdate(float deltaTime)
@@ -56,7 +29,5 @@ void KeyholePlate::OnUpdate(float deltaTime)
 
 void KeyholePlate::Draw(void)
 {
-
-	MV1DrawModel(transform_.modelId);
-	//DrawSphere3D(transform_.pos, 80.0f, 32, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
+	PlazzleElementBase::Draw();
 }

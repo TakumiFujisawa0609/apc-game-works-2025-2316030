@@ -63,7 +63,7 @@ private:
     int lockLevel_;             // ‰ğùƒŒƒxƒ‹
     bool isDefault_;            // ‰Šúó‘Ô‚É–ß‚·‚©‚Ç‚¤‚©
 
-    bool isGameClear_;          // 
+    bool isGameClear_;          // ƒNƒŠƒA‚Ì”»’è
 
     virtual void UpdateOnStage(float deltaTime) override;
     virtual void UpdateInVentory(float deltaTime) override;

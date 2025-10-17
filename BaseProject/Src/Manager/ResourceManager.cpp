@@ -50,14 +50,6 @@ void ResourceManager::Init(void)
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/bottle/UI_bottle_Img.png");
 	resourcesMap_.emplace(SRC::BOTTLE_I, res);
 
-	// ナイフモデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Knife/Knife.mv1");
-	resourcesMap_.emplace(SRC::KNIFE_M, res);
-
-	// ナイフUI
-	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Img/Weapon/Melee/Knife/");
-	resourcesMap_.emplace(SRC::KNIFE_I, res);
-
 	// フラッシュライトモデル
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Flashlight/flashlight.mv1");
 	resourcesMap_.emplace(SRC::FLASHLIGHT_M, res);
@@ -65,14 +57,6 @@ void ResourceManager::Init(void)
 	// フラッシュライトUI
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/Flashlight/flashlight.png");
 	resourcesMap_.emplace(SRC::FLASHLIGHT_I, res);
-
-	// ラジオモデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Radio/Radio.mv1");
-	resourcesMap_.emplace(SRC::RADIO_M, res);
-
-	// ラジオUI
-	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/Radio/radio.png");
-	resourcesMap_.emplace(SRC::RADIO_I, res);
 
 	// ロックピックモデル
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Lockpick/folding.mv1");
@@ -87,12 +71,18 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::WIRE_M, res);
 
 	// 鍵穴プレート
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/plate.mv1");
-	resourcesMap_.emplace(SRC::E_PLATE_I, res);
+	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/plate.mv1");
+	//resourcesMap_.emplace(SRC::E_PLATE, res);
+
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Keyhole/plate.png");
+	resourcesMap_.emplace(SRC::E_PLATE, res);
 
 	// 鍵穴
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/keyhole.mv1");
-	resourcesMap_.emplace(SRC::KEYHOLE_I, res);
+	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/keyhole.mv1");
+	//resourcesMap_.emplace(SRC::KEYHOLE, res);
+
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Keyhole/keyhole.png");
+	resourcesMap_.emplace(SRC::KEYHOLE, res);
 
 	// タイトル
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Scene/title.png");

@@ -1,28 +1,45 @@
 #include "DxLib.h"
+#include <cassert>
 #include "SceneController.h"
 #include "../Application.h"
 #include"../Scene/Scene.h"
 
 void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 {
-	if (scenes_.empty()) {
+	for (auto& s : scenes_)
+	{
+		DeleteGraph(s->GetRenderTarget());
+	}
+	scenes_.clear();
+
+	if (scenes_.empty()) 
+	{
 		scenes_.push_back(scene);
 	}
-	else {
+	else 
+	{
 		scenes_.back() = scene;
 	}
 
-	// 描画先を裏画面に設定
-	SetDrawScreen(DX_SCREEN_BACK);
+	auto sizeW = Application::GetInstance().GetWindowSize();
+
+	// 新しいシーン用のスクリーンの作成
+	int newScreenH = MakeScreen(sizeW.width, sizeW.height, true);
+
+	//assert(newScreenH == -1);
+
+	// 作成した画面ハンドルをシーンに設定
+	scene->SetRenderTarget(newScreenH);
+
+	// 初期化時の描画先を新しいハンドルに設定
+	SetDrawScreen(newScreenH);
 
 	scenes_.back()->Init(input);//シーンの初期化
 	
-	Application::GetInstance().ResetDeltaTime();
+	// メインの裏画面に設定
+	SetDrawScreen(DX_SCREEN_BACK);
 
-	//もし、scene_にすでに値が入っていた場合は
-	//shared_ptrなので、もとのscene_の参照人数が0に
-	//なり、自動で解放されます。
-	//もし、shared_ptrを使ってない場合
+	Application::GetInstance().ResetDeltaTime();
 }
 
 void SceneController::Update(Input& input)
@@ -39,18 +56,35 @@ void SceneController::Draw()
 
 void SceneController::PushScene(std::shared_ptr<Scene> scene, Input& input)
 {
+	auto size = Application::GetInstance().GetWindowSize();
+
+	// 新しい裏画面を作成
+	int newScreenH = MakeScreen(size.width, size.height, true);
+
+	//assert(newScreenH == -1);
+
+	// 作成した画面ハンドルをシーンに設定
+	scene->SetRenderTarget(newScreenH);
+
+	// シーンを積む
 	scenes_.push_back(scene);
 
 	// 描画先を裏画面に設定
-	SetDrawScreen(DX_SCREEN_BACK);
+	SetDrawScreen(newScreenH);
 
 	// 追加されたシーンの初期化
 	scenes_.back()->Init(input);
+
+	// 描画先をデフォルトに戻す
+	SetDrawScreen(DX_SCREEN_BACK);
 }
 
 void SceneController::PopScene(Input& input)
 {
 	if (scenes_.size() > 1) {
+
+		int screenH = scenes_.back()->GetRenderTarget();
+		DeleteGraph(screenH);
 		scenes_.pop_back();
 	}
 }

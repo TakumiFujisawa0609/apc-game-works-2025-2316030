@@ -90,7 +90,7 @@ void PauseScene::NormalUpdate(Input& input)
 		return;
 	}
 	if (input.IsTriggered("up")) {
-		currentIndex_ = (currentIndex_ + menuList_.size() - 1) % menuList_.size();
+		currentIndex_ = static_cast<int>((currentIndex_ + menuList_.size() - 1) % menuList_.size());
 	}else if (input.IsTriggered("down")) {
 		currentIndex_ = (currentIndex_ + 1) % menuList_.size();
 	}
