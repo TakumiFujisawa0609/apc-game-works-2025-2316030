@@ -21,13 +21,16 @@ public:
 	~PatrolNode(void);
 
 	// 座標を取得する
-	VECTOR GetPos(void);
+	VECTOR GetPos(void) const;
 
 	// 次の行動に移すまでの残り時間を取得する
 	float GetWaitTime(void);
 
 	// このノードで実行する特殊行動を取得する
 	ACTTYPE GetActType(void);
+
+	// デバック用描画
+	void DebugDraw(void);
 
 private:
 

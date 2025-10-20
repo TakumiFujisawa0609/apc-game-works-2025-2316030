@@ -31,7 +31,7 @@ Camera::~Camera(void)
 
 void Camera::Init(void)
 {
-	SetCameraNearFar(1.0f, 1000.0f);
+	SetCameraNearFar(1.0f, 50.0f);
 	ChangeMode(MODE::FIXED_POINT, AsoUtility::VECTOR_ZERO, false);
 	ChangeGameCamera(GAME_CAMERA::MOUSE);
 }
@@ -423,7 +423,7 @@ void Camera::SetBeforeDrawFPSMouse(void)
 		// 位置(FPSなのでfollowTransformがあればそこを基準にする)
 		pos_ = followTransform_ ? followTransform_->pos : pos_;
 
-		pos_.y += 80.0f;
+		pos_.y += 160.0f;
 		// 前方方向ベクトルを計算
 		VECTOR forward = {
 			cosf(angles_.x) * sinf(angles_.y),

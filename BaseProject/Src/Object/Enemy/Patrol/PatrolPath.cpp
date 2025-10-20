@@ -4,7 +4,8 @@
 PatrolPath::PatrolPath(std::vector<PatrolNode>& nodes, PATHTYPE type)
     :
     nodes(nodes),
-    pathType_(type)
+    pathType_(type),
+    direction_(1)
 {
 }
 

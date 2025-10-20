@@ -39,7 +39,8 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::SUBMARINE, res);
 
 	// ステージ
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage2.mv1");
+	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage2.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/eStage.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
 	// ボトルモデル
@@ -108,6 +109,9 @@ void ResourceManager::Init(void)
 	res = std::make_shared<RES>(RES_T::SOUND, PATH_SND + L"walk.mp3");
 	resourcesMap_.emplace(SRC::WALK_SE, res);
 
+	// 敵
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Enemy/Y-bot/Y-bot.mv1");
+	resourcesMap_.emplace(SRC::ENEMY, res);
 }
 
 void ResourceManager::Release(void)

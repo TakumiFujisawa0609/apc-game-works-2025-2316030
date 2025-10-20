@@ -3,19 +3,45 @@
 
 class Collider;
 class Capsule;
+class AnimationController;
 
 class EnemyMoveComponent;
 class EnemyChaseComponent;
 
+class PatrolPath;
+
+class Player;
 class EnemyBase :
     public Charactor
 {
 public:
 
+    static constexpr VECTOR POS = {0.0f,0.0f,0.0f};
+    static constexpr VECTOR SCALE = { 1.0f,1.0f ,1.0f };
+    static constexpr VECTOR QUAROT_LOCAL = { 0.0f,0.0f,0.0f };
+
+
+    enum class STATE
+    {
+        PATROL, // 巡回
+        CAHSE,  // 追跡
+        ATTACK, // 攻撃
+        IDLE    // 待機
+    };
+
+    enum class ANIM
+    {
+        PATROL,
+        CHASE,
+        ATTACK,
+        IDLE,
+        LOOK
+    };
+
     // 回転完了するまでの時間
     static constexpr float TIME_ROT = 1.0f;
 
-    EnemyBase(void);
+    EnemyBase(Player& player);
     ~EnemyBase(void);
 
     void Init(void) override;
@@ -27,10 +53,15 @@ public:
     // 移動中に障害物として認識される物を設定する
     void SetObstacle(std::vector<std::shared_ptr<Transform>> obstacle);
 
+    // 徘徊用のノードをステージから取得する
+    void SetPatrolPath(std::shared_ptr<PatrolPath> path);
+
 protected:
 
     // モデル情報初期化
     virtual void InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal);
+
+    Player& player_;
 
     // 視界内にプレイヤーが入っているか
     bool isPlayerInSight_;
@@ -40,6 +71,17 @@ protected:
 
     EnemyMoveComponent* moveComponent_;     // 移動
     EnemyChaseComponent* chaseComponent_;   // 追跡
+
+    STATE state_;       // 現在の行動パターン
+
+    // 巡回パスの情報
+    std::shared_ptr<PatrolPath> patrolPath_;
+    int currentPatrolPathIndex_;                // 現在のパスの番号
+
+    std::unique_ptr<AnimationController> animationController_;
+
+    // アニメーションの初期化
+    virtual void InitAnimation(void);
 
 private:
 

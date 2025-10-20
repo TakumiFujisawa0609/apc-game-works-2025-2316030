@@ -4,6 +4,7 @@
 #include<string>
 #include<memory>
 class Player;
+class EnemyBase;
 class Stage;
 
 class Inventory;
@@ -76,6 +77,7 @@ private:
 	std::vector<int> models_;
 
 	std::shared_ptr<Player> player_;
+	std::shared_ptr<EnemyBase> eBase_;
 	std::shared_ptr<Stage> stage_;
 
 	// ƒCƒ“ƒxƒ“ƒgƒŠ

@@ -12,7 +12,7 @@ PatrolNode::~PatrolNode(void)
 {
 }
 
-VECTOR PatrolNode::GetPos(void)
+VECTOR PatrolNode::GetPos(void) const
 {
     return pos_;
 }
@@ -25,4 +25,9 @@ float PatrolNode::GetWaitTime(void)
 PatrolNode::ACTTYPE PatrolNode::GetActType(void)
 {
     return actionType_;
+}
+
+void PatrolNode::DebugDraw(void)
+{
+    DrawSphere3D(pos_, 16.0f, 8, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 }

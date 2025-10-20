@@ -14,6 +14,7 @@
 #include"PauseScene.h"//ポーズシーン
 #include"UnlickScene.h"
 #include"../Object/Player/Player.h"
+#include"../Object/Enemy/EnemyBase.h"
 #include"../Object/Stage/Stage.h"
 
 #include "../Object/Player/Inventory.h"
@@ -70,9 +71,15 @@ void GameScene::Init(Input& input)
 	player_->InitComponents();
 	player_->Init();
 
+	// 敵の基底クラス
+	eBase_ = std::make_shared<EnemyBase>(*player_);
+	eBase_->Init();
+
 	// ステージ
 	stage_ = std::make_shared<Stage>(*player_);
 	stage_->Init();
+
+	//eBase_->SetPatrolPath(stage_->GetPatrolPath(1));
 
 	// インベントリ
 	inventory_ = std::make_shared<Inventory>(20);
@@ -152,11 +159,19 @@ void GameScene::NormalUpdate(Input& input)
 	if (wire_->isGameClear())
 	{
 		controller_.ChangeScene(std::make_shared<ClearScene>(controller_), input);
+		return;
 	}
 
 	const auto& camera = Application::GetInstance().GetCamera();
 	VECTOR prevAngle_ = {};
 	auto& ins = InputManager::GetInstance();
+
+	if (ins.IsNew(KEY_INPUT_P))
+	{
+		controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
+		return;
+	}
+
 
 	VECTOR targetPos = { -2317.0f,189.0f,-1558.0f };
 	// 球体1 (標的) の情報
@@ -169,17 +184,16 @@ void GameScene::NormalUpdate(Input& input)
 
 	// 判定に必要な、半径の合計を事前に計算
 	const float CombinedRadius = TargetRadius + OtherRadius;
+
 	// 最適化のため、半径の合計の二乗も計算
 	const float CombinedRadiusSq = CombinedRadius * CombinedRadius;
+	
 	// 1. 中心点間のベクトルの差を計算 (V2 - V1)
 	VECTOR DifferenceVector = VSub(OtherCenter, TargetCenter);
 
 	// 2. 中心点間の距離の二乗を計算
 	//    VSizeSq はベクトルの長さの二乗を返します。
 	float DistanceSq = VSquareSize(DifferenceVector);
-
-	/*DrawSphere3D(TargetCenter, TargetRadius, 8, GetColor(255, 255, 0), GetColor(255, 0, 255), true);
-	DrawSphere3D(OtherCenter, OtherRadius, 8, GetColor(255, 0, 255), GetColor(255, 0, 255), true);*/
 
 	// 3. if文による衝突条件の判定
 	if (DistanceSq <= CombinedRadiusSq)
@@ -221,6 +235,12 @@ void GameScene::NormalUpdate(Input& input)
 			return;
 		}
 	}
+
+	float time = Application::GetInstance().GetDeltaTime();
+
+	eBase_->Update(time);
+
+
 }
 
 void GameScene::FadeOutUpdate(Input& input)
@@ -233,12 +253,9 @@ void GameScene::FadeOutUpdate(Input& input)
 
 void GameScene::NormalDraw()
 {
-
-	// 深度バイアスをリセット(通常は0.0f)
-	
-
 	// オブジェクト
 	stage_->Draw();
+	eBase_->Draw();
 	player_->Draw();
 	lockpick_->Draw();
 	light_->Draw();

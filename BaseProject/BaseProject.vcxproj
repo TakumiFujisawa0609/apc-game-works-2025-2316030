@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\CharactorComponent.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />

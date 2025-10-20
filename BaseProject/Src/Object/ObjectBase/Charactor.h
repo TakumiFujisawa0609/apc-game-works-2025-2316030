@@ -9,7 +9,7 @@ class Charactor :
 	public ActorBase
 {
 public:
-	
+
 	static constexpr float TIME_ROT = 1.0f;		// 回転完了するまでの時間
 
 	Charactor(void);

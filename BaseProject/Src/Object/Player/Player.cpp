@@ -52,8 +52,12 @@ void Player::Init(void)
 
     // カプセルコライダ
     capsule_ = std::make_unique<Capsule>(transform_);
-    capsule_->SetLocalPosTop({ 0.0f, 110.0f, 0.0f });
-    capsule_->SetLocalPosDown({ 0.0f, 30.0f, 0.0f });
+    
+    // 頭上
+    capsule_->SetLocalPosTop({ 0.0f, 180.0f, 0.0f });
+
+    // 足元
+    capsule_->SetLocalPosDown({ 0.0f, -20.0f, 0.0f });
     capsule_->SetRadius(20.0f);
 
     walkSH_ = resMng_.Load(ResourceManager::SRC::WALK_SE).handleId_;

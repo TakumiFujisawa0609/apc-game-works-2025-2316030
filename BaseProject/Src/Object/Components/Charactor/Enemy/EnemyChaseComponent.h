@@ -1,23 +1,28 @@
 #pragma once
 #include <vector>
 
-#include "../CharactorComponent.h"
+#include "EnemyComponent.h"
 
 class Transform;
 class EnemyChaseComponent :
-    public CharactorComponent
+    public EnemyComponent
 {
 public:
-    EnemyChaseComponent(std::shared_ptr<Charactor> owner);
+    EnemyChaseComponent(std::shared_ptr<Charactor> owner, Player& player);
     virtual ~EnemyChaseComponent(void);
 
     virtual void Update(float deltaTime) override;
+
+    // ’ÇÕˆ—
+    void Chase(float deltaTime);
 
     // áŠQ•¨‚ğİ’è‚·‚é
     void SetObstacle(std::vector<std::shared_ptr<Transform>> obstacle);
 
     //  áŠQ•¨‚ğæ“¾‚·‚é
     std::vector<std::shared_ptr<Transform>> GetObstacle(void);
+
+
 
 private:
 

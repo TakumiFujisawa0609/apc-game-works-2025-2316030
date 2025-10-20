@@ -28,7 +28,8 @@ public:
 		GAMECLEAR,
 		DECIDE_SE,
 		RUN_SE,
-		WALK_SE
+		WALK_SE,
+		ENEMY
 	};
 
 	// 明示的にインステンスを生成する
