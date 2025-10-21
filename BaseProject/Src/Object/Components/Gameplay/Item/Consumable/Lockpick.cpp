@@ -31,14 +31,11 @@ void Lockpick::Init(void)
 {
 	// ƒ‚ƒfƒ‹î•ñ
 	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::LOCKPICK_M));
+		ResourceManager::SRC::LOCKPICK));
 	InitModel(
 		INIT_POS,
 		INIT_SCL,
 		INIT_QUAROTLOCAL);
-
-	// UI‰æ‘œ
-	imgH_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::BOTTLE_I);
 
 	angle_ = static_cast<float>(transform_.quaRotLocal.z);
 

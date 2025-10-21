@@ -76,7 +76,7 @@ void GameScene::Init(Input& input)
 	eBase_->Init();
 
 	// ステージ
-	stage_ = std::make_shared<Stage>(*player_);
+	stage_ = std::make_shared<Stage>(*player_, *eBase_);
 	stage_->Init();
 
 	//eBase_->SetPatrolPath(stage_->GetPatrolPath(1));
@@ -115,8 +115,7 @@ void GameScene::Update(Input& input)
 	float time = Application::GetInstance().GetDeltaTime();
 
 	// オブジェクト
-	stage_->Update(time);
-	player_->Update(time);
+
 
 	// スロット
 	itemSlot_->Update(time);
@@ -134,7 +133,6 @@ void GameScene::Update(Input& input)
 void GameScene::Draw()
 {
 	(this->*draw_)();
-
 }
 
 
@@ -238,8 +236,13 @@ void GameScene::NormalUpdate(Input& input)
 
 	float time = Application::GetInstance().GetDeltaTime();
 
-	eBase_->Update(time);
+	// 衝突判定
+	stage_->Update(time);
+	//player_->AddCollider(eBase_->GetTransform().collider);
+	//eBase_->AddCollider(player_->GetTransform().collider);
 
+	player_->Update(time);
+	eBase_->Update(time);
 
 }
 

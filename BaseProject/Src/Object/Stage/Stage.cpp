@@ -34,8 +34,7 @@ void Stage::Init(void)
 	
 	transform_.Update();
 
-
-	//InitPatrolInfo();
+	InitPatrolInfo();
 }
 
 void Stage::Update(float deltaTime)
@@ -46,6 +45,10 @@ void Stage::Update(float deltaTime)
 
 	eBase_.ClearCollider();
 	eBase_.AddCollider(transform_.collider);
+
+
+
+	OnUpdate(deltaTime);
 }
 
 void Stage::OnUpdate(float deltaTime)
@@ -56,10 +59,50 @@ void Stage::Draw(void)
 {
 	MV1DrawModel(transform_.modelId);
 
-	//for (int i = 1; i < nodes_.size(); i++)
-	//{
-	//	nodes_[i].DebugDraw();
-	//}
+#ifdef _DEBUG
+	if (!paths_.empty())
+	{
+		const std::shared_ptr<PatrolPath>& path = paths_[0];
+		const auto& nodes = path->GetNodes();
+
+		VECTOR prevPos = { 0.0f, 0.0f, 0.0f };
+		bool firstNode = true;
+
+		for (size_t i = 0; i < nodes.size(); ++i)
+		{
+			const PatrolNode& node = nodes[i];
+			VECTOR currentPos = node.GetPos();
+
+			// 1. ノード自体のデバッグ描画 (球体など)
+			node.DebugDraw();
+
+			// 2. ノード間のパスの描画 (線)
+			if (!firstNode)
+			{
+				// ノード間を線で結ぶ
+				DrawLine3D(prevPos, currentPos, GetColor(255, 0, 0)); // 赤線
+			}
+
+			// 3. 次の描画のために現在のノード位置を保存
+			prevPos = currentPos;
+			firstNode = false;
+
+			//// 4. (オプション) ノード番号を描画
+			//DrawFormatString(
+			//	(int)currentPos.x + 10, (int)currentPos.y,
+			//	GetColor(255, 255, 0), L"Node %d", i);
+		}
+
+		// パスタイプがループの場合、最後のノードと最初のノードを結ぶ
+		if (paths_[0]->GetPathType() == PatrolPath::PATHTYPE::LOOP && nodes.size() > 1)
+		{
+			VECTOR firstPos = nodes[0].GetPos();
+			DrawLine3D(prevPos, firstPos, GetColor(255, 0, 0)); // 赤線
+		}
+	}
+
+#endif // _DEBUG
+
 }
 
 const std::shared_ptr<PatrolPath>& Stage::GetPatrolPath(size_t index) const
@@ -70,11 +113,24 @@ const std::shared_ptr<PatrolPath>& Stage::GetPatrolPath(size_t index) const
 void Stage::InitPatrolInfo(void)
 {
 	// ノード上の初期化
-	nodes_.emplace_back(VECTOR{ 100.0f,0.0f,50.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 500.0f,0.0f,50.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 500.0f,0.0f,300.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 500.0f,0.0f,600.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 100.0f,180.0f,50.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 500.0f,180.0f,50.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,50.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,-500.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,-900.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 1500.0f,180.0f,-900.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 1700.0f,180.0f,-1500.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
 
-	paths_[1] = std::make_shared<PatrolPath>(nodes_, PatrolPath::PATHTYPE::LOOP);
+	// 巡回パスを作成
+	paths_.emplace_back(std::make_shared<PatrolPath>(nodes_, PatrolPath::PATHTYPE::LOOP));
+	
+	// 敵に巡回パスを設定
+	// paths_の0番目のパスを設定
+	if (!paths_.empty())
+	{
+		eBase_.SetPatrolPath(paths_[0]);
+	}
+
+	//eBase_.SetPatrolNode();
 
 }

@@ -26,6 +26,12 @@ public:
 	// ノードの総数を返す
 	size_t GetNodeCound(void);
 
+	// 巡回タイプを返す
+	PATHTYPE GetPathType(void);
+
+	// 保有するノードを返す
+	const std::vector<PatrolNode>& GetNodes(void) const;
+
 private:
 	std::vector<PatrolNode> nodes;		// 巡回ノードを格納したvector配列
 	PATHTYPE pathType_;					// 巡回タイプ

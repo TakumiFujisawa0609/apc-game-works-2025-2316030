@@ -50,15 +50,8 @@ void Player::Init(void)
     yaw = 0.0f;       // 水平回転（ヨー）
 	pitch = 0.0f;     // 垂直回転（ピッチ）
 
-    // カプセルコライダ
-    capsule_ = std::make_unique<Capsule>(transform_);
-    
-    // 頭上
-    capsule_->SetLocalPosTop({ 0.0f, 180.0f, 0.0f });
-
-    // 足元
-    capsule_->SetLocalPosDown({ 0.0f, -20.0f, 0.0f });
-    capsule_->SetRadius(20.0f);
+    // カプセルの初期化
+    InitializeCapsule({ 0.0f, 180.0f, 0.0f }, { 0.0f, -20.0f, 0.0f }, 20.0f);
 
     walkSH_ = resMng_.Load(ResourceManager::SRC::WALK_SE).handleId_;
     ChangeVolumeSoundMem(255, walkSH_);
@@ -193,10 +186,12 @@ void Player::Draw(void)
 {
 
 #ifdef _DEBUG
+
+    //capsule_->Draw();
     DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
-#endif // DEBUG
+#endif // _DEBUG
 
 }
 
@@ -270,7 +265,7 @@ void Player::CollisionCapsule(void)
     Transform trans = Transform(transform_);
     trans.pos = movedPos_;
     trans.Update();
-    Capsule cap = Capsule(*capsule_, trans);
+    Capsule cap = Capsule(*capsule_, &trans);
 
     // カプセルとの衝突判定
     for (const auto& c : colliders_)

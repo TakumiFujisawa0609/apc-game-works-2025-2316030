@@ -61,3 +61,13 @@ size_t PatrolPath::GetNodeCound(void)
 {
     return nodes.size();
 }
+
+PatrolPath::PATHTYPE PatrolPath::GetPathType(void)
+{
+    return pathType_;
+}
+
+const std::vector<PatrolNode>& PatrolPath::GetNodes(void) const
+{
+    return nodes;
+}

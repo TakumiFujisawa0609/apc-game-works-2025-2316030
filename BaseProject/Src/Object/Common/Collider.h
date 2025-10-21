@@ -8,7 +8,9 @@ public:
 	// 衝突種別
 	enum class TYPE
 	{
-		STAGE
+		STAGE,
+		PLAYER,
+		ENEMY
 	};
 
 	// コンストラクタ

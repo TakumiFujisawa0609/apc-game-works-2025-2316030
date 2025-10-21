@@ -8,6 +8,7 @@ class AnimationController;
 class EnemyMoveComponent;
 class EnemyChaseComponent;
 
+class PatrolNode;
 class PatrolPath;
 
 class Player;
@@ -16,15 +17,18 @@ class EnemyBase :
 {
 public:
 
-    static constexpr VECTOR POS = {0.0f,0.0f,0.0f};
+    static constexpr VECTOR POS = {0.0f,300.0f,300.0f};
     static constexpr VECTOR SCALE = { 1.0f,1.0f ,1.0f };
-    static constexpr VECTOR QUAROT_LOCAL = { 0.0f,0.0f,0.0f };
+    static constexpr VECTOR QUAROT_LOCAL = { 0.0f,180.0f,0.0f };
 
+    static constexpr VECTOR TOP = {0.0f,160.0f,0.0f};
+    static constexpr VECTOR DOWN = {0.0f,0.0f,0.0f};
+    static constexpr float RADIUS = 20.0f;
 
     enum class STATE
     {
         PATROL, // 巡回
-        CAHSE,  // 追跡
+        CHASE,  // 追跡
         ATTACK, // 攻撃
         IDLE    // 待機
     };
@@ -53,8 +57,11 @@ public:
     // 移動中に障害物として認識される物を設定する
     void SetObstacle(std::vector<std::shared_ptr<Transform>> obstacle);
 
-    // 徘徊用のノードをステージから取得する
+    // 徘徊用のノードパスをステージから取得する
     void SetPatrolPath(std::shared_ptr<PatrolPath> path);
+
+    //// 徘徊用のノードをステージから取得する
+    //void SetPatrolNode(std::vector<PatrolNode> node);
 
 protected:
 
@@ -78,7 +85,7 @@ protected:
     std::shared_ptr<PatrolPath> patrolPath_;
     int currentPatrolPathIndex_;                // 現在のパスの番号
 
-    std::unique_ptr<AnimationController> animationController_;
+    std::unique_ptr<AnimationController> animationController_;  // アニメーション
 
     // アニメーションの初期化
     virtual void InitAnimation(void);
@@ -93,5 +100,7 @@ private:
     void CollisionGravity(void);        // 重力との衝突判定
     void CalcGravityPow(void);          // 重力加算処理
 
+
+    void ChangeState(STATE state);
 };
 

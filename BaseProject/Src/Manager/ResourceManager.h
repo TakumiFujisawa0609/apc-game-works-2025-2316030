@@ -12,15 +12,10 @@ public:
 	// ÉäÉ\Å[ÉXñº
 	enum class SRC
 	{
-		SUBMARINE,
 		STAGE,
-		BOTTLE_M,
-		BOTTLE_I,
-		FLASHLIGHT_M,
-		FLASHLIGHT_I,
-		LOCKPICK_M,
-		LOCKPICK_I,
-		WIRE_M,
+		FLASHLIGHT,
+		LOCKPICK,
+		WIRE,
 		E_PLATE,
 		KEYHOLE,
 		TITLE,

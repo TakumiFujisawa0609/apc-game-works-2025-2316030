@@ -12,8 +12,8 @@ public :
 
 	// コンストラクタ
 	// カプセルをつけるオブジェクトを指定する
-	Capsule(const Transform& parent);
-	Capsule(const Capsule& base, const Transform& parent);
+	Capsule(const Transform* parent);
+	Capsule(const Capsule& base, const Transform* parent);
 
 	// デストラクタ
 	~Capsule(void);
@@ -49,7 +49,7 @@ public :
 private :
 
 	// カプセルをくっつける相手
-	const Transform& transformParent_;
+	const Transform* transformParent_;
 
 	// 親Transformからの相対位置(上側)
 	VECTOR localPosTop_;

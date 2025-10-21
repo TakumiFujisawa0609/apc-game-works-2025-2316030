@@ -24,13 +24,13 @@ public:
 	VECTOR GetPos(void) const;
 
 	// 次の行動に移すまでの残り時間を取得する
-	float GetWaitTime(void);
+	float GetWaitTime(void) const;
 
 	// このノードで実行する特殊行動を取得する
-	ACTTYPE GetActType(void);
+	ACTTYPE GetActType(void) const;
 
 	// デバック用描画
-	void DebugDraw(void);
+	void DebugDraw(void) const;
 
 private:
 

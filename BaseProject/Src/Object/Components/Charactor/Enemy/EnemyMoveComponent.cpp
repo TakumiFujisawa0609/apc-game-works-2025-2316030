@@ -1,13 +1,19 @@
+#include "../../../../Utility/AsoUtility.h"
 #include "../Object/ObjectBase/ActorBase.h"
 #include "../../../Common/Transform.h"
 #include "../../../Player/Player.h"
+#include "../../../Enemy/EnemyBase.h"
 #include "../../../Enemy/Patrol/PatrolPath.h"
 #include "../../../Enemy/Patrol/PatrolNode.h"
 #include "EnemyMoveComponent.h"
 
 EnemyMoveComponent::EnemyMoveComponent(std::shared_ptr<Charactor> owner, Player& player)
 	:
-	EnemyComponent(owner, player)
+	EnemyComponent(owner, player),
+	isWaiting_(false),
+	currentWaitTime_(0.0f),
+    outRotation_({}),
+    dis_(0.0f)
 {
 }
 
@@ -42,35 +48,113 @@ void EnemyMoveComponent::Update(float deltaTime)
 
 }
 
-void EnemyMoveComponent::Patrol(std::shared_ptr<PatrolPath> path, int& currentIndex, float deltaTime)
+void EnemyMoveComponent::Patrol(float deltaTime, Transform& transform, std::shared_ptr<PatrolPath> path, int& currentIndex, VECTOR& moveDir, VECTOR& movePow, float moveSpeed, Quaternion& outRotation)
 {
-	std::shared_ptr<Charactor> owner = this->GetCharactor().lock();
-	if (!owner || !path)return;
+    std::shared_ptr<Charactor> owner = this->GetCharactor().lock();
+    if (!owner || !path)return;
 
-	// 現在の目標ノードを取得
-	const PatrolNode& targetNode = path->GetNodeIndex(currentIndex);
-	VECTOR targetPos = targetNode.GetPos();
+    EnemyBase* enemyBase = static_cast<EnemyBase*>(owner.get());
+    if (!enemyBase) return;
 
-	// 現在位置から目標位置への移動を計算
-	VECTOR currentPos = owner->GetTransform().pos;
-	VECTOR moveVector = VSub(targetPos, currentPos);
+    // outMoveDirを初期化 (移動しない場合のため)
+    moveDir = AsoUtility::VECTOR_ZERO;
 
-	// 目標位置に到達したかをチェック
-	if (VSize(moveVector) < 1.0f)
-	{
-		// 目標に到達したら次のノードを決定
-		const PatrolNode& nextNode = path->GetNextNode(currentIndex);
+    // 現在の目標ノードを取得
+    const PatrolNode& targetNode = path->GetNodeIndex(currentIndex);
+    VECTOR targetPos = targetNode.GetPos();
 
-		// ノード固有のアクションがれば実行
+    // ----------------------------------------------------
+    // 待機処理
+    // ----------------------------------------------------
+    if (isWaiting_)
+    {
+        currentWaitTime_ -= deltaTime;
 
-	}
-	else
-	{
-		// 移動処理
+        if (currentWaitTime_ <= 0.0f)
+        {
+            // 待機終了。次のノードへ進む
+            isWaiting_ = false;
 
+            // 次のノードのインデックスを更新
+            path->GetNextNode(currentIndex);
 
-		// モデルの回転処理
+            // 状態をPATROL（移動）に戻す
+            //enemyBase->ChangeState(EnemyBase::STATE::PATROL);
+        }
+        else
+        {
+            // 待機中は移動を停止
+            moveDir = AsoUtility::VECTOR_ZERO;
 
-	}
+            // 回転はそのまま維持
+            outRotation = transform.quaRot;
+            return;
+        }
+    }
+
+    // ----------------------------------------------------
+    // 移動/回転処理
+    // ----------------------------------------------------
+
+    // 現在位置（Y軸は無視して水平移動）
+    VECTOR currentPos = transform.pos;
+    currentPos.y = 0.0f;
+    targetPos.y = 0.0f;
+
+    VECTOR moveVector = VSub(targetPos, currentPos);
+    float distance = VSize(moveVector);
+    dis_ = distance;
+
+    // 目標位置に到達したかをチェック（許容誤差1.0f）
+    if (distance < 2.5f)
+    {
+        // 目標に到達したら待機状態に遷移
+        isWaiting_ = true;
+        currentWaitTime_ = targetNode.GetWaitTime();
+
+        // 移動を停止
+        moveDir = AsoUtility::VECTOR_ZERO;
+
+        //// ノード固有のアクションに応じて状態を変更
+        //if (targetNode.GetActType() == PatrolNode::ACTTYPE::LOCKAROUND)
+        //{
+        //    // 周囲を見回すアニメーションなどに変更
+        //    //enemyBase->ChangeState(EnemyBase::STATE::IDLE);
+        //}
+        //else
+        //{
+        //    // 通常の待機アニメーション
+        //    //enemyBase->ChangeState(EnemyBase::STATE::IDLE);
+        //}
+    }
+    else
+    {
+        // 移動方向を設定 (出力)
+        VECTOR moveDirection = VNorm(moveVector);
+        moveDir = moveDirection;
+
+        movePow = VScale(moveDir, 5.0f);
+
+        float length = AsoUtility::MagnitudeF(moveDir);
+        if (length < 0.001f)return;
+
+        // モデルの回転角度を設定 (出力)
+        // Z軸（前方向）から移動方向への回転
+        float rotationY = atan2f(moveDirection.x, moveDirection.z);
+        Quaternion targetRotation = Quaternion::Euler({ 0.0f, rotationY, 0.0f });
+   
+        // 現在の回転と目標の回転の間を滑らかに補間
+        outRotation = Quaternion::Slerp(transform.quaRot, targetRotation, 5.0f * deltaTime);
+    }
+}
+
+float EnemyMoveComponent::GetDis(void)
+{
+    return dis_;
+}
+
+void EnemyMoveComponent::DrawDebug(std::shared_ptr<PatrolPath> path, int currentIndex)
+{
+
 
 }

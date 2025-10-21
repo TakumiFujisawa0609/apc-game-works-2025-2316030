@@ -43,10 +43,15 @@ void AnimationController::Add(int type, const std::wstring& path, float speed)
 		// 追加
 		animations_[type].model = anim.model;
 		animations_[type].animIndex = anim.animIndex;
-		animations_[type].attachNo = anim.attachNo;
 		animations_[type].totalTime = anim.totalTime;
 	}
 
+
+	std::wstring filePath = L"Data/Model/Enemy/Y-bot/";
+	int animIndex = MV1AttachAnim(anim.model, 0, playAnim_.model);
+	if (animIndex == -1) {
+		printfDx(L"アニメーション追加失敗: %s\n", filePath.c_str());
+	}
 }
 
 void AnimationController::Play(int type, bool isLoop, float blendRate, float startStep, float endStep, bool isStop, bool isForce)

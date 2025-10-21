@@ -18,6 +18,8 @@ Charactor::Charactor(void)
 	velocityY_({ 0.0f,30.0f,0.0f }),
 	isVelocityY_(false)
 {
+
+    capsule_ = std::make_unique<Capsule>(&transform_);
 }
 
 Charactor::~Charactor()
@@ -42,6 +44,13 @@ void Charactor::AddCollider(std::shared_ptr<Collider> collider)
 void Charactor::ClearCollider(void)
 {
 	colliders_.clear();
+}
+
+void Charactor::InitializeCapsule(VECTOR top, VECTOR down, float radius)
+{
+    capsule_->SetLocalPosTop(top);
+    capsule_->SetLocalPosDown(down);
+    capsule_->SetRadius(radius);
 }
 
 const std::shared_ptr<Capsule> Charactor::GetCapsule(void) const
@@ -73,7 +82,7 @@ void Charactor::CollisionCapsule(void)
     Transform trans = Transform(transform_);
     trans.pos = movedPos_;
     trans.Update();
-    Capsule cap = Capsule(*capsule_, trans);
+    Capsule cap = Capsule(*capsule_, &trans);
 
     // ƒJƒvƒZƒ‹‚Æ‚ÌÕ“Ë”»’è
     for (const auto& c : colliders_)

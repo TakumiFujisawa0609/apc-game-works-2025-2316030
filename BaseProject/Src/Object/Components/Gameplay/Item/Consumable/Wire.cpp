@@ -29,7 +29,7 @@ void Wire::Init(void)
 {
     // モデル情報
     transform_.SetModel(resMng_.LoadModelDuplicate(
-        ResourceManager::SRC::WIRE_M));
+        ResourceManager::SRC::WIRE));
 
     auto camera = Application::GetInstance().GetCamera();
     // ① カメラの位置から

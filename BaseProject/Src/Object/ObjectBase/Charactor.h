@@ -23,6 +23,8 @@ public:
 	virtual void AddCollider(std::shared_ptr<Collider> collider);	// コライダ追加
 	virtual void ClearCollider(void);								// コライダ全削除
 
+
+	void InitializeCapsule(VECTOR top, VECTOR down, float radius);
 	virtual const std::shared_ptr<Capsule> GetCapsule(void) const;	// 衝突用カプセルの取得
 
 	std::shared_ptr<Charactor> shared_from_this()
@@ -45,6 +47,8 @@ public:
 		charaComponents_.emplace_back(std::move(comp));
 		return ptr;
 	}
+
+	
 
 protected:
 

@@ -34,42 +34,22 @@ void ResourceManager::Init(void)
 
 	// リソース登録
 
-	// 潜水艦
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"submarine/psx_sub_free.mv1");
-	resourcesMap_.emplace(SRC::SUBMARINE, res);
-
 	// ステージ
 	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage2.mv1");
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/eStage.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
-	// ボトルモデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/bottle/bottle.mv1");
-	resourcesMap_.emplace(SRC::BOTTLE_M, res);
-
-	// ボトルUI
-	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/bottle/UI_bottle_Img.png");
-	resourcesMap_.emplace(SRC::BOTTLE_I, res);
-
 	// フラッシュライトモデル
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Flashlight/flashlight.mv1");
-	resourcesMap_.emplace(SRC::FLASHLIGHT_M, res);
-
-	// フラッシュライトUI
-	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Item/Flashlight/flashlight.png");
-	resourcesMap_.emplace(SRC::FLASHLIGHT_I, res);
+	resourcesMap_.emplace(SRC::FLASHLIGHT, res);
 
 	// ロックピックモデル
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Lockpick/folding.mv1");
-	resourcesMap_.emplace(SRC::LOCKPICK_M, res);
-
-	// ロックピックUI
-	res = std::make_shared<RES>(RES_T::IMG, PATH_MDL + L"Item/alphaltFloor.mv1");
-	resourcesMap_.emplace(SRC::LOCKPICK_I, res);
+	resourcesMap_.emplace(SRC::LOCKPICK, res);
 
 	// 針金モデル
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Wire/hook.mv1");
-	resourcesMap_.emplace(SRC::WIRE_M, res);
+	resourcesMap_.emplace(SRC::WIRE, res);
 
 	// 鍵穴プレート
 	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/plate.mv1");

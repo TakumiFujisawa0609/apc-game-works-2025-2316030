@@ -23,15 +23,11 @@ void HandLight::Init(void)
 
 	// ƒ‚ƒfƒ‹î•ñ
 	transform_.SetModel(resMng_.LoadModelDuplicate(
-		ResourceManager::SRC::FLASHLIGHT_M));
+		ResourceManager::SRC::FLASHLIGHT));
 	InitModel(
 		INIT_POS,
 		INIT_SCL,
 		INIT_QUAROTLOCAL);
-
-	// UI‰æ‘œ
-	imgH_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::FLASHLIGHT_I);
-
 
 	// ó‘Ô‚Ì‰Šú‰»
 	isOnStage_ = true;
