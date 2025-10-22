@@ -30,6 +30,7 @@ void Player::Init(void)
 {
 	// ƒ‚ƒfƒ‹î•ñ
 	transform_.pos = { -2000.0f, 200.0f, -1500.0f };
+	transform_.pos = { 500.0f, 200.0f, 800.0f };
 	transform_.scl = { 1.0f, 1.0f, 1.0f };
     transform_.quaRot = Quaternion();
     transform_.quaRotLocal =

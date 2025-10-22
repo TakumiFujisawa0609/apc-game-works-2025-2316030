@@ -14,7 +14,8 @@
 Stage::Stage(Player& player, EnemyBase& enemyBase)
 	:
 	player_(player),
-	eBase_(enemyBase)
+	eBase_(enemyBase),
+	obstacles_{}
 {
 }
 
@@ -34,7 +35,9 @@ void Stage::Init(void)
 	
 	transform_.Update();
 
+
 	InitPatrolInfo();
+	InitObstacles();
 }
 
 void Stage::Update(float deltaTime)
@@ -46,7 +49,8 @@ void Stage::Update(float deltaTime)
 	eBase_.ClearCollider();
 	eBase_.AddCollider(transform_.collider);
 
-
+	// 障害物設定
+	eBase_.SetObstacle(obstacles_);
 
 	OnUpdate(deltaTime);
 }
@@ -113,16 +117,16 @@ const std::shared_ptr<PatrolPath>& Stage::GetPatrolPath(size_t index) const
 void Stage::InitPatrolInfo(void)
 {
 	// ノード上の初期化
-	nodes_.emplace_back(VECTOR{ 100.0f,180.0f,50.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 500.0f,180.0f,50.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,50.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,-500.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,-900.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 1500.0f,180.0f,-900.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 1700.0f,180.0f,-1500.0f }, 2.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 100.0f,180.0f,50.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 500.0f,180.0f,50.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,50.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,-500.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,-900.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 1500.0f,180.0f,-900.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ 1700.0f,180.0f,-1500.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
 
 	// 巡回パスを作成
-	paths_.emplace_back(std::make_shared<PatrolPath>(nodes_, PatrolPath::PATHTYPE::LOOP));
+	paths_.emplace_back(std::make_shared<PatrolPath>(nodes_, PatrolPath::PATHTYPE::ROUNDTRIP));
 	
 	// 敵に巡回パスを設定
 	// paths_の0番目のパスを設定
@@ -131,6 +135,10 @@ void Stage::InitPatrolInfo(void)
 		eBase_.SetPatrolPath(paths_[0]);
 	}
 
-	//eBase_.SetPatrolNode();
 
+}
+
+void Stage::InitObstacles(void)
+{
+	obstacles_.push_back(transform_);
 }

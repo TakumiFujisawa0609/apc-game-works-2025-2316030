@@ -170,7 +170,6 @@ void GameScene::NormalUpdate(Input& input)
 		return;
 	}
 
-
 	VECTOR targetPos = { -2317.0f,189.0f,-1558.0f };
 	// ‹…‘Ì1 (•W“I) ‚Ìî•ñ
 	VECTOR TargetCenter = VGet(-2317.0f,189.0f,-1558.0f);

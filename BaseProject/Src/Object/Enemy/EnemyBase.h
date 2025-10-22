@@ -11,6 +11,9 @@ class EnemyChaseComponent;
 class PatrolNode;
 class PatrolPath;
 
+#include "AStar/AStarNode.h"
+class NavGridManager;
+
 class Player;
 class EnemyBase :
     public Charactor
@@ -24,6 +27,15 @@ public:
     static constexpr VECTOR TOP = {0.0f,160.0f,0.0f};
     static constexpr VECTOR DOWN = {0.0f,0.0f,0.0f};
     static constexpr float RADIUS = 20.0f;
+
+    // 視野の広さ
+    static constexpr float EYE_VIEW_RANGE = 450.0f;
+
+    // 攻撃範囲の広さ
+    static constexpr float ATTACK_RANGE = 175.0f;
+
+    // 視野角
+    static constexpr float VIEW_ANGLE = 30.0f;
 
     enum class STATE
     {
@@ -55,13 +67,35 @@ public:
     void Draw(void) override;
 
     // 移動中に障害物として認識される物を設定する
-    void SetObstacle(std::vector<std::shared_ptr<Transform>> obstacle);
+    void SetObstacle(std::vector<Transform> obstacle);
 
     // 徘徊用のノードパスをステージから取得する
     void SetPatrolPath(std::shared_ptr<PatrolPath> path);
 
     //// 徘徊用のノードをステージから取得する
     //void SetPatrolNode(std::vector<PatrolNode> node);
+
+    // ヒューリスティック関数
+    float GetHCost(AStarNode* a, AStarNode* b);
+
+    struct CompareNode
+    {
+        bool operator()(const AStarNode* a, const AStarNode* b) const
+        {
+            // Fスコアが低い方を優先
+            if (a->F_Score() != b->F_Score())
+            {
+                return a->F_Score() > b->F_Score();
+            }
+            // Fスコアが同じ場合、Hスコアが低い方を優先
+            return a->H_Score_ > b->H_Score_;
+        }
+    };
+
+    std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
+
+    // 経路を逆順に辿って復元する関数
+    std::vector<VECTOR> RetracePath(AStarNode* start, AStarNode* end);
 
 protected:
 
@@ -75,6 +109,8 @@ protected:
 
     // 音を検知したかどうか
     bool isHearingSound_;
+
+    int frame_;
 
     EnemyMoveComponent* moveComponent_;     // 移動
     EnemyChaseComponent* chaseComponent_;   // 追跡
@@ -90,6 +126,8 @@ protected:
     // アニメーションの初期化
     virtual void InitAnimation(void);
 
+    NavGridManager* navGridManager_;
+
 private:
 
     // 回転処理
@@ -100,7 +138,10 @@ private:
     void CollisionGravity(void);        // 重力との衝突判定
     void CalcGravityPow(void);          // 重力加算処理
 
-
     void ChangeState(STATE state);
+
+    bool EyeSerch(void);
+
+    void DrawDebug(void);
 };
 

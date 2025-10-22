@@ -18,6 +18,9 @@ int WINAPI WinMain
 	// メモリリーク検出
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
+	// 垂直同期を有効にする
+	SetWaitVSyncFlag(true);
+
 	// インスタンスの生成
 	Application::CreateInstance();
 

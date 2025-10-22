@@ -35,6 +35,7 @@ public:
        Quaternion& outRotation);
 
    float GetDis(void);
+   int GetCurrentNode(void);
 
    void DrawDebug(std::shared_ptr<PatrolPath> path, int currentIndex);
 
@@ -44,6 +45,7 @@ private:
     Quaternion outRotation_;    // 回転角度
 
     float dis_;
+    int currentNode_;
 
     // 周囲を見回す
     // 待機アニメーション

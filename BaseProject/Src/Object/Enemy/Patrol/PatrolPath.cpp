@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <functional>
+#define NOMINMAX
 #include "PatrolNode.h"
 #include "PatrolPath.h"
 
@@ -19,27 +22,22 @@ const PatrolNode& PatrolPath::GetNextNode(int& currentIndex)
     {
         // 次のインデックスを計算し、リストのサイズで割った余りを取る
         currentIndex = (currentIndex + 1) % nodes.size();
+
     }
     else if (pathType_ == PATHTYPE::ROUNDTRIP)
     {
         // 次のインデックスを計算
         int nextIndex = currentIndex + direction_;
 
-        // リストの終点または始点にて到達した場合
-        if (nextIndex >= nodes.size() - 1 || nextIndex <= 0)
+        // 1. nextIndexがリストの有効範囲外に出たとき (終点N or 始点-1) に反転
+        // nodes.size()はリストの要素数。最後のインデックスは nodes.size() - 1
+        if (nextIndex >= nodes.size() || nextIndex < 0)
         {
             // 進行方向を反転
             direction_ *= -1;
 
-            // インデックスを終点または始点に留める
-            if (nextIndex >= nodes.size() - 1)
-            {
-                currentIndex = static_cast<int>(nodes.size() - 1);
-            }
-            else
-            {
-                currentIndex = 0;
-            }
+            // 現在のインデックス (0またはsize-1) から、反転後の方向に進む
+            currentIndex += direction_;
         }
         else
         {

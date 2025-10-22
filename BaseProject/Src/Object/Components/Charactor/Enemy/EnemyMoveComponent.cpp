@@ -13,7 +13,8 @@ EnemyMoveComponent::EnemyMoveComponent(std::shared_ptr<Charactor> owner, Player&
 	isWaiting_(false),
 	currentWaitTime_(0.0f),
     outRotation_({}),
-    dis_(0.0f)
+    dis_(0.0f),
+    currentNode_(0)
 {
 }
 
@@ -62,6 +63,7 @@ void EnemyMoveComponent::Patrol(float deltaTime, Transform& transform, std::shar
     // 現在の目標ノードを取得
     const PatrolNode& targetNode = path->GetNodeIndex(currentIndex);
     VECTOR targetPos = targetNode.GetPos();
+    currentNode_ = currentNode_;
 
     // ----------------------------------------------------
     // 待機処理
@@ -75,14 +77,15 @@ void EnemyMoveComponent::Patrol(float deltaTime, Transform& transform, std::shar
             // 待機終了。次のノードへ進む
             isWaiting_ = false;
 
-            // 次のノードのインデックスを更新
-            path->GetNextNode(currentIndex);
-
             // 状態をPATROL（移動）に戻す
             //enemyBase->ChangeState(EnemyBase::STATE::PATROL);
         }
         else
         {
+            // 次のノードのインデックスを更新
+            path->GetNextNode(currentIndex);
+            currentNode_ = currentIndex;
+
             // 待機中は移動を停止
             moveDir = AsoUtility::VECTOR_ZERO;
 
@@ -106,7 +109,7 @@ void EnemyMoveComponent::Patrol(float deltaTime, Transform& transform, std::shar
     dis_ = distance;
 
     // 目標位置に到達したかをチェック（許容誤差1.0f）
-    if (distance < 2.5f)
+    if (distance < 5.5f)
     {
         // 目標に到達したら待機状態に遷移
         isWaiting_ = true;
@@ -132,8 +135,9 @@ void EnemyMoveComponent::Patrol(float deltaTime, Transform& transform, std::shar
         // 移動方向を設定 (出力)
         VECTOR moveDirection = VNorm(moveVector);
         moveDir = moveDirection;
+        //moveSpeed = 12.0f;
 
-        movePow = VScale(moveDir, 5.0f);
+        movePow = VScale(moveDir, 3.0f);
 
         float length = AsoUtility::MagnitudeF(moveDir);
         if (length < 0.001f)return;
@@ -151,6 +155,11 @@ void EnemyMoveComponent::Patrol(float deltaTime, Transform& transform, std::shar
 float EnemyMoveComponent::GetDis(void)
 {
     return dis_;
+}
+
+int EnemyMoveComponent::GetCurrentNode(void)
+{
+    return currentNode_;
 }
 
 void EnemyMoveComponent::DrawDebug(std::shared_ptr<PatrolPath> path, int currentIndex)

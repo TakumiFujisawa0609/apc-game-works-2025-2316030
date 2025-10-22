@@ -21,14 +21,20 @@ public:
 	const std::shared_ptr<PatrolPath>& GetPatrolPath(size_t index) const;
 
 private:
+
 	Player& player_;
 	EnemyBase& eBase_;
 
 	std::vector<PatrolNode> nodes_;		// 巡回用のノード
 	std::vector<std::shared_ptr<PatrolPath>> paths_;		// 巡回用のパス
 
+	std::vector<Transform> obstacles_;	// 障害物として認識されるもの
+
 	// 巡回情報の初期化
 	void InitPatrolInfo(void);
+
+	// 障害物の初期化
+	void InitObstacles(void);
 
 };
 
