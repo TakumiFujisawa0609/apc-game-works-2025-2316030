@@ -1,13 +1,15 @@
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../Player/Player.h"
 #include "EnemyChaseComponent.h"
+#include "../../../Enemy/AStar/AStarNode.h"
 #include "../../../Enemy/EnemyBase.h"
 
 EnemyChaseComponent::EnemyChaseComponent(std::shared_ptr<Charactor> owner, Player& player)
     :
     EnemyComponent(owner, player),
     currentPathIndex_(0),
-    pathRecalcTimer_(0.0f)
+    pathRecalcTimer_(0.0f),
+    currentPath_{}
 {
 }
 
@@ -22,6 +24,17 @@ void EnemyChaseComponent::Update(float deltaTime)
 
 }
 
+void EnemyChaseComponent::RecalcTime(float deltaTime)
+{
+    // A*の再計算タイミング
+    pathRecalcTimer_ -= deltaTime;
+    if (pathRecalcTimer_ <= 0.0f)
+    {
+        // FindPathはもともとここにあった
+        currentPathIndex_ = 0;
+    }
+}
+
 void EnemyChaseComponent::Chase(float deltaTime,
     Transform& transform,
     VECTOR& moveDir,
@@ -29,7 +42,8 @@ void EnemyChaseComponent::Chase(float deltaTime,
     float moveSpeed,
     Quaternion& outRotation)
 {
-    // A*の再計算タイミング
+   
+    // 1. A*の再計算タイミング
     pathRecalcTimer_ -= deltaTime;
     if (pathRecalcTimer_ <= 0.0f)
     {
@@ -39,15 +53,14 @@ void EnemyChaseComponent::Chase(float deltaTime,
         pathRecalcTimer_ = 0.5f; // 0.5秒ごとに再計算
     }
 
+    // 2. 経路が存在しない場合
     if (currentPath_.empty() || currentPathIndex_ >= currentPath_.size())
     {
-        moveDir = AsoUtility::VECTOR_ZERO; // 経路がない/終了
+        moveDir = AsoUtility::VECTOR_ZERO;
         return;
     }
 
-    // ----------------------------------------------------
-    // 移動ロジック
-    // ----------------------------------------------------
+    // 3. 移動目標の設定と到達判定
     VECTOR targetPos = currentPath_[currentPathIndex_];
 
     // Y軸を無視した移動計算
@@ -59,10 +72,10 @@ void EnemyChaseComponent::Chase(float deltaTime,
     float distance = VSize(moveVector);
 
     // ノードに到達したら次のノードへ
-    if (distance < 5.0f) // 許容誤差を少し大きめに
+    if (distance < 5.0f)
     {
         currentPathIndex_++;
-        // 最後のノード（プレイヤー位置）に到達したら停止
+        // 最後のノードに到達したら停止
         if (currentPathIndex_ >= currentPath_.size())
         {
             moveDir = AsoUtility::VECTOR_ZERO;
@@ -70,26 +83,18 @@ void EnemyChaseComponent::Chase(float deltaTime,
         }
         // 次のノードを目標に再設定
         targetPos = currentPath_[currentPathIndex_];
-
-        // 再度 moveVector を計算するロジックが必要だが、簡略化のためスキップ
-        // 複雑になるため、ここでは次のフレームで再度計算されると仮定
     }
 
-    // 移動方向を設定
+    // 4. 移動方向と回転の設定
     VECTOR moveDirection = VNorm(VSub(targetPos, currentPos));
     moveDir = moveDirection;
 
-    movePow = VScale(moveDir, 4.0f);
-
-    // 4. 回転処理
-    // 移動方向を向く回転角度を計算
+    // 回転処理
     float rotationY = atan2f(moveDirection.x, moveDirection.z);
     Quaternion targetRotation = Quaternion::Euler({ 0.0f, rotationY, 0.0f });
 
     // 滑らかに補間
     outRotation = Quaternion::Slerp(transform.quaRot, targetRotation, 5.0f * deltaTime);
-
-    CapsuleCast(deltaTime);
 }
 
 void EnemyChaseComponent::SetObstacle(std::vector<Transform> obstacle)
@@ -99,6 +104,17 @@ void EnemyChaseComponent::SetObstacle(std::vector<Transform> obstacle)
 
 void EnemyChaseComponent::SetCurrentPath(std::vector<VECTOR> currentPath)
 {
+    currentPath_ = currentPath;
+}
+
+float EnemyChaseComponent::GetRecalcTime(void)
+{
+    return pathRecalcTimer_;
+}
+
+void EnemyChaseComponent::SetRecalcTime(float time)
+{
+    pathRecalcTimer_ = time;
 }
 
 void EnemyChaseComponent::CapsuleCast(float deltaTime)
@@ -159,4 +175,138 @@ VECTOR EnemyChaseComponent::CalculateAvoidanceForce(const Transform& transform, 
     }
 
     return avoidanceForce; // 回避するための「力」ベクトルを返す
+}
+
+std::vector<VECTOR> EnemyChaseComponent::FindPath(VECTOR startPos, VECTOR endPos)
+{
+    // 1. ノードの取得と初期リセット
+    // 【重要】探索前に全ノードのG_Score, parent をリセットする必要があります
+    if (navGridManager_ == nullptr) return {};
+    navGridManager_->ResetAllNodes(); // 全ノードを初期状態にリセット
+
+    AStarNode* startNode = navGridManager_->NodeFromWorldPoint(startPos);
+    AStarNode* targetNode = navGridManager_->NodeFromWorldPoint(endPos);
+
+    if (!startNode || !targetNode || !targetNode->isWalkable) {
+        return {};
+    }
+
+    // 2. リストの初期化
+    // openListにはノードへのポインタを格納
+    std::priority_queue<AStarNode*, std::vector<AStarNode*>, CompareNode> openList;
+    // closedListには探索済みのノードを格納
+    std::unordered_set<AStarNode*> closedList;
+
+    startNode->G_Score_ = 0;
+    startNode->H_Score_ = GetHCost(startNode, targetNode);
+    startNode->parent_ = nullptr;
+    openList.push(startNode);
+
+    // 3. 探索メインループ
+    while (!openList.empty())
+    {
+        AStarNode* currentNode = openList.top();
+        openList.pop();
+
+        // Fスコアが古いノードを無視（優先度キューを使用する際のテクニック）
+        if (closedList.count(currentNode)) continue;
+
+        closedList.insert(currentNode);
+
+        // ゴール判定
+        if (currentNode == targetNode)
+        {
+            return RetracePath(startNode, targetNode);
+        }
+
+        // 4. 隣接ノードの調査
+        for (AStarNode* neighbor : GetNeighbors(currentNode))
+        {
+            if (!neighbor->isWalkAble_ || closedList.count(neighbor))
+            {
+                continue;
+            }
+
+            // 新しい経路のGコストを計算
+            float newGCost = currentNode->G_Score_ + GetDistance(currentNode, neighbor);
+
+            // 新しい経路が既存の経路より短い場合
+            if (newGCost < neighbor->G_Score_)
+            {
+                neighbor->G_Score_ = newGCost;
+                neighbor->H_Score_ = GetHCost(neighbor, targetNode);
+                neighbor->parent_ = currentNode;
+
+                // オープンリストに追加/再投入 (Fスコア順に並べ替えられる)
+                openList.push(neighbor);
+            }
+        }
+    }
+
+    // 経路が見つからなかった
+    return {};
+}
+
+float EnemyChaseComponent::GetHCost(AStarNode* a, AStarNode* b)
+{
+    // グリッド座標のマンハッタン距離を使う
+    float dx = std::abs(a->gridX_ - b->gridX_);
+    float dz = std::abs(a->gridZ_ - b->gridZ_);
+    // VSizeの代わりに、GetDistanceと同じものを使用しても良い
+    return dx + dz;
+}
+
+std::vector<AStarNode*> EnemyChaseComponent::GetNeighbors(AStarNode* node)
+{
+    std::vector<AStarNode*> neighbors;
+
+    // X, Z 方向のオフセット
+    int checkX[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
+    int checkZ[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
+
+    for (int i = 0; i < 8; ++i)
+    {
+        int neighborX = node->gridX_ + checkX[i];
+        int neighborZ = node->gridZ_ + checkZ[i];
+
+        // グリッドの有効範囲内かチェック (navGridManager_ を利用)
+        if (neighborX >= 0 && neighborX < navGridManager_->GetGridSizeX() &&
+            neighborZ >= 0 && neighborZ < navGridManager_->GetGridSizeZ())
+        {
+            // 有効なノードを取得
+            AStarNode* neighborNode = navGridManager_->GetNode(neighborX, neighborZ);
+            if (neighborNode)
+            {
+                neighbors.push_back(neighborNode);
+            }
+        }
+    }
+    return neighbors;
+}
+
+float EnemyChaseComponent::GetDistance(AStarNode* a, AStarNode* b)
+{
+    // グリッド移動のコストを返す (斜め移動は1.4倍など)
+    // ここではユークリッド距離（ワールド座標）を使うのが最も正確です。
+    // VSub, VSize は DxLib の関数と仮定
+    VECTOR distVec = VSub(a->worldPos_, b->worldPos_);
+    return VSize(distVec);
+}
+
+std::vector<VECTOR> EnemyChaseComponent::RetracePath(AStarNode* start, AStarNode* end)
+{
+    std::vector<VECTOR> path;
+    AStarNode* current = end;
+
+    while (current != start && current != nullptr)
+    {
+        path.push_back(current->worldPos_);
+        current = current->parent_;
+    }
+    std::reverse(path.begin(), path.end()); // 逆順なので反転
+    return path;
+}
+
+void EnemyChaseComponent::ResetAStarNodes()
+{
 }

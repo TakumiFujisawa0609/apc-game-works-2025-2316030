@@ -19,7 +19,8 @@ public:
 	float H_Score_;			// このノードからゴールまでの推定コスト(ヒューリスティック)
 	float F_Score(void) const; // 合計コスト
 
-
 	AStarNode* parent_;		// 復元のための親ノード
+
+	void Reset(void);	// A*探索開始にリセットするための関数
 };
 

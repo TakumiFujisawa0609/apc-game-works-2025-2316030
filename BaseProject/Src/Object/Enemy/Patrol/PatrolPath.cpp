@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <functional>
-#define NOMINMAX
+//#define NOMINMAX
 #include "PatrolNode.h"
 #include "PatrolPath.h"
 

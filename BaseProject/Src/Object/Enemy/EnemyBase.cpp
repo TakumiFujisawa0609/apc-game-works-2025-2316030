@@ -138,6 +138,16 @@ void EnemyBase::OnUpdate(float deltaTime)
     case EnemyBase::STATE::CHASE:
         if (chaseComponent_)
         {
+            //chaseComponent_->RecalcTime(deltaTime);
+            //if (chaseComponent_->GetRecalcTime() <= 0.0f)
+            //{
+            //    // プレイヤーの位置をゴールとして新しい経路を計算
+            //    chaseComponent_->SetCurrentPath(FindPath(transform_.pos, player_.GetTransform().pos));
+            //    
+            //    // 0.5秒ごとに再計算させる
+            //    chaseComponent_->SetRecalcTime(0.5f);
+            //}
+            
             // 追跡処理時に必要な情報を渡す
             chaseComponent_->Chase(deltaTime, transform_,
                 moveDir_, movePow_, 5.0f, transform_.quaRot);
@@ -230,43 +240,43 @@ std::vector<VECTOR> EnemyBase::FindPath(VECTOR startPos, VECTOR endPos)
     startNode->parent_ = nullptr;
     openList.push(startNode);
 
-    while (!openList.empty())
-    {
-        AStarNode* currentNode = openList.top();
-        openList.pop();
-        closedList.insert(currentNode);
+    //while (!openList.empty())
+    //{
+    //    AStarNode* currentNode = openList.top();
+    //    openList.pop();
+    //    closedList.insert(currentNode);
 
-        // ゴールに到達
-        if (currentNode == targetNode)
-        {
-            return RetracePath(startNode, targetNode); // 経路復元
-        }
+    //    // ゴールに到達
+    //    if (currentNode == targetNode)
+    //    {
+    //        return RetracePath(startNode, targetNode); // 経路復元
+    //    }
 
-        // 隣接ノード（8方向）を探索
-        for (AStarNode* neighbor : GetNeighbors(currentNode))
-        {
-            if (!neighbor->isWalkAble_ || closedList.count(neighbor))
-            {
-                continue;
-            }
+    //    // 隣接ノード（8方向）を探索
+    //    for (AStarNode* neighbor : GetNeighbors(currentNode))
+    //    {
+    //        if (!neighbor->isWalkAble_ || closedList.count(neighbor))
+    //        {
+    //            continue;
+    //        }
 
-            // 新しい経路のGコストを計算
-            float newGCost = currentNode->G_Score_ + GetDistance(currentNode, neighbor); // 距離計算ヘルパー関数
+    //        // 新しい経路のGコストを計算
+    //        float newGCost = currentNode->G_Score_ + GetDistance(currentNode, neighbor); // 距離計算ヘルパー関数
 
-            // 新しい経路が既存の経路より短い場合、または未探索ノードの場合
-            if (newGCost < neighbor->G_Score_ || !openListContains(openList, neighbor))
-            {
-                neighbor->G_Score_ = newGCost;
-                neighbor->H_Score_ = GetHCost(neighbor, targetNode);
-                neighbor->parent_ = currentNode;
+    //        // 新しい経路が既存の経路より短い場合、または未探索ノードの場合
+    //        if (newGCost < neighbor->G_Score_ || !openListContains(openList, neighbor))
+    //        {
+    //            neighbor->G_Score_ = newGCost;
+    //            neighbor->H_Score_ = GetHCost(neighbor, targetNode);
+    //            neighbor->parent_ = currentNode;
 
-                if (!openListContains(openList, neighbor))
-                {
-                    openList.push(neighbor);
-                }
-            }
-        }
-    }
+    //            if (!openListContains(openList, neighbor))
+    //            {
+    //                openList.push(neighbor);
+    //            }
+    //        }
+    //    }
+    //}
     return {}; // 経路が見つからなかった
 }
 
