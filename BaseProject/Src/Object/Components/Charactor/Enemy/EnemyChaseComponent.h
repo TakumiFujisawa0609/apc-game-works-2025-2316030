@@ -1,10 +1,11 @@
 #pragma once
+#include "../Object/ObjectBase/ActorBase.h"
+#include "../../../Player/Player.h"
+#include "../../../Enemy/AStar/NavGridManager.h"
+#include "../../../Enemy/AStar/AStarNode.h"
 #include <vector>
 #include <queue>
-#include <set>
-
-#include "../../../Enemy/AStar/AStarNode.h"
-class NavGridManager;
+#include <unordered_set>
 
 #include "EnemyComponent.h"
 class Transform;
@@ -12,87 +13,43 @@ class EnemyChaseComponent :
     public EnemyComponent
 {
 public:
-    EnemyChaseComponent(std::shared_ptr<Charactor> owner, Player& player);
-    virtual ~EnemyChaseComponent(void);
 
-    virtual void Update(float deltaTime) override;
+    EnemyChaseComponent(std::shared_ptr<Charactor> owner, Player& player, std::shared_ptr<NavGridManager> navManager);
+    ~EnemyChaseComponent(void);
 
-    // 再計算
-    void RecalcTime(float deltaTime);
+    // プレイヤー追跡のメイン処理
+    void Chase(float deltaTime, Transform& transform,
+        VECTOR& moveDir, VECTOR& movePow, float moveSpeed, Quaternion& outRotation);
 
-    // 追跡処理
-    void Chase(float deltaTime,
-        Transform& transform,
-        VECTOR& moveDir,
-        VECTOR& movePow,
-        float moveSpeed,
-        Quaternion& outRotation);
-
-    // 障害物を設定する
+    // 障害物情報をNavGridManagerに設定
     void SetObstacle(std::vector<Transform> obstacle);
 
-    // 現在追跡中のノード座標リストを設定する
-    void SetCurrentPath(std::vector<VECTOR> currentPath);
-
-    // 再計算する時間を取得する
-    float GetRecalcTime(void);
-
-    // 再計算時間を設定する
-    void SetRecalcTime(float time);
-
-    struct CompareNode
-    {
-        bool operator()(const AStarNode* a, const AStarNode* b) const
-        {
-            // Fスコアが低い方を優先
-            if (a->F_Score() != b->F_Score())
-            {
-                return a->F_Score() > b->F_Score();
-            }
-            // Fスコアが同じ場合、Hスコアが低い方を優先
-            return a->H_Score_ > b->H_Score_;
-        }
-    };
+    void SetTime(float time);
+    float GetTime(void);
 
 private:
-
-    // 障害物
-    std::vector<Transform> obstacle_;
-
-    // メンバー変数
-    std::vector<VECTOR> currentPath_; // 現在追跡中のノード座標リスト
-    int currentPathIndex_;       // 現在の目標ノードのインデックス
-    float pathRecalcTimer_;   // A*を再計算する間隔
-
-    // カプセルキャスト
-    void CapsuleCast(float deltaTime);
-    
-    /// <summary>
-    /// 障害物回避のためのステアリングフォースを計算する 
-    /// </summary>
-    /// <param name="transform">自身のTransform</param>
-    /// <param name="deltaTime">処理時間</param>
-    /// <returns></returns>
-    VECTOR CalculateAvoidanceForce(const Transform& transform, float lookAheadDistance, float deltaTime);
-
     // A*のメイン関数
     std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
 
-    // A*のヘルパー関数（エラーを解消するために定義）
-    float GetHCost(AStarNode* a, AStarNode* b); // Hコスト（ヒューリスティック）の計算
-
-    // 8方向の隣接ノードを取得
+    // A*のヘルパー関数
+    float GetHCost(AStarNode* a, AStarNode* b);
     std::vector<AStarNode*> GetNeighbors(AStarNode* node);
-
-    // ノード間の距離（Gコスト）を計算
     float GetDistance(AStarNode* a, AStarNode* b);
-
-    // 経路復元関数
     std::vector<VECTOR> RetracePath(AStarNode* start, AStarNode* end);
 
-    NavGridManager* navGridManager_;
+    // A*ノードを比較するための構造体（Fスコアが低い方を優先）
+    struct CompareNode
+    {
+        bool operator()(const AStarNode* a, const AStarNode* b) const;
+    };
 
-    // A*計算中にノードの状態を一時的にリセットする関数（重要）
-    void ResetAStarNodes();
+private:
+    std::vector<VECTOR> currentPath_;
+    int currentPathIndex_ = 0;
+    float pathRecalcTimer_ = 0.0f;
+    float time_ = 0.0f;
+
+    // NavGridManagerへのスマートポインタ
+    std::shared_ptr<NavGridManager> navGridManager_;
 };
 

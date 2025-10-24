@@ -5,9 +5,9 @@
 #include "../../../Enemy/EnemyBase.h"
 #include "../../../Enemy/Patrol/PatrolPath.h"
 #include "../../../Enemy/Patrol/PatrolNode.h"
-#include "EnemyMoveComponent.h"
+#include "EnemyPatrolComponent.h"
 
-EnemyMoveComponent::EnemyMoveComponent(std::shared_ptr<Charactor> owner, Player& player)
+EnemyPatrolComponent::EnemyPatrolComponent(std::shared_ptr<Charactor> owner, Player& player)
 	:
 	EnemyComponent(owner, player),
 	isWaiting_(false),
@@ -18,11 +18,11 @@ EnemyMoveComponent::EnemyMoveComponent(std::shared_ptr<Charactor> owner, Player&
 {
 }
 
-EnemyMoveComponent::~EnemyMoveComponent(void)
+EnemyPatrolComponent::~EnemyPatrolComponent(void)
 {
 }
 
-void EnemyMoveComponent::Update(float deltaTime)
+void EnemyPatrolComponent::Update(float deltaTime)
 {
 
 	// ìGÉxÅ[ÉXÇéÊìæ
@@ -49,7 +49,7 @@ void EnemyMoveComponent::Update(float deltaTime)
 
 }
 
-void EnemyMoveComponent::Patrol(float deltaTime, Transform& transform, std::shared_ptr<PatrolPath> path, int& currentIndex, VECTOR& moveDir, VECTOR& movePow, float moveSpeed, Quaternion& outRotation)
+void EnemyPatrolComponent::Patrol(float deltaTime, Transform& transform, std::shared_ptr<PatrolPath> path, int& currentIndex, VECTOR& moveDir, VECTOR& movePow, float moveSpeed, Quaternion& outRotation)
 {
     std::shared_ptr<Charactor> owner = this->GetCharactor().lock();
     if (!owner || !path)return;
@@ -152,17 +152,17 @@ void EnemyMoveComponent::Patrol(float deltaTime, Transform& transform, std::shar
     }
 }
 
-float EnemyMoveComponent::GetDis(void)
+float EnemyPatrolComponent::GetDis(void)
 {
     return dis_;
 }
 
-int EnemyMoveComponent::GetCurrentNode(void)
+int EnemyPatrolComponent::GetCurrentNode(void)
 {
     return currentNode_;
 }
 
-void EnemyMoveComponent::DrawDebug(std::shared_ptr<PatrolPath> path, int currentIndex)
+void EnemyPatrolComponent::DrawDebug(std::shared_ptr<PatrolPath> path, int currentIndex)
 {
 
 

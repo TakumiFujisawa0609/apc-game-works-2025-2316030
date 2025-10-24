@@ -8,6 +8,7 @@
 #include "../Enemy/EnemyBase.h"
 #include "../Enemy/Patrol/PatrolNode.h"
 #include "../Enemy/Patrol/PatrolPath.h"
+#include "../Enemy/AStar/NavGridManager.h"
 #include "Stage.h"
 
 
@@ -36,8 +37,10 @@ void Stage::Init(void)
 	transform_.Update();
 
 
-	InitPatrolInfo();
 	InitObstacles();
+	InitPatrolInfo();
+
+
 }
 
 void Stage::Update(float deltaTime)
@@ -51,6 +54,8 @@ void Stage::Update(float deltaTime)
 
 	// 障害物設定
 	eBase_.SetObstacle(obstacles_);
+	//eBase_.SetNavGridManagedr(navManager_);
+
 
 	OnUpdate(deltaTime);
 }
@@ -105,13 +110,45 @@ void Stage::Draw(void)
 		}
 	}
 
+	// 【障害物の境界ボックスを描画】
+	for (const auto& obstacle : obstacles_)
+	{
+		// 1. モデルからローカルの境界ボックスを取得
+		/*MV1_COLL_RESULT_FRAME localBB = MV1Coll_GetBoundingBox(obstacle.modelId);*/
+
+		// 2. 境界ボックスの8つの頂点をワールド座標に変換
+		//    (DxLibには DrawCube3D 関数がないため、DrawLine3D で箱を表現する必要があることが多い)
+
+		// 簡略化されたデバッグ描画の方法 (AsoUtility::DrawAABB など、カスタム関数があればそれを使う)
+
+		// --- 簡易的な直方体描画の例 ---
+		// (ここでは DrawBoundingBox(Transform&) のようなヘルパー関数があると仮定)
+
+		// 境界ボックスの中心とサイズをワールド座標で計算する
+		VECTOR center = obstacle.pos; // モデルの中心
+
+		// サイズ計算: localBBのMin/Maxからサイズを算出し、obstacle.sclを適用
+		//VECTOR halfSize = VScale(VSub(localBB.Max, localBB.Min), 0.5f);
+
+		// この情報を使って、DxLibの DrawLine3D で12辺を描画するか、
+		// DrawWireFrameBox(center, halfSize, GetColor(0, 255, 255)) のようなカスタム関数を使用します。
+
+		// 例：ワイヤーフレームボックスを描画するカスタム関数を呼び出す（関数が存在すると仮定）
+		// DrawWireFrameBox(center, halfSize, obstacle.quaRot, GetColor(0, 255, 255)); 
+	}
+
 #endif // _DEBUG
 
 }
 
-const std::shared_ptr<PatrolPath>& Stage::GetPatrolPath(size_t index) const
+const std::shared_ptr<PatrolPath>& Stage::GetPatrolPath(const size_t& index) const
 {
 	return paths_.at(index);
+}
+
+std::shared_ptr<NavGridManager> Stage::GetNavGridMananger(void)
+{
+	return navManager_;
 }
 
 void Stage::InitPatrolInfo(void)
@@ -135,7 +172,9 @@ void Stage::InitPatrolInfo(void)
 		eBase_.SetPatrolPath(paths_[0]);
 	}
 
-
+	navManager_ = std::make_shared<NavGridManager>();
+	navManager_->InitGrid(100, 100, 200);
+	//navManager_->CheckObstacles(obstacles_);
 }
 
 void Stage::InitObstacles(void)

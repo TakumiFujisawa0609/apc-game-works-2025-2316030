@@ -136,7 +136,7 @@ Camera::MODE Camera::GetCameraMode(void)
 	return mode_;
 }
 
-void Camera::SaveAngles(VECTOR save)
+void Camera::SaveAngles(const VECTOR& save)
 {
 	saveAngles_ = save;
 }
@@ -527,7 +527,7 @@ void Camera::RestoreAnglesOnce(void)
 	saveAngles_ = AsoUtility::VECTOR_ONE;
 }
 
-void Camera::SetOperableCamera(bool operable)
+void Camera::SetOperableCamera(const bool& operable)
 {
 	isOperable_ = operable;
 }

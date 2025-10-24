@@ -3,12 +3,12 @@
 class PatrolPath;
 
 #include "EnemyComponent.h"
-class EnemyMoveComponent :
+class EnemyPatrolComponent :
     public EnemyComponent
 {
 public:
-    EnemyMoveComponent(std::shared_ptr<Charactor> owner, Player& player);
-    virtual ~EnemyMoveComponent(void);
+    EnemyPatrolComponent(std::shared_ptr<Charactor> owner, Player& player);
+    virtual ~EnemyPatrolComponent(void);
 
     virtual void Update(float deltaTime) override;
 

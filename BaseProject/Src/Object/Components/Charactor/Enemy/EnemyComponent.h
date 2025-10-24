@@ -1,5 +1,8 @@
 #pragma once
+#include <vector>
 #include "../CharactorComponent.h"
+
+class Transform;
 class Player;
 class EnemyComponent :
     public CharactorComponent
@@ -10,10 +13,12 @@ public:
 
     virtual void Update(float deltaTime) override;
 
-protected:
-    Player& player_;
+    //// áŠQ•¨î•ñ‚ğNavGridManager‚Éİ’è
+    //void SetObstacle(std::vector<Transform> obstacle);
 
-private:
+protected:
+
+    Player& player_;
 
 };
 

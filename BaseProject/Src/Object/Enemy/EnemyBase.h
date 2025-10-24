@@ -5,13 +5,12 @@ class Collider;
 class Capsule;
 class AnimationController;
 
-class EnemyMoveComponent;
+class EnemyPatrolComponent;
 class EnemyChaseComponent;
 
 class PatrolNode;
 class PatrolPath;
 
-#include "AStar/AStarNode.h"
 class NavGridManager;
 
 class Player;
@@ -72,30 +71,8 @@ public:
     // 徘徊用のノードパスをステージから取得する
     void SetPatrolPath(std::shared_ptr<PatrolPath> path);
 
-    //// 徘徊用のノードをステージから取得する
-    //void SetPatrolNode(std::vector<PatrolNode> node);
-
-    // ヒューリスティック関数
-    float GetHCost(AStarNode* a, AStarNode* b);
-
-    struct CompareNode
-    {
-        bool operator()(const AStarNode* a, const AStarNode* b) const
-        {
-            // Fスコアが低い方を優先
-            if (a->F_Score() != b->F_Score())
-            {
-                return a->F_Score() > b->F_Score();
-            }
-            // Fスコアが同じ場合、Hスコアが低い方を優先
-            return a->H_Score_ > b->H_Score_;
-        }
-    };
-
-    std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
-
-    // 経路を逆順に辿って復元する関数
-    std::vector<VECTOR> RetracePath(AStarNode* start, AStarNode* end);
+    // グリッドマネージャーをステージから取得する
+    void SetNavGridManagedr(std::shared_ptr<NavGridManager> navGridManager);
 
 protected:
 
@@ -112,7 +89,7 @@ protected:
 
     int frame_;
 
-    EnemyMoveComponent* moveComponent_;     // 移動
+    EnemyPatrolComponent* patrolComponent_;     // 移動
     EnemyChaseComponent* chaseComponent_;   // 追跡
 
     STATE state_;       // 現在の行動パターン
@@ -126,7 +103,7 @@ protected:
     // アニメーションの初期化
     virtual void InitAnimation(void);
 
-    NavGridManager* navGridManager_;
+    std::shared_ptr<NavGridManager> navGridManager_;
 
 private:
 

@@ -110,13 +110,13 @@ public:
 	MODE GetCameraMode(void);
 
 	// カメラの角度を一時的に保持する
-	void SaveAngles(VECTOR save);
+	void SaveAngles(const VECTOR& save);
 
 	// 角度を保存した値に一度だけ復元する
 	void RestoreAnglesOnce(void);
 
 	// カメラの操作が可能かどうかを設定する
-	void SetOperableCamera(bool operable);
+	void SetOperableCamera(const bool& operable);
 
 private:
 

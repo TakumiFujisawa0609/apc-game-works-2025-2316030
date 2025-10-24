@@ -43,10 +43,10 @@ public:
 	void Destroy(void);
 
 	// リソースのロード
-	const Resource& Load(SRC src);
+	const Resource& Load(const SRC& src);
 
 	// リソースの複製ロード(モデル用)
-	int LoadModelDuplicate(SRC src);
+	int LoadModelDuplicate(const SRC& src);
 
 private:
 

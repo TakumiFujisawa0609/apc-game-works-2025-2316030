@@ -1,6 +1,7 @@
 #pragma once
-#include <DxLib.h>
+
 #include <vector>
+#include "AStarNode.h"
 
 class Transform;
 class AStarNode;
@@ -9,18 +10,28 @@ class NavGridManager
 {
 public:
 
-	NavGridManager(void);
-	~NavGridManager(void);
+	// 　グリッドマップの初期化
+	void InitGrid(int gridSizeX, int gridSizeZ, float nodeSize);
 
-	void InitGrid(std::vector<Transform>& obstacles);
-
-	// ワールド座標をグリット座標に変換する
+	// ワールド座標からノードを取得する
 	AStarNode* NodeFromWorldPoint(VECTOR worldPos);
+
+	// 特定のグリッド座標からノードを取得
+	AStarNode* GetNode(int x, int z);
+
+	// A*探索前に全てのノードをリセット
+	void ResetAllNodes();
+
+	int GetGridSizeX() const { return gridSizeX_; }
+	int GetGridSizeZ() const { return gridSizeZ_; }
+
+	// 【TODO】障害物情報 (Transformなど) を受け取り、isWalkableを設定する関数が必要
+	void CheckObstacles(const std::vector<Transform>& obstacles);
 
 private:
 
 	std::vector<std::vector<AStarNode>> navGrid_;
-	int gridSizeX_, gridSizeZ_;			// X,Z方向のグリッド数
-	float nodeSize_;					// １グリット当たりのワールドサイズ
+	int gridSizeX_ = 50, gridSizeZ_ = 50;			// X,Z方向のグリッド数
+	float nodeSize_ = 100.0f;					// １グリット当たりのワールドサイズ
 };
 

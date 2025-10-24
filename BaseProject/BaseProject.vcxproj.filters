@@ -183,7 +183,7 @@
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyMoveComponent.cpp">
+    <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyPatrolComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\Enemy\Patrol\PatrolNode.cpp">
@@ -383,7 +383,7 @@
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyMoveComponent.h">
+    <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyPatrolComponent.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\Enemy\Patrol\PatrolNode.h">

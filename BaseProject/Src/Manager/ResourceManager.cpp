@@ -116,7 +116,7 @@ void ResourceManager::Destroy(void)
 	delete instance_;
 }
 
-const Resource& ResourceManager::Load(SRC src)
+const Resource& ResourceManager::Load(const SRC& src)
 {
 	Resource& res = _Load(src);
 	if (res.type_ == Resource::TYPE::NONE)
@@ -126,7 +126,7 @@ const Resource& ResourceManager::Load(SRC src)
 	return res;
 }
 
-int ResourceManager::LoadModelDuplicate(SRC src)
+int ResourceManager::LoadModelDuplicate(const SRC& src)
 {
 	Resource& res = _Load(src);
 	if (res.type_ == Resource::TYPE::NONE)

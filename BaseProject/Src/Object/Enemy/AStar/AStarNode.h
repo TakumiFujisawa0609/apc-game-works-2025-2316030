@@ -1,5 +1,6 @@
 #pragma once
-#include <DxLib.h>
+#include "../../../Utility/AsoUtility.h"
+#include <limits>
 
 class AStarNode
 {
@@ -11,7 +12,7 @@ public:
 	// 物理情報
 	VECTOR worldPos_;		// ワールド座標
 	int gridX_, gridZ_;		// グリッドのXZ座標
-	bool isWalkAble_;		// 通過可能か
+	bool isWalkable_;		// 通過可能か
 
 	// A*計算用
 

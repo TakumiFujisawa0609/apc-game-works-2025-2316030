@@ -7,6 +7,8 @@ class EnemyBase;
 class PatrolNode;
 class PatrolPath;
 
+class NavGridManager;
+
 class Stage :
     public ActorBase
 {
@@ -18,7 +20,9 @@ public:
 	virtual void OnUpdate(float deltaTime) override;
 	virtual void Draw(void) override;
 
-	const std::shared_ptr<PatrolPath>& GetPatrolPath(size_t index) const;
+	const std::shared_ptr<PatrolPath>& GetPatrolPath(const size_t& index) const;
+
+	std::shared_ptr<NavGridManager> GetNavGridMananger(void);
 
 private:
 
@@ -35,6 +39,8 @@ private:
 
 	// áŠQ•¨‚Ì‰Šú‰»
 	void InitObstacles(void);
+
+	std::shared_ptr<NavGridManager> navManager_;
 
 };
 

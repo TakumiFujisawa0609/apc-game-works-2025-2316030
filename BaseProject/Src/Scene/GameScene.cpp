@@ -73,11 +73,16 @@ void GameScene::Init(Input& input)
 
 	// 敵の基底クラス
 	eBase_ = std::make_shared<EnemyBase>(*player_);
-	eBase_->Init();
+
 
 	// ステージ
 	stage_ = std::make_shared<Stage>(*player_, *eBase_);
 	stage_->Init();
+
+	eBase_->SetNavGridManagedr(stage_->GetNavGridMananger());
+	eBase_->Init();
+
+	eBase_->InitComponents();
 
 	//eBase_->SetPatrolPath(stage_->GetPatrolPath(1));
 
@@ -114,18 +119,7 @@ void GameScene::Update(Input& input)
 {
 	float time = Application::GetInstance().GetDeltaTime();
 
-	// オブジェクト
 
-
-	// スロット
-	itemSlot_->Update(time);
-	HandleMouseWheel(input);
-
-	// アイテム
-	lockpick_->Update(time);
-	light_->Update(time);
-
-	status_->Update(time);
 
 	(this->*update_)(input);
 }
@@ -148,17 +142,17 @@ void GameScene::NormalUpdate(Input& input)
 {
 	++frame_;
 
-	if (player_->GetTimeLimitComp()->IsTimeDepleted())
-	{
-		controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
-		return;
-	}
+	//if (player_->GetTimeLimitComp()->IsTimeDepleted())
+	//{
+	//	controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
+	//	return;
+	//}
 
-	if (wire_->isGameClear())
-	{
-		controller_.ChangeScene(std::make_shared<ClearScene>(controller_), input);
-		return;
-	}
+	//if (wire_->isGameClear())
+	//{
+	//	controller_.ChangeScene(std::make_shared<ClearScene>(controller_), input);
+	//	return;
+	//}
 
 	const auto& camera = Application::GetInstance().GetCamera();
 	VECTOR prevAngle_ = {};
@@ -242,6 +236,19 @@ void GameScene::NormalUpdate(Input& input)
 
 	player_->Update(time);
 	eBase_->Update(time);
+
+	// オブジェクト
+
+
+	// スロット
+	itemSlot_->Update(time);
+	HandleMouseWheel(input);
+
+	// アイテム
+	lockpick_->Update(time);
+	light_->Update(time);
+
+	status_->Update(time);
 
 }
 

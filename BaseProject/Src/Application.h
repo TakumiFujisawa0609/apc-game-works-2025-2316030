@@ -17,63 +17,6 @@ struct Size {
 /// </summary>
 class Application
 {
-private:
-	Application();//コンストラクタをprivateに
-	//コピー＆代入の禁止
-	Application(const Application& app) = delete;
-	void operator=(const Application& app) = delete;
-
-	// 静的インスタンス
-	static Application* instance_;
-
-	// キー入力
-	std::shared_ptr<Input> input_;
-
-	// シーン管理
-	std::shared_ptr<SceneController> controller_;
-
-	// カメラ
-	std::shared_ptr<Camera> camera_;
-
-	// 初期化失敗
-	bool isInitFailed_;
-
-	// 解放失敗
-	bool isReleaseFailed_;
-
-	// FPS計測用変数
-	int frameCount_;
-
-	// FPS
-	int fps_;
-
-	// ウィンドウサイズ
-	Size windowSize_ = { 640,480 };
-
-	// 前フレーム処理を開始した瞬間時刻
-	int lastTime_;
-
-	// 前フレームからの経過時間(秒)
-	float deltaTime_;
-
-	// fps計測用の変数
-	int startTime_;
-
-	// 3D関連の初期化
-	void Init3D(void);
-
-	// Effekseerの初期化
-	void InitEffekseer(void);
-
-	// フォントハンドル
-	int fontHandle_;
-
-	void CalcFrameRate(void);
-
-	void DrawFrameRate(void);
-
-	void DrawDrawCall(void);
-
 public:
 
 	// スクリーンサイズ
@@ -144,6 +87,67 @@ public:
 
 	// フォントの取得
 	int GetFontHandle(void)const;
+
+private:
+	Application();//コンストラクタをprivateに
+	//コピー＆代入の禁止
+	Application(const Application& app) = delete;
+	void operator=(const Application& app) = delete;
+
+	// 静的インスタンス
+	static Application* instance_;
+
+	// キー入力
+	std::shared_ptr<Input> input_;
+
+	// シーン管理
+	std::shared_ptr<SceneController> controller_;
+
+	// カメラ
+	std::shared_ptr<Camera> camera_;
+
+	// 初期化失敗
+	bool isInitFailed_;
+
+	// 解放失敗
+	bool isReleaseFailed_;
+
+	// FPS計測用変数
+	int frameCount_;
+
+	// FPS
+	int fps_;
+
+	// ウィンドウサイズ
+	Size windowSize_ = { 640,480 };
+
+	// 前フレーム処理を開始した瞬間時刻
+	int lastTime_;
+
+	// 前フレームからの経過時間(秒)
+	float deltaTime_;
+
+	// fps計測用の変数
+	int startTime_;
+
+	// 3D関連の初期化
+	void Init3D(void);
+
+	// Effekseerの初期化
+	void InitEffekseer(void);
+
+	// フォントハンドル
+	int fontHandle_;
+
+	// フレームレートの計算処理
+	void CalcFrameRate(void);
+
+	// フレームレートの表示
+	void DrawFrameRate(void);
+
+	// ドローコールの表示
+	void DrawDrawCall(void);
+
 
 };
 

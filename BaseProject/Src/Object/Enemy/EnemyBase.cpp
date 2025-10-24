@@ -6,7 +6,7 @@
 #include "../Common/Collider.h"
 #include "../Common/Capsule.h"
 #include "../Common/AnimationController.h"
-#include "../Components/Charactor/Enemy/EnemyMoveComponent.h"
+#include "../Components/Charactor/Enemy/EnemyPatrolComponent.h"
 #include "../Components/Charactor/Enemy/EnemyChaseComponent.h"
 #include "Patrol/PatrolNode.h"
 #include "Patrol/PatrolPath.h"
@@ -25,7 +25,7 @@ const std::map<EnemyBase::STATE, const wchar_t*>stateNames =
 EnemyBase::EnemyBase(Player& player)
     :
     player_(player),
-    moveComponent_(nullptr),
+    patrolComponent_(nullptr),
     chaseComponent_(nullptr),
     isHearingSound_(false),
     isPlayerInSight_(false),
@@ -57,11 +57,7 @@ void EnemyBase::Init(void)
 
     currentPatrolPathIndex_ = 0;
 
-    // 移動コンポーネント
-    moveComponent_ = AddCharactorComponent<EnemyMoveComponent>(player_);
-
-    // 追跡コンポ―ネント
-    chaseComponent_ = AddCharactorComponent<EnemyChaseComponent>(player_);
+   
 
     // アニメーション
     animationController_ = std::make_unique<AnimationController>(transform_.modelId);
@@ -77,6 +73,12 @@ void EnemyBase::Init(void)
 
 void EnemyBase::InitComponents(void)
 {
+    // 移動コンポーネント
+    patrolComponent_ = AddCharactorComponent<EnemyPatrolComponent>(player_);
+
+    // 追跡コンポ―ネント
+    chaseComponent_ = AddCharactorComponent<EnemyChaseComponent>(player_, navGridManager_);
+
 }
 
 void EnemyBase::Update(float deltaTime)
@@ -127,10 +129,10 @@ void EnemyBase::OnUpdate(float deltaTime)
     switch (state_)
     {
     case EnemyBase::STATE::PATROL:
-        if (moveComponent_)
+        if (patrolComponent_)
         {
             // ここで巡回情報をわたす
-            moveComponent_->Patrol(deltaTime, transform_, patrolPath_, currentPatrolPathIndex_,
+            patrolComponent_->Patrol(deltaTime, transform_, patrolPath_, currentPatrolPathIndex_,
                 moveDir_, movePow_, 5.0f, transform_.quaRot);
 
         }
@@ -195,8 +197,9 @@ void EnemyBase::Draw(void)
     DrawDebug();
 
     DrawFormatString(Application::GetInstance().GetWindowSize().width - 200, 64, GetColor(255, 255, 255), L"pos: (%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
-    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 80, GetColor(255, 255, 255), L"dis: %.2f", moveComponent_->GetDis());
-    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 96, GetColor(255, 255, 255), L"nextNode: %d", moveComponent_->GetCurrentNode());
+    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 80, GetColor(255, 255, 255), L"dis: %.2f", patrolComponent_->GetDis());
+    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 96, GetColor(255, 255, 255), L"nextNode: %d", patrolComponent_->GetCurrentNode());
+    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 112, GetColor(255, 255, 255), L"recalcTime: %.2f", chaseComponent_->GetTime());
 
 #endif // _DEBUG
 
@@ -213,85 +216,9 @@ void EnemyBase::SetPatrolPath(std::shared_ptr<PatrolPath> path)
     patrolPath_ = path;
 }
 
-float EnemyBase::GetHCost(AStarNode* a, AStarNode* b)
+void EnemyBase::SetNavGridManagedr(std::shared_ptr<NavGridManager> navGridManager)
 {
-    return 0.0f;
-}
-
-std::vector<VECTOR> EnemyBase::FindPath(VECTOR startPos, VECTOR endPos)
-{
-    // 【前提】 navGridManager_ は NavGridManager のインスタンス
-    AStarNode* startNode = navGridManager_->NodeFromWorldPoint(startPos);
-    AStarNode* targetNode = navGridManager_->NodeFromWorldPoint(endPos);
-
-    if (!startNode || !targetNode || !targetNode->isWalkAble_) {
-        return {}; // 経路なし
-    }
-
-    // 優先度付きキューをオープンリストとして使用
-    std::priority_queue<AStarNode*, std::vector<AStarNode*>, CompareNode> openList;
-
-    // クローズドリストはstd::setなどで管理（既に探索済みのノードを保持）
-    std::unordered_set<AStarNode*> closedList;
-
-    // 初期化
-    startNode->G_Score_ = 0;
-    startNode->H_Score_ = GetHCost(startNode, targetNode);
-    startNode->parent_ = nullptr;
-    openList.push(startNode);
-
-    //while (!openList.empty())
-    //{
-    //    AStarNode* currentNode = openList.top();
-    //    openList.pop();
-    //    closedList.insert(currentNode);
-
-    //    // ゴールに到達
-    //    if (currentNode == targetNode)
-    //    {
-    //        return RetracePath(startNode, targetNode); // 経路復元
-    //    }
-
-    //    // 隣接ノード（8方向）を探索
-    //    for (AStarNode* neighbor : GetNeighbors(currentNode))
-    //    {
-    //        if (!neighbor->isWalkAble_ || closedList.count(neighbor))
-    //        {
-    //            continue;
-    //        }
-
-    //        // 新しい経路のGコストを計算
-    //        float newGCost = currentNode->G_Score_ + GetDistance(currentNode, neighbor); // 距離計算ヘルパー関数
-
-    //        // 新しい経路が既存の経路より短い場合、または未探索ノードの場合
-    //        if (newGCost < neighbor->G_Score_ || !openListContains(openList, neighbor))
-    //        {
-    //            neighbor->G_Score_ = newGCost;
-    //            neighbor->H_Score_ = GetHCost(neighbor, targetNode);
-    //            neighbor->parent_ = currentNode;
-
-    //            if (!openListContains(openList, neighbor))
-    //            {
-    //                openList.push(neighbor);
-    //            }
-    //        }
-    //    }
-    //}
-    return {}; // 経路が見つからなかった
-}
-
-std::vector<VECTOR> EnemyBase::RetracePath(AStarNode* start, AStarNode* end)
-{
-    std::vector<VECTOR> path;
-    AStarNode* current = end;
-
-    while (current != start)
-    {
-        path.push_back(current->worldPos_);
-        current = current->parent_;
-    }
-    std::reverse(path.begin(), path.end()); // 逆順なので反転
-    return path;
+    navGridManager_ = navGridManager;
 }
 
 void EnemyBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)

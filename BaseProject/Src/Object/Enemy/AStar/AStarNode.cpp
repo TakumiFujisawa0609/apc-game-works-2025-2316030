@@ -5,7 +5,6 @@
 
 AStarNode::AStarNode(void)
     :
-    // ƒ}ƒNƒ‚ğ–³Œø‰»
 #ifdef max
 #undef max
 #endif
