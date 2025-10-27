@@ -138,6 +138,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Light\SpotLight.cpp" />
+    <ClCompile Include="Src\Object\Light\PointLight.cpp" />
+    <ClCompile Include="Src\Object\Light\LightBase.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\NavGridManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\AStarNode.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.cpp" />
@@ -207,6 +210,9 @@
     <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Light\SpotLight.h" />
+    <ClInclude Include="Src\Object\Light\PointLight.h" />
+    <ClInclude Include="Src\Object\Light\LightBase.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\NavGridManager.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\AStarNode.h" />
     <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.h" />
