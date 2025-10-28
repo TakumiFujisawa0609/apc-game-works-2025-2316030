@@ -36,7 +36,8 @@ void ResourceManager::Init(void)
 
 	// ステージ
 	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage2.mv1");
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/eStage.mv1");
+	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/eStage.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/Horror_Game_Starter_Kit.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
 	// フラッシュライトモデル

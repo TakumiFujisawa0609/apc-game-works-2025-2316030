@@ -29,8 +29,9 @@ Player::~Player(void)
 void Player::Init(void)
 {
 	// モデル情報
-	transform_.pos = { -2000.0f, 200.0f, -1500.0f };
-	transform_.pos = { 500.0f, 200.0f, 800.0f };
+	//transform_.pos = { -2000.0f, 200.0f, -1500.0f };
+	//transform_.pos = { 500.0f, 200.0f, 800.0f };
+	transform_.pos = { -500.0f, 600.0f, 100.0f };
 	transform_.scl = { 1.0f, 1.0f, 1.0f };
     transform_.quaRot = Quaternion();
     transform_.quaRotLocal =
@@ -189,7 +190,7 @@ void Player::Draw(void)
 #ifdef _DEBUG
 
     //capsule_->Draw();
-    DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+    //DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
 #endif // _DEBUG
@@ -285,7 +286,7 @@ void Player::CollisionCapsule(void)
                     hit.Position[0], hit.Position[1], hit.Position[2]);
                 if (pHit)
                 {
-                    movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+                    movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 0.10f));
 
                     // カプセルを移動させる
                     trans.pos = movedPos_;

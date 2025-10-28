@@ -3,17 +3,21 @@
 
 class Player;
 class EnemyBase;
+class HandLight;
 
 class PatrolNode;
 class PatrolPath;
 
 class NavGridManager;
 
+class ModelMaterial;
+class ModelRenderer;
+
 class Stage :
     public ActorBase
 {
 public:
-	Stage(Player& player, EnemyBase& enemyBase);
+	Stage(Player& player, EnemyBase& enemyBase, HandLight& light);
 	virtual ~Stage(void);
 	virtual void Init(void) override;
 	virtual void Update(float deltaTime) override;
@@ -26,8 +30,13 @@ public:
 
 private:
 
+	// モデル描画用
+	std::unique_ptr<ModelMaterial> material_;
+	std::unique_ptr<ModelRenderer> renderer_;
+
 	Player& player_;
 	EnemyBase& eBase_;
+	HandLight& handLight_;
 
 	std::vector<PatrolNode> nodes_;		// 巡回用のノード
 	std::vector<std::shared_ptr<PatrolPath>> paths_;		// 巡回用のパス
@@ -42,5 +51,10 @@ private:
 
 	std::shared_ptr<NavGridManager> navManager_;
 
+	int spotLight_;
+	int pointLight_;
+
+	// モデル描画用
+	void InitRenderer(void);
 };
 
