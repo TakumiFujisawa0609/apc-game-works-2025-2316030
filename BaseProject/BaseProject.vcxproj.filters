@@ -583,9 +583,7 @@
     <None Include="Src\Shader\Common\VertexToPixelHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\Shader\Model\FlashLightVS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\FlashLightPS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\PlayerPointLightVS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\PlayerPointLightPS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\SpotLightAndPointLightVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\SpotLightAndPointLightPS.hlsl" />
   </ItemGroup>
 </Project>

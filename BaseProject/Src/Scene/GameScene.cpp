@@ -71,12 +71,19 @@ void GameScene::Init(Input& input)
 	player_->InitComponents();
 	player_->Init();
 
+	// ハンドライト
+	light_ = std::make_shared<HandLight>(player_);
+	light_->Init();
+
+	// ロックピック
+	lockpick_ = std::make_shared<Lockpick>(player_);
+	lockpick_->Init();
+
 	// 敵の基底クラス
 	eBase_ = std::make_shared<EnemyBase>(*player_);
 
-
 	// ステージ
-	stage_ = std::make_shared<Stage>(*player_, *eBase_);
+	stage_ = std::make_shared<Stage>(*player_, *eBase_, *light_);
 	stage_->Init();
 
 	eBase_->SetNavGridManagedr(stage_->GetNavGridMananger());
@@ -88,14 +95,6 @@ void GameScene::Init(Input& input)
 
 	// インベントリ
 	inventory_ = std::make_shared<Inventory>(20);
-
-	// 酸素ボンベ
-	lockpick_ = std::make_shared<Lockpick>(player_);
-	lockpick_->Init();
-
-	// ハンドライト
-	light_ = std::make_shared<HandLight>(player_);
-	light_->Init();
 
 	wire_ = std::make_shared<Wire>(player_);
 	wire_->Init();

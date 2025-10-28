@@ -110,6 +110,6 @@ private:
 	// メインカメラがfps視点であるがどうか
 	bool isFps_;
 
-	std::vector<int> modelIds_;		// ライティング
+	//std::vector<int> modelIds_;		// ライティング
 };
 
