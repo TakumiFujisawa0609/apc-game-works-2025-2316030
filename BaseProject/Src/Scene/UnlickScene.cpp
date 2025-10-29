@@ -7,8 +7,10 @@
 #include"../Input.h"
 #include"GameScene.h"
 #include "../Object/Player/Player.h"
-#include "../Object/Components/Gameplay/Item/Consumable/Wire.h"
-#include "../Object/Components/Gameplay/Item/Consumable/Lockpick.h"
+
+#include "../Object/Item/Wire.h"
+#include "../Object/Item/Lockpick.h"
+
 #include "../Object/Components/PuzzleElements/KeyholePlate.h"
 #include "../Object/Components/PuzzleElements/Keyhole.h"
 #include "UnlickScene.h"

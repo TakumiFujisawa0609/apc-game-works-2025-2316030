@@ -1,16 +1,16 @@
 #include <functional>
 #include <algorithm>
 #include <cmath>
-#include "../../../../../Application.h"
-#include "../../../../../Common/Quaternion.h"
-#include "../../../../../Manager/ResourceManager.h"
-#include "../../../../../Manager/Camera.h"
-#include "../../../../../Utility/AsoUtility.h"
+#include "../../Application.h"
+#include "../../Common/Quaternion.h"
+#include "../../Manager/ResourceManager.h"
+#include "../../Manager/Camera.h"
+#include "../../Utility/AsoUtility.h"
 #include "Lockpick.h"
 
-Lockpick::Lockpick(std::shared_ptr<ActorBase> owner)
+Lockpick::Lockpick(Player& player)
 	:
-	ItemBase(owner),
+	ItemBase(player),
 	isUse_(false),
 	angle_(0.0f),
 	lLevel_(-1),
@@ -19,8 +19,6 @@ Lockpick::Lockpick(std::shared_ptr<ActorBase> owner)
 	isUnlocking_(false),
 	isSuccess_(false)
 {
-	mName_ = L"LockPick";
-	itemType_ = ItemType::CONSUMABLE;
 }
 
 Lockpick::~Lockpick(void)
@@ -74,6 +72,10 @@ bool Lockpick::IsUse(bool use)
 {
 	isUse_ = use;
 	return isUse_;
+}
+
+void Lockpick::OnUpdate(float deltaTime)
+{
 }
 
 void Lockpick::UpdateOnStage(float deltaTime)
@@ -138,7 +140,6 @@ void Lockpick::UpdateDisabled(float deltaTime)
 
 float Lockpick::CalculateRotRate(void)
 {
-
 	// äpìxÇÃç∑
 	float diffAngle = angle_ - MIN_ANGLE;
 

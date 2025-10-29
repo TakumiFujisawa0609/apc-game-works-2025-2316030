@@ -54,15 +54,12 @@ private:
 	float yaw;			// 水平回転（ヨー）
 	float pitch;		// 垂直回転（ピッチ）
 
-	int walkSH_;
-	bool isWalkSH_;
-	int runSH_;
-	bool isRunSH_;
+	int walkSH_;		// 歩きの音
+	bool isWalkSH_;		// 歩きの音を再生するかどうか
+	int runSH_;			// 走るの音
+	bool isRunSH_;		// 走るの音を再生するかどうか
 
 	void SetGoalRotate(float rotRad);
-
-	// アイテムをインベントリに追加
-	void GiveItem(int itemId, int count);
 
 	virtual void Collision(void);
 	virtual void CollisionCapsule(void);

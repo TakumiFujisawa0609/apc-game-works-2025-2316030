@@ -19,8 +19,8 @@ public:
 
     static constexpr VECTOR UNLOCK_POS = { 0.0f,0.0f,150.0f };
 
-    Wire(std::shared_ptr<ActorBase> owner);
-    ~Wire();
+    Wire(Player& player);
+    ~Wire(void);
 
     void Init(void) override;
     void Update(float deltaTime) override;
@@ -64,6 +64,8 @@ private:
     bool isDefault_;            // ‰Šúó‘Ô‚É–ß‚·‚©‚Ç‚¤‚©
 
     bool isGameClear_;          // ƒNƒŠƒA‚Ì”»’è
+
+    virtual void OnUpdate(float deltaTime)override;
 
     virtual void UpdateOnStage(float deltaTime) override;
     virtual void UpdateInVentory(float deltaTime) override;

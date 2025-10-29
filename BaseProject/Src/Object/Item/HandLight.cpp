@@ -1,17 +1,15 @@
 #include <functional>
-#include "../../../../../Application.h"
-#include "../../../../../Common/Quaternion.h"
-#include "../../../../../Manager/ResourceManager.h"
-#include "../../../../../Manager/Camera.h"
-#include "../../../../../Utility/AsoUtility.h"
+#include "../../Application.h"
+#include "../../Common/Quaternion.h"
+#include "../../Manager/ResourceManager.h"
+#include "../../Manager/Camera.h"
+#include "../../Utility/AsoUtility.h"
 #include "HandLight.h"
 
-HandLight::HandLight(std::shared_ptr<ActorBase> owner)
+HandLight::HandLight(Player& player)
 	:
-	ItemBase(owner)
+	ItemBase(player)
 {
-	mName_ = L"HandLight";
-	itemType_ = ItemType::CONSUMABLE;
 }
 
 HandLight::~HandLight(void)
@@ -56,6 +54,10 @@ void HandLight::Draw(void)
 		MV1DrawModel(transform_.modelId);
 		return;
 	}
+}
+
+void HandLight::OnUpdate(float deltaTime)
+{
 }
 
 void HandLight::UpdateOnStage(float deltaTime)

@@ -9,11 +9,9 @@
 #define VS_OUTPUT VertexToPixelLit
 #include "../Common/Vertex/VertexShader3DHeader.hlsli"
 
-// 定数バッファ：スロット4番目(b4と書く)
+// 定数バッファ：スロット4番目
 cbuffer cbParam : register(b4)
 {
-	float4 g_spot_light_pos;
-	float4 g_spot_light_dir;
 }
 
 VS_OUTPUT main(VS_INPUT VSInput)
@@ -28,6 +26,7 @@ VS_OUTPUT main(VS_INPUT VSInput)
 	// float3 → float4
 	lLocalPosition.xyz = VSInput.pos;
 	lLocalPosition.w = 1.0f;
+	ret.svPos.xyz = lLocalPosition.xyz;
 
 	// ローカル座標をワールド座標に変換(剛体)
 	lWorldPosition.w = 1.0f;
@@ -58,15 +57,11 @@ VS_OUTPUT main(VS_INPUT VSInput)
 	// ディフューズカラー
 	ret.diffuse = VSInput.diffuse;
 
-	// スポットライトの位置をc＋＋から取得(ワールド空間のものなのでビュー座標系のものに変換する)
-	//ret.sLightPos_vs = g_spot_light_pos.xyz;
-	ret.sLightPos_vs = mul(float4(g_spot_light_pos.xyz, 1.0f), g_base.viewMatrix).xyz;
+	// ライト方向(ローカル)
+	ret.lightDir = float3(1.0f, 1.0f, 1.0f);
 
-	// スポットライトの向き
-	//ret.sLightDir_vs = g_spot_light_dir.xyz;
-	ret.sLightDir_vs = mul(float4(g_spot_light_dir.xyz, 0.0f), g_base.viewMatrix).xyz;
-	// 方向ベクトルは正規化が必要
-	ret.sLightDir_vs = normalize(ret.sLightDir_vs);
+	// ライトから見た座標
+	ret.lightAtPos = float3(1.0f, 1.0f, 1.0f);
 
 	return ret;
 }

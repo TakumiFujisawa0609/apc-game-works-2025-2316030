@@ -17,10 +17,10 @@ struct VertexToPixelLit
 	float3 lightDir     : TEXCOORD3;	// ライト方向(ローカル)
 	float3 lightAtPos   : TEXCOORD4;	// ライトから見た座標
 	float3 worldPos     : TEXCOORD5;	// 頂点座標(ワールド座標)
-	float3 plightPos_vs	: TEXCOORD6;	// ポイントライト位置(ビュー座標)
-	float3 plightDir_vs	: TEXCOORD7;	// ポイントライトの方向
-	float3 sLightPos_vs : TEXCOORD8;	// スポットライト位置(ビュー座標)
-	float3 sLightDir_vs : TEXCOORD9;	// スポットライトの方向(ビュー座標)
+	//float3 plightPos_vs	: TEXCOORD6;	// ポイントライト位置(ビュー座標)
+	//float3 plightDir_vs	: TEXCOORD7;	// ポイントライトの方向
+	//float3 sLightPos_vs : TEXCOORD8;	// スポットライト位置(ビュー座標)
+	//float3 sLightDir_vs : TEXCOORD9;	// スポットライトの方向(ビュー座標)
 };
 
 struct VertexToPixelShadow

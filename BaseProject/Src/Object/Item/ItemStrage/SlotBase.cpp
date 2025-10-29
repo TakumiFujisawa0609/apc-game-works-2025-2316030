@@ -7,6 +7,10 @@ SlotBase::SlotBase(void)
 {
 }
 
+SlotBase::~SlotBase(void)
+{
+}
+
 void SlotBase::Update(float deltaTime)
 {
 }
@@ -17,7 +21,7 @@ void SlotBase::Draw(void)
 
 bool SlotBase::SelectItem(int index)
 {
-	if (index >= 0 && index < storage_.size())
+	if (index >= 0 && index < slots_.size())
 	{
 		currentSelectedIndex_ = index;
 		return true;
@@ -39,7 +43,7 @@ int SlotBase::GetCurrentSelectedIndex(void)
 
 void SlotBase::UpdateIndex(int direction)
 {
-	if (storage_.empty())
+	if (slots_.empty())
 	{
 		currentSelectedIndex_ = -1;
 		return;
@@ -47,14 +51,14 @@ void SlotBase::UpdateIndex(int direction)
 
 	if (currentSelectedIndex_ != -1)
 	{
-		if (auto prevItemBase = std::dynamic_pointer_cast<ItemBase>(storage_[currentSelectedIndex_]))
+		if (auto prevItemBase = std::dynamic_pointer_cast<ItemBase>(slots_[currentSelectedIndex_]))
 		{
 			// 以前のアイテムを ININVENTORY 状態に戻す
 			prevItemBase->ChangeState(ItemBase::STATE::ININVENTORY);
 		}
 	}
 
-	int size = static_cast<int>(storage_.size());
+	int size = static_cast<int>(slots_.size());
 	int newIndex = currentSelectedIndex_ + direction;
 	if (newIndex < 0)
 	{
@@ -69,7 +73,7 @@ void SlotBase::UpdateIndex(int direction)
 	
 	if (currentSelectedIndex_ != -1)
 	{
-		if (auto newItemBase = std::dynamic_pointer_cast<ItemBase>(storage_[currentSelectedIndex_]))
+		if (auto newItemBase = std::dynamic_pointer_cast<ItemBase>(slots_[currentSelectedIndex_]))
 		{
 			// 新しいアイテムを INUSE 状態にする
 			newItemBase->ChangeState(ItemBase::STATE::INUSE);

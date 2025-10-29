@@ -21,8 +21,9 @@ public:
 	// 解錠中の座標
 	static constexpr VECTOR UNLOCK_POS = { 0.0f,0.0f,15.0f };
 
-	Lockpick(std::shared_ptr<ActorBase> owner);
+	Lockpick(Player& player);
 	~Lockpick(void) override;
+
 	void Init(void) override;
 	void Update(float deltaTime) override;
 	void Draw(void) override;
@@ -57,6 +58,8 @@ private:
 	bool isDefault_;			// デフォルト状態をセット
 	bool isUnlocking_;			// 解錠中であるか否か
 	bool isSuccess_;			// 解錠に成功したか否か
+
+	virtual void OnUpdate(float deltaTime) override;
 
 	virtual void UpdateOnStage(float deltaTime) override;
 	virtual void UpdateInVentory(float deltaTime) override;

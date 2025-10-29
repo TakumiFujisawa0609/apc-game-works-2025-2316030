@@ -230,12 +230,15 @@ void Application::Init3D(void)
     // ライトの設定
     SetUseLighting(true);
 
+    SetLightEnable(true);
+
     // ライトの設定
     //ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
 
     // フォグ設定
-    SetFogEnable(true);
-    SetFogColor(255, 255, 255);
+    SetFogEnable(false);
+    //SetFogColor(255, 255, 255);
+    SetFogColor(0, 0, 0);
     SetFogStartEnd(100.0f, 20000.0f);
 }
 
