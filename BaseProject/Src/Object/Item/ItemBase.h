@@ -1,16 +1,13 @@
 #pragma once
-#include<memory>
-#include "../../../../Common/Transform.h"
-//#include "../../../UI/UIElements/SlotBase.h"
 
-#include "../ItemComponent.h"
+#include "../ObjectBase/ActorBase.h"
 
 
-class ResourceManager;
+class Player;
 class SlotBase;
 
 class ItemBase :
-    public ItemComponent
+    public ActorBase
 {
 public:
 
@@ -24,13 +21,11 @@ public:
 		DISABLED	// アイテムが一時的に使えない状態
 	};
 
-	ItemBase(std::shared_ptr<ActorBase> owner);
+	ItemBase(Player& player);
 	~ItemBase(void) override = default;
 	void Init(void) override = 0;
 	void Update(float deltaTime) override = 0;
 	void Draw(void) override = 0;
-
-	const Transform& GetTransform(void) const;
 
 	// 画像IDを取得
 	virtual int GetImgId(void);
@@ -56,17 +51,16 @@ protected:
 	bool isEfficacy_;	// 効果があるかどうか
 	bool isDisabled_;	// 使用できるかどうか
 
-	// シングルトン参照
-	ResourceManager& resMng_;
-
-	// モデル情報
-	Transform transform_;
+	Player& player_;
 
 	// 状態
 	STATE state_;
 
 	// 追従対象の座標
 	const Transform* targetTransform_;
+
+	// 派生クラスで独自処理
+	virtual void OnUpdate(float deltaTime) = 0;
 
 	// それぞれの状態でのアイテムの更新
 	virtual void UpdateState(float deltaTime);
@@ -83,7 +77,7 @@ protected:
 	virtual void FollowTarget(float deltaTime,VECTOR targetPos);
 	
 	// アイテムスロット
-	std::weak_ptr<SlotBase> ownerSlot_;		// 
+	std::weak_ptr<SlotBase> ownerSlot_;		// スロット
 	int slotIndex_;							// スロット数
 
 };

@@ -1,13 +1,13 @@
-#include "../../../../../Application.h"
-#include "../../../../../Utility/AsoUtility.h"
-#include "../../../../../Manager/ResourceManager.h"
-#include "../../../../../Manager/Camera.h"
-#include "../../../UI/UIElements/SlotBase.h"
+#include "../../Application.h"
+#include "../../Utility/AsoUtility.h"
+#include "../../Manager/ResourceManager.h"
+#include "../../Manager/Camera.h"
+#include "ItemStrage/SlotBase.h"
 #include "ItemBase.h"
 
-ItemBase::ItemBase(std::shared_ptr<ActorBase> owner)
+ItemBase::ItemBase(Player& player)
 	:
-	ItemComponent(owner),
+	player_(player),
 	useCount_(0),
 	maxUseCount_(0),
 	imgH_(-1),
@@ -15,17 +15,11 @@ ItemBase::ItemBase(std::shared_ptr<ActorBase> owner)
 	isEquipment_(false),
 	isEfficacy_(false),
 	isDisabled_(false),
-	resMng_(ResourceManager::GetInstance()),
 	state_(STATE::NONE),
 	targetTransform_(nullptr),
 	ownerSlot_(),
 	slotIndex_(-1)
 {
-}
-
-const Transform& ItemBase::GetTransform(void) const
-{
-	return transform_;
 }
 
 int ItemBase::GetImgId(void)

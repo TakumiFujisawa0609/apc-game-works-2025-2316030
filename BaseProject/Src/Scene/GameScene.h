@@ -7,16 +7,11 @@ class Player;
 class EnemyBase;
 class Stage;
 
-class Inventory;
-
 class Lockpick;
 class HandLight;
-class Knife;
-class Radio;
-
 class Wire;
 
-class ItemSlot;
+class SlotBase;
 
 class PlayerStatusUI;
 
@@ -46,6 +41,7 @@ public:
 	/// 毎フレーム描画する
 	/// </summary>
 	virtual void Draw(void) override;
+
 private:
 	int imgH_;
 	int frame_ = 0;
@@ -80,23 +76,14 @@ private:
 	std::shared_ptr<EnemyBase> eBase_;
 	std::shared_ptr<Stage> stage_;
 
-	// インベントリ
-	std::shared_ptr<Inventory> inventory_;
-
 	// アイテムスロット
-	std::shared_ptr<ItemSlot> itemSlot_;
+	std::shared_ptr<SlotBase> itemSlot_;
 
 	// ロックピック
 	std::shared_ptr<Lockpick> lockpick_;
 
 	// ハンドライト
 	std::shared_ptr<HandLight> light_;
-
-	// ナイフ
-	std::shared_ptr<Knife> knife_;
-
-	// ラジオ
-	std::shared_ptr<Radio> radio_;
 
 	// ワイヤー
 	std::shared_ptr<Wire> wire_;
@@ -110,6 +97,5 @@ private:
 	// メインカメラがfps視点であるがどうか
 	bool isFps_;
 
-	//std::vector<int> modelIds_;		// ライティング
 };
 

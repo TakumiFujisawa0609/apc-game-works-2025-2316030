@@ -1,16 +1,16 @@
 ﻿#include <random>
 #include <chrono>
 #include <cmath>
-#include "../../../../../Application.h"
-#include "../../../../../Common/Quaternion.h"
-#include "../../../../../Manager/ResourceManager.h"
-#include "../../../../../Manager/Camera.h"
-#include "../../../../../Utility/AsoUtility.h"
+#include "../../Application.h"
+#include "../../Common/Quaternion.h"
+#include "../../Manager/ResourceManager.h"
+#include "../../Manager/Camera.h"
+#include "../../Utility/AsoUtility.h"
 #include "Wire.h"
 
-Wire::Wire(std::shared_ptr<ActorBase> owner)
+Wire::Wire(Player& player)
     :
-    ItemBase(owner),
+    ItemBase(player),
     currentAngle_(0.0f),
     goalAngle_(0.0f),
     lastMousePosX_(-1),
@@ -21,7 +21,7 @@ Wire::Wire(std::shared_ptr<ActorBase> owner)
 {
 }
 
-Wire::~Wire()
+Wire::~Wire(void)
 {
 }
 
@@ -217,6 +217,10 @@ void Wire::SetIsDefault(bool flag)
 bool Wire::isGameClear(void)
 {
     return isGameClear_;
+}
+
+void Wire::OnUpdate(float deltaTime)
+{
 }
 
 void Wire::UpdateOnStage(float deltaTime)

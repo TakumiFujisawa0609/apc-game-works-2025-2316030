@@ -138,13 +138,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Object\Light\SpotLight.cpp" />
-    <ClCompile Include="Src\Object\Light\PointLight.cpp" />
-    <ClCompile Include="Src\Object\Light\LightBase.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\NavGridManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\AStarNode.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.cpp" />
+    <ClCompile Include="Src\Object\Item\HandLight.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemStrage\SlotBase.cpp" />
+    <ClCompile Include="Src\Object\Item\Lockpick.cpp" />
+    <ClCompile Include="Src\Object\Item\Wire.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\CharactorComponent.cpp" />
     <ClCompile Include="Src\Object\ObjectBase\Charactor.cpp" />
@@ -155,17 +157,7 @@
     <ClCompile Include="Src\Object\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\Keyhole.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\KeyholePlate.cpp" />
-    <ClCompile Include="Src\Manager\LightManager.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Radio.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Knife.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\HandLight.cpp" />
-    <ClCompile Include="Src\Object\Player\Inventory.cpp" />
     <ClCompile Include="Src\Object\Components\UI\Components\PlayerStatusUI.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Lockpick.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\ItemComponent.cpp" />
-    <ClCompile Include="Src\Object\Components\UI\UIElements\ItemSlot.cpp" />
-    <ClCompile Include="Src\Object\Components\UI\UIElements\SlotBase.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElements\TimeGauge.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\Player\PlayerInput.cpp" />
     <ClCompile Include="Src\Object\Components\Gameplay\OxygenComponent.cpp" />
@@ -207,16 +199,17 @@
     <ClCompile Include="Src\Object\Components\UI\Components\UIComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
     <ClCompile Include="Src\Scene\UnlickScene.cpp" />
-    <ClCompile Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Object\Light\SpotLight.h" />
-    <ClInclude Include="Src\Object\Light\PointLight.h" />
-    <ClInclude Include="Src\Object\Light\LightBase.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\NavGridManager.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\AStarNode.h" />
     <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.h" />
+    <ClInclude Include="Src\Object\Item\HandLight.h" />
+    <ClInclude Include="Src\Object\Item\ItemBase.h" />
+    <ClInclude Include="Src\Object\Item\ItemStrage\SlotBase.h" />
+    <ClInclude Include="Src\Object\Item\Lockpick.h" />
+    <ClInclude Include="Src\Object\Item\Wire.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
@@ -273,17 +266,7 @@
     <ClInclude Include="Src\Object\Enemy\EnemyBase.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\Keyhole.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\KeyholePlate.h" />
-    <ClInclude Include="Src\Manager\LightManager.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Radio.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Knife.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\HandLight.h" />
-    <ClInclude Include="Src\Object\Player\Inventory.h" />
     <ClInclude Include="Src\Object\Components\UI\Components\PlayerStatusUI.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Lockpick.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\ItemBase.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\ItemComponent.h" />
-    <ClInclude Include="Src\Object\Components\UI\UIElements\ItemSlot.h" />
-    <ClInclude Include="Src\Object\Components\UI\UIElements\SlotBase.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElements\TimeGauge.h" />
     <ClInclude Include="Src\Object\Components\Charactor\Player\PlayerInput.h" />
     <ClInclude Include="Src\Object\Components\Gameplay\OxygenComponent.h" />
@@ -324,7 +307,6 @@
     <ClInclude Include="Src\Object\Components\UI\Components\UIComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElement.h" />
     <ClInclude Include="Src\Scene\UnlickScene.h" />
-    <ClInclude Include="Src\Object\Components\Gameplay\Item\Consumable\Wire.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

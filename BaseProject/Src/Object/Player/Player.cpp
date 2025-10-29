@@ -7,7 +7,6 @@
 #include "../../Manager/ResourceManager.h"
 #include "../Common/Collider.h"
 #include "../Common/Capsule.h"
-#include "Inventory.h"
 #include "Player.h"
 #include "../../Object/Components/Gameplay/OxygenComponent.h"
 #include "../../Object/Components/Charactor/Player/PlayerInput.h"
@@ -239,11 +238,6 @@ void Player::SetGoalRotate(float rotRad)
     }
 
     goalQuaRot_ = axis;
-}
-
-void Player::GiveItem(int itemId, int count)
-{
-	//inventory_->AddItem(itemId, count);
 }
 
 void Player::Collision(void)

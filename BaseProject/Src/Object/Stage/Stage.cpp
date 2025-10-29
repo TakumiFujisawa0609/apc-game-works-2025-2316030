@@ -7,7 +7,7 @@
 #include "../Common/Transform.h"
 #include "../Player/Player.h"
 #include "../Enemy/EnemyBase.h"
-#include "../Components/Gameplay/Item/Consumable/HandLight.h"
+#include "../Object/Item/HandLight.h"
 #include "../Enemy/Patrol/PatrolNode.h"
 #include "../Enemy/Patrol/PatrolPath.h"
 #include "../Enemy/AStar/NavGridManager.h"
@@ -69,17 +69,19 @@ void Stage::Update(float deltaTime)
 void Stage::OnUpdate(float deltaTime)
 {
 	Transform hlt = handLight_.GetTransform();
-	VECTOR dir = VGet(static_cast<float>(hlt.quaRot.x), static_cast<float>(hlt.quaRot.y), static_cast<float>(hlt.quaRot.z));
+	VECTOR forward = hlt.quaRot.GetForward();
+	VECTOR dir = VNorm(forward);
 
-	float OutAngle = 0.8f;
-	float InAngle = 0.3f;
-	float Range = 5000.0f;
-	float Atten0 = 0.191586f;
-	float Atten1 = 0.001662f;
+	float OutAngle = 0.3f;
+	float InAngle = 0.1f;
+	float Range = 2000.0f;
+	float Atten0 = 0.0f;
+	float Atten1 = 0.0006f;
 	float Atten2 = 0.0f;
 
+
 	ChangeLightTypeSpot(
-		VGet(hlt.pos.x, hlt.pos.y, hlt.pos.y),
+		VGet(hlt.pos.x, hlt.pos.y, hlt.pos.z),
 		VGet(dir.x, dir.y, dir.z),
 		OutAngle,
 		InAngle,
@@ -96,9 +98,9 @@ void Stage::OnUpdate(float deltaTime)
 
 void Stage::Draw(void)
 {
-	/*MV1DrawModel(transform_.modelId);*/
+	MV1DrawModel(transform_.modelId);
 
-	renderer_->Draw();
+	//renderer_->Draw();
 
 #ifdef _DEBUG
 	if (!paths_.empty())
@@ -138,7 +140,8 @@ void Stage::Draw(void)
 	}
 
 	Transform hlt = handLight_.GetTransform();
-	VECTOR dir = VGet(static_cast<float>(hlt.quaRot.x), static_cast<float>(hlt.quaRot.y), static_cast<float>(hlt.quaRot.z));
+	VECTOR forward = hlt.quaRot.GetForward();
+	VECTOR dir = VNorm(forward);
 
 	auto& windowSize_ = Application::GetInstance().GetWindowSize();
 	DrawFormatString(0, 32, GetColor(255, 255, 255), L"hPos = (%.2f,%.2f,%.2f)", hlt.pos.x, hlt.pos.y, hlt.pos.z);
@@ -146,6 +149,8 @@ void Stage::Draw(void)
 
 	DrawFormatString(0, 64, GetColor(255, 255, 255), L"hdir = (%.2f,%.2f,%.2f)", dir.x, dir.y, dir.z);
 	DrawFormatString(0, 80, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
+	
+	DrawFormatString(0, 112, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
 
 
 #endif // _DEBUG
@@ -196,7 +201,8 @@ void Stage::InitObstacles(void)
 void Stage::InitRenderer(void)
 {
 	Transform hlt = handLight_.GetTransform();
-	VECTOR dir = VGet(static_cast<float>(hlt.quaRot.x),static_cast<float>(hlt.quaRot.y),static_cast<float>(hlt.quaRot.z));
+	VECTOR forward = hlt.quaRot.GetForward();
+	VECTOR dir = VNorm(forward);
 
 	//spotLight_ = CreateSpotLightHandle(
 	//	hlt.pos, dir, 0.7f, 0.6f, 1000.0f, 0.391586f, 0.001662f, 0.0f
@@ -212,43 +218,31 @@ void Stage::InitRenderer(void)
 	float OutAngle = 0.8f;
 	float InAngle = 0.3f;
 	float Range = 5000.0f;
-	float Atten0 = 0.191586f;
-	float Atten1 = 0.001662f;
+	float Atten0 = 0.0f;
+	float Atten1 = 0.0006f;
 	float Atten2 = 0.0f;
 
-	ChangeLightTypeSpot(
-		VGet(hlt.pos.x, hlt.pos.y, hlt.pos.y),
-		VGet(dir.x, dir.y, dir.z),
-		OutAngle,
-		InAngle,
-		Range,
-		Atten0,
-		Atten1,
-		Atten2);
+	//ChangeLightTypeSpot(
+	//	VGet(hlt.pos.x, hlt.pos.y, hlt.pos.z),
+	//	VGet(dir.x, dir.y, dir.z),
+	//	OutAngle,
+	//	InAngle,
+	//	Range,
+	//	Atten0,
+	//	Atten1,
+	//	Atten2);
 
 
 
 	// モデル描画用
-	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 2, L"SpotLightAndPointLightPS.cso", 6);
+	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 2, L"SpotLightAndPointLightPS.cso", 2);
 	material_->AddConstBufVS({ hlt.pos.x,hlt.pos.y,hlt.pos.z,0.0f });
-	material_->AddConstBufVS({ static_cast<float>(hlt.quaRot.x),static_cast<float>(hlt.quaRot.y),static_cast<float>(hlt.quaRot.z),0.0f });
-	material_->AddConstBufPS({ 0.5f,0.5f,0.5f,1.0f });
-	material_->AddConstBufPS({ 0.5f,0.5f,0.5f,1.0f });
-	//material_->AddConstBufPS({ 1.0f,1.0f,1.0f,1.0f });
-	material_->AddConstBufPS({ 1.0f,1.0f,1.0f,1.0f });
+	material_->AddConstBufVS({ dir.x,dir.y,dir.z,0.0f });
+	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
+	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
 
-	//光の方向取得
-	VECTOR worldLightDirection = GetLightDirection();
-	material_->AddConstBufPS({ worldLightDirection.x,worldLightDirection.y,worldLightDirection.z,1.0f });
 
-	// 環境光を追加
-	material_->AddConstBufPS({ 0.2f,0.2f,0.2f,0.0f });
-
-	// ポイントライトの位置&ポイントライトの減衰係数
-	material_->AddConstBufPS({ hlt.pos.x, hlt.pos.y, hlt.pos.z,0.0000002f });
-
-	
-
+	GetLightType();
 
 	renderer_ = std::make_unique<ModelRenderer>(transform_.modelId, *material_);
 

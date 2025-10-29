@@ -17,18 +17,14 @@
 #include"../Object/Enemy/EnemyBase.h"
 #include"../Object/Stage/Stage.h"
 
-#include "../Object/Player/Inventory.h"
+#include "../Object/Item/Lockpick.h"
+#include "../Object/Item/HandLight.h"
 
-#include "../Object/Components/Gameplay/Item/Consumable/Lockpick.h"
-#include "../Object/Components/Gameplay/Item/Consumable/HandLight.h"
-#include "../Object/Components/Gameplay/Item/Consumable/Knife.h"
-#include "../Object/Components/Gameplay/Item/Consumable/Radio.h"
-
-#include "../Object/Components/Gameplay/Item/Consumable/Wire.h"
+#include "../Object/Item/Wire.h"
 
 #include "../Object/Components/Gameplay/OxygenComponent.h"
 
-#include "../Object/Components/UI/UIElements/ItemSlot.h"
+#include "../Object/Item/ItemStrage/SlotBase.h"
 
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
 
@@ -72,12 +68,16 @@ void GameScene::Init(Input& input)
 	player_->Init();
 
 	// ハンドライト
-	light_ = std::make_shared<HandLight>(player_);
+	light_ = std::make_shared<HandLight>(*player_);
 	light_->Init();
 
 	// ロックピック
-	lockpick_ = std::make_shared<Lockpick>(player_);
+	lockpick_ = std::make_shared<Lockpick>(*player_);
 	lockpick_->Init();
+
+	// 針金
+	wire_ = std::make_shared<Wire>(*player_);
+	wire_->Init();
 
 	// 敵の基底クラス
 	eBase_ = std::make_shared<EnemyBase>(*player_);
@@ -91,18 +91,11 @@ void GameScene::Init(Input& input)
 
 	eBase_->InitComponents();
 
-	//eBase_->SetPatrolPath(stage_->GetPatrolPath(1));
-
-	// インベントリ
-	inventory_ = std::make_shared<Inventory>(20);
-
-	wire_ = std::make_shared<Wire>(player_);
-	wire_->Init();
-
 	// アイテムスロット
-	itemSlot_ = std::make_shared<ItemSlot>();
+	itemSlot_ = std::make_shared<SlotBase>();
 	itemSlot_->AddItem(lockpick_);
 	itemSlot_->AddItem(light_);
+
 
 	// ステータス
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
@@ -117,9 +110,6 @@ void GameScene::Init(Input& input)
 void GameScene::Update(Input& input)
 {
 	float time = Application::GetInstance().GetDeltaTime();
-
-
-
 	(this->*update_)(input);
 }
 
@@ -269,7 +259,7 @@ void GameScene::NormalDraw()
 	light_->Draw();
 
 	// スロット
-	itemSlot_->Draw();
+	//itemSlot_->Draw();
 
 	// プレイヤー状態
 	status_->Draw();
@@ -338,7 +328,7 @@ void GameScene::FadeDraw()
 	light_->Draw();
 
 	// スロット
-	itemSlot_->Draw();
+	//itemSlot_->Draw();
 
 	// プレイヤー状態
 	status_->Draw();
