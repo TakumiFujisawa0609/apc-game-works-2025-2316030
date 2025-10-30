@@ -3,6 +3,7 @@
 #include "../../Application.h"
 #include "../../Utility/AsoUtility.h"
 #include "../../Manager/ResourceManager.h"
+#include "../../Manager/Camera.h"
 #include "../Common/Collider.h"
 #include "../Common/Transform.h"
 #include "../Player/Player.h"
@@ -36,6 +37,8 @@ void Stage::Init(void)
 	transform_.scl = AsoUtility::VECTOR_ONE;
 	transform_.pos = { 0.0f,0.0f,0.0f };
 	transform_.quaRot = Quaternion();
+	transform_.quaRotLocal = Quaternion::Euler({ AsoUtility::Deg2RadF(0.0f),
+		AsoUtility::Deg2RadF(0.0f),AsoUtility::Deg2RadF(0.0f) });;
 
 	transform_.MakeCollider(Collider::TYPE::STAGE);
 	
@@ -72,13 +75,12 @@ void Stage::OnUpdate(float deltaTime)
 	VECTOR forward = hlt.quaRot.GetForward();
 	VECTOR dir = VNorm(forward);
 
-	float OutAngle = 0.3f;
-	float InAngle = 0.1f;
-	float Range = 2000.0f;
-	float Atten0 = 0.0f;
-	float Atten1 = 0.0006f;
+	float OutAngle = 0.5f;
+	float InAngle = 0.15f;
+	float Range = 1000.0f;
+	float Atten0 = 0.5f;
+	float Atten1 = 0.0005f;
 	float Atten2 = 0.0f;
-
 
 	ChangeLightTypeSpot(
 		VGet(hlt.pos.x, hlt.pos.y, hlt.pos.z),
@@ -98,9 +100,9 @@ void Stage::OnUpdate(float deltaTime)
 
 void Stage::Draw(void)
 {
-	MV1DrawModel(transform_.modelId);
+	//MV1DrawModel(transform_.modelId);
 
-	//renderer_->Draw();
+	renderer_->Draw();
 
 #ifdef _DEBUG
 	if (!paths_.empty())
@@ -150,8 +152,6 @@ void Stage::Draw(void)
 	DrawFormatString(0, 64, GetColor(255, 255, 255), L"hdir = (%.2f,%.2f,%.2f)", dir.x, dir.y, dir.z);
 	DrawFormatString(0, 80, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
 	
-	DrawFormatString(0, 112, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
-
 
 #endif // _DEBUG
 
@@ -204,40 +204,33 @@ void Stage::InitRenderer(void)
 	VECTOR forward = hlt.quaRot.GetForward();
 	VECTOR dir = VNorm(forward);
 
-	//spotLight_ = CreateSpotLightHandle(
-	//	hlt.pos, dir, 0.7f, 0.6f, 1000.0f, 0.391586f, 0.001662f, 0.0f
-	//);
+	float OutAngle = 0.5f;
+	float InAngle = 0.15f;
+	float Range = 500.0f;
+	float Atten0 = 0.5f;
+	float Atten1 = 0.0005f;
+	float Atten2 = 0.001f;
 
+	ChangeLightTypeSpot(
+		VGet(hlt.pos.x, hlt.pos.y, hlt.pos.z),
+		VGet(dir.x, dir.y, dir.z),
+		OutAngle,
+		InAngle,
+		Range,
+		Atten0,
+		Atten1,
+		Atten2);
 
-	//// スポットライトのアンビエントカラーを無効にする
-	//SetLightAmbColorHandle(spotLight_, GetColorF(0.0f, 0.0f, 0.0f, 0.0f));
+	SetGlobalAmbientLight(GetColorF(0.8f, 0.8f, 0.8f, 0.8f));
 
-	//// スポットライトのディフューズカラーを緑にする
-	//SetLightDifColorHandle(spotLight_, GetColorF(0.0f, 1.0f, 0.0f, 0.0f));
-
-	float OutAngle = 0.8f;
-	float InAngle = 0.3f;
-	float Range = 5000.0f;
-	float Atten0 = 0.0f;
-	float Atten1 = 0.0006f;
-	float Atten2 = 0.0f;
-
-	//ChangeLightTypeSpot(
-	//	VGet(hlt.pos.x, hlt.pos.y, hlt.pos.z),
-	//	VGet(dir.x, dir.y, dir.z),
-	//	OutAngle,
-	//	InAngle,
-	//	Range,
-	//	Atten0,
-	//	Atten1,
-	//	Atten2);
-
-
+	shadowH_ = MakeShadowMap(4096, 4096);
 
 	// モデル描画用
 	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 2, L"SpotLightAndPointLightPS.cso", 2);
 	material_->AddConstBufVS({ hlt.pos.x,hlt.pos.y,hlt.pos.z,0.0f });
 	material_->AddConstBufVS({ dir.x,dir.y,dir.z,0.0f });
+	//material_->AddConstBufPS({ 0.6f,0.6f,0.6f,1.0f });
+	//material_->AddConstBufPS({ 0.6f,0.6f,0.6f,1.0f });
 	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
 	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
 

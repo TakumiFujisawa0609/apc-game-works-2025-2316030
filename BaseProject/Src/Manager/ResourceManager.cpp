@@ -53,16 +53,10 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::WIRE, res);
 
 	// åÆåäÉvÉåÅ[Ég
-	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/plate.mv1");
-	//resourcesMap_.emplace(SRC::E_PLATE, res);
-
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Keyhole/plate.png");
 	resourcesMap_.emplace(SRC::E_PLATE, res);
 
 	// åÆåä
-	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Keyhole/keyhole.mv1");
-	//resourcesMap_.emplace(SRC::KEYHOLE, res);
-
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Keyhole/keyhole.png");
 	resourcesMap_.emplace(SRC::KEYHOLE, res);
 
@@ -93,6 +87,10 @@ void ResourceManager::Init(void)
 	// ìG
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Enemy/Y-bot/Y-bot.mv1");
 	resourcesMap_.emplace(SRC::ENEMY, res);
+
+	// âe
+	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Shadow/Shadow.png");
+	resourcesMap_.emplace(SRC::SHADOW, res);
 }
 
 void ResourceManager::Release(void)

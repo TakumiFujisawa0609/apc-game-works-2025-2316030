@@ -54,6 +54,8 @@ private:
 	int spotLight_;
 	int pointLight_;
 
+	int shadowH_;
+
 	// ƒ‚ƒfƒ‹•`‰æ—p
 	void InitRenderer(void);
 };
