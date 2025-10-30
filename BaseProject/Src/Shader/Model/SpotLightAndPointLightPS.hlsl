@@ -7,6 +7,10 @@
 // PS
 #include "../Common/Pixel/PixelShader3DHeader.hlsli"
 
+
+SamplerState shadowMap0Sampler            : register(s8);	    	// シャドウマップ０テクスチャ
+Texture2D    shadowMap0Texture            : register(t8);
+
 // 定数バッファ：スロット4番目(b4と書く)
 cbuffer cbParam : register(b4)
 {
@@ -59,8 +63,8 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	Normal = normalize(PSInput.normal);
 
 	//頂点座標から視点へのベクトルを正規化
-	//V_to_Eye = normalize(-PSInput.vwPos);
-	V_to_Eye = normalize(-PSInput.worldPos);
+	V_to_Eye = normalize(-PSInput.vwPos);
+	//V_to_Eye = normalize(-PSInput.worldPos);
 
 	//ディフューズカラーとスペキュラーカラーの蓄積値を初期化
 	TotalDiffuse = g_diff_color;	 //(初期色)
@@ -77,7 +81,8 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	//距離減衰計算------------------
 
 	//頂点とライト位置との距離の二乗を求める
-	float3 lsLightTemp = spotLPos.xyz - PSInput.worldPos.xyz;
+	//float3 lsLightTemp = spotLPos.xyz - PSInput.worldPos.xyz;
+	float3 lsLightTemp = spotLPos.xyz - PSInput.vwPos.xyz;
 	lsLightTemp = PSInput.vwPos.xyz - spotLPos.xyz;
 	lLightDistancePow2 = dot(lsLightTemp, lsLightTemp);
 
@@ -90,7 +95,8 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	//スポットライト減衰計算----------------------(開始)
 
 	//ライト方向ベクトルとライト位置から頂点位置へのベクトルの内積(即ち Cos a)を計算
-	float3 LtoV = normalize(spotLPos.xyz - PSInput.worldPos.xyz);
+	//float3 LtoV = normalize(spotLPos.xyz - PSInput.worldPos.xyz);
+	float3 LtoV = normalize(spotLPos.xyz - PSInput.vwPos.xyz);
 	lLightDirectionCosA = dot(lLightDir, (spotL.direction));
 
 	// 一時的なデバッグ: lLightDirectionCosA だけを返す
@@ -107,9 +113,35 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	//有効距離外だったら減衰率を最大にする処理
 	lLightGen *= step(lLightDistancePow2, spotL.rangePow2);
 
-	return float4(lLightGen, lLightGen, lLightGen, 1.0f);
+	//return float4(lLightGen, lLightGen, lLightGen, 1.0f);
 
 	//距離・スポットライト減衰計算----------------(終了)
+
+	//シャドウマップの処理
+
+	// ライト座標(ビュー空間)を用意
+	float4 spotL_vwPos = float4(spotLPos, 1.0f);
+
+	// 0.0～1.0のテクスチャ座標に変換(w除算とバイアス適用)
+	spotL_vwPos.xyz /= spotL_vwPos.w;
+	float2 shadow_uv = spotL_vwPos.xy * 0.5f + 0.5f;
+
+	// ライトのパラメータにアクセス
+	float bias = g_shadowMap.data[0].adjustDepth;
+
+	// シャドウマップから深度を取得
+	float shadow_depth = shadowMap0Texture.Sample(shadowMap0Sampler, shadow_uv).r;
+
+	// 影判定(現在のピクセルの深度 > シャドウマップの深度)
+	// バイアス(Epsilon)を適用して自己遮蔽を防ぐ
+	//float bias = 0.005f;
+	float shadow_factor = 1.0f; // 1.0 = 光が当たる, 0.0 = 影
+	if (spotL_vwPos.z > shadow_depth + bias)
+	{
+		shadow_factor = 0.0f;	// この時影を適用
+	}
+
+
 
 	//ディフューズ色計算--------------------------(開始)
 
@@ -117,14 +149,21 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	DiffuseAngleGen = saturate(dot(Normal, -lLightDir));
 
 	//ライト方向(ワールド座標系)
-	float3 WorldLightDir = normalize(spotL.position.xyz - PSInput.worldPos.xyz);
+	//float3 WorldLightDir = normalize(spotL.position.xyz - PSInput.worldPos.xyz);
+	float3 WorldLightDir = normalize(spotL.position.xyz - PSInput.vwPos.xyz);
 
-	// ディフューズ角度減衰計算
-	DiffuseAngleGen = saturate(dot(Normal, WorldLightDir));
+	// ディフューズ角度減衰率計算
+	float dot_N_L_original = dot(Normal, WorldLightDir);
+	float dot_N_L_inverted = dot(-Normal, WorldLightDir); // 法線を反転して計算
+
+	// どちらの内積が大きいか（つまり、どちらが光をよく受けているか）を比較
+	DiffuseAngleGen = saturate(max(dot_N_L_original, dot_N_L_inverted));
 
 	// 標準的なライティングの寄与
-	TotalDiffuse += (float4(spotL.diffuse.xyz, 1.0f) * material.diffuse * DiffuseAngleGen
-		+ spotL.ambient) * lLightGen;
+	TotalDiffuse += (float4(spotL.diffuse.xyz, 1.0f) * material.diffuse * normalize(DiffuseAngleGen)
+	+ spotL.ambient) * lLightGen;
+
+	//return float4(TotalDiffuse.x, TotalDiffuse.y, TotalDiffuse.z, TotalDiffuse.a);
 
 	//スペキュラーカラー計算
 
@@ -141,6 +180,12 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 
 	//TotalDiffuse = ライトディフーズカラー蓄積値 + (マテリアルのアンビエントカラーとグローバルアンビエントカラーを乗算したものとマテリアルエミッシブカラーを加算したもの)
 	TotalDiffuse += material.ambientEmissive;
+
+	// 1. テクスチャカラーをサンプリング
+	TextureDiffuseColor = diffuseMapTexture.Sample(diffuseMapSampler, PSInput.uv.xy);
+
+	// g_ambient_color をグローバルアンビエントとして、マテリアルの ambient 反射率を考慮して加算。
+	TotalDiffuse.rgb += g_ambient_color.rgb *TextureDiffuseColor.rgb * g_diff_color.rgb;
 
 	// SpecularColor = ライトのスペキュラーカラー蓄積値 * マテリアルのスペキュラーカラー
 	SpecularDiffuseColor = TotalSpecular * material.specular;
