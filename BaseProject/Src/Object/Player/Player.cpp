@@ -10,11 +10,14 @@
 #include "Player.h"
 #include "../../Object/Components/Gameplay/OxygenComponent.h"
 #include "../../Object/Components/Charactor/Player/PlayerInput.h"
+#include "../Item/HandLight.h"
+
 
 Player::Player(void)
     :
     tLimit_(nullptr),
-    input_(nullptr)
+    input_(nullptr),
+    sanV_(0.0f)
 {
 	
 }
@@ -78,6 +81,11 @@ void Player::Update(float deltaTime)
 
 void Player::OnUpdate(float deltaTime)
 {
+    if (light_.lock()->IsDisabledItem())
+    {
+        sanV_ = 0.0f;
+    }
+
     // ƒJƒƒ‰‚ÌŠp“x‚ðŽæ“¾
     VECTOR angles = Application::GetInstance().GetCamera()->GetAngles();
 
@@ -121,13 +129,12 @@ void Player::OnUpdate(float deltaTime)
     if (ins.IsNew(KEY_INPUT_D) || pad.X > 500) moveDir_ = VAdd(moveDir_, right);
     if (ins.IsNew(KEY_INPUT_A) || pad.X < -500) moveDir_ = VAdd(moveDir_, VScale(right, -1.0f));
 
+
+    moveSpeed_ = MOVE_WALK_SPEED;
+
     if (ins.IsNew(KEY_INPUT_LSHIFT) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
     {
         moveSpeed_ = MOVE_RUN_SPEED;
-    }
-    else
-    {
-        moveSpeed_ = MOVE_WALK_SPEED;
     }
 
     if (!AsoUtility::EqualsVZero(moveDir_))
@@ -219,6 +226,11 @@ int Player::GetWalkSH(void)
 int Player::GetRunSH(void)
 {
     return runSH_;
+}
+
+void Player::SetHandLight(std::weak_ptr<HandLight> handLight)
+{
+    light_ = handLight.lock();
 }
 
 void Player::SetGoalRotate(float rotRad)

@@ -119,6 +119,8 @@ private:
 
     bool EyeSerch(void);
 
+    bool HearingSound(void);
+
     void DrawDebug(void);
 };
 

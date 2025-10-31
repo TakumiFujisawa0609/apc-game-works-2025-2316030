@@ -9,7 +9,6 @@ class Capsule;
 
 class ActorBase : public std::enable_shared_from_this<ActorBase>
 {
-
 public:
 
 	// コンストラクタ

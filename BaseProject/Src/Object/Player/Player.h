@@ -8,6 +8,8 @@ class PlayerInput;
 //// インベントリ
 //class Inventory;
 
+class HandLight;
+
 // 描画系
 class UIComponent;
 
@@ -46,10 +48,14 @@ public:
 
 	int GetRunSH(void);
 
+	void SetHandLight(std::weak_ptr<HandLight> handLight);
+
 private:
 
 	TimeLimitComponent* tLimit_;		// 酸素コンポーネント
 	PlayerInput* input_;			// 入力コンポーネント
+
+	std::weak_ptr<HandLight> light_;
 
 	float yaw;			// 水平回転（ヨー）
 	float pitch;		// 垂直回転（ピッチ）
@@ -58,6 +64,8 @@ private:
 	bool isWalkSH_;		// 歩きの音を再生するかどうか
 	int runSH_;			// 走るの音
 	bool isRunSH_;		// 走るの音を再生するかどうか
+
+	float sanV_;		// san値
 
 	void SetGoalRotate(float rotRad);
 

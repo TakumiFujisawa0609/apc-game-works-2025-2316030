@@ -115,6 +115,11 @@ void ModelMaterial::SetTextureAddress(TEXADDRESS texA)
 	texAddress_ = texA;
 }
 
+bool ModelMaterial::IsWriteDepth(void)
+{
+	return false;
+}
+
 int ModelMaterial::GetShaderVS(void) const
 {
 	return shaderVS_;

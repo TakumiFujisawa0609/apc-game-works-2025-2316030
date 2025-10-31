@@ -48,8 +48,6 @@ public:
 		return ptr;
 	}
 
-	
-
 protected:
 
 	float moveSpeed_;	    // 移動速度

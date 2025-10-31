@@ -37,6 +37,9 @@ private:
 
 	std::vector<Transform> trans_;
 
+	// 深度バッファ用のスクリーン
+	int depthScreen_;
+
 	// モデルマテリアル
 	ModelMaterial& modelMaterial_;
 

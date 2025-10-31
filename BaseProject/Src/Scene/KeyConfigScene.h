@@ -9,12 +9,14 @@
 class KeyConfigScene :
     public Scene
 {
+public:
     KeyConfigScene(SceneController& controller, Input& input);
 
 
     virtual void Init(Input& input)override;
     virtual void Update(Input& input)override;
     virtual void Draw(void)override;
+
 private:
     void DrawInputList();
     std::wstring GetPeriphString(const PeripheralType& type);
@@ -47,6 +49,7 @@ private:
     
     void CommitInputTable();
     void ReloadTable();
+
 public:
 
     

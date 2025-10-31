@@ -1,4 +1,8 @@
 #pragma once
+#include<string>
+#include<vector>
+#include<map>
+#include<functional>
 #include "Scene.h"
 class TitleScene :
     public Scene
@@ -24,9 +28,17 @@ public:
 	virtual void Draw(void)override;
 
 private:
+
 	int titleH_;
 	int frame_ = 0;
 	int soundH_;
+
+	int currentIndex_ = 0;
+	//メニューの文字列と関数のテーブル
+	using MenuFunc_t = std::function<void(Input&)>;
+	std::vector<std::wstring> menuList_;
+	std::map<std::wstring, MenuFunc_t> menuFuncTable_;
+
 
 	//メンバ関数ポインタ型の別名を定義
 	using UpdateFunc_t = void (TitleScene::*)(Input&);
@@ -42,6 +54,8 @@ private:
 
 	void FadeDraw();//フェード時の描画
 	void NormalDraw();//通常時の描画
+
+	void DrawMenuList(void);
 
 };
 

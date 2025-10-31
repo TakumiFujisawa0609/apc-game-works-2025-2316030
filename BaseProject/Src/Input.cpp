@@ -143,6 +143,12 @@ void Input::ResetTable()
 	inputTable_["shot"] = { { PeripheralType::keyboard, KEY_INPUT_X },
 		{ PeripheralType::gamepad, PAD_INPUT_Y } ,
 		{PeripheralType::x_analog,(int)AnalogInputType::r_trigger} };
+	inputTable_["up"] = { { PeripheralType::keyboard, KEY_INPUT_UP },
+		{ PeripheralType::gamepad, PAD_INPUT_UP },
+		{PeripheralType::x_analog,(int)AnalogInputType::l_up} };
+	inputTable_["down"] = { { PeripheralType::keyboard, KEY_INPUT_DOWN },
+		{ PeripheralType::gamepad, PAD_INPUT_DOWN } ,
+		{PeripheralType::x_analog,(int)AnalogInputType::l_down} };
 
 }
 

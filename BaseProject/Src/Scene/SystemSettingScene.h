@@ -1,4 +1,6 @@
 #pragma once
+
+class Config;
 #include "Scene.h"
 class SystemSettingScene :
     public Scene
@@ -9,5 +11,9 @@ public:
     virtual void Init(Input& input)override;
     virtual void Update(Input& input)override;
     virtual void Draw(void)override;
+
+private:
+
+
 };
 

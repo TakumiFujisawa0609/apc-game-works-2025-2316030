@@ -27,18 +27,19 @@ PauseScene::PauseScene(SceneController& controller) :
 					L"設定メニュー",
 					L"キーコンフィグ",
 					L"戻る",
-					L"タイトルに戻る"
+					L"タイトルに戻る",
+					L"ゲームを終了する"
 	};
 	menuFuncTable_ = {
-		/*{L"コマンド表",[this](Input&) {
-				controller_.PushScene(make_shared<CommandListScene>(controller_));
+		{L"コマンド表",[this](Input& input) {
+				controller_.PushScene(make_shared<CommandListScene>(controller_),input);
 			}
 		},
-		{L"設定メニュー",[this](Input&) {
-				controller_.PushScene(make_shared<SystemSettingScene>(controller_));
+		{L"設定メニュー",[this](Input& input) {
+				controller_.PushScene(make_shared<SystemSettingScene>(controller_),input);
 				}},
 		{L"キーコンフィグ",[this](Input& input) {
-				controller_.PushScene(make_shared<KeyConfigScene>(controller_,input));
+				controller_.PushScene(make_shared<KeyConfigScene>(controller_,input),input);
 			}},
 		{L"戻る",[this](Input&) {
 				update_ = &PauseScene::DisappearUpdate;
@@ -47,7 +48,13 @@ PauseScene::PauseScene(SceneController& controller) :
 		},
 		{L"タイトルに戻る",[this](Input&) {
 				controller_.JumpScene(make_shared<TitleScene>(controller_));
-			}},*/
+				return;
+			}
+		},
+		{L"ゲームを終了する",[this](Input&) {
+				Application::GetInstance().SetGemeEnd(true);
+			}
+		}
 	};
 }
 

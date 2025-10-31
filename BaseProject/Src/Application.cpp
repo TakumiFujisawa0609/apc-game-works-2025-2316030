@@ -3,6 +3,7 @@
 #include <EffekseerForDXLib.h>
 #include"Input.h"
 #include"Manager/Camera.h"
+#include"Manager/Config.h"
 #include"Manager/InputManager.h"
 #include"Manager/ResourceManager.h"
 #include"Manager/SceneController.h"
@@ -23,6 +24,7 @@ Application::Application()
     :
     isInitFailed_(false),
     isReleaseFailed_(false),
+    isGemeEnd_(false),
     frameCount_(0),
     fps_(0),
     lastTime_(-1),
@@ -77,6 +79,10 @@ void Application::Init(int w, int h)
         return;
     }
 
+    // 設定の初期化
+    config_ = std::make_shared<Config>();
+    config_->Init();
+
     //カメラ初期化
 	camera_ = std::make_shared<Camera>();
 	camera_->Init();
@@ -105,8 +111,8 @@ void Application::Init(int w, int h)
 	controller_ = std::make_shared<SceneController>();
 
 	// 最初のシーンを設定
-    //controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
-    controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);
+    controller_->ChangeScene(std::make_shared<TitleScene>(*controller_), *input_);
+    //controller_->ChangeScene(std::make_shared<GameScene>(*controller_), *input_);
 
 }
 
@@ -117,7 +123,7 @@ void Application::Run()
     // FPS計測用
     startTime_ = GetNowCount();
 
-    while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0) {
+    while (ProcessMessage() == 0 && !isGemeEnd_) {
         ClearDrawScreen();
         ClearDrawScreenZBuffer();
 
@@ -125,6 +131,8 @@ void Application::Run()
 
         input_->Update();
         inputManager.Update();
+
+        config_->Update();
 
         controller_->Update(*input_);
         camera_->Update();
@@ -185,6 +193,16 @@ bool Application::IsReleaseFail(void) const
     return isReleaseFailed_;
 }
 
+bool Application::IsGemeEnd(void)
+{
+    return isGemeEnd_;
+}
+
+void Application::SetGemeEnd(bool frag)
+{
+    isGemeEnd_ = frag;
+}
+
 void Application::UpdateDeltaTime(void)
 {
     int now = GetNowCount();
@@ -211,6 +229,21 @@ std::shared_ptr<Camera> Application::GetCamera(void)
 int Application::GetFontHandle(void) const
 {
     return fontHandle_;
+}
+
+std::shared_ptr<SceneController> Application::GetSceneController(void) const
+{
+    return controller_;
+}
+
+std::shared_ptr<Input> Application::GetInput(void) const
+{
+    return input_;
+}
+
+std::shared_ptr<Config> Application::GetConfig(void) const
+{
+    return config_;
 }
 
 void Application::Init3D(void)
