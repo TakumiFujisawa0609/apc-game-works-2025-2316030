@@ -6,10 +6,18 @@
 #include "../Manager/InputManager.h"
 #include"../Manager/SceneController.h"
 #include"../Manager/ResourceManager.h"
+#include"SystemSettingScene.h"
 #include"GameScene.h"
 #include"../Input.h"
+
 namespace {
 	constexpr int fade_interval = 30;
+}
+
+namespace {
+	constexpr int appear_interval = 20;//出現までのフレーム
+	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
+	constexpr int margin_size = 20;//ポーズメニュー枠の余白
 }
 
 TitleScene::TitleScene(SceneController& controller)
@@ -17,9 +25,28 @@ TitleScene::TitleScene(SceneController& controller)
 	Scene(controller),
 	titleH_(-1)
 {
-	//titleH_=LoadGraph(L"img/fukuro.png");
-	//assert(titleH_);
+	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
+	ChangeVolumeSoundMem(255, soundH_);
 
+	menuList_ = {
+		L"continue",
+		L"config",
+		L"quit game"
+	};
+	menuFuncTable_ = {
+		{L"continue",[this](Input& input) {
+				update_ = &TitleScene::FadeOutUpdate;
+				draw_ = &TitleScene::FadeDraw;
+				frame_ = 0;
+			}
+		},
+		{L"config",[this](Input& input) {
+				controller_.PushScene(std::make_shared<SystemSettingScene>(controller_),input);
+				}},
+		{L"quit game",[this](Input& input) {
+				Application::GetInstance().SetGemeEnd(true);
+			}}
+	};
 }
 
 TitleScene::~TitleScene()
@@ -59,14 +86,17 @@ void TitleScene::NormalUpdate(Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (input.IsTriggered("ok") || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) {
-		update_ = &TitleScene::FadeOutUpdate;
-		draw_ = &TitleScene::FadeDraw;
-		frame_ = 0;
-		PlaySoundMem(soundH_, DX_PLAYTYPE_NORMAL, true);
+	if (input.IsTriggered("up")) {
+		currentIndex_ = static_cast<int>((currentIndex_ + menuList_.size() - 1) % menuList_.size());
+	}
+	else if (input.IsTriggered("down")) {
+		currentIndex_ = (currentIndex_ + 1) % menuList_.size();
+	}
+	if (input.IsTriggered("ok")) {
+		auto selectedName = menuList_[currentIndex_];
+		menuFuncTable_[selectedName](input);
 		return;
 	}
-
 }
 
 void TitleScene::FadeOutUpdate(Input& input)
@@ -96,21 +126,44 @@ void TitleScene::NormalDraw()
 	DrawRotaGraph(size.width / 2, static_cast<int>(size.height / 2 * 0.8f), 0.4, 0.0, titleH_, true);
 
 
-	const TCHAR* text_to_display = _T("Space or Aボタン");
-	int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
+	//const TCHAR* text_to_display = _T("Space or Aボタン");
+	//int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
-	// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
-	int draw_x = (size.width / 2) - (text_width / 2);
+	//// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
+	//int draw_x = (size.width / 2) - (text_width / 2);
 
-	// Y座標: 画面全体の高さの 4分の3 の位置
-	int draw_y = (size.height * 3) / 4;
+	//// Y座標: 画面全体の高さの 4分の3 の位置
+	//int draw_y = (size.height * 3) / 4;
 
-	// 3. テキストを描画
+	//// 3. テキストを描画
 
-	// 赤色で描画
-	int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)
+	//// 赤色で描画
+	//int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)
 
-	// 描画関数でテキストを表示
-	DrawString(draw_x, draw_y, text_to_display, color);
+	//// 描画関数でテキストを表示
+	//DrawString(draw_x, draw_y, text_to_display, color);
 	//DrawString(10, 10, L"Title Scene", 0xffffff);
+
+	DrawMenuList();
+}
+
+void TitleScene::DrawMenuList(void)
+{
+	constexpr int line_start_y = margin_size + 150;
+	constexpr int line_start_x = margin_size + 250;
+	int lineY = line_start_y;
+
+	auto currentStr = menuList_[currentIndex_];
+	for (auto& row : menuList_) {
+		int lineX = line_start_x;
+		unsigned int col = 0x4444ff;
+		if (row == currentStr) {
+			DrawString(lineX - 20, lineY, L"⇒", 0xff0000);
+			col = 0xff00ff;
+			lineX += 10;
+		}
+		DrawFormatString(lineX + 1, lineY + 1, 0x000000, L"%s", row.c_str());
+		DrawFormatString(lineX, lineY, col, L"%s", row.c_str());
+		lineY += input_list_row_height;
+	}
 }

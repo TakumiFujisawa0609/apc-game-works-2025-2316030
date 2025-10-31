@@ -5,6 +5,7 @@
 class Input;
 class SceneController;
 class Camera;
+class Config;
 
 struct Size {
 	int width;//幅
@@ -70,6 +71,12 @@ public:
 	// 解放成功／失敗の判定
 	bool IsReleaseFail(void) const;
 
+	// ゲームを終了させる
+	bool IsGemeEnd(void);
+
+	// ゲーム終了を設定する
+	void SetGemeEnd(bool frag);
+
 	// デルタタイムの更新処理
 	void UpdateDeltaTime(void);
 
@@ -87,6 +94,15 @@ public:
 
 	// フォントの取得
 	int GetFontHandle(void)const;
+
+	// シーンコントローラーの取得
+	std::shared_ptr<SceneController> GetSceneController(void) const;
+
+	// 入力の取得
+	std::shared_ptr<Input> GetInput(void) const;
+
+	// 設定の取得
+	std::shared_ptr<Config> GetConfig(void) const;
 
 private:
 	Application();//コンストラクタをprivateに
@@ -106,11 +122,17 @@ private:
 	// カメラ
 	std::shared_ptr<Camera> camera_;
 
+	// 設定
+	std::shared_ptr<Config> config_;
+
 	// 初期化失敗
 	bool isInitFailed_;
 
 	// 解放失敗
 	bool isReleaseFailed_;
+
+	// ゲーム終了
+	bool isGemeEnd_;
 
 	// FPS計測用変数
 	int frameCount_;

@@ -369,6 +369,18 @@ bool EnemyBase::EyeSerch(void)
     return false;
 }
 
+bool EnemyBase::HearingSound(void)
+{
+    // 音の大きさをプレイヤーまた、オブジェクト取得
+    // 対象の音ハンドル
+    int soundH_ = -1;
+
+    // 音の大きさ
+    int soundVol_ = -1;
+
+    return false;
+}
+
 void EnemyBase::DrawDebug(void)
 {
 

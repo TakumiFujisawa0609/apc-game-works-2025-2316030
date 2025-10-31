@@ -138,6 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\Config.cpp" />
+    <ClCompile Include="Src\Scene\RankingScene.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\NavGridManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\AStarNode.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.cpp" />
@@ -201,6 +203,8 @@
     <ClCompile Include="Src\Scene\UnlickScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\Config.h" />
+    <ClInclude Include="Src\Scene\RankingScene.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\NavGridManager.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\AStarNode.h" />
     <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.h" />

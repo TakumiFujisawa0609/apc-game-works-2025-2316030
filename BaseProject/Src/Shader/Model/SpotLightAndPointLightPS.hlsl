@@ -8,8 +8,8 @@
 #include "../Common/Pixel/PixelShader3DHeader.hlsli"
 
 
-SamplerState shadowMap0Sampler            : register(s8);	    	// シャドウマップ０テクスチャ
-Texture2D    shadowMap0Texture            : register(t8);
+SamplerState shadowMap0Sampler            : register(s1);	    	// シャドウマップ０テクスチャ
+Texture2D    shadowMap0Texture            : register(t1);
 
 // 定数バッファ：スロット4番目(b4と書く)
 cbuffer cbParam : register(b4)
@@ -119,29 +119,7 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 
 	//シャドウマップの処理
 
-	// ライト座標(ビュー空間)を用意
-	float4 spotL_vwPos = float4(spotLPos, 1.0f);
-
-	// 0.0～1.0のテクスチャ座標に変換(w除算とバイアス適用)
-	spotL_vwPos.xyz /= spotL_vwPos.w;
-	float2 shadow_uv = spotL_vwPos.xy * 0.5f + 0.5f;
-
-	// ライトのパラメータにアクセス
-	float bias = g_shadowMap.data[0].adjustDepth;
-
-	// シャドウマップから深度を取得
-	float shadow_depth = shadowMap0Texture.Sample(shadowMap0Sampler, shadow_uv).r;
-
-	// 影判定(現在のピクセルの深度 > シャドウマップの深度)
-	// バイアス(Epsilon)を適用して自己遮蔽を防ぐ
-	//float bias = 0.005f;
-	float shadow_factor = 1.0f; // 1.0 = 光が当たる, 0.0 = 影
-	if (spotL_vwPos.z > shadow_depth + bias)
-	{
-		shadow_factor = 0.0f;	// この時影を適用
-	}
-
-
+	//------------------------------------------
 
 	//ディフューズ色計算--------------------------(開始)
 

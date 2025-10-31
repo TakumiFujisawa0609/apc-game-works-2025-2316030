@@ -42,6 +42,8 @@ public:
 	// 状態の変更
 	virtual void ChangeState(STATE state);
 
+	bool IsDisabledItem(void) const;
+
 protected:
 	int useCount_;		// 使用回数
 	int maxUseCount_;	// 最大使用回数

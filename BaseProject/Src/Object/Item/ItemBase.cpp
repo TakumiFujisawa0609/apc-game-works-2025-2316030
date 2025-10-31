@@ -96,6 +96,11 @@ void ItemBase::ChangeState(STATE state)
 	}
 }
 
+bool ItemBase::IsDisabledItem(void) const
+{
+	return isDisabled_;
+}
+
 void ItemBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)
 {
 	// ƒ‚ƒfƒ‹‚Ìİ’è

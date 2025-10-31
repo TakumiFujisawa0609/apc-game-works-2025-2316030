@@ -71,7 +71,7 @@ void Stage::Update(float deltaTime)
 
 void Stage::OnUpdate(float deltaTime)
 {
-	Transform hlt = handLight_.GetTransform();
+	/*Transform hlt = handLight_.GetTransform();
 	VECTOR forward = hlt.quaRot.GetForward();
 	VECTOR dir = VNorm(forward);
 
@@ -94,15 +94,17 @@ void Stage::OnUpdate(float deltaTime)
 
 	material_->SetConstBufVS(0, { hlt.pos.x,hlt.pos.y,hlt.pos.z,0.0f });
 
-	material_->SetConstBufVS(1, { dir.x,dir.y,dir.z,0.0f });
+	material_->SetConstBufVS(1, { dir.x,dir.y,dir.z,0.0f });*/
 
 }
 
 void Stage::Draw(void)
 {
-	//MV1DrawModel(transform_.modelId);
 
+	//MV1DrawModel(transform_.modelId);
 	renderer_->Draw();
+
+	handLight_.DrawRenderer();
 
 #ifdef _DEBUG
 	if (!paths_.empty())
@@ -151,9 +153,11 @@ void Stage::Draw(void)
 
 	DrawFormatString(0, 64, GetColor(255, 255, 255), L"hdir = (%.2f,%.2f,%.2f)", dir.x, dir.y, dir.z);
 	DrawFormatString(0, 80, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
-	
 
-#endif // _DEBUG
+
+#endif // _DEBUGe
+
+
 
 }
 
@@ -204,39 +208,34 @@ void Stage::InitRenderer(void)
 	VECTOR forward = hlt.quaRot.GetForward();
 	VECTOR dir = VNorm(forward);
 
-	float OutAngle = 0.5f;
-	float InAngle = 0.15f;
-	float Range = 500.0f;
-	float Atten0 = 0.5f;
-	float Atten1 = 0.0005f;
-	float Atten2 = 0.001f;
+	//float OutAngle = 0.5f;
+	//float InAngle = 0.15f;
+	//float Range = 500.0f;
+	//float Atten0 = 0.5f;
+	//float Atten1 = 0.0005f;
+	//float Atten2 = 0.001f;
 
-	ChangeLightTypeSpot(
-		VGet(hlt.pos.x, hlt.pos.y, hlt.pos.z),
-		VGet(dir.x, dir.y, dir.z),
-		OutAngle,
-		InAngle,
-		Range,
-		Atten0,
-		Atten1,
-		Atten2);
+	//ChangeLightTypeSpot(
+	//	VGet(hlt.pos.x, hlt.pos.y, hlt.pos.z),
+	//	VGet(dir.x, dir.y, dir.z),
+	//	OutAngle,
+	//	InAngle,
+	//	Range,
+	//	Atten0,
+	//	Atten1,
+	//	Atten2);
 
-	SetGlobalAmbientLight(GetColorF(0.8f, 0.8f, 0.8f, 0.8f));
+	//SetGlobalAmbientLight(GetColorF(0.8f, 0.8f, 0.8f, 0.8f));
 
-	shadowH_ = MakeShadowMap(4096, 4096);
+	//// ƒ‚ƒfƒ‹•`‰æ—p
+	//material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 2, L"SpotLightAndPointLightPS.cso", 2);
+	//material_->AddConstBufVS({ hlt.pos.x,hlt.pos.y,hlt.pos.z,0.0f });
+	//material_->AddConstBufVS({ dir.x,dir.y,dir.z,0.0f });
+	//material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
+	//material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
 
-	// ƒ‚ƒfƒ‹•`‰æ—p
-	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 2, L"SpotLightAndPointLightPS.cso", 2);
-	material_->AddConstBufVS({ hlt.pos.x,hlt.pos.y,hlt.pos.z,0.0f });
-	material_->AddConstBufVS({ dir.x,dir.y,dir.z,0.0f });
-	//material_->AddConstBufPS({ 0.6f,0.6f,0.6f,1.0f });
-	//material_->AddConstBufPS({ 0.6f,0.6f,0.6f,1.0f });
-	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
-	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
+	//renderer_ = std::make_unique<ModelRenderer>(transform_.modelId, *material_);
 
 
-	GetLightType();
-
-	renderer_ = std::make_unique<ModelRenderer>(transform_.modelId, *material_);
-
+	handLight_.InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
 }

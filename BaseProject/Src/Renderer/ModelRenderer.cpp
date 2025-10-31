@@ -1,3 +1,5 @@
+#include "../Application.h"
+#include "../Manager/SceneController.h"
 #include "ModelRenderer.h"
 #include "../Object/Common/Transform.h"
 
@@ -20,6 +22,15 @@ void ModelRenderer::Draw(void)
 
 	// オリジナルシェーダ設定(ON)
 	MV1SetUseOrigShader(true);
+
+	// 深度バッファへの書きこみ
+	if (modelMaterial_.IsWriteDepth())
+	{
+		int depthScreen = Application::GetInstance().GetSceneController()->GetDepthScreen();
+
+		// マルチレンダーターゲット
+		SetRenderTargetToShader(1, depthScreen);
+	}
 
 	// シェーダ設定(頂点)
 	SetReserveVS();
@@ -64,6 +75,9 @@ void ModelRenderer::Draw(void)
 
 	// ピクセルシェーダ解除
 	SetUsePixelShader(-1);
+
+	// マルチレンダーターゲット解除
+	SetRenderTargetToShader(1, -1);
 
 	// オリジナルシェーダ設定(OFF)
 	MV1SetUseOrigShader(false);

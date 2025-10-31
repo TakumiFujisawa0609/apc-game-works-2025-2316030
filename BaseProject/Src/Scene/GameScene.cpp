@@ -70,6 +70,7 @@ void GameScene::Init(Input& input)
 	// ハンドライト
 	light_ = std::make_shared<HandLight>(*player_);
 	light_->Init();
+	player_->SetHandLight(light_);
 
 	// ロックピック
 	lockpick_ = std::make_shared<Lockpick>(*player_);
@@ -131,6 +132,7 @@ void GameScene::NormalUpdate(Input& input)
 {
 	++frame_;
 
+
 	//if (player_->GetTimeLimitComp()->IsTimeDepleted())
 	//{
 	//	controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
@@ -146,6 +148,11 @@ void GameScene::NormalUpdate(Input& input)
 	const auto& camera = Application::GetInstance().GetCamera();
 	VECTOR prevAngle_ = {};
 	auto& ins = InputManager::GetInstance();
+
+	if (ins.IsNew(KEY_INPUT_ESCAPE))
+	{
+		controller_.PushScene(std::make_shared<PauseScene>(controller_), input);
+	}
 
 	if (ins.IsNew(KEY_INPUT_P))
 	{

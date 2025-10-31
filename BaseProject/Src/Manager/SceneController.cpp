@@ -21,23 +21,22 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 		scenes_.back() = scene;
 	}
 
+	// 深度バッファ用スクリーン
+	// ( １チャンネル浮動小数点２４ビットテクスチャ )
+	SetCreateDrawValidGraphChannelNum(1);
+	SetDrawValidFloatTypeGraphCreateFlag(TRUE);
+	SetCreateGraphChannelBitDepth(24);
+
 	auto sizeW = Application::GetInstance().GetWindowSize();
 
 	// 新しいシーン用のスクリーンの作成
-	int newScreenH = MakeScreen(sizeW.width, sizeW.height, true);
+	newScreenH_ = MakeScreen(sizeW.width, sizeW.height, true);
 
-	//assert(newScreenH == -1);
-
-	// 作成した画面ハンドルをシーンに設定
-	scene->SetRenderTarget(newScreenH);
-
-	// 初期化時の描画先を新しいハンドルに設定
-	SetDrawScreen(newScreenH);
+	SetCreateDrawValidGraphChannelNum(0);
+	SetDrawValidFloatTypeGraphCreateFlag(FALSE);
+	SetCreateGraphChannelBitDepth(0);
 
 	scenes_.back()->Init(input);//シーンの初期化
-	
-	// メインの裏画面に設定
-	SetDrawScreen(DX_SCREEN_BACK);
 
 	Application::GetInstance().ResetDeltaTime();
 }
@@ -93,6 +92,11 @@ void SceneController::JumpScene(std::shared_ptr<Scene> scene)
 {
 	scenes_.clear();
 	scenes_.push_back(scene);
+}
+
+int SceneController::GetDepthScreen(void) const
+{
+	return newScreenH_;
 }
 
 
