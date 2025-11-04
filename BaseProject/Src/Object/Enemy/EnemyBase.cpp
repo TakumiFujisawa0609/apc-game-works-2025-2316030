@@ -57,8 +57,6 @@ void EnemyBase::Init(void)
 
     currentPatrolPathIndex_ = 0;
 
-   
-
     // アニメーション
     animationController_ = std::make_unique<AnimationController>(transform_.modelId);
 
@@ -139,17 +137,7 @@ void EnemyBase::OnUpdate(float deltaTime)
         break;
     case EnemyBase::STATE::CHASE:
         if (chaseComponent_)
-        {
-            //chaseComponent_->RecalcTime(deltaTime);
-            //if (chaseComponent_->GetRecalcTime() <= 0.0f)
-            //{
-            //    // プレイヤーの位置をゴールとして新しい経路を計算
-            //    chaseComponent_->SetCurrentPath(FindPath(transform_.pos, player_.GetTransform().pos));
-            //    
-            //    // 0.5秒ごとに再計算させる
-            //    chaseComponent_->SetRecalcTime(0.5f);
-            //}
-            
+        {   
             // 追跡処理時に必要な情報を渡す
             chaseComponent_->Chase(deltaTime, transform_,
                 moveDir_, movePow_, 5.0f, transform_.quaRot);
@@ -170,11 +158,11 @@ void EnemyBase::OnUpdate(float deltaTime)
 
     // 移動
     VECTOR horizontalMovement = VScale(moveDir_, moveSpeed_ * deltaTime);
-    movePow_ = VAdd(movePow_, horizontalMovement);
+    //movePow_ = VAdd(movePow_, horizontalMovement);
 
-    CalcGravityPow();
+    //CalcGravityPow();
 
-    Collision();
+    //Collision();
 }
 
 void EnemyBase::Draw(void)

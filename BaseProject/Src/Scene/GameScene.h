@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include <DxLib.h>
 #include<vector>
 #include<string>
 #include<memory>
@@ -10,6 +11,8 @@ class Stage;
 class Lockpick;
 class HandLight;
 class Wire;
+
+class ItemBase;
 
 class SlotBase;
 
@@ -41,6 +44,7 @@ public:
 	/// 毎フレーム描画する
 	/// </summary>
 	virtual void Draw(void) override;
+
 
 private:
 	int imgH_;
@@ -91,11 +95,40 @@ private:
 	// プレイヤーの状態
 	std::shared_ptr<PlayerStatusUI> status_;
 
+	// アイテムプールで管理
+	std::vector<std::shared_ptr<ItemBase>> itemPool_;
+
+	// プールからアイテムを生成
+	std::shared_ptr<ItemBase> SpawnItem(int itemTypeID, const VECTOR& pos);
+	// アイテム全体を処理
+	void UpdateItemPool(float deltaTime);
+	void DrawItemPool(void);
+
 	// ホイール入力
 	void HandleMouseWheel(Input& input);
 
 	// メインカメラがfps視点であるがどうか
 	bool isFps_;
 
+	enum class STATE
+	{
+		TUTORIAL,
+		MAINGAME
+	};
+
+	void UpdateTutorial(float deltaTime, Input& input);
+	void UpdateMainGame(float deltaTime, Input& input);
+
+	void DrawTutorial(void);
+	void DrawMainGame(void);
+
+	STATE state_;
+
+	void ChangeState(STATE state);
+	void ChangeTutorial(void);
+	void ChangeMainGame(void);
+
+	// アイテムの取得
+	bool isObtainItem(void);
 };
 

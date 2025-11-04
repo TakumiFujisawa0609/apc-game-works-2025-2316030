@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Item\Battery.cpp" />
     <ClCompile Include="Src\Manager\Config.cpp" />
     <ClCompile Include="Src\Scene\RankingScene.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\NavGridManager.cpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="Src\Scene\UnlickScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Item\Battery.h" />
     <ClInclude Include="Src\Manager\Config.h" />
     <ClInclude Include="Src\Scene\RankingScene.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\NavGridManager.h" />

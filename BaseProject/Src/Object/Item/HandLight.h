@@ -9,7 +9,7 @@ class HandLight :
 {
 public:
 
-    enum TYPE
+    enum class TYPE
     {
         REGIDBODY,
         SKINING
@@ -18,6 +18,8 @@ public:
     static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
     static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
     static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
+
+    static constexpr float MAX_VALUE = 10.0f;
 
     // 調整用座標
     static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
@@ -29,9 +31,10 @@ public:
     void Update(float deltaTime) override;
     void Draw(void) override;
 
-    void InitLightRenderer(TYPE type, int modelId);
-    void UpdateRenderer();
-    void DrawRenderer();
+    void InitLightRenderer(const TYPE& type, int modelId);
+    void UpdateRenderer(float deltaTime);
+    void DrawRenderer(void);
+    void DrawUI(void);
 
 private:
 
@@ -47,6 +50,17 @@ private:
     std::unique_ptr<ModelMaterial> material_;
     std::unique_ptr<ModelRenderer> renderer_;
 
-    int value_;     // 残量
+    float value_;     // 残量
+    float blinkIntensity_;// 点滅強度
+
+    bool canToggle_;
+    const float TOGGLE_COOLDOWN = 0.2f; // 0.2秒間のクールダウン
+    float toggleTimer_;                 // クリック受け付け
+
+    float blinkTimer_;
+    float nextBlinkDuration_;
+    bool isBlinkActive_;
+    const float BLINK_MIN_DURATION = 0.05f;
+    const float BLINK_MAX_DURATION = 0.3f;
 };
 

@@ -26,6 +26,8 @@ public:
 	static constexpr float MOVE_RUN_SPEED = 10.0f;				// 走りスピード
 	static constexpr float MOUSE_SENSITIVITY = 0.002f;			// マウス感度
 
+	static constexpr float MAX_SAN_VALUE = 100.0f;
+
 	Player(void);
 	~Player(void);
 
@@ -49,6 +51,9 @@ public:
 	int GetRunSH(void);
 
 	void SetHandLight(std::weak_ptr<HandLight> handLight);
+
+
+	void DrawUI(void);
 
 private:
 

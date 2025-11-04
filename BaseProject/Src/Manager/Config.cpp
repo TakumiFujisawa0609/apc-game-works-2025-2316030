@@ -2,6 +2,9 @@
 #include "Config.h"
 
 Config::Config(void)
+	:
+	isFullS_(false),
+	window_()
 {
 }
 

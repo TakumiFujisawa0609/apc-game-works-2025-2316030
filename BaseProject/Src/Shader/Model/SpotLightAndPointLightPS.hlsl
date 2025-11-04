@@ -16,6 +16,8 @@ cbuffer cbParam : register(b4)
 {
 	float4 g_diff_color;
 	float4 g_ambient_color;
+	float g_blink_intensity;
+	float3 padding1;
 }
 
 float4 main(PS_INPUT PSInput) : SV_TARGET0
@@ -112,6 +114,9 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 
 	//有効距離外だったら減衰率を最大にする処理
 	lLightGen *= step(lLightDistancePow2, spotL.rangePow2);
+
+	// 天メル点滅強度を乗算する
+	lLightGen *= g_blink_intensity;
 
 	//return float4(lLightGen, lLightGen, lLightGen, 1.0f);
 

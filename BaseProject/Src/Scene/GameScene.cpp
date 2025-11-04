@@ -80,6 +80,18 @@ void GameScene::Init(Input& input)
 	wire_ = std::make_shared<Wire>(*player_);
 	wire_->Init();
 
+
+	// ひとつの型でアイテムを管理する
+	const int INIT_POOL_SIZE = 30;
+	itemPool_.reserve(INIT_POOL_SIZE);
+	for (int i = 0; i < INIT_POOL_SIZE; ++i)
+	{
+		itemPool_.push_back(std::make_shared<HandLight>(*player_));
+		itemPool_.push_back(std::make_shared<Lockpick>(*player_));
+		itemPool_.push_back(std::make_shared<Wire>(*player_));
+		
+	}
+
 	// 敵の基底クラス
 	eBase_ = std::make_shared<EnemyBase>(*player_);
 
@@ -106,6 +118,7 @@ void GameScene::Init(Input& input)
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
 	isFps_ = true;
+	ChangeState(STATE::MAINGAME);
 }
 
 void GameScene::Update(Input& input)
@@ -132,19 +145,6 @@ void GameScene::NormalUpdate(Input& input)
 {
 	++frame_;
 
-
-	//if (player_->GetTimeLimitComp()->IsTimeDepleted())
-	//{
-	//	controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
-	//	return;
-	//}
-
-	//if (wire_->isGameClear())
-	//{
-	//	controller_.ChangeScene(std::make_shared<ClearScene>(controller_), input);
-	//	return;
-	//}
-
 	const auto& camera = Application::GetInstance().GetCamera();
 	VECTOR prevAngle_ = {};
 	auto& ins = InputManager::GetInstance();
@@ -152,6 +152,7 @@ void GameScene::NormalUpdate(Input& input)
 	if (ins.IsNew(KEY_INPUT_ESCAPE))
 	{
 		controller_.PushScene(std::make_shared<PauseScene>(controller_), input);
+		camera->SetOperableCamera(false);
 	}
 
 	if (ins.IsNew(KEY_INPUT_P))
@@ -160,91 +161,88 @@ void GameScene::NormalUpdate(Input& input)
 		return;
 	}
 
-	VECTOR targetPos = { -2317.0f,189.0f,-1558.0f };
-	// 球体1 (標的) の情報
-	VECTOR TargetCenter = VGet(-2317.0f,189.0f,-1558.0f);
-	const float TargetRadius = 120.0f; // 標的の半径
+#pragma region keyに遷移
 
-	// 球体2 (カメラ注視点の代わり、あるいは別の標的) の情報
-	VECTOR OtherCenter = camera->GetTargetPos();
-	const float OtherRadius = 10.0f; // もう一方の球体の半径
+	//VECTOR targetPos = { -2317.0f,189.0f,-1558.0f };
+	//// 球体1 (標的) の情報
+	//VECTOR TargetCenter = VGet(-2317.0f,189.0f,-1558.0f);
+	//const float TargetRadius = 120.0f; // 標的の半径
 
-	// 判定に必要な、半径の合計を事前に計算
-	const float CombinedRadius = TargetRadius + OtherRadius;
+	//// 球体2 (カメラ注視点の代わり、あるいは別の標的) の情報
+	//VECTOR OtherCenter = camera->GetTargetPos();
+	//const float OtherRadius = 10.0f; // もう一方の球体の半径
 
-	// 最適化のため、半径の合計の二乗も計算
-	const float CombinedRadiusSq = CombinedRadius * CombinedRadius;
-	
-	// 1. 中心点間のベクトルの差を計算 (V2 - V1)
-	VECTOR DifferenceVector = VSub(OtherCenter, TargetCenter);
+	//// 判定に必要な、半径の合計を事前に計算
+	//const float CombinedRadius = TargetRadius + OtherRadius;
 
-	// 2. 中心点間の距離の二乗を計算
-	//    VSizeSq はベクトルの長さの二乗を返します。
-	float DistanceSq = VSquareSize(DifferenceVector);
+	//// 最適化のため、半径の合計の二乗も計算
+	//const float CombinedRadiusSq = CombinedRadius * CombinedRadius;
+	//
+	//// 1. 中心点間のベクトルの差を計算 (V2 - V1)
+	//VECTOR DifferenceVector = VSub(OtherCenter, TargetCenter);
 
-	// 3. if文による衝突条件の判定
-	if (DistanceSq <= CombinedRadiusSq)
-	{
-		const TCHAR* text_to_display = _T("右クリック or Aボタン");
-		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
+	//// 2. 中心点間の距離の二乗を計算
+	////    VSizeSq はベクトルの長さの二乗を返します。
+	//float DistanceSq = VSquareSize(DifferenceVector);
 
-		auto size = Application::GetInstance().GetWindowSize();
-		// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
-		int draw_x = (size.width / 2) - (text_width / 2);
+	//// 3. if文による衝突条件の判定
+	//if (DistanceSq <= CombinedRadiusSq)
+	//{
+	//	const TCHAR* text_to_display = _T("右クリック or Aボタン");
+	//	int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
-		// Y座標: 画面全体の高さの 4分の3 の位置
-		int draw_y = (size.height * 3) / 4;
+	//	auto size = Application::GetInstance().GetWindowSize();
+	//	// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
+	//	int draw_x = (size.width / 2) - (text_width / 2);
 
-		// 3. テキストを描画
+	//	// Y座標: 画面全体の高さの 4分の3 の位置
+	//	int draw_y = (size.height * 3) / 4;
 
-		// 赤色で描画
-		int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)
+	//	// 3. テキストを描画
 
-		// 描画関数でテキストを表示
-		DrawString(draw_x, draw_y, text_to_display, color);
+	//	// 赤色で描画
+	//	int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)
 
-		if (ins.IsTrgMouseRight() || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
-		{
-			StopSoundMem(player_->GetRunSH());
-			StopSoundMem(player_->GetWalkSH());
+	//	// 描画関数でテキストを表示
+	//	DrawString(draw_x, draw_y, text_to_display, color);
 
-			std::shared_ptr<UnlickScene> us = std::make_shared<UnlickScene>(controller_);
-			us->SetPlayer(player_);
-			us->SetWire(wire_);
+	//	if (ins.IsTrgMouseRight() || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
+	//	{
+	//		StopSoundMem(player_->GetRunSH());
+	//		StopSoundMem(player_->GetWalkSH());
 
-			us->SetLockPick(lockpick_);
+	//		std::shared_ptr<UnlickScene> us = std::make_shared<UnlickScene>(controller_);
+	//		us->SetPlayer(player_);
+	//		us->SetWire(wire_);
 
-			controller_.PushScene(us, input);
-			prevAngle_ = camera->GetAngles();
-			camera->SaveAngles(prevAngle_);
-			camera->SetOperableCamera(false);
-			isFps_ = false;
-			return;
-		}
-	}
+	//		us->SetLockPick(lockpick_);
+
+	//		controller_.PushScene(us, input);
+	//		prevAngle_ = camera->GetAngles();
+	//		camera->SaveAngles(prevAngle_);
+	//		camera->SetOperableCamera(false);
+	//		isFps_ = false;
+	//		return;
+	//	}
+	//}
+
+#pragma endregion
+
+
 
 	float time = Application::GetInstance().GetDeltaTime();
 
-	// 衝突判定
-	stage_->Update(time);
-	//player_->AddCollider(eBase_->GetTransform().collider);
-	//eBase_->AddCollider(player_->GetTransform().collider);
-
-	player_->Update(time);
-	eBase_->Update(time);
-
-	// オブジェクト
-
-
-	// スロット
-	itemSlot_->Update(time);
-	HandleMouseWheel(input);
-
-	// アイテム
-	lockpick_->Update(time);
-	light_->Update(time);
-
-	status_->Update(time);
+	switch (state_)
+	{
+	case GameScene::STATE::TUTORIAL:
+		UpdateTutorial(time, input);
+		break;
+	case GameScene::STATE::MAINGAME:
+		UpdateMainGame(time, input);
+		break;
+	default:
+		break;
+	}
 
 }
 
@@ -258,18 +256,20 @@ void GameScene::FadeOutUpdate(Input& input)
 
 void GameScene::NormalDraw()
 {
-	// オブジェクト
-	stage_->Draw();
-	eBase_->Draw();
-	player_->Draw();
-	lockpick_->Draw();
-	light_->Draw();
 
-	// スロット
-	//itemSlot_->Draw();
+	switch (state_)
+	{
+	case GameScene::STATE::TUTORIAL:
+		DrawTutorial();
+		break;
+	case GameScene::STATE::MAINGAME:
+		DrawMainGame();
+		break;
+	default:
+		break;
+	}
 
-	// プレイヤー状態
-	status_->Draw();
+#pragma region MyRegion
 
 	const auto& angles_ = Application::GetInstance().GetCamera()->GetAngles();
 
@@ -319,6 +319,9 @@ void GameScene::NormalDraw()
 		DrawString(draw_x, draw_y, text_to_display, color);
 	}
 
+#pragma endregion
+
+
 
 	//DrawFormatString(0, 52, GetColor(0, 0, 0), L"cAngle=(%.2f,%.2f,%.2f)", angles_.x, angles_.y, angles_.z);
 	//DrawString(10, 0, L"Game Scene", 0xffffff);
@@ -327,18 +330,6 @@ void GameScene::NormalDraw()
 
 void GameScene::FadeDraw()
 {
-	// オブジェクト
-	stage_->Draw();
-	player_->Draw();
-
-	lockpick_->Draw();
-	light_->Draw();
-
-	// スロット
-	//itemSlot_->Draw();
-
-	// プレイヤー状態
-	status_->Draw();
 
 	float rate = static_cast<float>(frame_) /
 					static_cast<float>(fade_interval);
@@ -372,6 +363,43 @@ void GameScene::LoadLocationData()
 	FileRead_close(fHandle);
 }
 
+std::shared_ptr<ItemBase> GameScene::SpawnItem(int itemTypeID, const VECTOR& pos)
+{
+	for (const auto& item : itemPool_)
+	{
+		if (!item->IsDisabledItem())
+		{
+			// プールからアイテムを取り出し、初期化・アクティブ化
+
+			return item;
+		}
+	}
+
+	return nullptr;
+}
+
+void GameScene::UpdateItemPool(float deltaTime)
+{
+	for (const auto& item : itemPool_)
+	{
+		if (item->IsDisabledItem() || item->IsCurrentSelected())
+		{
+			item->Update(deltaTime);
+		}
+	}
+}
+
+void GameScene::DrawItemPool(void)
+{
+	for (const auto& item : itemPool_)
+	{
+		if (item->IsDisabledItem() || item->IsCurrentSelected())
+		{
+			item->Draw();
+		}
+	}
+}
+
 void GameScene::HandleMouseWheel(Input& input)
 {
 	if (!itemSlot_)
@@ -396,4 +424,107 @@ void GameScene::HandleMouseWheel(Input& input)
 		itemSlot_->CycleByWheel(false);
 		wheelCounter = 0;
 	}
+}
+
+void GameScene::UpdateTutorial(float deltaTime,Input& input)
+{
+	// 衝突判定
+	stage_->Update(deltaTime);
+
+	player_->Update(deltaTime);
+	eBase_->Update(deltaTime);
+
+	// スロット
+	itemSlot_->Update(deltaTime);
+	HandleMouseWheel(input);
+
+	// アイテム
+	lockpick_->Update(deltaTime);
+	light_->Update(deltaTime);
+
+	status_->Update(deltaTime);
+}
+
+void GameScene::UpdateMainGame(float deltaTime, Input& input)
+{
+	// 衝突判定
+	stage_->Update(deltaTime);
+
+	player_->Update(deltaTime);
+	eBase_->Update(deltaTime);
+
+	// スロット
+	itemSlot_->Update(deltaTime);
+	HandleMouseWheel(input);
+
+	// アイテム
+	lockpick_->Update(deltaTime);
+	light_->Update(deltaTime);
+
+	status_->Update(deltaTime);
+}
+
+void GameScene::DrawTutorial(void)
+{
+	// オブジェクト
+	stage_->Draw();
+	eBase_->Draw();
+	player_->Draw();
+	lockpick_->Draw();
+	light_->Draw();
+
+	light_->DrawUI();
+	player_->DrawUI();
+	// プレイヤー状態
+	status_->Draw();
+}
+
+void GameScene::DrawMainGame(void)
+{
+	// オブジェクト
+	stage_->Draw();
+	player_->Draw();
+
+	lockpick_->Draw();
+	light_->Draw();
+
+	light_->DrawUI();
+	player_->DrawUI();
+
+	// プレイヤー状態
+	status_->Draw();
+}
+
+void GameScene::ChangeState(STATE state)
+{
+	state_ = state;
+
+	switch (state_)
+	{
+	case GameScene::STATE::TUTORIAL:
+		ChangeTutorial();
+		break;
+	case GameScene::STATE::MAINGAME:
+		ChangeMainGame();
+		break;
+	default:
+		break;
+	}
+}
+
+void GameScene::ChangeTutorial(void)
+{
+}
+
+void GameScene::ChangeMainGame(void)
+{
+}
+
+bool GameScene::isObtainItem(void)
+{
+	const auto& camera = Application::GetInstance().GetCamera();
+	VECTOR cPos = camera->GetPos();
+	VECTOR tPos = camera->GetTargetPos();
+
+	return false;
 }

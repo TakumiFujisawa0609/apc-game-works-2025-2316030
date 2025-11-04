@@ -193,6 +193,14 @@ bool InputManager::IsTrgMouseMiddle(void) const
 }
 
 InputManager::InputManager(void)
+	:
+	infoEmpty_(),
+	joyDInState_(),
+	joyXInState_(),
+	mouseInfos_(),
+	padInfos_(),
+	mouseInfoEmpty_(),
+	wheelDelta_()
 {
 	mouseInput_ = -1;
 }

@@ -160,6 +160,7 @@ void Application::Run()
 
 #endif // DEBUG
 
+        WaitVSync(1);
         ScreenFlip();
     }
 

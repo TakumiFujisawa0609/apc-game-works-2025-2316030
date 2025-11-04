@@ -13,6 +13,9 @@
 Camera::Camera(void) 
 	: 
 	resMng_(ResourceManager::GetInstance()),
+	pos_{},
+	angles_{},
+	mode_(Camera::MODE::NONE),
 	cameraUp_({}),
 	gameCamera_(GAME_CAMERA::NONE),
 	targetPos_({}),

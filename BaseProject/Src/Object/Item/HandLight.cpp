@@ -1,6 +1,7 @@
 #include <functional>
 #include "../../Application.h"
 #include "../../Common/Quaternion.h"
+#include "../Manager/InputManager.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/Camera.h"
 #include "../../Utility/AsoUtility.h"
@@ -36,7 +37,17 @@ void HandLight::Init(void)
 	isEfficacy_ = false;
 	isDisabled_ = false;
 
-	value_ = 100;
+	canToggle_ = true;
+	toggleTimer_ = 0.0f;
+
+	blinkTimer_ = 0.0f;
+	nextBlinkDuration_ = 0.0f;
+	isBlinkActive_ = false;
+
+	float randomValue = (float)GetRand(10000) / 10000.0f;
+	nextBlinkDuration_ = BLINK_MIN_DURATION + (BLINK_MAX_DURATION - BLINK_MIN_DURATION) * randomValue;
+
+	value_ = MAX_VALUE;
 	ChangeState(STATE::ININVENTORY);
 
 }
@@ -55,18 +66,17 @@ void HandLight::Update(float deltaTime)
 void HandLight::Draw(void)
 {
 
+	
 	if (IsCurrentSelected())
 	{
 		MV1DrawModel(transform_.modelId);
+		auto  size = Application::GetInstance().GetWindowSize();
+		DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
 	}
-
-	auto  size = Application::GetInstance().GetWindowSize();
-	DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %d", value_);
-
 }
 
-void HandLight::InitLightRenderer(TYPE type, int modelId)
+void HandLight::InitLightRenderer(const TYPE& type, int modelId)
 {
 	float OutAngle = 0.5f;
 	float InAngle = 0.15f;
@@ -87,20 +97,24 @@ void HandLight::InitLightRenderer(TYPE type, int modelId)
 		Atten1,
 		Atten2);
 
-	SetGlobalAmbientLight(GetColorF(0.8f, 0.8f, 0.8f, 0.8f));
+	SetGlobalAmbientLight(GetColorF(0.0f, 0.0f, 0.0f, 0.0f));
 
 	// モデル描画用
-	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 2, L"SpotLightAndPointLightPS.cso", 2);
+	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 2, L"SpotLightAndPointLightPS.cso", 3);
 	material_->AddConstBufVS({ transform_.pos.x,transform_.pos.y,transform_.pos.z,0.0f });
-	material_->AddConstBufVS({ dir.x,dir.y,dir.z,0.0f });
+	material_->AddConstBufVS({ dir.x + 0.1f,dir.y,dir.z,0.0f });
 	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
 	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
+	float currentTime = GetNowCount() / 1000.0f;
+	float sin_value = (std::sin(5.0f * currentTime) + 1.0f) / 2.0f;
+	blinkIntensity_ = 0.2f + (1.0f - 0.2f) * sin_value;
+	material_->AddConstBufPS({ blinkIntensity_,0.0f,0.0f,0.0f });
 
 	renderer_ = std::make_unique<ModelRenderer>(modelId, *material_);
 
 }
 
-void HandLight::UpdateRenderer()
+void HandLight::UpdateRenderer(float deltaTime)
 {
 	float OutAngle = 0.5f;
 	float InAngle = 0.15f;
@@ -123,12 +137,87 @@ void HandLight::UpdateRenderer()
 
 	material_->SetConstBufVS(0, { transform_.pos.x,transform_.pos.y,transform_.pos.z,0.0f });
 
-	material_->SetConstBufVS(1, { dir.x,dir.y,dir.z,0.0f });
+	material_->SetConstBufVS(1, { dir.x + 0.1f,dir.y,dir.z,0.0f });
 
+	float max = MAX_VALUE;
+	float raito = value_ / max;
+	if (raito < 0.0f)raito = 0.0f;
+	if (isDisabled_)
+	{
+		if (raito <= 0.0f)
+		{
+			blinkIntensity_ = 0.0f;
+		}
+		else if (raito < 0.3f)
+		{
+			blinkTimer_ += deltaTime;
+			if (blinkTimer_ >= nextBlinkDuration_)
+			{
+				// 時間が来たら状態を反転させる
+				isBlinkActive_ = !isBlinkActive_;
+
+				// 次の不規則な間隔を再設定
+				float randomValue = (float)GetRand(10000) / 10000.0f;
+				nextBlinkDuration_ = BLINK_MIN_DURATION + (BLINK_MAX_DURATION - BLINK_MIN_DURATION) * randomValue;
+				blinkTimer_ = 0.0f;
+
+			}
+			if (isBlinkActive_)
+			{
+				blinkIntensity_ = 1.0f;
+			}
+			else
+			{
+				blinkIntensity_ = 0.2f;
+			}
+			float currentTime = GetNowCount() / 1000.0f;
+			float sin_value = (std::sin(5.0f * currentTime) + 1.0f) / 2.0f;
+			blinkIntensity_ = 0.2f + (1.0f - 0.2f) * sin_value;
+		}
+		else
+		{
+			blinkIntensity_ = 1.0f;
+		}
+	
+		material_->SetConstBufPS(2, { blinkIntensity_,0.0f,0.0f,0.0f });
+	}
+	else
+	{
+		blinkIntensity_ = 0.0f;
+		material_->SetConstBufPS(2, { blinkIntensity_,0.0f,0.0f,0.0f });
+	}
 }
 
-void HandLight::DrawRenderer()
+void HandLight::DrawRenderer(void)
 {
+	renderer_->Draw();
+}
+
+void HandLight::DrawUI(void)
+{
+	auto size = Application::GetInstance().GetWindowSize();
+
+	// --- UI描画の位置と設定 ---
+	int drawX = size.width - 250; // 右から250ピクセルの位置
+	int drawY = size.height - 50;  // 下から50ピクセルの位置
+	int uiWidth = 200;
+	int uiHeight = 20;
+
+	//// value_が浮動小数点型であると仮定し、最大値で割って残量比率を計算
+	float ratio = value_ / MAX_VALUE;
+	if (ratio < 0.0f) ratio = 0.0f;
+
+	// --- 1. ゲージの背景を描画 (灰色) ---
+	DrawBox(drawX, drawY, drawX + uiWidth, drawY + uiHeight, GetColor(50, 50, 50), TRUE);
+
+	// --- 2. 残量ゲージを描画 (緑色) ---
+	// 残量に応じた幅
+	int fillWidth = (int)(uiWidth * ratio);
+	DrawBox(drawX, drawY, drawX + fillWidth, drawY + uiHeight, GetColor(0, 255, 0), TRUE);
+
+	// --- 3. 残量パーセンテージをテキストで描画 ---
+	int percent = (int)(ratio * 100.0f);
+	DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"残量: %d%%", percent);
 }
 
 void HandLight::OnUpdate(float deltaTime)
@@ -152,11 +241,7 @@ void HandLight::UpdateInVentory(float deltaTime)
 {
 	// 追従
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
-
-	// 現在手に持っているかどうかをスロットを見て判断する
-	// 持っていれば
-	value_ -= Application::GetInstance().GetDeltaTime() / 100.0f;
-
+	
 	// 装備しているかどうか
 	if (isEquipment_)
 	{
@@ -166,34 +251,56 @@ void HandLight::UpdateInVentory(float deltaTime)
 
 void HandLight::UpdateInUse(float deltaTime)
 {
+
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
 
-	// 現在手に持っているかどうかをスロットを見て判断する
-	// 持っていれば
-	value_ -= Application::GetInstance().GetDeltaTime() / 100.0f;
-
-	if (value_ > 0)
+	auto& ins = InputManager::GetInstance();
+	if (!canToggle_)
 	{
-		ChangeState(STATE::USEDUP);
+		toggleTimer_ += deltaTime; // Application::GetInstance().GetDeltaTime() を使用
+		if (toggleTimer_ >= TOGGLE_COOLDOWN)
+		{
+			canToggle_ = true;
+			toggleTimer_ = 0.0f;
+		}
 	}
+	if (canToggle_ && ins.IsClickMouseLeft())
+	{
+		isDisabled_ = !isDisabled_;
+
+		// トグルを実行したらクールダウン開始
+		canToggle_ = false;
+		toggleTimer_ = 0.0f;
+	}
+
+	if (isDisabled_)
+	{
+		value_ -= Application::GetInstance().GetDeltaTime();
+	
+		if (value_ < 0.0f)
+		{
+			value_ = 0.0f;
+		}
+	}
+
 }
 
 void HandLight::UpdateUsedUp(float deltaTime)
 {
-	// アイテムが今後使用できなくなった場合
-	isDisabled_ = true;
+	//// アイテムが今後使用できなくなった場合
+	//isDisabled_ = true;
 }
 
 void HandLight::UpdateDisabled(float deltaTime)
 {
 	// 一時的に使えない状態
 
-	// 時間経過などで使える状態になったとき
-	if (!isDisabled_)
-	{
-		// インベントリへ
-		ChangeState(STATE::ININVENTORY);
-	}
+	//// 時間経過などで使える状態になったとき
+	//if (!isDisabled_)
+	//{
+	//	// インベントリへ
+	//	ChangeState(STATE::ININVENTORY);
+	//}
 }
 
 

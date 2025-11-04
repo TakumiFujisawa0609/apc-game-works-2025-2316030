@@ -1,7 +1,9 @@
 #include<DxLib.h>
 #include "PauseScene.h"
+#include"../Manager/InputManager.h"
 #include"../Manager/SceneController.h"
 #include"../Application.h"
+#include"../Manager/Camera.h"
 #include"../Input.h"
 #include"CommandListScene.h"
 #include"KeyConfigScene.h"
@@ -44,10 +46,11 @@ PauseScene::PauseScene(SceneController& controller) :
 		{L"戻る",[this](Input&) {
 				update_ = &PauseScene::DisappearUpdate;
 				draw_ = &PauseScene::ProcessDraw;
+				Application::GetInstance().GetCamera()->SetOperableCamera(true);
 			}
 		},
-		{L"タイトルに戻る",[this](Input&) {
-				controller_.JumpScene(make_shared<TitleScene>(controller_));
+		{L"タイトルに戻る",[this](Input& input) {
+				controller_.JumpScene(make_shared<TitleScene>(controller_),input);
 				return;
 			}
 		},
@@ -91,15 +94,23 @@ void PauseScene::DisappearUpdate(Input& input)
 
 void PauseScene::NormalUpdate(Input& input)
 {
+	auto& ins = InputManager::GetInstance();
+	static int wheelCounter = 0;
+	int wheelDelta = ins.GetWheelDelta();
+	wheelCounter += wheelDelta;
+
 	if (input.IsTriggered("pause")) {
 		update_ = &PauseScene::DisappearUpdate;
 		draw_ = &PauseScene::ProcessDraw;
 		return;
 	}
-	if (input.IsTriggered("up")) {
+	if (input.IsTriggered("up")|| wheelCounter > 1) {
 		currentIndex_ = static_cast<int>((currentIndex_ + menuList_.size() - 1) % menuList_.size());
-	}else if (input.IsTriggered("down")) {
+		wheelCounter = 0;
+	}
+	else if (input.IsTriggered("down") || wheelDelta <= -1) {
 		currentIndex_ = (currentIndex_ + 1) % menuList_.size();
+		wheelCounter = 0;
 	}
 	if (input.IsTriggered("ok")) {
 		auto selectedName = menuList_[currentIndex_];

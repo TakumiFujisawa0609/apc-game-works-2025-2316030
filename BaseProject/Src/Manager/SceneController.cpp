@@ -88,10 +88,21 @@ void SceneController::PopScene(Input& input)
 	}
 }
 
-void SceneController::JumpScene(std::shared_ptr<Scene> scene)
+void SceneController::JumpScene(std::shared_ptr<Scene> scene, Input& input)
 {
+	for (auto& s : scenes_)
+	{
+		DeleteGraph(s->GetRenderTarget());
+	}
 	scenes_.clear();
 	scenes_.push_back(scene);
+
+	auto sizeW = Application::GetInstance().GetWindowSize();
+	int newScreenH = MakeScreen(sizeW.width, sizeW.height);
+	scenes_.back()->SetRenderTarget(newScreenH);
+
+	scenes_.back()->Init(input);
+	Application::GetInstance().ResetDeltaTime();
 }
 
 int SceneController::GetDepthScreen(void) const

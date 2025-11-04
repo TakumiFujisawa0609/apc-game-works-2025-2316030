@@ -17,7 +17,7 @@ Player::Player(void)
     :
     tLimit_(nullptr),
     input_(nullptr),
-    sanV_(0.0f)
+    sanV_(MAX_SAN_VALUE)
 {
 	
 }
@@ -81,9 +81,16 @@ void Player::Update(float deltaTime)
 
 void Player::OnUpdate(float deltaTime)
 {
-    if (light_.lock()->IsDisabledItem())
+    if (!light_.lock()->IsDisabledItem())
     {
-        sanV_ = 0.0f;
+        sanV_ -= Application::GetInstance().GetDeltaTime();
+    }
+    else
+    {
+        if (sanV_ < MAX_SAN_VALUE)
+        {
+            sanV_ += Application::GetInstance().GetDeltaTime();
+        }
     }
 
     // カメラの角度を取得
@@ -199,6 +206,11 @@ void Player::Draw(void)
     //DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
+    
+    auto  size = Application::GetInstance().GetWindowSize();
+    DrawFormatString(size.width - 150, 176, GetColor(255, 255, 255), L"sanV = %.2f", sanV_);
+
+
 #endif // _DEBUG
 
 }
@@ -231,6 +243,34 @@ int Player::GetRunSH(void)
 void Player::SetHandLight(std::weak_ptr<HandLight> handLight)
 {
     light_ = handLight.lock();
+}
+
+void Player::DrawUI(void)
+{
+
+    auto size = Application::GetInstance().GetWindowSize();
+
+    // --- UI描画の位置と設定 ---
+    int drawX = size.width - 250; // 右から250ピクセルの位置
+    int drawY = size.height - 100;  // 下から50ピクセルの位置
+    int uiWidth = 200;
+    int uiHeight = 20;
+
+    //// value_が浮動小数点型であると仮定し、最大値で割って残量比率を計算
+    float ratio = sanV_ / MAX_SAN_VALUE;
+    if (ratio < 0.0f) ratio = 0.0f;
+
+    // --- 1. ゲージの背景を描画 (灰色) ---
+    DrawBox(drawX, drawY, drawX + uiWidth, drawY + uiHeight, GetColor(50, 50, 50), TRUE);
+
+    // --- 2. 残量ゲージを描画 (緑色) ---
+    // 残量に応じた幅
+    int fillWidth = (int)(uiWidth * ratio);
+    DrawBox(drawX, drawY, drawX + fillWidth, drawY + uiHeight, GetColor(0, 255, 0), TRUE);
+
+    // --- 3. 残量パーセンテージをテキストで描画 ---
+    int percent = (int)(ratio * 100.0f);
+    DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"san値残量: %d%%", percent);
 }
 
 void Player::SetGoalRotate(float rotRad)

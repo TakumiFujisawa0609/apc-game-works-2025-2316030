@@ -46,7 +46,7 @@ public:
 	/// 強制的に特定のシーンに飛ぶ。積んでてもリセットされる
 	/// </summary>
 	/// <param name="scene">ジャンプ先シーン</param>
-	void JumpScene(std::shared_ptr<Scene> scene);
+	void JumpScene(std::shared_ptr<Scene> scene,Input& input);
 
 
 	// 描画スクリーンを取得する

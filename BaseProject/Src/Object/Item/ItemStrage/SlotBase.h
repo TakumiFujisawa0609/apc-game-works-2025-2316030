@@ -16,40 +16,6 @@ public:
 	void Update(float deltaTime);
 	void Draw(void);
 
-	//// アイテムをスロットに追加する
- //   template<typename U>
-	//bool AddItem(std::shared_ptr<U> item)
-	//{
-	//	static_assert(std::is_base_of_v<ItemBase, U>, "U must be derived from ItemBase");
-	//	/*std::shared_ptr<ItemBase> compatibleItem = std::static_pointer_cast<ItemBase>(item);
-	//	int newIndex = static_cast<int>(slots_.size());
-	//	slots_.push_back(compatibleItem);
-	//	if (std::shared_ptr<ItemBase> itemBase = std::static_pointer_cast<ItemBase>(compatibleItem))
-	//	{
-	//		itemBase->SetOwnerSlot(shared_from_this(), newIndex);
-	//	}
-	//	if (currentSelectedIndex_ == -1)
-	//	{*/
-	//	std::shared_ptr<ItemBase> compatibleItem = std::static_pointer_cast<ItemBase>(item);
-	//	int newIndex = static_cast<int>(slots_.size());
-	//	slots_.push_back(compatibleItem);
-
-	//	// ItemBaseの処理（スロットオーナーの設定）
-	//	if (std::shared_ptr<ItemBase> itemBase = compatibleItem) // compatibleItemは既にItemBase型なのでキャストは不要だが、ご提示コードの形式を維持
-	//	{
-	//		itemBase->SetOwnerSlot(shared_from_this(), newIndex);
-	//	}
-	//	if (currentSelectedIndex_ == -1)
-	//	{
-	//		currentSelectedIndex_ = 0; // 最初のアイテムが追加された場合、選択インデックスを更新
-	//	}
-	//	// 現在のインデックス
-	//	int currentIndex = currentSelectedIndex_;
-
-	//		
-	//	return true; // スロットが満杯で追加に失敗
-	//}
-
 	template<typename U>
 	bool AddItem(std::shared_ptr<U> item)
 	{

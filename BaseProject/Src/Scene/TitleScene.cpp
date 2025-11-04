@@ -85,12 +85,17 @@ void TitleScene::FadeInUpdate(Input&)
 void TitleScene::NormalUpdate(Input& input)
 {
 	auto& ins = InputManager::GetInstance();
+	static int wheelCounter = 0;
+	int wheelDelta = ins.GetWheelDelta();
+	wheelCounter += wheelDelta;
 
-	if (input.IsTriggered("up")) {
+	if (input.IsTriggered("up") || wheelCounter > 1) {
 		currentIndex_ = static_cast<int>((currentIndex_ + menuList_.size() - 1) % menuList_.size());
+		wheelCounter = 0;
 	}
-	else if (input.IsTriggered("down")) {
+	else if (input.IsTriggered("down") || wheelDelta <= -1) {
 		currentIndex_ = (currentIndex_ + 1) % menuList_.size();
+		wheelCounter = 0;
 	}
 	if (input.IsTriggered("ok")) {
 		auto selectedName = menuList_[currentIndex_];
