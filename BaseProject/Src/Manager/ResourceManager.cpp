@@ -38,6 +38,7 @@ void ResourceManager::Init(void)
 	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage2.mv1");
 	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/eStage.mv1");
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/Horror_Game_Starter_Kit.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
 	// フラッシュライトモデル
@@ -51,6 +52,18 @@ void ResourceManager::Init(void)
 	// 針金モデル
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Wire/hook.mv1");
 	resourcesMap_.emplace(SRC::WIRE, res);
+
+	// バッテリーモデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Battery/.mv1");
+	resourcesMap_.emplace(SRC::BATTERY, res);
+
+	// 精神安定剤モデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Tranquilizer/.mv1");
+	resourcesMap_.emplace(SRC::TRANQUILIZER, res);
+
+	// 止血モデル
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Hemostatic/.mv1");
+	resourcesMap_.emplace(SRC::HEMOSTATIC, res);
 
 	// 鍵穴プレート
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Keyhole/plate.png");

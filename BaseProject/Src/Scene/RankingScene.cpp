@@ -21,3 +21,7 @@ void RankingScene::Update(Input& input)
 void RankingScene::Draw(void)
 {
 }
+
+void RankingScene::DrawUI(void)
+{
+}

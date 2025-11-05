@@ -17,7 +17,7 @@
 #include "Stage.h"
 
 
-Stage::Stage(Player& player, EnemyBase& enemyBase,HandLight& light)
+Stage::Stage(Player& player, EnemyBase& enemyBase, HandLight& light)
 	:
 	player_(player),
 	eBase_(enemyBase),
@@ -41,8 +41,6 @@ void Stage::Init(void)
 		AsoUtility::Deg2RadF(0.0f),AsoUtility::Deg2RadF(0.0f) });;
 
 	transform_.MakeCollider(Collider::TYPE::STAGE);
-	
-	InitRenderer();
 
 	transform_.Update();
 
@@ -81,58 +79,64 @@ void Stage::Draw(void)
 	handLight_.DrawRenderer();
 
 #ifdef _DEBUG
-	if (!paths_.empty())
-	{
-		const std::shared_ptr<PatrolPath>& path = paths_[0];
-		const auto& nodes = path->GetNodes();
 
-		VECTOR prevPos = { 0.0f, 0.0f, 0.0f };
-		bool firstNode = true;
+	//if (!paths_.empty())
+	//{
+	//	const std::shared_ptr<PatrolPath>& path = paths_[0];
+	//	const auto& nodes = path->GetNodes();
 
-		for (size_t i = 0; i < nodes.size(); ++i)
-		{
-			const PatrolNode& node = nodes[i];
-			VECTOR currentPos = node.GetPos();
+	//	VECTOR prevPos = { 0.0f, 0.0f, 0.0f };
+	//	bool firstNode = true;
 
-			// 1. ノード自体のデバッグ描画 (球体など)
-			node.DebugDraw();
+	//	for (size_t i = 0; i < nodes.size(); ++i)
+	//	{
+	//		const PatrolNode& node = nodes[i];
+	//		VECTOR currentPos = node.GetPos();
 
-			// 2. ノード間のパスの描画 (線)
-			if (!firstNode)
-			{
-				// ノード間を線で結ぶ
-				DrawLine3D(prevPos, currentPos, GetColor(255, 0, 0)); // 赤線
-			}
+	//		// 1. ノード自体のデバッグ描画 (球体など)
+	//		node.DebugDraw();
 
-			// 3. 次の描画のために現在のノード位置を保存
-			prevPos = currentPos;
-			firstNode = false;
-		}
+	//		// 2. ノード間のパスの描画 (線)
+	//		if (!firstNode)
+	//		{
+	//			// ノード間を線で結ぶ
+	//			DrawLine3D(prevPos, currentPos, GetColor(255, 0, 0)); // 赤線
+	//		}
 
-		// パスタイプがループの場合、最後のノードと最初のノードを結ぶ
-		if (paths_[0]->GetPathType() == PatrolPath::PATHTYPE::LOOP && nodes.size() > 1)
-		{
-			VECTOR firstPos = nodes[0].GetPos();
-			DrawLine3D(prevPos, firstPos, GetColor(255, 0, 0)); // 赤線
-		}
-	}
+	//		// 3. 次の描画のために現在のノード位置を保存
+	//		prevPos = currentPos;
+	//		firstNode = false;
+	//	}
 
-	Transform hlt = handLight_.GetTransform();
-	VECTOR forward = hlt.quaRot.GetForward();
-	VECTOR dir = VNorm(forward);
+	//	// パスタイプがループの場合、最後のノードと最初のノードを結ぶ
+	//	if (paths_[0]->GetPathType() == PatrolPath::PATHTYPE::LOOP && nodes.size() > 1)
+	//	{
+	//		VECTOR firstPos = nodes[0].GetPos();
+	//		DrawLine3D(prevPos, firstPos, GetColor(255, 0, 0)); // 赤線
+	//	}
+	//}
 
-	auto& windowSize_ = Application::GetInstance().GetWindowSize();
-	DrawFormatString(0, 32, GetColor(255, 255, 255), L"hPos = (%.2f,%.2f,%.2f)", hlt.pos.x, hlt.pos.y, hlt.pos.z);
-	DrawFormatString(0, 48, GetColor(255, 255, 255), L"spPos = (%.2f,%.2f,%.2f)", GetLightPosition().x, GetLightPosition().y, GetLightPosition().z);
+	//Transform hlt = handLight_.GetTransform();
+	//VECTOR forward = hlt.quaRot.GetForward();
+	//VECTOR dir = VNorm(forward);
 
-	DrawFormatString(0, 64, GetColor(255, 255, 255), L"hdir = (%.2f,%.2f,%.2f)", dir.x, dir.y, dir.z);
-	DrawFormatString(0, 80, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
+	//auto& windowSize_ = Application::GetInstance().GetWindowSize();
+	//DrawFormatString(0, 32, GetColor(255, 255, 255), L"hPos = (%.2f,%.2f,%.2f)", hlt.pos.x, hlt.pos.y, hlt.pos.z);
+	//DrawFormatString(0, 48, GetColor(255, 255, 255), L"spPos = (%.2f,%.2f,%.2f)", GetLightPosition().x, GetLightPosition().y, GetLightPosition().z);
+
+	//DrawFormatString(0, 64, GetColor(255, 255, 255), L"hdir = (%.2f,%.2f,%.2f)", dir.x, dir.y, dir.z);
+	//DrawFormatString(0, 80, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
 
 
 #endif // _DEBUGe
 
 
 
+}
+
+void Stage::SetCurrentHandLight(std::weak_ptr<HandLight> light)
+{
+	light;
 }
 
 const std::shared_ptr<PatrolPath>& Stage::GetPatrolPath(const size_t& index) const

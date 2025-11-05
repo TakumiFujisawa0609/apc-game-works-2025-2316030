@@ -65,7 +65,7 @@ void Wire::Init(void)
     // intで生成してからfloatにキャストすることで、0.0f〜180.0fの値を設定します。
     goalAngle_ = static_cast<float>(distribution(generator));
 
-    ChangeState(STATE::INUSE);
+    ChangeState(STATE::ONSTAGE);
 }
 
 void Wire::Update(float deltaTime)
@@ -77,18 +77,21 @@ void Wire::Update(float deltaTime)
 
 void Wire::Draw(void)
 {
+    if (isDisabled_)
+    {
 
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
 
-    MV1DrawModel(transform_.modelId);
+        MV1DrawModel(transform_.modelId);
 
-    auto& size = Application::GetInstance().GetWindowSize();
-    DrawFormatString(size.width - 200, 64, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
-    DrawFormatString(size.width - 200, 80, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
+        auto& size = Application::GetInstance().GetWindowSize();
+        DrawFormatString(size.width - 200, 64, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
+        DrawFormatString(size.width - 200, 80, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
 
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
 
-    //DrawFormatString(size.width - 200, 96, GetColor(255, 255, 255), L"rLocal_=(%.2f)", transform_.quaRotLocal.z);
+        //DrawFormatString(size.width - 200, 96, GetColor(255, 255, 255), L"rLocal_=(%.2f)", transform_.quaRotLocal.z);
+    }
 }
 
 float Wire::GetCurrentAngle(void)

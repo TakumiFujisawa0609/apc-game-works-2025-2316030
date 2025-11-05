@@ -45,6 +45,10 @@ void ClearScene::Draw(void)
 	(this->*draw_)();
 }
 
+void ClearScene::DrawUI(void)
+{
+}
+
 void ClearScene::FadeInUpadte(Input& input)
 {
 	if (--frame_ <= 0) {

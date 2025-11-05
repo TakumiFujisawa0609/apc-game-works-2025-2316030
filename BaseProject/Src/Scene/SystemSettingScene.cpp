@@ -40,3 +40,7 @@ void SystemSettingScene::Draw()
 		0x0000ff, false, 3.0f);
 	DrawString(margin_size + 10, margin_size + 10, L"ƒVƒXƒeƒ€İ’è", 0xff0000);
 }
+
+void SystemSettingScene::DrawUI(void)
+{
+}

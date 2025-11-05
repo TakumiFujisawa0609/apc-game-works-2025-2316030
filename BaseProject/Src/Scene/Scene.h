@@ -55,5 +55,7 @@ public:
 	/// </summary>
 	/// <param name="handle"></param>
 	void SetRenderTarget(int handle);
+
+	virtual void DrawUI(void) = 0;
 };
 

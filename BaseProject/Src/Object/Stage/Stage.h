@@ -24,9 +24,14 @@ public:
 	virtual void OnUpdate(float deltaTime) override;
 	virtual void Draw(void) override;
 
+	void SetCurrentHandLight(std::weak_ptr<HandLight> light);
+
 	const std::shared_ptr<PatrolPath>& GetPatrolPath(const size_t& index) const;
 
 	std::shared_ptr<NavGridManager> GetNavGridMananger(void);
+
+	// モデル描画用
+	void InitRenderer(void);
 
 private:
 
@@ -37,6 +42,7 @@ private:
 	Player& player_;
 	EnemyBase& eBase_;
 	HandLight& handLight_;
+	//std::weak_ptr<HandLight> handLight_;
 
 	std::vector<PatrolNode> nodes_;		// 巡回用のノード
 	std::vector<std::shared_ptr<PatrolPath>> paths_;		// 巡回用のパス
@@ -50,8 +56,5 @@ private:
 	void InitObstacles(void);
 
 	std::shared_ptr<NavGridManager> navManager_;
-
-	// モデル描画用
-	void InitRenderer(void);
 };
 

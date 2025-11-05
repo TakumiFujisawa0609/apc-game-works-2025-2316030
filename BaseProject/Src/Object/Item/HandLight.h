@@ -15,7 +15,7 @@ public:
         SKINING
     };
 
-    static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
+    static constexpr VECTOR INIT_POS = { -500.0f, 150.0f, 150.0f };              // 初期座標
     static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
     static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
 

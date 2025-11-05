@@ -21,20 +21,20 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 		scenes_.back() = scene;
 	}
 
-	// 深度バッファ用スクリーン
-	// ( １チャンネル浮動小数点２４ビットテクスチャ )
-	SetCreateDrawValidGraphChannelNum(1);
-	SetDrawValidFloatTypeGraphCreateFlag(TRUE);
-	SetCreateGraphChannelBitDepth(24);
+	//// 深度バッファ用スクリーン
+	//// ( １チャンネル浮動小数点２４ビットテクスチャ )
+	//SetCreateDrawValidGraphChannelNum(1);
+	//SetDrawValidFloatTypeGraphCreateFlag(TRUE);
+	//SetCreateGraphChannelBitDepth(24);
 
-	auto sizeW = Application::GetInstance().GetWindowSize();
+	//auto sizeW = Application::GetInstance().GetWindowSize();
 
-	// 新しいシーン用のスクリーンの作成
-	newScreenH_ = MakeScreen(sizeW.width, sizeW.height, true);
+	//// 新しいシーン用のスクリーンの作成
+	//newScreenH_ = MakeScreen(sizeW.width, sizeW.height, true);
 
-	SetCreateDrawValidGraphChannelNum(0);
-	SetDrawValidFloatTypeGraphCreateFlag(FALSE);
-	SetCreateGraphChannelBitDepth(0);
+	//SetCreateDrawValidGraphChannelNum(0);
+	//SetDrawValidFloatTypeGraphCreateFlag(FALSE);
+	//SetCreateGraphChannelBitDepth(0);
 
 	scenes_.back()->Init(input);//シーンの初期化
 
@@ -53,23 +53,30 @@ void SceneController::Draw()
 	}
 }
 
+void SceneController::DrawUI()
+{
+	for (auto& scene : scenes_) {
+		scene->DrawUI();
+	}
+}
+
 void SceneController::PushScene(std::shared_ptr<Scene> scene, Input& input)
 {
 	auto size = Application::GetInstance().GetWindowSize();
 
-	// 新しい裏画面を作成
-	int newScreenH = MakeScreen(size.width, size.height, true);
+	//// 新しい裏画面を作成
+	//int newScreenH = MakeScreen(size.width, size.height, true);
 
 	//assert(newScreenH == -1);
 
-	// 作成した画面ハンドルをシーンに設定
-	scene->SetRenderTarget(newScreenH);
+	//// 作成した画面ハンドルをシーンに設定
+	//scene->SetRenderTarget(newScreenH);
 
 	// シーンを積む
 	scenes_.push_back(scene);
 
-	// 描画先を裏画面に設定
-	SetDrawScreen(newScreenH);
+	//// 描画先を裏画面に設定
+	//SetDrawScreen(newScreenH);
 
 	// 追加されたシーンの初期化
 	scenes_.back()->Init(input);

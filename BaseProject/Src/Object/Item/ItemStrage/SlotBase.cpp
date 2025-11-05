@@ -1,3 +1,4 @@
+#include "../Battery.h"
 #include "SlotBase.h"
 
 
@@ -17,6 +18,36 @@ void SlotBase::Update(float deltaTime)
 
 void SlotBase::Draw(void)
 {
+}
+
+void SlotBase::UseCurrentItem(void)
+{
+	auto currentItem = GetCurrentItem();
+
+	if (auto battery = std::dynamic_pointer_cast<Battery>(currentItem))
+	{
+		battery->Use();
+	}
+
+	if (currentItem->IsDisabledItem())
+	{
+		RemoveItem(currentItem);
+	}
+}
+
+std::shared_ptr<ItemBase> SlotBase::GetCurrentItem(void) const
+{
+	if (slots_.empty())
+	{
+		return nullptr;
+	}
+
+	// 現在のインデックスが有効な範囲内かをチェック
+	if (currentSelectedIndex_ >= 0 && currentSelectedIndex_ < static_cast<int>(slots_.size()))
+	{
+		return slots_[currentSelectedIndex_];
+	}
+	return nullptr;
 }
 
 bool SlotBase::SelectItem(int index)
@@ -79,4 +110,8 @@ void SlotBase::UpdateIndex(int direction)
 			newItemBase->ChangeState(ItemBase::STATE::INUSE);
 		}
 	}
+}
+
+void SlotBase::RemoveItem(const std::shared_ptr<ItemBase>& item)
+{
 }

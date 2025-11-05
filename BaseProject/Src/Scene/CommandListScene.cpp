@@ -39,3 +39,7 @@ void CommandListScene::Draw()
 		0xff00ff, false, 3.0f);
 	DrawString(margin_size + 10, margin_size + 10, L"コマンド表", 0x008800);
 }
+
+void CommandListScene::DrawUI(void)
+{
+}

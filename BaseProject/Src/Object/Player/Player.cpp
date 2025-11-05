@@ -203,12 +203,12 @@ void Player::Draw(void)
 #ifdef _DEBUG
 
     //capsule_->Draw();
-    //DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+    DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
     
     auto  size = Application::GetInstance().GetWindowSize();
-    DrawFormatString(size.width - 150, 176, GetColor(255, 255, 255), L"sanV = %.2f", sanV_);
+    //DrawFormatString(size.width - 150, 176, GetColor(255, 255, 255), L"sanV = %.2f", sanV_);
 
 
 #endif // _DEBUG
@@ -251,7 +251,7 @@ void Player::DrawUI(void)
     auto size = Application::GetInstance().GetWindowSize();
 
     // --- UI描画の位置と設定 ---
-    int drawX = size.width - 250; // 右から250ピクセルの位置
+    int drawX = 40; // 右から250ピクセルの位置
     int drawY = size.height - 100;  // 下から50ピクセルの位置
     int uiWidth = 200;
     int uiHeight = 20;
@@ -270,7 +270,7 @@ void Player::DrawUI(void)
 
     // --- 3. 残量パーセンテージをテキストで描画 ---
     int percent = (int)(ratio * 100.0f);
-    DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"san値残量: %d%%", percent);
+    DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"正気度残量: %d%%", percent);
 }
 
 void Player::SetGoalRotate(float rotRad)

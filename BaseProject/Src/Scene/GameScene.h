@@ -44,7 +44,9 @@ public:
 	/// 毎フレーム描画する
 	/// </summary>
 	virtual void Draw(void) override;
-
+	
+	
+	void DrawUI(void)override;
 
 private:
 	int imgH_;
@@ -103,6 +105,7 @@ private:
 	// アイテム全体を処理
 	void UpdateItemPool(float deltaTime);
 	void DrawItemPool(void);
+	void DrawUIItemPool(void);
 
 	// ホイール入力
 	void HandleMouseWheel(Input& input);
@@ -128,7 +131,13 @@ private:
 	void ChangeTutorial(void);
 	void ChangeMainGame(void);
 
-	// アイテムの取得
-	bool isObtainItem(void);
+	void ObtainItem(void);
+
+	// ポインタを返す
+	std::shared_ptr<ItemBase> isObtainItems(void);
+
+
+	bool isHitItem_;
+
 };
 

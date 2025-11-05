@@ -43,6 +43,10 @@ void OverScene::Draw()
 	(this->*draw_)();
 }
 
+void OverScene::DrawUI(void)
+{
+}
+
 
 void OverScene::FadeInUpadte(Input&)
 {

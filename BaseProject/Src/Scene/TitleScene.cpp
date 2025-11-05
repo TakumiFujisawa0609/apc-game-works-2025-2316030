@@ -73,6 +73,10 @@ void TitleScene::Draw()
 	(this->*draw_)();
 }
 
+void TitleScene::DrawUI(void)
+{
+}
+
 void TitleScene::FadeInUpdate(Input&)
 {
 	--frame_;

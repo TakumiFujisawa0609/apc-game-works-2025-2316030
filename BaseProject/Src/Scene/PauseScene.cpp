@@ -75,6 +75,10 @@ void PauseScene::Draw()
 	(this->*draw_)();
 }
 
+void PauseScene::DrawUI(void)
+{
+}
+
 void PauseScene::AppearUpdate(Input& input)
 {
 	if (++frame_ >= appear_interval) {

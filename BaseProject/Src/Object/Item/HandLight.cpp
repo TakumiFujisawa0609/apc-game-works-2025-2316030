@@ -48,7 +48,7 @@ void HandLight::Init(void)
 	nextBlinkDuration_ = BLINK_MIN_DURATION + (BLINK_MAX_DURATION - BLINK_MIN_DURATION) * randomValue;
 
 	value_ = MAX_VALUE;
-	ChangeState(STATE::ININVENTORY);
+	ChangeState(STATE::ONSTAGE);
 
 }
 
@@ -65,13 +65,11 @@ void HandLight::Update(float deltaTime)
 
 void HandLight::Draw(void)
 {
-
-	
-	if (IsCurrentSelected())
+	if (GetState() != STATE::ININVENTORY)
 	{
 		MV1DrawModel(transform_.modelId);
 		auto  size = Application::GetInstance().GetWindowSize();
-		DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
+		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
 	}
 }
@@ -195,10 +193,23 @@ void HandLight::DrawRenderer(void)
 
 void HandLight::DrawUI(void)
 {
+
+	if (GetState() != STATE::INUSE)
+	{
+		return;
+	}
+
+	// 描画設定を退避
+	int blendMode;
+	int blendParam;
+	GetDrawBlendMode(&blendMode, &blendParam);
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // UI描画前にブレンドモードをリセット
+
 	auto size = Application::GetInstance().GetWindowSize();
 
 	// --- UI描画の位置と設定 ---
-	int drawX = size.width - 250; // 右から250ピクセルの位置
+	int drawX =  40; // 右から250ピクセルの位置
 	int drawY = size.height - 50;  // 下から50ピクセルの位置
 	int uiWidth = 200;
 	int uiHeight = 20;
@@ -218,6 +229,9 @@ void HandLight::DrawUI(void)
 	// --- 3. 残量パーセンテージをテキストで描画 ---
 	int percent = (int)(ratio * 100.0f);
 	DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"残量: %d%%", percent);
+
+
+	// SetDrawBlendMode(blendMode, blendParam);
 }
 
 void HandLight::OnUpdate(float deltaTime)
@@ -277,9 +291,10 @@ void HandLight::UpdateInUse(float deltaTime)
 	{
 		value_ -= Application::GetInstance().GetDeltaTime();
 	
-		if (value_ < 0.0f)
+		if (value_ <= 0.0f)
 		{
 			value_ = 0.0f;
+			isDisabled_ = false;
 		}
 	}
 

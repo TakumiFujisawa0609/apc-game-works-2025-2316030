@@ -42,7 +42,7 @@ void Lockpick::Init(void)
 	isEquipment_ = false;
 	isEfficacy_ = false;
 	isDisabled_ = false;
-	ChangeState(STATE::ININVENTORY);
+	ChangeState(STATE::ONSTAGE);
 }
 
 void Lockpick::Update(float deltaTime)
@@ -58,14 +58,11 @@ void Lockpick::Update(float deltaTime)
 
 void Lockpick::Draw(void)
 {
-	if (IsCurrentSelected() ||
-		isUnlocking_)
-	{
-		MV1DrawModel(transform_.modelId);
-		return;
-	}
-	DrawSphere3D(transform_.pos, 80.0f, 32, GetColor(255, 0, 0), GetColor(0, 255, 255), TRUE);
 
+	MV1DrawModel(transform_.modelId);
+	return;
+
+	//DrawSphere3D(transform_.pos, 80.0f, 32, GetColor(255, 0, 0), GetColor(0, 255, 255), TRUE);
 }
 
 bool Lockpick::IsUse(bool use)

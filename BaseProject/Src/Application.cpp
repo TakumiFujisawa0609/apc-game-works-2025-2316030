@@ -149,6 +149,8 @@ void Application::Run()
         // 主にポストエフェクト用
         camera_->Draw();
 
+        controller_->DrawUI();
+
         // FPSカウント更新
         frameCount_++;
         CalcFrameRate();

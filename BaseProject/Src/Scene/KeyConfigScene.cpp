@@ -128,6 +128,10 @@ void KeyConfigScene::Draw()
 	DrawInputList();
 }
 
+void KeyConfigScene::DrawUI(void)
+{
+}
+
 void KeyConfigScene::DrawInputList()
 {
 	int rowY = input_list_top;//ç≈èâÇÃYç¿ïW

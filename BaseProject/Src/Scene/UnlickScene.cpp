@@ -70,6 +70,10 @@ void UnlickScene::Draw(void)
 	(this->*draw_)();
 }
 
+void UnlickScene::DrawUI(void)
+{
+}
+
 void UnlickScene::SetPlayer(std::shared_ptr<Player> player)
 {
 	player_ = player;

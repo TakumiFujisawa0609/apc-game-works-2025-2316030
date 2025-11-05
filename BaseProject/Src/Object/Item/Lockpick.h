@@ -4,7 +4,7 @@ class Lockpick :
     public ItemBase
 {
 public:
-	static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
+	static constexpr VECTOR INIT_POS = { -400.0f, 200.0f, 200.0f };              // 初期座標
 	static constexpr VECTOR INIT_SCL = { 15.0f,15.0f,15.0f };           // 初期拡大率
 	static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,0.0f,15.0f };    // 初期ローカル回転
 

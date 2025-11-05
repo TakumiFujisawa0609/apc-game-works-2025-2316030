@@ -44,6 +44,12 @@ public:
 
 	bool IsDisabledItem(void) const;
 
+	STATE GetState(void) const;
+
+	virtual void DrawUI(void);
+
+	virtual void Use(void);
+
 protected:
 	int useCount_;		// 使用回数
 	int maxUseCount_;	// 最大使用回数

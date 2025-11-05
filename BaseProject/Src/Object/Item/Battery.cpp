@@ -18,32 +18,73 @@ Battery::~Battery(void)
 
 void Battery::Init(void)
 {
+
+	// モデル情報
+	transform_.SetModel(resMng_.LoadModelDuplicate(
+		ResourceManager::SRC::BATTERY));
+	InitModel(
+		INIT_POS,
+		INIT_SCL,
+		INIT_QUAROTLOCAL);
+
+	// 状態の初期化
+	isOnStage_ = true;
+	isEquipment_ = false;
+	isEfficacy_ = false;
+	isDisabled_ = false;
+
+	ChangeState(STATE::ONSTAGE);
 }
 
 void Battery::Update(float deltaTime)
 {
+	// モデル情報の動機
 
+	// それぞれの状態での更新
+	UpdateState(deltaTime);
+
+	// モデルの更新
 	transform_.Update();
 }
 
 void Battery::Draw(void)
 {
+	MV1DrawModel(transform_.modelId);
+	DrawSphere3D(transform_.pos, 32, 16, GetColor(255, 0, 255), GetColor(255, 0, 255), false);
+}
+
+void Battery::Use(void)
+{
 }
 
 void Battery::OnUpdate(float deltaTime)
 {
+	
 }
 
 void Battery::UpdateOnStage(float deltaTime)
 {
+	//拾われるとUpdateInVentoryに遷移
+	if (!isOnStage_)
+	{
+		ChangeState(STATE::ININVENTORY);
+	}
 }
 
 void Battery::UpdateInVentory(float deltaTime)
 {
+	ItemBase::FollowTarget(deltaTime, TARGET_POS);
+
+	// 装備しているかどうか
+	if (isEquipment_)
+	{
+		ChangeState(STATE::INUSE);
+	}
 }
 
 void Battery::UpdateInUse(float deltaTime)
 {
+	ItemBase::FollowTarget(deltaTime, TARGET_POS);
 }
 
 void Battery::UpdateUsedUp(float deltaTime)

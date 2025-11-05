@@ -32,6 +32,11 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// UI専用の描画
+	/// </summary>
+	void DrawUI();
+
+	/// <summary>
 	/// シーンを新しく「積む」
 	/// </summary>
 	/// <param name="scene"></param>

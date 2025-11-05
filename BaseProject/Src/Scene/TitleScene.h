@@ -27,6 +27,9 @@ public:
 	/// </summary>
 	virtual void Draw(void)override;
 
+
+	virtual void DrawUI(void)override;
+
 private:
 
 	int titleH_;

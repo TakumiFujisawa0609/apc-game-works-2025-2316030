@@ -50,6 +50,10 @@ public:
 		return true;
 	}
 
+	void UseCurrentItem(void);
+
+	std::shared_ptr<ItemBase> GetCurrentItem(void) const;
+
 	// アイテムの切り替え
 	bool SelectItem(int index);
 
@@ -67,5 +71,7 @@ protected:
 
 	// 循環切り替えを計算する
 	void UpdateIndex(int direction);
+
+	void RemoveItem(const std::shared_ptr<ItemBase>& item);
 };
 

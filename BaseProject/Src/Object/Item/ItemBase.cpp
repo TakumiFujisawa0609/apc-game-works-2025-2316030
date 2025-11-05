@@ -101,6 +101,19 @@ bool ItemBase::IsDisabledItem(void) const
 	return isDisabled_;
 }
 
+ItemBase::STATE ItemBase::GetState(void) const
+{
+	return state_;
+}
+
+void ItemBase::DrawUI(void)
+{
+}
+
+void ItemBase::Use(void)
+{
+}
+
 void ItemBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)
 {
 	// ÉÇÉfÉãÇÃê›íË

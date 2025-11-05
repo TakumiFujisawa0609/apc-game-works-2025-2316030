@@ -23,6 +23,8 @@ public:
 	/// –ˆƒtƒŒ[ƒ€•`‰æ‚·‚é
 	/// </summary>
 	virtual void Draw(void)override;
+
+	virtual void DrawUI(void)override;
 private:
 	int imgH_ = 0;
 	int frame_ = 0;
