@@ -31,7 +31,11 @@ EnemyBase::EnemyBase(Player& player)
     isPlayerInSight_(false),
     frame_(-1),
     currentPatrolPathIndex_(-1),
-    state_(STATE::IDLE)
+    state_(STATE::IDLE),
+    isWaiting_(false),
+    currentWaitTime_(0.0f),
+    dis_(0.0f),
+    currentNode_(0)
 {
 }
 
@@ -127,15 +131,17 @@ void EnemyBase::OnUpdate(float deltaTime)
     switch (state_)
     {
     case EnemyBase::STATE::PATROL:
-        if (patrolComponent_)
-        {
-            // ここで巡回情報をわたす
-            patrolComponent_->Patrol(deltaTime, transform_, patrolPath_, currentPatrolPathIndex_,
-                moveDir_, movePow_, 5.0f, transform_.quaRot);
+        UpdatePatrol(deltaTime);
+        //if (patrolComponent_)
+        //{
+        //    // ここで巡回情報をわたす
+        //    patrolComponent_->Patrol(deltaTime, transform_, patrolPath_, currentPatrolPathIndex_,
+        //        moveDir_, movePow_, 5.0f, transform_.quaRot);
 
-        }
+        //}
         break;
     case EnemyBase::STATE::CHASE:
+        UpdateChase(deltaTime);
         if (chaseComponent_)
         {   
             // 追跡処理時に必要な情報を渡す
@@ -437,4 +443,92 @@ void EnemyBase::DrawDebug(void)
 
 
 #pragma endregion
+}
+
+void EnemyBase::UpdatePatrol(float deltaTime)
+{
+    // outMoveDirを初期化 (移動しない場合のため)
+    moveDir_ = AsoUtility::VECTOR_ZERO;
+
+    // 現在の目標ノードを取得
+    const PatrolNode& targetNode = patrolPath_->GetNodeIndex(currentPatrolPathIndex_);
+    VECTOR targetPos = targetNode.GetPos();
+    currentNode_ = currentNode_;
+
+    // ----------------------------------------------------
+    // 待機処理
+    // ----------------------------------------------------
+    if (isWaiting_)
+    {
+        currentWaitTime_ -= deltaTime;
+
+        if (currentWaitTime_ <= 0.0f)
+        {
+            // 待機終了。次のノードへ進む
+            isWaiting_ = false;
+
+            // 状態をPATROL（移動）に戻す
+            //enemyBase->ChangeState(EnemyBase::STATE::PATROL);
+        }
+        else
+        {
+            // 次のノードのインデックスを更新
+            patrolPath_->GetNextNode(currentPatrolPathIndex_);
+            currentNode_ = currentPatrolPathIndex_;
+
+            // 待機中は移動を停止
+            moveDir_ = AsoUtility::VECTOR_ZERO;
+
+            // 回転はそのまま維持
+            transform_.quaRot = transform_.quaRot;
+            return;
+        }
+    }
+
+    // ----------------------------------------------------
+    // 移動/回転処理
+    // ----------------------------------------------------
+
+    // 現在位置（Y軸は無視して水平移動）
+    VECTOR currentPos = transform_.pos;
+    currentPos.y = 0.0f;
+    targetPos.y = 0.0f;
+
+    VECTOR moveVector = VSub(targetPos, currentPos);
+    float distance = VSize(moveVector);
+    dis_ = distance;
+
+    // 目標位置に到達したかをチェック（許容誤差1.0f）
+    if (distance < 5.5f)
+    {
+        // 目標に到達したら待機状態に遷移
+        isWaiting_ = true;
+        currentWaitTime_ = targetNode.GetWaitTime();
+
+        // 移動を停止
+        moveDir_ = AsoUtility::VECTOR_ZERO;
+    }
+    else
+    {
+        // 移動方向を設定 (出力)
+        VECTOR moveDirection = VNorm(moveVector);
+        moveDir_ = moveDirection;
+        movePow_ = VScale(moveDir_, 3.0f);
+
+        float length = AsoUtility::MagnitudeF(moveDir_);
+        if (length < 0.001f)return;
+
+        // モデルの回転角度を設定 (出力)
+        // Z軸（前方向）から移動方向への回転
+        float rotationY = atan2f(moveDirection.x, moveDirection.z);
+        Quaternion targetRotation = Quaternion::Euler({ 0.0f, rotationY, 0.0f });
+
+        // 現在の回転と目標の回転の間を滑らかに補間
+        transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 5.0f * deltaTime);
+    }
+}
+
+void EnemyBase::UpdateChase(float deltaTime)
+{
+
 }

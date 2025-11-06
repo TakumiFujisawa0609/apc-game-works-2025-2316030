@@ -17,14 +17,15 @@ class Stage :
     public ActorBase
 {
 public:
-	Stage(Player& player, EnemyBase& enemyBase, HandLight& light);
+	//Stage(Player& player, EnemyBase& enemyBase, HandLight& light);
+	Stage(Player& player, EnemyBase& enemyBase);
 	virtual ~Stage(void);
 	virtual void Init(void) override;
 	virtual void Update(float deltaTime) override;
 	virtual void OnUpdate(float deltaTime) override;
 	virtual void Draw(void) override;
 
-	void SetCurrentHandLight(std::weak_ptr<HandLight> light);
+	void SetCurrentHandLight(std::shared_ptr<HandLight> light);
 
 	const std::shared_ptr<PatrolPath>& GetPatrolPath(const size_t& index) const;
 
@@ -41,8 +42,8 @@ private:
 
 	Player& player_;
 	EnemyBase& eBase_;
-	HandLight& handLight_;
-	//std::weak_ptr<HandLight> handLight_;
+	//HandLight& handLight_;
+	std::weak_ptr<HandLight> handLight_;
 
 	std::vector<PatrolNode> nodes_;		// 巡回用のノード
 	std::vector<std::shared_ptr<PatrolPath>> paths_;		// 巡回用のパス

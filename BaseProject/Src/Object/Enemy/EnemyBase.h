@@ -105,6 +105,11 @@ protected:
 
     std::shared_ptr<NavGridManager> navGridManager_;
 
+    bool isWaiting_;            // ‘Ò‹@’†‚©‚Ç‚¤‚©
+    float currentWaitTime_;     // Œ»İ‚Ì‘Ò‹@c‚èŠÔ
+    float dis_;
+    int currentNode_;
+
 private:
 
     // ‰ñ“]ˆ—
@@ -122,5 +127,8 @@ private:
     bool HearingSound(void);
 
     void DrawDebug(void);
+
+    void UpdatePatrol(float deltaTime);
+    void UpdateChase(float deltaTime);
 };
 

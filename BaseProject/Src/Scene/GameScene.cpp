@@ -51,7 +51,7 @@ GameScene::GameScene(SceneController& controller) :Scene(controller)
 	isFps_ = true;
 	imgH_ = -1;
 	isHitItem_ = false;
-
+	state_ = STATE::MAINGAME;
 	int sw, sh, depth;
 	GetScreenState(&sw, &sh, &depth);
 
@@ -72,6 +72,8 @@ void GameScene::Init(Input& input)
 	// 敵の基底クラス
 	eBase_ = std::make_shared<EnemyBase>(*player_);
 
+	stage_ = std::make_shared<Stage>(*player_, *eBase_);
+
 	// ひとつの型でアイテムを管理する
 	const int INIT_POOL_SIZE = 30;
 	itemPool_.reserve(INIT_POOL_SIZE);
@@ -84,10 +86,8 @@ void GameScene::Init(Input& input)
 		{
 			player_->SetHandLight(light);
 
-			// ステージ
-			stage_ = std::make_shared<Stage>(*player_, *eBase_, *light);
-			stage_->Init();
-
+			// ステージでてきおうさせるライトを設定する
+			stage_->SetCurrentHandLight(light);
 		}
 		itemPool_.push_back(light);
 
@@ -111,6 +111,7 @@ void GameScene::Init(Input& input)
 
 	eBase_->InitComponents();
 
+	stage_->Init();
 	stage_->InitRenderer();
 
 	// アイテムスロット
@@ -119,8 +120,6 @@ void GameScene::Init(Input& input)
 	// ステータス
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
 
-	/*lockpick_->SetTargetPos(&player_->GetTransform());
-	light_->SetTargetPos(&player_->GetTransform());*/
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
 	isFps_ = true;
@@ -155,7 +154,7 @@ void GameScene::DrawUI(void)
 		// 3. テキストを描画
 
 		// 赤色で描画
-		int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)
+		int color = GetColor(255, 255, 255);
 
 		// 描画関数でテキストを表示
 		DrawString(draw_x, draw_y, text_to_display, color);
@@ -355,8 +354,6 @@ void GameScene::NormalDraw()
 
 #pragma endregion
 
-
-
 	//DrawFormatString(0, 52, GetColor(0, 0, 0), L"cAngle=(%.2f,%.2f,%.2f)", angles_.x, angles_.y, angles_.z);
 	//DrawString(10, 0, L"Game Scene", 0xffffff);
 
@@ -474,10 +471,6 @@ void GameScene::UpdateTutorial(float deltaTime,Input& input)
 	itemSlot_->Update(deltaTime);
 	HandleMouseWheel(input);
 
-	//// アイテム
-	//lockpick_->Update(deltaTime);
-	//light_->Update(deltaTime);
-
 	UpdateItemPool(deltaTime);
 
 	status_->Update(deltaTime);
@@ -490,6 +483,7 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 	if (ins.IsTrgMouseRight())
 	{
 		ObtainItem();
+		isHitItem_ = false;
 	}
 
 	if (ins.IsTrgDown(KEY_INPUT_E))
@@ -611,7 +605,6 @@ std::shared_ptr<ItemBase> GameScene::isObtainItems(void)
 	VECTOR pos = { 0.0f,0.0f,100.0f };
 	tPos = VAdd(tPos, pos);
 
-	isHitItem_ = false;
 	for (const auto& item : itemPool_)
 	{
 		// ONSTAGE状態のアイテムのみを判定

@@ -17,11 +17,19 @@
 #include "Stage.h"
 
 
-Stage::Stage(Player& player, EnemyBase& enemyBase, HandLight& light)
+//Stage::Stage(Player& player, EnemyBase& enemyBase, HandLight& light)
+//	:
+//	player_(player),
+//	eBase_(enemyBase),
+//	handLight_(light),
+//	obstacles_{}
+//{
+//}
+
+Stage::Stage(Player& player, EnemyBase& enemyBase)
 	:
 	player_(player),
 	eBase_(enemyBase),
-	handLight_(light),
 	obstacles_{}
 {
 }
@@ -68,7 +76,8 @@ void Stage::Update(float deltaTime)
 
 void Stage::OnUpdate(float deltaTime)
 {
-	handLight_.UpdateRenderer(deltaTime);
+	//handLight_.UpdateRenderer(deltaTime);
+	handLight_.lock()->UpdateRenderer(deltaTime);
 }
 
 void Stage::Draw(void)
@@ -76,7 +85,7 @@ void Stage::Draw(void)
 
 	//MV1DrawModel(transform_.modelId);
 	
-	handLight_.DrawRenderer();
+	handLight_.lock()->DrawRenderer();
 
 #ifdef _DEBUG
 
@@ -134,9 +143,9 @@ void Stage::Draw(void)
 
 }
 
-void Stage::SetCurrentHandLight(std::weak_ptr<HandLight> light)
+void Stage::SetCurrentHandLight(std::shared_ptr<HandLight> light)
 {
-	light;
+	handLight_ = light;
 }
 
 const std::shared_ptr<PatrolPath>& Stage::GetPatrolPath(const size_t& index) const
@@ -182,9 +191,11 @@ void Stage::InitObstacles(void)
 
 void Stage::InitRenderer(void)
 {
-	Transform hlt = handLight_.GetTransform();
+	//Transform hlt = handLight_.GetTransform();
+	Transform hlt = handLight_.lock()->GetTransform();
 	VECTOR forward = hlt.quaRot.GetForward();
 	VECTOR dir = VNorm(forward);
 
-	handLight_.InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
+	//handLight_.InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
+	handLight_.lock()->InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
 }
