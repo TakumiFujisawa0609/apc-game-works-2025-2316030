@@ -71,7 +71,6 @@ private:
     virtual void UpdateInVentory(float deltaTime) override;
     virtual void UpdateInUse(float deltaTime) override;
     virtual void UpdateUsedUp(float deltaTime) override;
-    virtual void UpdateDisabled(float deltaTime) override;
 
     // ‰Šúó‘Ô‚É–ß‚·
     void SetDefault(void);

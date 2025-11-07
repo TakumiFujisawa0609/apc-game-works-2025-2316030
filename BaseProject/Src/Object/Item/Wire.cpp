@@ -242,9 +242,6 @@ void Wire::UpdateUsedUp(float deltaTime)
 {
 }
 
-void Wire::UpdateDisabled(float deltaTime)
-{
-}
 
 void Wire::SetDefault(void)
 {

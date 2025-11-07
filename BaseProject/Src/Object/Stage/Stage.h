@@ -17,7 +17,6 @@ class Stage :
     public ActorBase
 {
 public:
-	//Stage(Player& player, EnemyBase& enemyBase, HandLight& light);
 	Stage(Player& player, EnemyBase& enemyBase);
 	virtual ~Stage(void);
 	virtual void Init(void) override;

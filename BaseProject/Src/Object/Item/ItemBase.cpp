@@ -8,18 +8,20 @@
 ItemBase::ItemBase(Player& player)
 	:
 	player_(player),
-	useCount_(0),
-	maxUseCount_(0),
 	imgH_(-1),
 	isOnStage_(false),
 	isEquipment_(false),
 	isEfficacy_(false),
 	isDisabled_(false),
+	isInUse_(false),
+	isUsed_(false),
 	state_(STATE::NONE),
+	use_(USE::NONE),
 	targetTransform_(nullptr),
 	ownerSlot_(),
 	slotIndex_(-1)
 {
+	type_ = ItemBase::TYPE::REGIDBODY;
 }
 
 int ItemBase::GetImgId(void)
@@ -59,14 +61,32 @@ void ItemBase::UpdateState(float deltaTime)
 	case ItemBase::STATE::ININVENTORY:
 		UpdateInVentory(deltaTime);
 		break;
-	case ItemBase::STATE::INUSE:
+	default:
+		break;
+	}
+}
+
+void ItemBase::UpdateOnStage(float deltaTime)
+{
+}
+
+void ItemBase::UpdateInVentory(float deltaTime)
+{
+	// égópéûÇÃèàóù
+	UpdateUsed(deltaTime);
+}
+
+void ItemBase::UpdateUsed(float deltaTime)
+{
+	switch (use_)
+	{
+	case ItemBase::USE::NONE:
+		break;
+	case ItemBase::USE::INUSE:
 		UpdateInUse(deltaTime);
 		break;
-	case ItemBase::STATE::USEDUP:
-		UpdateUsedUp(deltaTime);
-		break;
-	case ItemBase::STATE::DISABLED:
-		UpdateDisabled(deltaTime);
+	case ItemBase::USE::USEDUP:
+		UpdateUsed(deltaTime);
 		break;
 	default:
 		break;
@@ -85,11 +105,22 @@ void ItemBase::ChangeState(STATE state)
 		break;
 	case ItemBase::STATE::ININVENTORY:
 		break;
-	case ItemBase::STATE::INUSE:
+	default:
 		break;
-	case ItemBase::STATE::USEDUP:
+	}
+}
+
+void ItemBase::ChangeUse(USE use)
+{
+	use_ = use;
+
+	switch (use_)
+	{
+	case ItemBase::USE::NONE:
 		break;
-	case ItemBase::STATE::DISABLED:
+	case ItemBase::USE::INUSE:
+		break;
+	case ItemBase::USE::USEDUP:
 		break;
 	default:
 		break;
@@ -106,11 +137,12 @@ ItemBase::STATE ItemBase::GetState(void) const
 	return state_;
 }
 
-void ItemBase::DrawUI(void)
+ItemBase::USE ItemBase::GetUse(void) const
 {
+	return use_;
 }
 
-void ItemBase::Use(void)
+void ItemBase::DrawUI(void)
 {
 }
 

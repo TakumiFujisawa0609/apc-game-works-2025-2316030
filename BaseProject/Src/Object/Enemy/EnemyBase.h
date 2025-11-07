@@ -1,5 +1,10 @@
 #pragma once
 #include "../ObjectBase/Charactor.h"
+#include "AStar/NavGridManager.h"
+#include "AStar/AStarNode.h"
+#include <vector>
+#include <queue>
+#include <unordered_set>
 
 class Collider;
 class Capsule;
@@ -130,5 +135,25 @@ private:
 
     void UpdatePatrol(float deltaTime);
     void UpdateChase(float deltaTime);
+
+    // A*のメイン関数
+    std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
+
+    // A*のヘルパー関数
+    float GetHCost(AStarNode* a, AStarNode* b);
+    std::vector<AStarNode*> GetNeighbors(AStarNode* node);
+    float GetDistance(AStarNode* a, AStarNode* b);
+    std::vector<VECTOR> RetracePath(AStarNode* start, AStarNode* end);
+
+    // A*ノードを比較するための構造体（Fスコアが低い方を優先）
+    struct CompareNode
+    {
+        bool operator()(const AStarNode* a, const AStarNode* b) const;
+    };
+
+    std::vector<VECTOR> currentPath_;
+    int currentPathIndex_ = 0;
+    float pathRecalcTimer_ = 0.0f;
+    float time_ = 0.0f;
 };
 

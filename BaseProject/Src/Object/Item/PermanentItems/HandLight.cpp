@@ -1,17 +1,17 @@
 #include <functional>
-#include "../../Application.h"
-#include "../../Common/Quaternion.h"
+#include "../../../Application.h"
+#include "../../../Common/Quaternion.h"
 #include "../Manager/InputManager.h"
-#include "../../Manager/ResourceManager.h"
-#include "../../Manager/Camera.h"
-#include "../../Utility/AsoUtility.h"
-#include "../../Renderer/ModelMaterial.h"
-#include "../../Renderer/ModelRenderer.h"
+#include "../../../Manager/ResourceManager.h"
+#include "../../../Manager/Camera.h"
+#include "../../../Utility/AsoUtility.h"
+#include "../../../Renderer/ModelMaterial.h"
+#include "../../../Renderer/ModelRenderer.h"
 #include "HandLight.h"
 
 HandLight::HandLight(Player& player)
 	:
-	ItemBase(player),
+	PermanentItemBase(player),
 	value_(0)
 {
 }
@@ -65,7 +65,8 @@ void HandLight::Update(float deltaTime)
 
 void HandLight::Draw(void)
 {
-	if (GetState() != STATE::ININVENTORY)
+	if (GetState() == STATE::ININVENTORY ||
+		GetUse() != USE::INUSE)
 	{
 		MV1DrawModel(transform_.modelId);
 		auto  size = Application::GetInstance().GetWindowSize();
@@ -194,10 +195,10 @@ void HandLight::DrawRenderer(void)
 void HandLight::DrawUI(void)
 {
 
-	if (GetState() != STATE::INUSE)
+	/*if(GetUse()=USE::INUSE)
 	{
 		return;
-	}
+	}*/
 
 	// 描画設定を退避
 	int blendMode;
@@ -255,12 +256,10 @@ void HandLight::UpdateInVentory(float deltaTime)
 {
 	// 追従
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
-	
+
 	// 装備しているかどうか
-	if (isEquipment_)
-	{
-		ChangeState(STATE::INUSE);
-	}
+
+	ItemBase::UpdateUsed(deltaTime);
 }
 
 void HandLight::UpdateInUse(float deltaTime)
@@ -305,17 +304,3 @@ void HandLight::UpdateUsedUp(float deltaTime)
 	//// アイテムが今後使用できなくなった場合
 	//isDisabled_ = true;
 }
-
-void HandLight::UpdateDisabled(float deltaTime)
-{
-	// 一時的に使えない状態
-
-	//// 時間経過などで使える状態になったとき
-	//if (!isDisabled_)
-	//{
-	//	// インベントリへ
-	//	ChangeState(STATE::ININVENTORY);
-	//}
-}
-
-

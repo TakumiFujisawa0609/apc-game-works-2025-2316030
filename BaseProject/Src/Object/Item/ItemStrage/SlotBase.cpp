@@ -1,4 +1,4 @@
-#include "../Battery.h"
+#include "../ComsumableItems/Battery.h"
 #include "SlotBase.h"
 
 
@@ -107,7 +107,7 @@ void SlotBase::UpdateIndex(int direction)
 		if (auto newItemBase = std::dynamic_pointer_cast<ItemBase>(slots_[currentSelectedIndex_]))
 		{
 			// 新しいアイテムを INUSE 状態にする
-			newItemBase->ChangeState(ItemBase::STATE::INUSE);
+			newItemBase->ChangeState(ItemBase::STATE::ININVENTORY);
 		}
 	}
 }

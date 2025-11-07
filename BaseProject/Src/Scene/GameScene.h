@@ -136,6 +136,7 @@ private:
 	// ƒ|ƒCƒ“ƒ^‚ð•Ô‚·
 	std::shared_ptr<ItemBase> isObtainItems(void);
 
+	bool IsHitItems(void);
 
 	bool isHitItem_;
 

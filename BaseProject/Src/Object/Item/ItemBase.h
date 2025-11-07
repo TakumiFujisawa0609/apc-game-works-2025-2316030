@@ -15,10 +15,14 @@ public:
 	{
 		NONE,		// なし
 		ONSTAGE,	// 拾うことができる状態
-		ININVENTORY,// UIに表示され、使用装備が可能
+		ININVENTORY// UIに表示され、使用装備が可能
+	};
+
+	enum class USE	// インベントリ状態で判別される状態
+	{
+		NONE,
 		INUSE,		// 現在使用中
 		USEDUP,		// 使用済みでインベントリから削除される状態
-		DISABLED	// アイテムが一時的に使えない状態
 	};
 
 	ItemBase(Player& player);
@@ -31,38 +35,43 @@ public:
 	virtual int GetImgId(void);
 
 	// プレイヤーの持ち手座標を取得する
-	void SetTargetPos(const Transform* target);
+	virtual void SetTargetPos(const Transform* target);
 
 	// スロット番号を設定する
 	void SetOwnerSlot(std::shared_ptr<SlotBase> slot, int index);
 
 	// アイテムが現在選択されているか確認する
-	bool IsCurrentSelected(void) const;
+	virtual bool IsCurrentSelected(void) const;
 
 	// 状態の変更
 	virtual void ChangeState(STATE state);
 
-	bool IsDisabledItem(void) const;
+	virtual void ChangeUse(USE use);
 
-	STATE GetState(void) const;
+	virtual bool IsDisabledItem(void) const;
+
+	virtual STATE GetState(void) const;
+
+	virtual USE GetUse(void) const;
 
 	virtual void DrawUI(void);
 
-	virtual void Use(void);
-
 protected:
-	int useCount_;		// 使用回数
-	int maxUseCount_;	// 最大使用回数
 	int imgH_;			// 画像ハンドル
 	bool isOnStage_;	// ステージにあるかどうか
 	bool isEquipment_;	// 装備中かどうか
 	bool isEfficacy_;	// 効果があるかどうか
 	bool isDisabled_;	// 使用できるかどうか
 
+	bool isInUse_;
+	bool isUsed_;
+
 	Player& player_;
 
 	// 状態
 	STATE state_;
+
+	USE use_;
 
 	// 追従対象の座標
 	const Transform* targetTransform_;
@@ -72,11 +81,12 @@ protected:
 
 	// それぞれの状態でのアイテムの更新
 	virtual void UpdateState(float deltaTime);
-	virtual void UpdateOnStage(float deltaTime) = 0;
-	virtual void UpdateInVentory(float deltaTime) = 0;
+	virtual void UpdateOnStage(float deltaTime);
+	virtual void UpdateInVentory(float deltaTime);
+
+	virtual void UpdateUsed(float deltaTime);
 	virtual void UpdateInUse(float deltaTime) = 0;
 	virtual void UpdateUsedUp(float deltaTime) = 0;
-	virtual void UpdateDisabled(float deltaTime) = 0;
 
 	// モデル情報初期化
 	virtual void InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal);

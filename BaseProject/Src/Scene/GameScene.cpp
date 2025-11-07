@@ -17,9 +17,9 @@
 #include"../Object/Enemy/EnemyBase.h"
 #include"../Object/Stage/Stage.h"
 
-#include "../Object/Item/Lockpick.h"
-#include "../Object/Item/HandLight.h"
-#include "../Object/Item/Battery.h"
+#include "../Object/Item/PermanentItems/Lockpick.h"
+#include "../Object/Item/PermanentItems/HandLight.h"
+#include "../Object/Item/ComsumableItems/Battery.h"
 
 #include "../Object/Item/Wire.h"
 
@@ -75,26 +75,27 @@ void GameScene::Init(Input& input)
 	stage_ = std::make_shared<Stage>(*player_, *eBase_);
 
 	// ひとつの型でアイテムを管理する
-	const int INIT_POOL_SIZE = 30;
+	const int INIT_POOL_SIZE = 4;
 	itemPool_.reserve(INIT_POOL_SIZE);
-	for (int i = 0; i < INIT_POOL_SIZE; ++i)
+	
+	auto light = std::make_shared<HandLight>(*player_);
+	light->Init();
+	light->SetTargetPos(&player_->GetTransform());
+	player_->SetHandLight(light);
+	// ステージでてきおうさせるライトを設定する
+	stage_->SetCurrentHandLight(light);
+	itemPool_.push_back(light);
+
+	auto lockpick = std::make_shared<Lockpick>(*player_);
+	lockpick->Init();
+	lockpick->SetTargetPos(&player_->GetTransform());
+	itemPool_.push_back(lockpick);
+
+	for (int i = 0; i < INIT_POOL_SIZE - 2; ++i)
 	{
-		auto light = std::make_shared<HandLight>(*player_);
-		light->Init();
-		light->SetTargetPos(&player_->GetTransform());
-		if (i == 0)
-		{
-			player_->SetHandLight(light);
-
-			// ステージでてきおうさせるライトを設定する
-			stage_->SetCurrentHandLight(light);
-		}
-		itemPool_.push_back(light);
-
 		auto lockpick = std::make_shared<Lockpick>(*player_);
 		lockpick->Init();
 		lockpick->SetTargetPos(&player_->GetTransform());
-
 		itemPool_.push_back(lockpick);
 
 		auto wire = std::make_shared<Wire>(*player_);
@@ -139,7 +140,7 @@ void GameScene::Draw()
 
 void GameScene::DrawUI(void)
 {
-	if (isHitItem_)
+	if (IsHitItems())
 	{
 		const TCHAR* text_to_display = _T("右クリック or Aボタン");
 		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
@@ -163,6 +164,8 @@ void GameScene::DrawUI(void)
 	player_->DrawUI();
 
 	DrawUIItemPool();
+
+	itemSlot_->Draw();
 
 	// プレイヤー状態
 	//status_->Draw();
@@ -195,73 +198,6 @@ void GameScene::NormalUpdate(Input& input)
 		controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
 		return;
 	}
-
-#pragma region keyに遷移
-
-	//VECTOR targetPos = { -2317.0f,189.0f,-1558.0f };
-	//// 球体1 (標的) の情報
-	//VECTOR TargetCenter = VGet(-2317.0f,189.0f,-1558.0f);
-	//const float TargetRadius = 120.0f; // 標的の半径
-
-	//// 球体2 (カメラ注視点の代わり、あるいは別の標的) の情報
-	//VECTOR OtherCenter = camera->GetTargetPos();
-	//const float OtherRadius = 10.0f; // もう一方の球体の半径
-
-	//// 判定に必要な、半径の合計を事前に計算
-	//const float CombinedRadius = TargetRadius + OtherRadius;
-
-	//// 最適化のため、半径の合計の二乗も計算
-	//const float CombinedRadiusSq = CombinedRadius * CombinedRadius;
-	//
-	//// 1. 中心点間のベクトルの差を計算 (V2 - V1)
-	//VECTOR DifferenceVector = VSub(OtherCenter, TargetCenter);
-
-	//// 2. 中心点間の距離の二乗を計算
-	////    VSizeSq はベクトルの長さの二乗を返します。
-	//float DistanceSq = VSquareSize(DifferenceVector);
-
-	//// 3. if文による衝突条件の判定
-	//if (DistanceSq <= CombinedRadiusSq)
-	//{
-	//	const TCHAR* text_to_display = _T("右クリック or Aボタン");
-	//	int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
-
-	//	auto size = Application::GetInstance().GetWindowSize();
-	//	// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
-	//	int draw_x = (size.width / 2) - (text_width / 2);
-
-	//	// Y座標: 画面全体の高さの 4分の3 の位置
-	//	int draw_y = (size.height * 3) / 4;
-
-	//	// 3. テキストを描画
-
-	//	// 赤色で描画
-	//	int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)
-
-	//	// 描画関数でテキストを表示
-	//	DrawString(draw_x, draw_y, text_to_display, color);
-
-	//	if (ins.IsTrgMouseRight() || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
-	//	{
-	//		StopSoundMem(player_->GetRunSH());
-	//		StopSoundMem(player_->GetWalkSH());
-
-	//		std::shared_ptr<UnlickScene> us = std::make_shared<UnlickScene>(controller_);
-	//		us->SetPlayer(player_);
-	//		us->SetWire(wire_);
-
-	//		us->SetLockPick(lockpick_);
-
-	//		controller_.PushScene(us, input);
-	//		prevAngle_ = camera->GetAngles();
-	//		camera->SaveAngles(prevAngle_);
-	//		camera->SetOperableCamera(false);
-	//		isFps_ = false;
-	//		return;
-	//	}
-	//}
-
-#pragma endregion
 
 	float time = Application::GetInstance().GetDeltaTime();
 
@@ -411,7 +347,8 @@ std::shared_ptr<ItemBase> GameScene::SpawnItem(int itemTypeID, const VECTOR& pos
 
 void GameScene::UpdateItemPool(float deltaTime)
 {
-	for (const auto& item : itemPool_)
+
+	for (auto item : itemPool_)
 	{
 		item->Update(deltaTime);
 	}
@@ -480,7 +417,7 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTrgMouseRight())
+	if (ins.IsTrgMouseRight() && IsHitItems())
 	{
 		ObtainItem();
 		isHitItem_ = false;
@@ -504,10 +441,6 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 	itemSlot_->Update(deltaTime);
 	HandleMouseWheel(input);
 
-	//// アイテム
-	//lockpick_->Update(deltaTime);
-	//light_->Update(deltaTime);
-
 	UpdateItemPool(deltaTime);
 
 	status_->Update(deltaTime);
@@ -519,16 +452,6 @@ void GameScene::DrawTutorial(void)
 	stage_->Draw();
 	//eBase_->Draw();
 	player_->Draw();
-
-	/*for (const auto& item : itemPool_)
-	{
-		item->Draw();
-	}
-
-	for (const auto& item : itemPool_)
-	{
-		item->DrawUI();
-	}*/
 
 	DrawItemPool();
 	player_->DrawUI();
@@ -544,9 +467,6 @@ void GameScene::DrawMainGame(void)
 	player_->Draw();
 
 	DrawItemPool();
-
-
-	DrawUI();
 }
 
 void GameScene::ChangeState(STATE state)
@@ -628,6 +548,39 @@ std::shared_ptr<ItemBase> GameScene::isObtainItems(void)
 	}
 
 	return nullptr; // 衝突したアイテムがなければ nullptr を返す
+}
+
+bool GameScene::IsHitItems(void)
+{
+
+	const auto& camera = Application::GetInstance().GetCamera();
+	VECTOR cPos = camera->GetPos();
+	VECTOR tPos = camera->GetTargetPos(); // カメラ注視点
+	VECTOR pos = { 0.0f,0.0f,100.0f };
+	tPos = VAdd(tPos, pos);
+
+	for (const auto& item : itemPool_)
+	{
+		// ONSTAGE状態のアイテムのみを判定
+		if (item->GetState() == ItemBase::STATE::ONSTAGE)
+		{
+			// ItemBase::GetTransform() がモデルIDを持つActorBaseのTransformを返すことを前提とします。
+			// ItemBase自身がモデルを持っていると仮定します。
+			// Raycastでアイテムのモデルに対して衝突判定を行う
+
+			// MV1CollCheck_Lineの結果を格納する変数
+			MV1_COLL_RESULT_POLY HitPoly = MV1CollCheck_Line(item->GetTransform().modelId, -1, cPos, tPos);
+
+			// 当たったかどうかで処理を分岐
+			if (HitPoly.HitFlag == 1)
+			{
+				// 衝突フラグが立ったら、そのアイテムのポインタを返す
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 

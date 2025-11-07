@@ -8,23 +8,13 @@
 #include "../Common/Transform.h"
 #include "../Player/Player.h"
 #include "../Enemy/EnemyBase.h"
-#include "../Object/Item/HandLight.h"
+#include "../Object/Item/PermanentItems/HandLight.h"
 #include "../Enemy/Patrol/PatrolNode.h"
 #include "../Enemy/Patrol/PatrolPath.h"
 #include "../Enemy/AStar/NavGridManager.h"
 #include "../Renderer/ModelMaterial.h"
 #include "../Renderer/ModelRenderer.h"
 #include "Stage.h"
-
-
-//Stage::Stage(Player& player, EnemyBase& enemyBase, HandLight& light)
-//	:
-//	player_(player),
-//	eBase_(enemyBase),
-//	handLight_(light),
-//	obstacles_{}
-//{
-//}
 
 Stage::Stage(Player& player, EnemyBase& enemyBase)
 	:

@@ -3,9 +3,9 @@
 class ModelMaterial;
 class ModelRenderer;
 
-#include "ItemBase.h"
+#include "PermanentItemBase.h"
 class HandLight :
-    public ItemBase
+    public PermanentItemBase
 {
 public:
 
@@ -42,9 +42,10 @@ private:
 
     virtual void UpdateOnStage(float deltaTime) override;
     virtual void UpdateInVentory(float deltaTime) override;
+
+
     virtual void UpdateInUse(float deltaTime) override;
     virtual void UpdateUsedUp(float deltaTime) override;
-    virtual void UpdateDisabled(float deltaTime) override;
 
     // ƒ‚ƒfƒ‹•`‰æ—p
     std::unique_ptr<ModelMaterial> material_;

@@ -54,15 +54,15 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::WIRE, res);
 
 	// バッテリーモデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Battery/.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Battery/Battery.mv1");
 	resourcesMap_.emplace(SRC::BATTERY, res);
 
 	// 精神安定剤モデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Tranquilizer/.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Tranquilizer/Tranquilizer.mv1");
 	resourcesMap_.emplace(SRC::TRANQUILIZER, res);
 
 	// 止血モデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Hemostatic/.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Hemostatic/Hemostatic.mv1");
 	resourcesMap_.emplace(SRC::HEMOSTATIC, res);
 
 	// 鍵穴プレート

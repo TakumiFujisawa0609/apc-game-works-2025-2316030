@@ -40,11 +40,14 @@ public:
 		{
 			currentSelectedIndex_ = newIndex;
 			// ‰Šúó‘Ô‚ðINUSE‚É‚·‚éi‘I‘ðó‘Ôj
-			compatibleItem->ChangeState(ItemBase::STATE::INUSE);
+			compatibleItem->ChangeState(ItemBase::STATE::ININVENTORY);
+			compatibleItem->ChangeUse(ItemBase::USE::INUSE);
 		}
 		else {
 			// 2‚Â–ÚˆÈ~‚ÍININVENTORYó‘Ô‚É‚·‚é
 			compatibleItem->ChangeState(ItemBase::STATE::ININVENTORY);
+			compatibleItem->ChangeUse(ItemBase::USE::NONE);
+
 		}
 
 		return true;

@@ -18,7 +18,7 @@ Charactor::Charactor(void)
 	velocityY_({ 0.0f,30.0f,0.0f }),
 	isVelocityY_(false)
 {
-
+    type_ = ActorBase::TYPE::SKINING;
     capsule_ = std::make_unique<Capsule>(&transform_);
 }
 

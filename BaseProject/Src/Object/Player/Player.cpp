@@ -10,7 +10,7 @@
 #include "Player.h"
 #include "../../Object/Components/Gameplay/OxygenComponent.h"
 #include "../../Object/Components/Charactor/Player/PlayerInput.h"
-#include "../Item/HandLight.h"
+#include "../Item/PermanentItems/HandLight.h"
 
 
 Player::Player(void)

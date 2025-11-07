@@ -28,16 +28,16 @@ void EnemyChaseComponent::SetObstacle(std::vector<Transform> obstacle)
 // A*ヘルパー関数の実装
 // ==========================================================
 
-bool EnemyChaseComponent::CompareNode::operator()(const AStarNode* a, const AStarNode* b) const
-{
-    if (a->F_Score() != b->F_Score())
-    {
-        // Fスコアが低い方を優先するため、降順ソート
-        return a->F_Score() > b->F_Score();
-    }
-    // Fスコアが同じ場合、Hスコアが低い方を優先
-    return a->H_Score_ > b->H_Score_;
-}
+//bool EnemyChaseComponent::CompareNode::operator()(const AStarNode* a, const AStarNode* b) const
+//{
+//    if (a->F_Score() != b->F_Score())
+//    {
+//        // Fスコアが低い方を優先するため、降順ソート
+//        return a->F_Score() > b->F_Score();
+//    }
+//    // Fスコアが同じ場合、Hスコアが低い方を優先
+//    return a->H_Score_ > b->H_Score_;
+//}
 
 float EnemyChaseComponent::GetDistance(AStarNode* a, AStarNode* b)
 {
@@ -109,63 +109,63 @@ float EnemyChaseComponent::GetTime(void)
 
 std::vector<VECTOR> EnemyChaseComponent::FindPath(VECTOR startPos, VECTOR endPos)
 {
-    if (!navGridManager_) return {};
+    //if (!navGridManager_) return {};
 
-    // 探索前のノードリセット
-    navGridManager_->ResetAllNodes();
+    //// 探索前のノードリセット
+    //navGridManager_->ResetAllNodes();
 
-    AStarNode* startNode = navGridManager_->NodeFromWorldPoint(startPos);
-    AStarNode* targetNode = navGridManager_->NodeFromWorldPoint(endPos);
+    //AStarNode* startNode = navGridManager_->NodeFromWorldPoint(startPos);
+    //AStarNode* targetNode = navGridManager_->NodeFromWorldPoint(endPos);
 
-    // 始点または終点が無効な場合
-    if (!startNode || !targetNode || !targetNode->isWalkable_) {
-        return {};
-    }
+    //// 始点または終点が無効な場合
+    //if (!startNode || !targetNode || !targetNode->isWalkable_) {
+    //    return {};
+    //}
 
-    // A*リストの初期化
-    std::priority_queue<AStarNode*, std::vector<AStarNode*>, CompareNode> openList;
-    std::unordered_set<AStarNode*> closedList; // 既に処理したノードを格納
+    //// A*リストの初期化
+    //std::priority_queue<AStarNode*, std::vector<AStarNode*>, CompareNode> openList;
+    //std::unordered_set<AStarNode*> closedList; // 既に処理したノードを格納
 
-    startNode->G_Score_ = 0;
-    startNode->H_Score_ = GetHCost(startNode, targetNode);
-    openList.push(startNode);
+    //startNode->G_Score_ = 0;
+    //startNode->H_Score_ = GetHCost(startNode, targetNode);
+    //openList.push(startNode);
 
-    while (!openList.empty())
-    {
-        AStarNode* currentNode = openList.top();
-        openList.pop();
+    //while (!openList.empty())
+    //{
+    //    AStarNode* currentNode = openList.top();
+    //    openList.pop();
 
-        // ノードが既に処理済みであればスキップ
-        if (closedList.count(currentNode)) continue;
+    //    // ノードが既に処理済みであればスキップ
+    //    if (closedList.count(currentNode)) continue;
 
-        closedList.insert(currentNode);
+    //    closedList.insert(currentNode);
 
-        // ゴールに到達
-        if (currentNode == targetNode)
-        {
-            return RetracePath(startNode, targetNode);
-        }
+    //    // ゴールに到達
+    //    if (currentNode == targetNode)
+    //    {
+    //        return RetracePath(startNode, targetNode);
+    //    }
 
-        for (AStarNode* neighbor : GetNeighbors(currentNode))
-        {
-            if (!neighbor->isWalkable_ || closedList.count(neighbor))
-            {
-                continue;
-            }
+    //    for (AStarNode* neighbor : GetNeighbors(currentNode))
+    //    {
+    //        if (!neighbor->isWalkable_ || closedList.count(neighbor))
+    //        {
+    //            continue;
+    //        }
 
-            float newGCost = currentNode->G_Score_ + GetDistance(currentNode, neighbor);
+    //        float newGCost = currentNode->G_Score_ + GetDistance(currentNode, neighbor);
 
-            if (newGCost < neighbor->G_Score_)
-            {
-                neighbor->G_Score_ = newGCost;
-                neighbor->H_Score_ = GetHCost(neighbor, targetNode);
-                neighbor->parent_ = currentNode;
+    //        if (newGCost < neighbor->G_Score_)
+    //        {
+    //            neighbor->G_Score_ = newGCost;
+    //            neighbor->H_Score_ = GetHCost(neighbor, targetNode);
+    //            neighbor->parent_ = currentNode;
 
-                // Fスコアが更新されたので、優先度キューに再投入
-                openList.push(neighbor);
-            }
-        }
-    }
+    //            // Fスコアが更新されたので、優先度キューに再投入
+    //            openList.push(neighbor);
+    //        }
+    //    }
+    //}
 
     return {}; // 経路が見つからなかった
 }

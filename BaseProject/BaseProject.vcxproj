@@ -138,17 +138,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Object\Item\Battery.cpp" />
+    <ClCompile Include="Src\Object\Item\ComsumableItems\ConsumableItemBase.cpp" />
+    <ClCompile Include="Src\Object\Item\PermanentItems\PermanentItemBase.cpp" />
+    <ClCompile Include="Src\Object\Item\ComsumableItems\Hemostatic.cpp" />
+    <ClCompile Include="Src\Object\Item\ComsumableItems\Battery.cpp" />
     <ClCompile Include="Src\Manager\Config.cpp" />
     <ClCompile Include="Src\Scene\RankingScene.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\NavGridManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\AStarNode.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.cpp" />
     <ClCompile Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.cpp" />
-    <ClCompile Include="Src\Object\Item\HandLight.cpp" />
+    <ClCompile Include="Src\Object\Item\PermanentItems\HandLight.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemStrage\SlotBase.cpp" />
-    <ClCompile Include="Src\Object\Item\Lockpick.cpp" />
+    <ClCompile Include="Src\Object\Item\PermanentItems\Lockpick.cpp" />
     <ClCompile Include="Src\Object\Item\Wire.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Object\Components\Charactor\CharactorComponent.cpp" />
@@ -202,19 +205,23 @@
     <ClCompile Include="Src\Object\Components\UI\Components\UIComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
     <ClCompile Include="Src\Scene\UnlickScene.cpp" />
+    <ClCompile Include="Src\Object\Item\ComsumableItems\Tranquilizer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Object\Item\Battery.h" />
+    <ClInclude Include="Src\Object\Item\ComsumableItems\ConsumableItemBase.h" />
+    <ClInclude Include="Src\Object\Item\PermanentItems\PermanentItemBase.h" />
+    <ClInclude Include="Src\Object\Item\ComsumableItems\Hemostatic.h" />
+    <ClInclude Include="Src\Object\Item\ComsumableItems\Battery.h" />
     <ClInclude Include="Src\Manager\Config.h" />
     <ClInclude Include="Src\Scene\RankingScene.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\NavGridManager.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\AStarNode.h" />
     <ClInclude Include="Src\Object\Components\Charactor\Enemy\EnemyComponent.h" />
     <ClInclude Include="Src\Object\Components\PuzzleElements\PlazzleElementBase.h" />
-    <ClInclude Include="Src\Object\Item\HandLight.h" />
+    <ClInclude Include="Src\Object\Item\PermanentItems\HandLight.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Object\Item\ItemStrage\SlotBase.h" />
-    <ClInclude Include="Src\Object\Item\Lockpick.h" />
+    <ClInclude Include="Src\Object\Item\PermanentItems\Lockpick.h" />
     <ClInclude Include="Src\Object\Item\Wire.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
@@ -313,6 +320,7 @@
     <ClInclude Include="Src\Object\Components\UI\Components\UIComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElement.h" />
     <ClInclude Include="Src\Scene\UnlickScene.h" />
+    <ClInclude Include="Src\Object\Item\ComsumableItems\Tranquilizer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />

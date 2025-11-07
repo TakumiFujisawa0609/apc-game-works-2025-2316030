@@ -5,6 +5,7 @@
 ActorBase::ActorBase(void)
 	:
 	resMng_(ResourceManager::GetInstance())
+	,type_(TYPE::NONE)
 {
 }
 
@@ -25,6 +26,11 @@ void ActorBase::Update(float deltaTime)
 const Transform& ActorBase::GetTransform(void) const
 {
 	return transform_;
+}
+
+ActorBase::TYPE ActorBase::GetModelType(void)
+{
+	return type_;
 }
 
 void ActorBase::OnUpdate(float deltaTime)

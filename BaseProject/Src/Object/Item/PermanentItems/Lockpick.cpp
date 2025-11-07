@@ -1,16 +1,16 @@
 #include <functional>
 #include <algorithm>
 #include <cmath>
-#include "../../Application.h"
-#include "../../Common/Quaternion.h"
-#include "../../Manager/ResourceManager.h"
-#include "../../Manager/Camera.h"
-#include "../../Utility/AsoUtility.h"
+#include "../../../Application.h"
+#include "../../../Common/Quaternion.h"
+#include "../../../Manager/ResourceManager.h"
+#include "../../../Manager/Camera.h"
+#include "../../../Utility/AsoUtility.h"
 #include "Lockpick.h"
 
 Lockpick::Lockpick(Player& player)
 	:
-	ItemBase(player),
+	PermanentItemBase(player),
 	isUse_(false),
 	angle_(0.0f),
 	lLevel_(-1),
@@ -98,11 +98,7 @@ void Lockpick::UpdateInVentory(float deltaTime)
 
 	transform_.scl = { 15.0f,15.0f,15.0f };
 
-	// 装備しているかどうか
-	if (isEquipment_)
-	{
-		ChangeState(STATE::INUSE);
-	}
+	PermanentItemBase::UpdateInVentory(deltaTime);
 }
 
 void Lockpick::UpdateInUse(float deltaTime)
@@ -119,19 +115,6 @@ void Lockpick::UpdateInUse(float deltaTime)
 void Lockpick::UpdateUsedUp(float deltaTime)
 {
 	// アイテムが今後使用できなくなった場合
-
-}
-
-void Lockpick::UpdateDisabled(float deltaTime)
-{
-	// 一時的に使えない状態
-
-	// 時間経過などで使える状態になったとき
-	if (!isDisabled_)
-	{
-		// インベントリへ
-		ChangeState(STATE::ININVENTORY);
-	}
 
 }
 

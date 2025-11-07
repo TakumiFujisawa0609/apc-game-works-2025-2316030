@@ -11,6 +11,13 @@ class ActorBase : public std::enable_shared_from_this<ActorBase>
 {
 public:
 
+	enum class TYPE
+	{	
+		NONE,
+		REGIDBODY,
+		SKINING
+	};
+
 	// コンストラクタ
 	ActorBase(void);
 
@@ -33,6 +40,9 @@ public:
 		return ptr;
 	}
 
+	// モデルのタイプ
+	virtual TYPE GetModelType(void);
+
 protected:
 
 	// シングルトン参照
@@ -40,6 +50,9 @@ protected:
 
 	// モデル制御の基本情報
 	Transform transform_;
+
+	// モデルタイプ
+	TYPE type_;
 
 	// 派生クラスで独自処理
 	virtual void OnUpdate(float deltaTime) = 0;

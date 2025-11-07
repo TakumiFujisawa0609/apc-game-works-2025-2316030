@@ -1,17 +1,11 @@
 #pragma once
-#include "ItemBase.h"
+#include "ConsumableItemBase.h"
 class Battery :
-    public ItemBase
+    public ConsumableItemBase
 {
 public:
 
-    enum class TYPE
-    {
-        REGIDBODY,
-        SKINING
-    };
-
-    static constexpr VECTOR INIT_POS = { -500.0f, 100.0f, 100.0f };              // 初期座標
+    static constexpr VECTOR INIT_POS = { -500.0f, 140.0f, 100.0f };              // 初期座標
     static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
     static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
 
@@ -32,12 +26,11 @@ private:
 
     virtual void OnUpdate(float deltaTime) override;
 
-    virtual void UpdateOnStage(float deltaTime) override;
     virtual void UpdateInVentory(float deltaTime) override;
+
     virtual void UpdateInUse(float deltaTime) override;
     virtual void UpdateUsedUp(float deltaTime) override;
-    virtual void UpdateDisabled(float deltaTime) override;
-
+    
 
 };
 

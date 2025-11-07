@@ -9,7 +9,7 @@
 #include "../Object/Player/Player.h"
 
 #include "../Object/Item/Wire.h"
-#include "../Object/Item/Lockpick.h"
+#include "../Object/Item/PermanentItems/Lockpick.h"
 
 #include "../Object/Components/PuzzleElements/KeyholePlate.h"
 #include "../Object/Components/PuzzleElements/Keyhole.h"

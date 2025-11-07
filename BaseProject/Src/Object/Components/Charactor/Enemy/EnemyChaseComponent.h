@@ -37,11 +37,11 @@ private:
     float GetDistance(AStarNode* a, AStarNode* b);
     std::vector<VECTOR> RetracePath(AStarNode* start, AStarNode* end);
 
-    // A*ノードを比較するための構造体（Fスコアが低い方を優先）
-    struct CompareNode
-    {
-        bool operator()(const AStarNode* a, const AStarNode* b) const;
-    };
+    //// A*ノードを比較するための構造体（Fスコアが低い方を優先）
+    //struct CompareNode
+    //{
+    //    bool operator()(const AStarNode* a, const AStarNode* b) const;
+    //};
 
 private:
     std::vector<VECTOR> currentPath_;

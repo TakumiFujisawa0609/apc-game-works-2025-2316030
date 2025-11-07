@@ -1,14 +1,14 @@
-#include "../../Application.h"
-#include "../../Common/Quaternion.h"
+#include "../../../Application.h"
+#include "../../../Common/Quaternion.h"
 #include "../Manager/InputManager.h"
-#include "../../Manager/ResourceManager.h"
-#include "../../Manager/Camera.h"
-#include "../../Utility/AsoUtility.h"
+#include "../../../Manager/ResourceManager.h"
+#include "../../../Manager/Camera.h"
+#include "../../../Utility/AsoUtility.h"
 #include "Battery.h"
 
 Battery::Battery(Player& player)
 	:
-	ItemBase(player)
+	ConsumableItemBase(player)
 {
 }
 
@@ -34,6 +34,8 @@ void Battery::Init(void)
 	isDisabled_ = false;
 
 	ChangeState(STATE::ONSTAGE);
+
+	type_;
 }
 
 void Battery::Update(float deltaTime)
@@ -62,24 +64,11 @@ void Battery::OnUpdate(float deltaTime)
 	
 }
 
-void Battery::UpdateOnStage(float deltaTime)
-{
-	//èEÇÌÇÍÇÈÇ∆UpdateInVentoryÇ…ëJà⁄
-	if (!isOnStage_)
-	{
-		ChangeState(STATE::ININVENTORY);
-	}
-}
-
 void Battery::UpdateInVentory(float deltaTime)
 {
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
 
-	// ëïîıÇµÇƒÇ¢ÇÈÇ©Ç«Ç§Ç©
-	if (isEquipment_)
-	{
-		ChangeState(STATE::INUSE);
-	}
+	ItemBase::UpdateInVentory(deltaTime);
 }
 
 void Battery::UpdateInUse(float deltaTime)
@@ -91,6 +80,3 @@ void Battery::UpdateUsedUp(float deltaTime)
 {
 }
 
-void Battery::UpdateDisabled(float deltaTime)
-{
-}

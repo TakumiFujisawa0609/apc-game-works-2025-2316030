@@ -1,7 +1,7 @@
 #pragma once
-#include "ItemBase.h"
+#include "PermanentItemBase.h"
 class Lockpick :
-    public ItemBase
+    public PermanentItemBase
 {
 public:
 	static constexpr VECTOR INIT_POS = { -400.0f, 200.0f, 200.0f };              // ‰ŠúÀ•W
@@ -63,9 +63,10 @@ private:
 
 	virtual void UpdateOnStage(float deltaTime) override;
 	virtual void UpdateInVentory(float deltaTime) override;
+
+
 	virtual void UpdateInUse(float deltaTime) override;
 	virtual void UpdateUsedUp(float deltaTime) override;
-	virtual void UpdateDisabled(float deltaTime) override;
 
 	// ‰ñ“]Š„‡‚ÌŒvZ
 	float CalculateRotRate(void);
