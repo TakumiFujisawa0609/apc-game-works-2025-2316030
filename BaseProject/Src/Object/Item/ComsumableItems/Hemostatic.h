@@ -24,7 +24,11 @@ public:
 
 private:
 
-    virtual void UpdateUsed(float deltaTime) override;
+    virtual void OnUpdate(float deltaTime) override;
+
+    virtual void UpdateOnStage(float deltaTime) override;
+    virtual void UpdateInVentory(float deltaTime) override;
+
     virtual void UpdateInUse(float deltaTime) override;
     virtual void UpdateUsedUp(float deltaTime) override;
 };

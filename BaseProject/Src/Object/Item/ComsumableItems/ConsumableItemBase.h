@@ -20,6 +20,8 @@ public:
 protected:
 
 	// ゲーム内空間でのアイテムの更新
+	virtual void UpdateState(float deltaTime);
+	virtual void UpdateOnStage(float deltaTime);
 	virtual void UpdateInVentory(float deltaTime);
 
 	virtual void UpdateInUse(float deltaTime) = 0;

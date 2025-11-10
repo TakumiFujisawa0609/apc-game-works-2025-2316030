@@ -1,12 +1,14 @@
 #pragma once
+
+class HandLight;
 #include "ConsumableItemBase.h"
 class Battery :
     public ConsumableItemBase
 {
 public:
 
-    static constexpr VECTOR INIT_POS = { -500.0f, 140.0f, 100.0f };              // ‰ŠúÀ•W
-    static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // ‰ŠúŠg‘å—¦
+    static constexpr VECTOR INIT_POS = { -500.0f, 150.0f, 200.0f };              // ‰ŠúÀ•W
+    static constexpr VECTOR INIT_SCL = { 0.09f,0.09f,0.09f };           // ‰ŠúŠg‘å—¦
     static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // ‰Šúƒ[ƒJƒ‹‰ñ“]
 
     static constexpr float MAX_VALUE = 10.0f;
@@ -22,7 +24,11 @@ public:
     void Draw(void) override;
     void Use(void)override;
 
+    void SetHandLight(std::shared_ptr<HandLight> light);
+
 private:
+
+    std::weak_ptr<HandLight> hLight_;
 
     virtual void OnUpdate(float deltaTime) override;
 
@@ -30,7 +36,6 @@ private:
 
     virtual void UpdateInUse(float deltaTime) override;
     virtual void UpdateUsedUp(float deltaTime) override;
-    
 
 };
 

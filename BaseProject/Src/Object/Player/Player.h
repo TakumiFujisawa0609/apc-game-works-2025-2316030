@@ -52,8 +52,9 @@ public:
 
 	void SetHandLight(std::weak_ptr<HandLight> handLight);
 
-
 	void DrawUI(void);
+
+	void SetSanityLevel(float value);
 
 private:
 
@@ -70,6 +71,7 @@ private:
 	int runSH_;			// ‘–‚é‚Ì‰¹
 	bool isRunSH_;		// ‘–‚é‚Ì‰¹‚ğÄ¶‚·‚é‚©‚Ç‚¤‚©
 
+	float hp_;			
 	float sanV_;		// san’l
 
 	void SetGoalRotate(float rotRad);

@@ -269,7 +269,7 @@ void Application::Init3D(void)
     SetLightEnable(true);
 
     // ライトの設定
-    //ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
+    ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
 
     // フォグ設定
     SetFogEnable(false);

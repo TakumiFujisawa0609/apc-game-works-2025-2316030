@@ -82,6 +82,8 @@ private:
 	std::shared_ptr<EnemyBase> eBase_;
 	std::shared_ptr<Stage> stage_;
 
+	std::vector<VECTOR> spownPos_;
+
 	// アイテムスロット
 	std::shared_ptr<SlotBase> itemSlot_;
 
@@ -97,11 +99,12 @@ private:
 	// プレイヤーの状態
 	std::shared_ptr<PlayerStatusUI> status_;
 
-	// アイテムプールで管理
+	// メインアイテムプールで管理
 	std::vector<std::shared_ptr<ItemBase>> itemPool_;
 
-	// プールからアイテムを生成
-	std::shared_ptr<ItemBase> SpawnItem(int itemTypeID, const VECTOR& pos);
+	// ランダム生成のアイテム
+	std::vector<std::shared_ptr<ItemBase>> randomItems_;
+
 	// アイテム全体を処理
 	void UpdateItemPool(float deltaTime);
 	void DrawItemPool(void);
@@ -139,6 +142,5 @@ private:
 	bool IsHitItems(void);
 
 	bool isHitItem_;
-
 };
 

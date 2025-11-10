@@ -76,5 +76,7 @@ protected:
 	void UpdateIndex(int direction);
 
 	void RemoveItem(const std::shared_ptr<ItemBase>& item);
+
+	std::wstring GetCurrentItemType(void) const;
 };
 

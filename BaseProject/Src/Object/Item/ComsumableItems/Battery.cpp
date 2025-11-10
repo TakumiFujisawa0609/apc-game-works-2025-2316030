@@ -4,6 +4,7 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/Camera.h"
 #include "../../../Utility/AsoUtility.h"
+#include "../PermanentItems/HandLight.h"
 #include "Battery.h"
 
 Battery::Battery(Player& player)
@@ -35,7 +36,8 @@ void Battery::Init(void)
 
 	ChangeState(STATE::ONSTAGE);
 
-	type_;
+	// ƒ‚ƒfƒ‹‚ÌXV
+	transform_.Update();
 }
 
 void Battery::Update(float deltaTime)
@@ -51,17 +53,29 @@ void Battery::Update(float deltaTime)
 
 void Battery::Draw(void)
 {
-	MV1DrawModel(transform_.modelId);
-	DrawSphere3D(transform_.pos, 32, 16, GetColor(255, 0, 255), GetColor(255, 0, 255), false);
+	if (GetState() == STATE::ONSTAGE ||
+		GetUse() != USE::NONE)
+	{
+		MV1DrawModel(transform_.modelId);
+		return;
+	}
+	//DrawSphere3D(transform_.pos, 32, 16, GetColor(255, 0, 255), GetColor(255, 0, 255), false);
 }
 
 void Battery::Use(void)
 {
+	isDisabled_ = false;
+	hLight_.lock()->ChangeBattery(100);
+}
+
+void Battery::SetHandLight(std::shared_ptr<HandLight> light)
+{
+	hLight_ = light;
 }
 
 void Battery::OnUpdate(float deltaTime)
 {
-	
+	ConsumableItemBase::UpdateOnStage(deltaTime);
 }
 
 void Battery::UpdateInVentory(float deltaTime)
@@ -74,6 +88,7 @@ void Battery::UpdateInVentory(float deltaTime)
 void Battery::UpdateInUse(float deltaTime)
 {
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
+
 }
 
 void Battery::UpdateUsedUp(float deltaTime)

@@ -65,8 +65,8 @@ void HandLight::Update(float deltaTime)
 
 void HandLight::Draw(void)
 {
-	if (GetState() == STATE::ININVENTORY ||
-		GetUse() != USE::INUSE)
+	if (GetState() == STATE::ONSTAGE ||
+		GetUse() != USE::NONE)
 	{
 		MV1DrawModel(transform_.modelId);
 		auto  size = Application::GetInstance().GetWindowSize();
@@ -233,6 +233,11 @@ void HandLight::DrawUI(void)
 
 
 	// SetDrawBlendMode(blendMode, blendParam);
+}
+
+void HandLight::ChangeBattery(float value)
+{
+	value_ = value;
 }
 
 void HandLight::OnUpdate(float deltaTime)

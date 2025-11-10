@@ -93,6 +93,11 @@ void Player::OnUpdate(float deltaTime)
         }
     }
 
+    if (sanV_ >= MAX_SAN_VALUE)
+    {
+        sanV_ = MAX_SAN_VALUE;
+    }
+
     // カメラの角度を取得
     VECTOR angles = Application::GetInstance().GetCamera()->GetAngles();
 
@@ -271,6 +276,11 @@ void Player::DrawUI(void)
     // --- 3. 残量パーセンテージをテキストで描画 ---
     int percent = (int)(ratio * 100.0f);
     DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"正気度残量: %d%%", percent);
+}
+
+void Player::SetSanityLevel(float value)
+{
+    sanV_ += value;
 }
 
 void Player::SetGoalRotate(float rotRad)

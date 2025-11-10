@@ -1,6 +1,9 @@
 #include "GameScene.h"
 #include<DxLib.h>
 #include<cassert>
+#include<cmath>
+#include<random>
+#include<chrono>
 
 #include"../Application.h"
 #include"../Input.h"//入力用
@@ -19,7 +22,11 @@
 
 #include "../Object/Item/PermanentItems/Lockpick.h"
 #include "../Object/Item/PermanentItems/HandLight.h"
+
 #include "../Object/Item/ComsumableItems/Battery.h"
+#include "../Object/Item/ComsumableItems/Hemostatic.h"
+#include "../Object/Item/ComsumableItems/Tranquilizer.h"
+
 
 #include "../Object/Item/Wire.h"
 
@@ -55,6 +62,11 @@ GameScene::GameScene(SceneController& controller) :Scene(controller)
 	int sw, sh, depth;
 	GetScreenState(&sw, &sh, &depth);
 
+
+	spownPos_.push_back({ -600.0f, 150.0f, 150.0f });
+	spownPos_.push_back({ -700.0f, 150.0f, 150.0f });
+	spownPos_.push_back({ -800.0f, 150.0f, 150.0f });
+	spownPos_.push_back({ -900.0f, 150.0f, 150.0f });
 }
 
 GameScene::~GameScene()
@@ -75,7 +87,7 @@ void GameScene::Init(Input& input)
 	stage_ = std::make_shared<Stage>(*player_, *eBase_);
 
 	// ひとつの型でアイテムを管理する
-	const int INIT_POOL_SIZE = 4;
+	const int INIT_POOL_SIZE = 6;
 	itemPool_.reserve(INIT_POOL_SIZE);
 	
 	auto light = std::make_shared<HandLight>(*player_);
@@ -90,22 +102,48 @@ void GameScene::Init(Input& input)
 	lockpick->Init();
 	lockpick->SetTargetPos(&player_->GetTransform());
 	itemPool_.push_back(lockpick);
+	
+	// ランダム生成のアイテム
+	randomItems_.reserve(4);
 
-	for (int i = 0; i < INIT_POOL_SIZE - 2; ++i)
+	auto wire = std::make_shared<Wire>(*player_);
+	wire->Init();
+	randomItems_.push_back(wire);
+
+	auto battery = std::make_shared<Battery>(*player_);
+	battery->Init();
+	battery->SetHandLight(light);
+	randomItems_.push_back(battery);
+
+	auto hemostatic = std::make_shared<Hemostatic>(*player_);
+	hemostatic->Init();
+	randomItems_.push_back(hemostatic);
+
+	auto tranquilizer = std::make_shared<Tranquilizer>(*player_);
+	tranquilizer->Init();
+	randomItems_.push_back(tranquilizer);
+
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine  generator(seed);
+
+	for (auto& item : randomItems_)
 	{
-		auto lockpick = std::make_shared<Lockpick>(*player_);
-		lockpick->Init();
-		lockpick->SetTargetPos(&player_->GetTransform());
-		itemPool_.push_back(lockpick);
+		if (spownPos_.empty())
+		{
+			break;
+		}
 
-		auto wire = std::make_shared<Wire>(*player_);
-		wire->Init();
-		itemPool_.push_back(wire);
+		std::uniform_int_distribution<int> distribution(0, spownPos_.size() - 1);
+		int randomIndex = distribution(generator);
 
-		auto battery = std::make_shared<Battery>(*player_);
-		battery->Init();
-		itemPool_.push_back(battery);
+		VECTOR selectedPos = spownPos_[randomIndex];
+
+		item->SetPos(selectedPos);
+
+		spownPos_.erase(spownPos_.begin() + randomIndex);
+		itemPool_.push_back(item);
 	}
+	randomItems_.clear();
 
 	eBase_->SetNavGridManagedr(stage_->GetNavGridMananger());
 	eBase_->Init();
@@ -124,6 +162,7 @@ void GameScene::Init(Input& input)
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
 	isFps_ = true;
+
 	ChangeState(STATE::MAINGAME);
 }
 
@@ -330,24 +369,8 @@ void GameScene::LoadLocationData()
 	FileRead_close(fHandle);
 }
 
-std::shared_ptr<ItemBase> GameScene::SpawnItem(int itemTypeID, const VECTOR& pos)
-{
-	for (const auto& item : itemPool_)
-	{
-		if (!item->IsDisabledItem())
-		{
-			// プールからアイテムを取り出し、初期化・アクティブ化
-
-			return item;
-		}
-	}
-
-	return nullptr;
-}
-
 void GameScene::UpdateItemPool(float deltaTime)
 {
-
 	for (auto item : itemPool_)
 	{
 		item->Update(deltaTime);
@@ -435,7 +458,7 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 	stage_->Update(deltaTime);
 
 	player_->Update(deltaTime);
-	eBase_->Update(deltaTime);
+	//eBase_->Update(deltaTime);
 
 	// スロット
 	itemSlot_->Update(deltaTime);
@@ -467,6 +490,9 @@ void GameScene::DrawMainGame(void)
 	player_->Draw();
 
 	DrawItemPool();
+
+
+	itemSlot_->Draw();
 }
 
 void GameScene::ChangeState(STATE state)
@@ -507,13 +533,25 @@ void GameScene::ObtainItem(void)
 	{
 		itemSlot_->AddItem(light);
 	}
-	else if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(obtainedItem))
+	if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(obtainedItem))
 	{
 		itemSlot_->AddItem(lockpick);
 	}
-	else if (auto battery = std::dynamic_pointer_cast<Battery>(obtainedItem))
+	if (auto wire = std::dynamic_pointer_cast<Wire>(obtainedItem))
+	{
+		itemSlot_->AddItem(wire);
+	}
+	if (auto battery = std::dynamic_pointer_cast<Battery>(obtainedItem))
 	{
 		itemSlot_->AddItem(battery);
+	}
+	if (auto hemostatic = std::dynamic_pointer_cast<Hemostatic>(obtainedItem))
+	{
+		itemSlot_->AddItem(hemostatic);
+	}
+	if (auto tranquilizer = std::dynamic_pointer_cast<Tranquilizer>(obtainedItem))
+	{
+		itemSlot_->AddItem(tranquilizer);
 	}
 }
 
@@ -522,65 +560,59 @@ std::shared_ptr<ItemBase> GameScene::isObtainItems(void)
 	const auto& camera = Application::GetInstance().GetCamera();
 	VECTOR cPos = camera->GetPos();
 	VECTOR tPos = camera->GetTargetPos(); // カメラ注視点
-	VECTOR pos = { 0.0f,0.0f,100.0f };
-	tPos = VAdd(tPos, pos);
+
+	std::shared_ptr<ItemBase> closestItem = nullptr; // 最も近いアイテムを保持するポインタ
+	float minItemDistanceSq = FLT_MAX; // 最小アイテム距離の二乗
+
+	isHitItem_ = false; // ループ開始時にリセット
 
 	for (const auto& item : itemPool_)
 	{
 		// ONSTAGE状態のアイテムのみを判定
 		if (item->GetState() == ItemBase::STATE::ONSTAGE)
 		{
-			// ItemBase::GetTransform() がモデルIDを持つActorBaseのTransformを返すことを前提とします。
-			// ItemBase自身がモデルを持っていると仮定します。
-			// Raycastでアイテムのモデルに対して衝突判定を行う
+			// アイテムとステージの衝突情報を取得
+			auto itemHit = MV1CollCheck_Line(item->GetTransform().modelId, -1, cPos, tPos);
+			auto stageHit = MV1CollCheck_Line(stage_->GetTransform().modelId, -1, cPos, tPos);
 
-			// MV1CollCheck_Lineの結果を格納する変数
-			MV1_COLL_RESULT_POLY HitPoly = MV1CollCheck_Line(item->GetTransform().modelId, -1, cPos, tPos);
-
-			// 当たったかどうかで処理を分岐
-			if (HitPoly.HitFlag == 1)
+			// 1. アイテムにレイが当たったか
+			if (itemHit.HitFlag == 1)
 			{
-				isHitItem_ = true;
-				// 衝突フラグが立ったら、そのアイテムのポインタを返す
-				return item;
+				// カメラからアイテム衝突位置までの距離の二乗を計算
+				float itemDistSq = VSquareSize(VSub(itemHit.HitPosition, cPos));
+
+				// カメラからステージ衝突位置までの距離の二乗を計算
+				float stageDistSq = VSquareSize(VSub(stageHit.HitPosition, cPos));
+
+				// 2. アイテムがステージよりも手前にあるか、またはステージに当たっていないか
+				// (ステージに当たっていない場合は stageHit.HitFlag が 0 で、stageDistSq が大きい値になるはず)
+
+				// **重要な判定:** アイテムへの距離がステージへの距離より小さい、またはステージへの衝突がない
+				if (itemDistSq < stageDistSq || stageHit.HitFlag == 0)
+				{
+					// 有効なアイテム衝突。最も近いアイテムを更新
+					if (itemDistSq < minItemDistanceSq)
+					{
+						minItemDistanceSq = itemDistSq;
+						closestItem = item;
+					}
+				}
 			}
 		}
 	}
+	if (closestItem != nullptr)
+	{
+		isHitItem_ = true;
+		return closestItem;
 
-	return nullptr; // 衝突したアイテムがなければ nullptr を返す
+	}
+
+	return nullptr;
 }
 
 bool GameScene::IsHitItems(void)
 {
-
-	const auto& camera = Application::GetInstance().GetCamera();
-	VECTOR cPos = camera->GetPos();
-	VECTOR tPos = camera->GetTargetPos(); // カメラ注視点
-	VECTOR pos = { 0.0f,0.0f,100.0f };
-	tPos = VAdd(tPos, pos);
-
-	for (const auto& item : itemPool_)
-	{
-		// ONSTAGE状態のアイテムのみを判定
-		if (item->GetState() == ItemBase::STATE::ONSTAGE)
-		{
-			// ItemBase::GetTransform() がモデルIDを持つActorBaseのTransformを返すことを前提とします。
-			// ItemBase自身がモデルを持っていると仮定します。
-			// Raycastでアイテムのモデルに対して衝突判定を行う
-
-			// MV1CollCheck_Lineの結果を格納する変数
-			MV1_COLL_RESULT_POLY HitPoly = MV1CollCheck_Line(item->GetTransform().modelId, -1, cPos, tPos);
-
-			// 当たったかどうかで処理を分岐
-			if (HitPoly.HitFlag == 1)
-			{
-				// 衝突フラグが立ったら、そのアイテムのポインタを返す
-				return true;
-			}
-		}
-	}
-
-	return false;
+	return isObtainItems() != nullptr;
 }
 
 

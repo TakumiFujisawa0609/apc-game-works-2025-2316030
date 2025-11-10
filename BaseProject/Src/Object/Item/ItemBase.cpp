@@ -146,6 +146,14 @@ void ItemBase::DrawUI(void)
 {
 }
 
+void ItemBase::SetPos(VECTOR pos)
+{
+	transform_.pos = pos;
+
+	// モデルの更新
+	transform_.Update();
+}
+
 void ItemBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)
 {
 	// モデルの設定

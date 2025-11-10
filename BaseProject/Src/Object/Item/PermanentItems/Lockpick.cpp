@@ -59,8 +59,14 @@ void Lockpick::Update(float deltaTime)
 void Lockpick::Draw(void)
 {
 
-	MV1DrawModel(transform_.modelId);
-	return;
+	if (GetState() == STATE::ONSTAGE ||
+		GetUse() != USE::NONE)
+	{
+		MV1DrawModel(transform_.modelId);
+		auto  size = Application::GetInstance().GetWindowSize();
+		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
+		return;
+	}
 
 	//DrawSphere3D(transform_.pos, 80.0f, 32, GetColor(255, 0, 0), GetColor(0, 255, 255), TRUE);
 }

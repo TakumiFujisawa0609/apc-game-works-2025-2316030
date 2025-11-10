@@ -56,6 +56,8 @@ public:
 
 	virtual void DrawUI(void);
 
+	virtual void SetPos(VECTOR pos);
+
 protected:
 	int imgH_;			// 画像ハンドル
 	bool isOnStage_;	// ステージにあるかどうか

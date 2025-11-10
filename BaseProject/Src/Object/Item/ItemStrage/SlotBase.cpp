@@ -1,4 +1,10 @@
 #include "../ComsumableItems/Battery.h"
+#include "../PermanentItems/HandLight.h"
+#include "../PermanentItems/Lockpick.h"
+#include "../ComsumableItems/Battery.h"
+#include "../ComsumableItems/Hemostatic.h"
+#include "../ComsumableItems/Tranquilizer.h"
+#include "../Wire.h"
 #include "SlotBase.h"
 
 
@@ -18,6 +24,9 @@ void SlotBase::Update(float deltaTime)
 
 void SlotBase::Draw(void)
 {
+	std::wstring itemName = GetCurrentItemType();
+
+	DrawFormatString(10, 50, GetColor(255, 255, 255), L"Current: %ls", itemName.c_str());
 }
 
 void SlotBase::UseCurrentItem(void)
@@ -28,8 +37,16 @@ void SlotBase::UseCurrentItem(void)
 	{
 		battery->Use();
 	}
+	if (auto hemostatic = std::dynamic_pointer_cast<Hemostatic>(currentItem))
+	{
+		hemostatic->Use();
+	}
+	if (auto tranquilizer = std::dynamic_pointer_cast<Tranquilizer>(currentItem))
+	{
+		tranquilizer->Use();
+	}
 
-	if (currentItem->IsDisabledItem())
+	if (!currentItem->IsDisabledItem())
 	{
 		RemoveItem(currentItem);
 	}
@@ -86,6 +103,7 @@ void SlotBase::UpdateIndex(int direction)
 		{
 			// 以前のアイテムを ININVENTORY 状態に戻す
 			prevItemBase->ChangeState(ItemBase::STATE::ININVENTORY);
+			prevItemBase->ChangeUse(ItemBase::USE::NONE);
 		}
 	}
 
@@ -106,12 +124,52 @@ void SlotBase::UpdateIndex(int direction)
 	{
 		if (auto newItemBase = std::dynamic_pointer_cast<ItemBase>(slots_[currentSelectedIndex_]))
 		{
-			// 新しいアイテムを INUSE 状態にする
+			// 新しいアイテムを ININVENTORY 状態にする
 			newItemBase->ChangeState(ItemBase::STATE::ININVENTORY);
+			newItemBase->ChangeUse(ItemBase::USE::INUSE);
 		}
 	}
 }
 
 void SlotBase::RemoveItem(const std::shared_ptr<ItemBase>& item)
 {
+}
+
+std::wstring SlotBase::GetCurrentItemType(void) const
+{
+	auto currentItem = GetCurrentItem();
+	if (!currentItem)
+	{
+		return L"None";
+	}
+
+	// 恒久アイテム
+	if (std::dynamic_pointer_cast<HandLight>(currentItem))
+	{
+		return L"HandLight";
+	}
+	if (std::dynamic_pointer_cast<Lockpick>(currentItem))
+	{
+		return L"Lockpick";
+	}
+	// 消費アイテム
+	if (std::dynamic_pointer_cast<Battery>(currentItem))
+	{
+		return L"Battery";
+	}
+	if (std::dynamic_pointer_cast<Hemostatic>(currentItem))
+	{
+		return L"Hemostatic";
+	}
+	if (std::dynamic_pointer_cast<Tranquilizer>(currentItem))
+	{
+		return L"Tranquilizer";
+	}
+	// その他
+	if (std::dynamic_pointer_cast<Wire>(currentItem))
+	{
+		return L"Wire";
+	}
+
+	return L"UnknownItem";
 }
