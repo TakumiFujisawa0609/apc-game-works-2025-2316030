@@ -4,9 +4,9 @@ class Wire :
     public ItemBase
 {
 public:
-    static constexpr VECTOR INIT_POS = { 0.0f,0.0f,0.0f };              // 初期座標
-    static constexpr VECTOR INIT_SCL = { 1.0f,1.0f,1.0f };           // 初期拡大率
-    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,0.0f,0.0f };    // 初期ローカル回転
+    static constexpr VECTOR INIT_POS = { -500.0f, 150.0f, 150.0f };              // 初期座標
+    static constexpr VECTOR INIT_SCL = { 0.3f,0.3f,0.3f };           // 初期拡大率
+    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,90.0f,0.0f };    // 初期ローカル回転
 
 
     static constexpr float MOUSE_SENSITIVITY = 0.35f;                  // マウス感度
@@ -18,6 +18,10 @@ public:
     static constexpr float THIRD_LOCK = 8.0f;                         // 3つ目のロック
 
     static constexpr VECTOR UNLOCK_POS = { 0.0f,0.0f,150.0f };
+
+    // 調整用座標
+    static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
+
 
     Wire(Player& player);
     ~Wire(void);
@@ -43,7 +47,7 @@ public:
     bool IsDifference(void);
 
     int GetLockLevel(void);
-    
+
     // 初期状態に戻すかどうか
     bool GetDefault(void);
 
@@ -51,6 +55,10 @@ public:
     void SetIsDefault(bool flag);
 
     bool isGameClear(void);
+
+    float GetLockRotationRate(void) const;
+
+    void DrawDebug(void);
 
 private:
 

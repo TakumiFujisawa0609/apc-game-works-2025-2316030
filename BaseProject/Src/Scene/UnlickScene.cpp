@@ -1,4 +1,4 @@
-#include <DxLib.h>
+ï»¿#include <DxLib.h>
 #include"../Utility/AsoUtility.h"
 #include"../Manager/SceneController.h"
 #include"../Manager/InputManager.h"
@@ -18,9 +18,9 @@
 using namespace std;
 
 namespace {
-	constexpr int appear_interval = 30;//oŒ»‚Ü‚Å‚ÌƒtƒŒ[ƒ€
-	constexpr int input_list_row_height = 40;//ƒƒjƒ…[‚Ì‚P‚Â‚ ‚½‚è‚Ì‚‚³
-	constexpr int margin_size = 20;//ƒ|[ƒYƒƒjƒ…[˜g‚Ì—]”’
+	constexpr int appear_interval = 30;//å‡ºç¾ã¾ã§ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
+	constexpr int input_list_row_height = 40;//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ï¼‘ã¤ã‚ãŸã‚Šã®é«˜ã•
+	constexpr int margin_size = 20;//ãƒãƒ¼ã‚ºãƒ¡ãƒ‹ãƒ¥ãƒ¼æ ã®ä½™ç™½
 }
 
 UnlickScene::UnlickScene(SceneController& controller)
@@ -42,20 +42,20 @@ UnlickScene::~UnlickScene(void)
 
 void UnlickScene::Init(Input& input)
 {
-	// j‹à‚Ì‰Šú‰»
+	// é‡é‡‘ã®åˆæœŸåŒ–
 	wire_->Init();
 	wire_->SetIsDefault(true);
 
-	// Œ®ŒŠƒvƒŒ[ƒg‚Ì‰Šú‰»
+	// éµç©´ãƒ—ãƒ¬ãƒ¼ãƒˆã®åˆæœŸåŒ–
 	keyholePlate_ = std::make_shared<KeyholePlate>();
 	keyholePlate_->Init();
 
-	// Œ®ŒŠ‚Ì‰Šú‰»
+	// éµç©´ã®åˆæœŸåŒ–
 	keyhole_ = std::make_shared<Keyhole>();
 	keyhole_->Init();
 	keyhole_->SetAngle(static_cast<float>(lockpick_->GetTransform().quaRotLocal.z));
-	
-	// ƒƒbƒNƒsƒbƒN‚Ì‰Šú‰»
+
+	// ãƒ­ãƒƒã‚¯ãƒ”ãƒƒã‚¯ã®åˆæœŸåŒ–
 	lockpick_->SetIsDefault(true);
 	lockpick_->SetIsUnlocking(true);
 }
@@ -72,6 +72,7 @@ void UnlickScene::Draw(void)
 
 void UnlickScene::DrawUI(void)
 {
+	wire_->DrawDebug();
 }
 
 void UnlickScene::SetPlayer(std::shared_ptr<Player> player)
@@ -102,33 +103,50 @@ void UnlickScene::NormalUpdate(Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTrgDown(KEY_INPUT_SPACE)||ins.IsClickMouseLeft()) 
+	if (ins.IsTrgDown(KEY_INPUT_SPACE) || ins.IsClickMouseLeft())
 	{
 		update_ = &UnlickScene::DisappearUpdate;
 		draw_ = &UnlickScene::ProcessDraw;
 		return;
 	}
 
-	// ŠÔ‚Ìæ“¾
+	// æ™‚é–“ã®å–å¾—
 	float time = Application::GetInstance().GetDeltaTime();
 
-	// j‹à‚Ìƒ}ƒEƒXˆÚ“®‚É‚æ‚é‰ñ“]
+	// é‡é‡‘ã®ãƒã‚¦ã‚¹ç§»å‹•ã«ã‚ˆã‚‹å›è»¢
 	wire_->UpdateExplore(time);
-	
-	if (ins.IsTrgDown(KEY_INPUT_A)|| ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
+
+	// æœ€å¤§ã®éµç©´å›è»¢è§’åº¦ (ãƒ©ã‚¸ã‚¢ãƒ³) - ä¾‹ãˆã° 45åº¦
+	const float MAX_KEYHOLE_ROT_DEG = 45.0f;
+	const float MAX_KEYHOLE_ROT_RAD = AsoUtility::Deg2RadF(MAX_KEYHOLE_ROT_DEG);
+
+	// éµç©´ã®å›è»¢ç‡ã‚’å–å¾— (0.0f ã€œ 1.0f)
+	float rotRate = wire_->GetLockRotationRate();
+
+	// å›è»¢ç‡ã«åŸºã¥ã„ã¦éµç©´ã®ç›®æ¨™å›è»¢è§’åº¦ã‚’è¨ˆç®— (ãƒ©ã‚¸ã‚¢ãƒ³)
+	// é‡é‡‘ãŒæ­£è§£ã«è¿‘ã¥ãã»ã©ã€ç›®æ¨™å›è»¢è§’åº¦ã¯ MAX_KEYHOLE_ROT_RAD ã«è¿‘ã¥ã
+	float targetKeyholeRot = MAX_KEYHOLE_ROT_RAD * rotRate;
+
+	// éµç©´ã«å›è»¢ã‚’è¨­å®š
+	// Keyhole::SetAngle ã¯ z è»¸ã®ãƒ­ãƒ¼ã‚«ãƒ«å›è»¢ã«è¨­å®š
+	keyhole_->SetAngle(targetKeyholeRot);
+
+	keyhole_->OnUpdate(time);
+
+	if (ins.IsTrgDown(KEY_INPUT_A) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
 	{
 
 		if (wire_->IsDifference())
 		{
-			// ƒƒbƒNƒŒƒxƒ‹‚ğİ’è
+			// ãƒ­ãƒƒã‚¯ãƒ¬ãƒ™ãƒ«ã‚’è¨­å®š
 			lockpick_->SetLockLevel(wire_->GetLockLevel());
-			
-			// ƒƒbƒNƒsƒbƒNAŒ®ŒŠ‚Æ‚à‚É‰ñ“]
+
+			// ãƒ­ãƒƒã‚¯ãƒ”ãƒƒã‚¯ã€éµç©´ã¨ã‚‚ã«å›è»¢
 			lockpick_->SetIsSuccess(true);
 			lockpick_->UpdateUnlock(time);
 
 
-			// ƒNƒŠƒA”»’è‚ğo‚·
+			// ã‚¯ãƒªã‚¢åˆ¤å®šã‚’å‡ºã™
 			update_ = &UnlickScene::DisappearUpdate;
 			draw_ = &UnlickScene::ProcessDraw;
 			return;
@@ -136,7 +154,7 @@ void UnlickScene::NormalUpdate(Input& input)
 
 	}
 
-	//// w’è‚ÌŠp“x‚É“’B‚µ‚½‚ç‰ğùŠ®—¹
+	//// æŒ‡å®šã®è§’åº¦ã«åˆ°é”ã—ãŸã‚‰è§£éŒ å®Œäº†
 	//lockpick_->UpdateUnlock(time);
 
 	//keyhole_->Update(time);
@@ -156,22 +174,22 @@ void UnlickScene::DisappearUpdate(Input& input)
 void UnlickScene::ProcessDraw()
 {
 	const Size& wsize = Application::GetInstance().GetWindowSize();
-	int centerY = wsize.height / 2;//‰æ–Ê’†SY
-	int frameHalfHeight = (wsize.height - margin_size * 2) / 2;//˜g‚Ì‚‚³‚Ì”¼•ª
+	int centerY = wsize.height / 2;//ç”»é¢ä¸­å¿ƒY
+	int frameHalfHeight = (wsize.height - margin_size * 2) / 2;//æ ã®é«˜ã•ã®åŠåˆ†
 
-	//oŒ»EÁ–Å‚Ì‚‚³•Ï‰»—¦(0.0`1.0)
+	//å‡ºç¾ãƒ»æ¶ˆæ»…æ™‚ã®é«˜ã•å¤‰åŒ–ç‡(0.0ï½1.0)
 	float rate = static_cast<float>(frame_) /
 		static_cast<float>(appear_interval);
 
 	frameHalfHeight *= static_cast<int>(rate);
 
-	//”’‚Á‚Û‚¢ƒZƒƒtƒ@ƒ“
+	//ç™½ã£ã½ã„ã‚»ãƒ­ãƒ•ã‚¡ãƒ³
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
 	DrawBox(margin_size, centerY - frameHalfHeight,
 		wsize.width - margin_size, centerY + frameHalfHeight,
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	//”’˜g
+	//ç™½æ 
 	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(centerY - frameHalfHeight),
 		static_cast<float>(wsize.width - margin_size), static_cast<float>(centerY + frameHalfHeight),
 		0xfffffff, false, 3.0f);
@@ -180,13 +198,15 @@ void UnlickScene::ProcessDraw()
 void UnlickScene::NormalDraw()
 {
 	const Size& wsize = Application::GetInstance().GetWindowSize();
-	//”’‚Á‚Û‚¢ƒZƒƒtƒ@ƒ“
+	//ç™½ã£ã½ã„ã‚»ãƒ­ãƒ•ã‚¡ãƒ³
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
 	DrawBox(margin_size, margin_size,
 		wsize.width - margin_size, wsize.height - margin_size,
 		0xfffffff, true);
+	wire_->DrawDebug();
+
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	//”’˜g
+	//ç™½æ 
 	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
 		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
 		0xfffffff, false, 3.0f);
@@ -196,19 +216,15 @@ void UnlickScene::NormalDraw()
 
 void UnlickScene::LockPickingDraw(void)
 {
-	SetUseZBufferFlag(false);
-
-	// Œ®ŒŠ
+	// éµç©´
 	keyhole_->Draw();
 
-	// Œ®˜g
+	// éµæ 
 	keyholePlate_->Draw();
 
-	// ƒƒbƒNƒsƒbƒN
+	// ãƒ­ãƒƒã‚¯ãƒ”ãƒƒã‚¯
 	lockpick_->Draw();
 
-	// j‹à
+	// é‡é‡‘
 	wire_->Draw();
-	
-	SetUseZBufferFlag(true);
 }

@@ -4,7 +4,7 @@ class Player;
 
 #include "../ItemBase.h"
 class ConsumableItemBase :
-    public ItemBase
+	public ItemBase
 {
 public:
 

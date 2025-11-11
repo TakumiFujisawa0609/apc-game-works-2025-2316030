@@ -177,7 +177,7 @@ void HandLight::UpdateRenderer(float deltaTime)
 		{
 			blinkIntensity_ = 1.0f;
 		}
-	
+
 		material_->SetConstBufPS(2, { blinkIntensity_,0.0f,0.0f,0.0f });
 	}
 	else
@@ -194,45 +194,36 @@ void HandLight::DrawRenderer(void)
 
 void HandLight::DrawUI(void)
 {
-
-	/*if(GetUse()=USE::INUSE)
+	if (GetState() == STATE::ININVENTORY)
 	{
-		return;
-	}*/
+		auto size = Application::GetInstance().GetWindowSize();
 
-	// 描画設定を退避
-	int blendMode;
-	int blendParam;
-	GetDrawBlendMode(&blendMode, &blendParam);
+		// --- UI描画の位置と設定 ---
+		// 画面右下から配置を調整 (例: 右端から 250px、下端から 50px の位置)
+		int uiWidth = 200;
+		int uiHeight = 20;
 
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // UI描画前にブレンドモードをリセット
+		// X座標: 画面幅 - 幅 - マージン
+		int drawX = size.width - uiWidth - 50;
+		// Y座標: 画面高さ - 高さ - マージン
+		int drawY = size.height - uiHeight - 100; // アイテムスロットと被らないように配置を調整
 
-	auto size = Application::GetInstance().GetWindowSize();
+		// ... ゲージの描画ロジックはそのまま利用 ...
+		float ratio = value_ / MAX_VALUE;
+		if (ratio < 0.0f) ratio = 0.0f;
 
-	// --- UI描画の位置と設定 ---
-	int drawX =  40; // 右から250ピクセルの位置
-	int drawY = size.height - 50;  // 下から50ピクセルの位置
-	int uiWidth = 200;
-	int uiHeight = 20;
+		// 1. ゲージの背景を描画 (灰色)
+		DrawBox(drawX, drawY, drawX + uiWidth, drawY + uiHeight, GetColor(50, 50, 50), TRUE);
 
-	//// value_が浮動小数点型であると仮定し、最大値で割って残量比率を計算
-	float ratio = value_ / MAX_VALUE;
-	if (ratio < 0.0f) ratio = 0.0f;
+		// 2. 残量ゲージを描画 (緑色 or 残量低下で赤色)
+		int gaugeColor = (ratio > 0.3f) ? GetColor(0, 255, 0) : GetColor(255, 150, 0); // 30%以下で黄色に変化
+		int fillWidth = (int)(uiWidth * ratio);
+		DrawBox(drawX, drawY, drawX + fillWidth, drawY + uiHeight, gaugeColor, TRUE);
 
-	// --- 1. ゲージの背景を描画 (灰色) ---
-	DrawBox(drawX, drawY, drawX + uiWidth, drawY + uiHeight, GetColor(50, 50, 50), TRUE);
-
-	// --- 2. 残量ゲージを描画 (緑色) ---
-	// 残量に応じた幅
-	int fillWidth = (int)(uiWidth * ratio);
-	DrawBox(drawX, drawY, drawX + fillWidth, drawY + uiHeight, GetColor(0, 255, 0), TRUE);
-
-	// --- 3. 残量パーセンテージをテキストで描画 ---
-	int percent = (int)(ratio * 100.0f);
-	DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"残量: %d%%", percent);
-
-
-	// SetDrawBlendMode(blendMode, blendParam);
+		// 3. テキスト表示
+		int percent = (int)(ratio * 100.0f);
+		DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"LIGHT: %d%%", percent);
+	}
 }
 
 void HandLight::ChangeBattery(float value)
@@ -294,7 +285,7 @@ void HandLight::UpdateInUse(float deltaTime)
 	if (isDisabled_)
 	{
 		value_ -= Application::GetInstance().GetDeltaTime();
-	
+
 		if (value_ <= 0.0f)
 		{
 			value_ = 0.0f;

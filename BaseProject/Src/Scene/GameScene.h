@@ -18,8 +18,10 @@ class SlotBase;
 
 class PlayerStatusUI;
 
+class Dummy;
+
 class GameScene :
-    public Scene
+	public Scene
 {
 public:
 	/// <summary>
@@ -44,9 +46,17 @@ public:
 	/// 毎フレーム描画する
 	/// </summary>
 	virtual void Draw(void) override;
-	
-	
+
+
 	void DrawUI(void)override;
+
+	enum class TASK
+	{
+		FIND_LIGHT,
+		FIND_WIRE,
+		FIND_DOOR,
+		CLEARED
+	};
 
 private:
 	int imgH_;
@@ -105,6 +115,8 @@ private:
 	// ランダム生成のアイテム
 	std::vector<std::shared_ptr<ItemBase>> randomItems_;
 
+	std::shared_ptr<Dummy> dummy_;
+
 	// アイテム全体を処理
 	void UpdateItemPool(float deltaTime);
 	void DrawItemPool(void);
@@ -142,5 +154,21 @@ private:
 	bool IsHitItems(void);
 
 	bool isHitItem_;
+
+	void CleanUpItemPool(void);
+
+	bool IsHitDoor(void) const;
+
+
+	TASK task_;
+
+	void UpdateTaskState(TASK task);
+	std::wstring currentTaskMessage_ = L"";
+
+	std::wstring clearMessage_ = L"";               // 完了時に一瞬表示するメッセージ
+	float clearMessageTimer_ = 0.0f;                // 完了メッセージの表示時間
+	constexpr static float CLEAR_MSG_DURATION = 3.0f; // 完了メッセージの表示秒数 (3秒)
+
+	void UpdateItemTasks(void);
 };
 

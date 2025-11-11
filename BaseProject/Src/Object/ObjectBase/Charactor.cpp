@@ -70,10 +70,10 @@ void Charactor::Rotate(void)
 void Charactor::Collision(void)
 {
 	// カプセルとの当たり判定
-	CollisionCapsule();
+	//CollisionCapsule();
 
 	// 重力の衝突判定
-	CollisionGravity();
+	//CollisionGravity();
 }
 
 void Charactor::CollisionCapsule(void)

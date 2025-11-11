@@ -24,7 +24,7 @@ class EnemyBase :
 {
 public:
 
-    static constexpr VECTOR POS = {0.0f,300.0f,300.0f};
+    static constexpr VECTOR POS = { -1713.0f,200.0f,2580.0f };
     static constexpr VECTOR SCALE = { 1.0f,1.0f ,1.0f };
     static constexpr VECTOR QUAROT_LOCAL = { 0.0f,180.0f,0.0f };
 
@@ -33,7 +33,8 @@ public:
     static constexpr float RADIUS = 20.0f;
 
     // éãñÏÇÃçLÇ≥
-    static constexpr float EYE_VIEW_RANGE = 450.0f;
+    static constexpr float EYE_VIEW_RANGE = 250.0f;
+    //static constexpr float ATTACK_RANGE = 100.0f;
 
     // çUåÇîÕàÕÇÃçLÇ≥
     static constexpr float ATTACK_RANGE = 175.0f;
@@ -155,5 +156,14 @@ private:
     int currentPathIndex_ = 0;
     float pathRecalcTimer_ = 0.0f;
     float time_ = 0.0f;
+
+    bool isDamageCheckActive_;
+    bool hasPlayerBeenHit_;
+
+    void HandleAttackCollsion(float deltaTime);
+
+    bool isAttackRange(void);
+
+    bool isAttack_;
 };
 

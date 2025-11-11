@@ -1,6 +1,6 @@
 #include <algorithm>
 #include <functional>
-//#define NOMINMAX
+#define NOMINMAX
 #include "PatrolNode.h"
 #include "PatrolPath.h"
 
@@ -68,4 +68,27 @@ PatrolPath::PATHTYPE PatrolPath::GetPathType(void)
 const std::vector<PatrolNode>& PatrolPath::GetNodes(void) const
 {
     return nodes;
+}
+
+int PatrolPath::FindClosestNodeIndex(const VECTOR& currentPos) const
+{
+    if (nodes.empty()) return -1;
+
+    float minDistanceSq = std::numeric_limits<float>::max();
+    int closestIndex = -1;
+
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        VECTOR nodePos = nodes[i].GetPos();
+        // …•½‹——£‚Ì‚Ý‚ð”äŠr‚·‚é‚½‚ßYÀ•W‚ð–³Ž‹
+        VECTOR diff = VSub({ nodePos.x, 0.0f, nodePos.z }, { currentPos.x, 0.0f, currentPos.z });
+        float distanceSq = VSquareSize(diff);
+
+        if (distanceSq < minDistanceSq)
+        {
+            minDistanceSq = distanceSq;
+            closestIndex = i;
+        }
+    }
+    return closestIndex;
 }

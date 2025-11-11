@@ -151,13 +151,26 @@ std::shared_ptr<NavGridManager> Stage::GetNavGridMananger(void)
 void Stage::InitPatrolInfo(void)
 {
 	// ノード上の初期化
-	nodes_.emplace_back(VECTOR{ 100.0f,180.0f,50.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 500.0f,180.0f,50.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,50.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,-500.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 900.0f,180.0f,-900.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 1500.0f,180.0f,-900.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
-	nodes_.emplace_back(VECTOR{ 1700.0f,180.0f,-1500.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -401.0f,120.0f,3853.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -458.0f,120.0f,4683.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -1737.0f,120.0f,4711.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -2030.0f,120.0f,4371.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -1969.0f,120.0f,3971.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -1960.0f,120.0f,3167.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -2000.0f,120.0f,2589.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -2800.0f,120.0f,2589.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -3570.0f,120.0f,2589.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -3900.0f,120.0f,2589.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -3900.0f,120.0f,2424.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -3570.0f,120.0f,2424.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -2784.0f,120.0f,2424.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -2813.0f,120.0f,1840.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -2830.0f,120.0f,1114.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -2243.0f,120.0f,1076.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -1794.0f,120.0f,1076.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -1788.0f,120.0f,567.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -1779.0f,120.0f,125.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
+	nodes_.emplace_back(VECTOR{ -1770.0f,120.0f,-251.0f }, 1.0f, PatrolNode::ACTTYPE::NONE);
 
 	// 巡回パスを作成
 	paths_.emplace_back(std::make_shared<PatrolPath>(nodes_, PatrolPath::PATHTYPE::ROUNDTRIP));

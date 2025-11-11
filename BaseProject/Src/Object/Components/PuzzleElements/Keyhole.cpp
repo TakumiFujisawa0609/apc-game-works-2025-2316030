@@ -8,8 +8,8 @@
 #include "Keyhole.h"
 
 Keyhole::Keyhole(void)
-	:
-	isSuccess_(false)
+    :
+    isSuccess_(false)
 {
 }
 
@@ -19,56 +19,55 @@ Keyhole::~Keyhole(void)
 
 void Keyhole::Init(void)
 {
-	// 使用する画像の初期化
-	imgH_ = resMng_.Load(ResourceManager::SRC::KEYHOLE).handleId_;
+    // 使用する画像の初期化
+    imgH_ = resMng_.Load(ResourceManager::SRC::KEYHOLE).handleId_;
 
-	// 2D情報の初期化
-	InitImg(0.0f, 0.0f, 0.25f, 0.0f);
+    // 2D情報の初期化
+    InitImg(0.0f, 0.0f, 0.25f, 0.0f);
 }
 
 void Keyhole::OnUpdate(float deltaTime)
 {
-	if (isSuccess_)
-	{
-		//// 目標角度を例えば 90度 (度からラジアンに変換)
-		//const float GOAL_ROT = AsoUtility::Deg2RadF(90.0f);
-		//// 回転速度
-		//const float ROT_SPEED = 5.0f * deltaTime; // Lockpickと同じか調整
+    // 現在の回転角度
+    float currentRotZ = angle_;
+    float goalRotZ = goalAngle_; // 新しい目標角度
 
-		//float currentRotZ = static_cast<float>(transform_.quaRotLocal.z);
+    const float LERP_RATE = 5.0f * deltaTime; // deltaTimeを考慮して速度を固定
 
-		//// 目標に向かって徐々に回転
-		//currentRotZ = AsoUtility::MoveToAngle(currentRotZ, GOAL_ROT, ROT_SPEED);
+    // Lerpで回転
+    float diff = goalRotZ - currentRotZ;
 
-		//// 回転の適用
-		//transform_.quaRotLocal.z = static_cast<double>(currentRotZ);
+    if (std::abs(diff) > 0.001f)
+    {
+        float delta = diff * LERP_RATE;
+        // 目標を超えないように補正
+        if (std::abs(delta) > std::abs(diff)) { delta = diff; }
+        currentRotZ += delta;
+    }
+    else
+    {
+        currentRotZ = goalRotZ;
+    }
 
-		//// 回転完了判定 (鍵穴の回転完了が解錠完了と見なされることが多い)
-		//if (std::abs(currentRotZ - GOAL_ROT) < 0.01f)
-		//{
-		//	// 解錠完了
-		//	isSuccess_ = false;
-		//	// UnlickSceneでシーン遷移をトリガーするフラグを立てる
-		//}
-	}
+    angle_ = currentRotZ;
 }
 
 void Keyhole::Draw(void)
 {
-	PlazzleElementBase::Draw();
+    PlazzleElementBase::Draw();
 }
 
 void Keyhole::SetAngle(float angle)
 {
-	transform_.quaRotLocal.z = angle;
+    goalAngle_ = angle;
 }
 
 void Keyhole::SetIsSuccess(bool isSuccess)
 {
-	isSuccess_ = isSuccess;
+    isSuccess_ = isSuccess;
 }
 
 bool Keyhole::GetIsSuccess(void) const
 {
-	return isSuccess_;
+    return isSuccess_;
 }

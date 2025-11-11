@@ -1,7 +1,7 @@
 #pragma once
 #include "PermanentItemBase.h"
 class Lockpick :
-    public PermanentItemBase
+	public PermanentItemBase
 {
 public:
 	static constexpr VECTOR INIT_POS = { -400.0f, 150.0f, 200.0f };              // ‰ŠúÀ•W
@@ -47,6 +47,8 @@ public:
 	void SetIsUnlocking(bool flag);
 
 	void SetIsSuccess(bool flag);
+
+	bool IsSuccess(void);
 
 private:
 

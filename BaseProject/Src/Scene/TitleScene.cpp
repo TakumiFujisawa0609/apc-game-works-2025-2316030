@@ -158,7 +158,7 @@ void TitleScene::NormalDraw()
 
 void TitleScene::DrawMenuList(void)
 {
-	constexpr int line_start_y = margin_size + 150;
+	constexpr int line_start_y = margin_size + 250;
 	constexpr int line_start_x = margin_size + 250;
 	int lineY = line_start_y;
 

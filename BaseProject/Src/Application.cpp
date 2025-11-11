@@ -157,8 +157,8 @@ void Application::Run()
 
 #ifdef _DEBUG
 
-        DrawFrameRate();
-        DrawDrawCall();
+        /* DrawFrameRate();
+        DrawDrawCall();*/
 
 #endif // DEBUG
 
@@ -252,7 +252,7 @@ std::shared_ptr<Config> Application::GetConfig(void) const
 void Application::Init3D(void)
 {
     // 背景色設定
-    SetBackgroundColor(0, 139, 139);
+    SetBackgroundColor(0, 0, 0);
 
     // Zバッファを有効にする
     SetUseZBuffer3D(true);

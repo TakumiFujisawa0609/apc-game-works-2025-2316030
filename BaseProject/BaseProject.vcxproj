@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Stage\Dummy.cpp" />
     <ClCompile Include="Src\Object\Item\ComsumableItems\ConsumableItemBase.cpp" />
     <ClCompile Include="Src\Object\Item\PermanentItems\PermanentItemBase.cpp" />
     <ClCompile Include="Src\Object\Item\ComsumableItems\Hemostatic.cpp" />
@@ -208,6 +209,7 @@
     <ClCompile Include="Src\Object\Item\ComsumableItems\Tranquilizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Stage\Dummy.h" />
     <ClInclude Include="Src\Object\Item\ComsumableItems\ConsumableItemBase.h" />
     <ClInclude Include="Src\Object\Item\PermanentItems\PermanentItemBase.h" />
     <ClInclude Include="Src\Object\Item\ComsumableItems\Hemostatic.h" />

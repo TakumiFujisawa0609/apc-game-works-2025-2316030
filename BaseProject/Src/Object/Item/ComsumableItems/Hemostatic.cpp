@@ -4,6 +4,7 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/Camera.h"
 #include "../../../Utility/AsoUtility.h"
+#include "../../Player/Player.h"
 #include "Hemostatic.h"
 
 Hemostatic::Hemostatic(Player& player)
@@ -64,6 +65,8 @@ void Hemostatic::Draw(void)
 
 void Hemostatic::Use(void)
 {
+	isDisabled_ = true;
+	player_.SetHitPoint(50.0f);
 }
 
 void Hemostatic::OnUpdate(float deltaTime)

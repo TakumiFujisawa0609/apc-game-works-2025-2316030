@@ -35,7 +35,10 @@ EnemyBase::EnemyBase(Player& player)
     isWaiting_(false),
     currentWaitTime_(0.0f),
     dis_(0.0f),
-    currentNode_(0)
+    currentNode_(0),
+    isDamageCheckActive_(false),
+    hasPlayerBeenHit_(false),
+    isAttack_(false)
 {
 }
 
@@ -103,7 +106,7 @@ void EnemyBase::OnUpdate(float deltaTime)
 
     bool isChase_ = false;
 
-    if (EyeSerch() || isHearingSound_)
+    if (state_!=STATE::ATTACK&&(EyeSerch() || isHearingSound_))
     {
         // 追跡状態への遷移条件
         if (state_ != STATE::CHASE)
@@ -123,8 +126,22 @@ void EnemyBase::OnUpdate(float deltaTime)
         frame_++;
         if (frame_ >= 180)
         {
-            ChangeState(STATE::PATROL);
+            if (state_ == STATE::CHASE)
+            {
+                // CHASEからPATROLへ遷移する場合
+                ChangeState(STATE::PATROL);
+
+                // 最も近い巡回ノードを見つけて、それを次の目標とする
+                currentPatrolPathIndex_ = patrolPath_->FindClosestNodeIndex(transform_.pos);
+                currentNode_ = currentPatrolPathIndex_;
+            }
         }
+    }
+
+    if ((state_ == STATE::CHASE) && isAttackRange() && !isAttack_)
+    {
+        ChangeState(STATE::ATTACK);
+        isAttack_ = true;
     }
 
     // 現在の状態に応じたコンポーネントのロジック実行
@@ -132,28 +149,29 @@ void EnemyBase::OnUpdate(float deltaTime)
     {
     case EnemyBase::STATE::PATROL:
         UpdatePatrol(deltaTime);
-        //if (patrolComponent_)
-        //{
-        //    // ここで巡回情報をわたす
-        //    patrolComponent_->Patrol(deltaTime, transform_, patrolPath_, currentPatrolPathIndex_,
-        //        moveDir_, movePow_, 5.0f, transform_.quaRot);
-
-        //}
         break;
     case EnemyBase::STATE::CHASE:
         UpdateChase(deltaTime);
-        //if (chaseComponent_)
-        //{   
-        //    // 追跡処理時に必要な情報を渡す
-        //    chaseComponent_->Chase(deltaTime, transform_,
-        //        moveDir_, movePow_, 5.0f, transform_.quaRot);
-        //}
         break;
     case EnemyBase::STATE::ATTACK:
+        if (!animationController_->IsEnd())
+        {
+            HandleAttackCollsion(deltaTime);
+        }
+        state_;
 
-        // 一定距離まで近づくと攻撃されて
-        // プレイヤーがダメージを受ける
+        if (animationController_->IsEnd())
+        {
+            // ダメージ判定を無効化し、追跡状態に戻す
+            isDamageCheckActive_ = false;
+            hasPlayerBeenHit_ = false;
+            isAttack_ = false;
+            ChangeState(STATE::CHASE);
 
+            state_;
+
+            //return;
+        }
         break;
     case EnemyBase::STATE::IDLE:
         break;
@@ -162,13 +180,13 @@ void EnemyBase::OnUpdate(float deltaTime)
     }
 
 
-    // 移動
-    VECTOR horizontalMovement = VScale(moveDir_, moveSpeed_ * deltaTime);
+    //// 移動
+    //VECTOR horizontalMovement = VScale(moveDir_, moveSpeed_ * deltaTime);
     //movePow_ = VAdd(movePow_, horizontalMovement);
 
     //CalcGravityPow();
 
-    //Collision();
+    Collision();
 }
 
 void EnemyBase::Draw(void)
@@ -177,23 +195,23 @@ void EnemyBase::Draw(void)
 
 #ifdef _DEBUG
 
-    const wchar_t* stateName = L"UNKONOWN";
-    auto it = stateNames.find(state_);
-    if (it != stateNames.end())
-    {
-        stateName = it->second;
-    }
+    //const wchar_t* stateName = L"UNKONOWN";
+    //auto it = stateNames.find(state_);
+    //if (it != stateNames.end())
+    //{
+    //    stateName = it->second;
+    //}
 
-    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 48, GetColor(255, 255, 255), L"state: %s", stateName);
+    //DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 48, GetColor(255, 255, 255), L"state: %s", stateName);
 
-    if (capsule_)capsule_->Draw();
+    //if (capsule_)capsule_->Draw();
 
-    DrawDebug();
+    //DrawDebug();
 
-    DrawFormatString(Application::GetInstance().GetWindowSize().width - 200, 64, GetColor(255, 255, 255), L"pos: (%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
-    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 80, GetColor(255, 255, 255), L"dis: %.2f", patrolComponent_->GetDis());
-    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 96, GetColor(255, 255, 255), L"nextNode: %d", patrolComponent_->GetCurrentNode());
-    DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 112, GetColor(255, 255, 255), L"recalcTime: %.2f", chaseComponent_->GetTime());
+    //DrawFormatString(Application::GetInstance().GetWindowSize().width - 200, 64, GetColor(255, 255, 255), L"pos: (%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+    //DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 80, GetColor(255, 255, 255), L"dis: %.2f", patrolComponent_->GetDis());
+    //DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 96, GetColor(255, 255, 255), L"nextNode: %d", patrolComponent_->GetCurrentNode());
+    //DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 112, GetColor(255, 255, 255), L"recalcTime: %.2f", chaseComponent_->GetTime());
 
 #endif // _DEBUG
 
@@ -249,10 +267,11 @@ void EnemyBase::Collision(void)
     // 現在座標を起点に移動後座標を決める
     movedPos_ = VAdd(transform_.pos, movePow_);
 
-    Charactor::Collision();
+    //Charactor::Collision();
 
     // 移動
     transform_.pos = movedPos_;
+    transform_.pos.y = 13.0f;
 }
 
 void EnemyBase::CollisionCapsule(void)
@@ -310,6 +329,9 @@ void EnemyBase::ChangeState(STATE state)
 {
     state_ = state;
 
+    isDamageCheckActive_ = false;
+    hasPlayerBeenHit_ = false;
+
     switch (state_)
     {
     case EnemyBase::STATE::PATROL:
@@ -319,7 +341,8 @@ void EnemyBase::ChangeState(STATE state)
         animationController_->Play((int)ANIM::CHASE, true, 0.5f);
         break;
     case EnemyBase::STATE::ATTACK:
-        animationController_->Play((int)ANIM::ATTACK, true, 0.5f);
+        animationController_->Play((int)ANIM::ATTACK, false, 0.5f);
+        isDamageCheckActive_ = true;
         break;
     case EnemyBase::STATE::IDLE:
         animationController_->Play((int)ANIM::IDLE, true, 0.5f);
@@ -469,13 +492,15 @@ void EnemyBase::UpdatePatrol(float deltaTime)
 
             // 状態をPATROL（移動）に戻す
             //enemyBase->ChangeState(EnemyBase::STATE::PATROL);
-        }
-        else
-        {
-            // 次のノードのインデックスを更新
+                      // 次のノードのインデックスを更新
             patrolPath_->GetNextNode(currentPatrolPathIndex_);
             currentNode_ = currentPatrolPathIndex_;
 
+            return;
+        }
+        else
+        {
+  
             // 待機中は移動を停止
             moveDir_ = AsoUtility::VECTOR_ZERO;
 
@@ -530,57 +555,72 @@ void EnemyBase::UpdatePatrol(float deltaTime)
 
 void EnemyBase::UpdateChase(float deltaTime)
 {
-    // 1. A*の再計算
-    pathRecalcTimer_ -= deltaTime;
-    if (pathRecalcTimer_ <= 0.0f)
-    {
-        currentPath_ = FindPath(transform_.pos, player_.GetTransform().pos);
-        currentPathIndex_ = 0;
-        pathRecalcTimer_ = 0.3f; // 0.5秒ごとに再計算
-    }
+#pragma region A*計算
+    //// 1. A*の再計算 (頻度を調整することを推奨)
+    //pathRecalcTimer_ -= deltaTime;
+    //if (pathRecalcTimer_ <= 0.0f)
+    //{
+    //    // プレイヤーの位置が変わった、または一定時間経過した場合のみ再計算
+    //    // ここでの目標は「プレイヤーの現在地」ではなく「プレイヤーのいるグリッドノード」とします
+    //    currentPath_ = FindPath(transform_.pos, player_.GetTransform().pos);
+    //    currentPathIndex_ = 0;
+    //    pathRecalcTimer_ = 0.5f; // 0.3秒から0.5秒程度に増やし、負荷を軽減
+    //}
 
-    // 2. 経路が存在しない場合
-    if (currentPath_.empty() || currentPathIndex_ >= currentPath_.size())
-    {
-        moveDir_ = AsoUtility::VECTOR_ZERO;
-        return;
-    }
+    //// 2. 経路が存在しない場合
+    //if (currentPath_.empty() || currentPathIndex_ >= currentPath_.size())
+    //{
+    //    moveDir_ = AsoUtility::VECTOR_ZERO;
+    //    // 経路が見つからなかった場合、その場で回転するなどの処理を追加できます
+    //    return;
+    //}
 
-    // 3. 移動目標の設定と到達判定
-    VECTOR targetPos = currentPath_[currentPathIndex_];
+    //// 3. 移動目標の設定と到達判定
+    //VECTOR targetPos = currentPath_[currentPathIndex_];
 
-    VECTOR currentPos = transform_.pos;
-    currentPos.y = 0.0f;
-    targetPos.y = 0.0f;
+    //VECTOR currentPos = transform_.pos;
+    //currentPos.y = targetPos.y; // 目標ノードのY座標に合わせる
 
-    VECTOR moveVector = VSub(targetPos, currentPos);
-    float distance = VSize(moveVector);
+    //VECTOR moveVector = VSub(targetPos, currentPos);
+    //float distance = VSize(moveVector);
 
-    // ノードに到達したら次のノードへ
-    if (distance < 20.0f)
-    {
-        currentPathIndex_++;
-        if (currentPathIndex_ >= currentPath_.size())
-        {
-            moveDir_ = AsoUtility::VECTOR_ZERO;
-            return;
-        }
-        // 次のノードを目標に再設定
-        targetPos = currentPath_[currentPathIndex_];
-    }
+    //// ノードに到達したら次のノードへ
+    //// 判定距離を小さくする（グリッドのサイズによって調整が必要）
+    //// 例: グリッドサイズが200.0fの場合、20.0fは大きすぎる
+    //// 5.0f～10.0f程度を推奨
+    //constexpr float NODE_REACH_THRESHOLD = 10.0f; // 閾値を調整
+
+    //if (distance < NODE_REACH_THRESHOLD)
+    //{
+    //    currentPathIndex_++;
+    //    if (currentPathIndex_ >= currentPath_.size())
+    //    {
+    //        // 最終ノードに到達
+    //        moveDir_ = AsoUtility::VECTOR_ZERO;
+    //        return;
+    //    }
+    //    // 次のフレームで新しい目標ノードが設定される
+    //}
+
+#pragma endregion
 
     // 4. 移動方向と回転の設定
-    VECTOR moveDirection = VNorm(VSub(targetPos, currentPos));
+    // ノードの目標が更新されても、直前のノードから目標ノードへの移動方向を常に計算
+    VECTOR moveDirection = VNorm(VSub(player_.GetTransform().pos, transform_.pos));
     moveDir_ = moveDirection;
 
-    movePow_ = VScale(moveDir_, moveSpeed_);
+    // moveSpeedはPATROL時より速い値を使うことが多い
+    movePow_ = VScale(moveDir_, 4.0f);
 
     // 回転処理
     float rotationY = atan2f(moveDirection.x, moveDirection.z);
     Quaternion targetRotation = Quaternion::Euler({ 0.0f, rotationY, 0.0f });
 
     // 滑らかに補間
-    transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 5.0f * deltaTime);
+    // 補間速度をCHASEに合わせて調整
+    transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 7.0f * deltaTime); // 5.0fから7.0fに少し上げる
+
+
 }
 
 std::vector<VECTOR> EnemyBase::FindPath(VECTOR startPos, VECTOR endPos)
@@ -697,6 +737,95 @@ std::vector<VECTOR> EnemyBase::RetracePath(AStarNode* start, AStarNode* end)
     }
     std::reverse(path.begin(), path.end());
     return path;
+}
+
+void EnemyBase::HandleAttackCollsion(float deltaTime)
+{
+    if (!isDamageCheckActive_ || hasPlayerBeenHit_)
+    {
+        return;
+    }
+
+    // 敵の現在のカプセル情報を取得
+    const std::shared_ptr<Capsule> enemyCap = GetCapsule(); // EnemyBaseにGetCapsule()がある前提 (Charactor::GetCapsule()など)
+
+    // プレイヤーの現在のカプセル情報を取得
+    const std::shared_ptr<Capsule> playerCap = player_.GetCapsule(); // PlayerにGetCapsule()がある前提
+
+    if (!enemyCap || !playerCap) return;
+
+    // プレイヤーのカプセル座標を取得 (Player::GetCapsule()がTransformを考慮している前提)
+    VECTOR pTop = playerCap->GetPosTop();
+    VECTOR pDown = playerCap->GetPosDown();
+    float pRadius = playerCap->GetRadius();
+
+    // 敵のカプセル座標を取得
+    VECTOR eTop = enemyCap->GetPosTop();
+    VECTOR eDown = enemyCap->GetPosDown();
+    float eRadius = enemyCap->GetRadius();
+
+    // 敵のカプセルとプレイヤーのカプセルの距離を計算
+    // DXライブラリにはカプセル-カプセル衝突判定関数がないため、
+    // ここでは単純化して、カプセル間の最短距離を計算します。
+    // (または、カプセル軸線分間の最短距離 + 半径の合計をチェックする)
+
+    // ここでは、カプセル-カプセルの当たり判定関数を自作せずに、
+    // 簡易的に敵とプレイヤーの**中心点**の距離で判定します。
+
+    VECTOR enemyCenter = VScale(VAdd(eTop, eDown), 0.5f);
+    VECTOR playerCenter = VScale(VAdd(pTop, pDown), 0.5f);
+
+    VECTOR diff = VSub(playerCenter, enemyCenter);
+    float distanceSq = VSquareSize(diff);
+
+    // 簡易的な衝突許容距離の二乗（半径の合計の二乗）
+    // 敵のカプセル半径 + プレイヤーのカプセル半径 = 20.0f + 20.0f = 40.0f
+    constexpr float COLLISION_RADIUS = 40.0f;
+    constexpr float COLLISION_RADIUS_SQ = COLLISION_RADIUS * COLLISION_RADIUS;
+
+    // 衝突判定
+    if (distanceSq <= COLLISION_RADIUS_SQ)
+    {
+        // 攻撃がヒットした
+
+        // プレイヤーにダメージを与える関数を呼び出す
+        player_.TakeDamage(30.0f); // ★ Player::TakeDamage(float) が必要
+
+        hasPlayerBeenHit_ = true;
+    }
+}
+
+bool EnemyBase::isAttackRange(void)
+{
+    // プレイヤーの座標を取得
+    VECTOR pPos = player_.GetTransform().pos;
+
+    // エネミーからプレイヤーまでのベクトル
+    VECTOR diff = VSub(pPos, transform_.pos);
+
+    // 視野範囲に入っているか判断
+    float distance = std::pow(diff.x, 2.0f) + std::pow(diff.z, 2.0f);
+    if (distance <= (std::pow(ATTACK_RANGE, 2.0f)))
+    {
+        // 自分から見たプレイヤーの角度を求める
+        float rad = atan2(pPos.x - transform_.pos.x, pPos.z - transform_.pos.z);
+        float viewRad = rad - transform_.rot.y;
+        float viewDeg = static_cast<float>(AsoUtility::DegIn360(AsoUtility::Rad2DegF(viewRad)));
+
+        // 視野角内に入っているか判断
+        if (viewDeg <= VIEW_ANGLE || viewDeg >= (360.0f - VIEW_ANGLE))
+        {
+            auto info = MV1CollCheck_Line(player_.GetTransform().modelId, -1,
+                { transform_.pos.x,transform_.pos.y,transform_.pos.z },
+                { player_.GetTransform().pos.x,player_.GetTransform().pos.y,player_.GetTransform().pos.z });
+            if (info.HitFlag == 0)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 bool EnemyBase::CompareNode::operator()(const AStarNode* a, const AStarNode* b) const

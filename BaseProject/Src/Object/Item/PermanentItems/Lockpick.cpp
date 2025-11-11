@@ -42,6 +42,7 @@ void Lockpick::Init(void)
 	isEquipment_ = false;
 	isEfficacy_ = false;
 	isDisabled_ = false;
+	isSuccess_ = false;
 	ChangeState(STATE::ONSTAGE);
 }
 
@@ -85,7 +86,7 @@ void Lockpick::UpdateOnStage(float deltaTime)
 {
 	// ステージにアイテムが落ちている状態
 	// アイテムが拾われる処理
-	
+
 
 	//拾われるとUpdateInVentoryに遷移
 	if (!isOnStage_)
@@ -234,4 +235,7 @@ void Lockpick::SetIsSuccess(bool flag)
 	isSuccess_ = flag;
 }
 
-
+bool Lockpick::IsSuccess(void)
+{
+	return isSuccess_;
+}

@@ -45,6 +45,8 @@ void Wire::Init(void)
     transform_.pos = modelPos;
     transform_.scl = { 100.0f,100.0f,100.0f };
     transform_.quaRot = camera->GetQuaRot();
+    transform_.quaRotLocal= Quaternion::Euler({ AsoUtility::Deg2RadF(INIT_QUAROTLOCAL.x),
+        AsoUtility::Deg2RadF(INIT_QUAROTLOCAL.y),AsoUtility::Deg2RadF(INIT_QUAROTLOCAL.z) });
 
     // UI画像
     //imgId_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::KNIFE_I);
@@ -77,21 +79,12 @@ void Wire::Update(float deltaTime)
 
 void Wire::Draw(void)
 {
-    if (isDisabled_)
+    if (GetState() == STATE::ONSTAGE ||
+        GetUse() != USE::NONE)
     {
-
-        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-
         MV1DrawModel(transform_.modelId);
-
-        auto& size = Application::GetInstance().GetWindowSize();
-        DrawFormatString(size.width - 200, 64, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
-        DrawFormatString(size.width - 200, 80, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
-
-        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 0);
-
-        //DrawFormatString(size.width - 200, 96, GetColor(255, 255, 255), L"rLocal_=(%.2f)", transform_.quaRotLocal.z);
     }
+    //DrawFormatString(size.width - 200, 96, GetColor(255, 255, 255), L"rLocal_=(%.2f)", transform_.quaRotLocal.z);
 }
 
 float Wire::GetCurrentAngle(void)
@@ -130,7 +123,7 @@ void Wire::UpdateExplore(float deltaTime)
     {
         // ゲームパッドによる操作
         DINPUT_JOYSTATE inputState;
-        if (GetJoypadDirectInputState(DX_INPUT_PAD1, &inputState)==0)
+        if (GetJoypadDirectInputState(DX_INPUT_PAD1, &inputState) == 0)
         {
             float lStickX_Raw = static_cast<float>(inputState.X);
             float lStickX = lStickX_Raw / 32767.0f;
@@ -157,7 +150,7 @@ void Wire::UpdateExplore(float deltaTime)
     }
 
     // 判定の更新
-    transform_.quaRotLocal.x= static_cast<double>(thresholdRotZ);
+    transform_.quaRotLocal.x = static_cast<double>(thresholdRotZ);
     currentAngle_ = static_cast<float>(transform_.quaRotLocal.x);
 
     // モデルの更新
@@ -183,28 +176,24 @@ int Wire::GetLockLevel(void)
 {
     float diffAngle = goalAngle_ - currentAngle_;
 
-    // 20度
-    if (diffAngle < FIRST_LOCK)
+    // 8度
+    if (diffAngle < 8.0f)
+    {
+        return 3;
+    }
+    else if (diffAngle < 15.0f)
+    {
+        return 2;
+    }
+    else if (diffAngle < 20.0f)
     {
         return 1;
-
-        // 15度
-        if (diffAngle < SECOND_LOCK)
-        {
-            return 2;
-
-            // 8度
-            if (diffAngle < THIRD_LOCK)
-            {
-                return 3;
-            }
-        }
     }
     else
     {
         return 0;
     }
-    
+
 }
 
 bool Wire::GetDefault(void)
@@ -222,8 +211,41 @@ bool Wire::isGameClear(void)
     return isGameClear_;
 }
 
+float Wire::GetLockRotationRate(void) const
+{
+    // ロックピックが反応を始める最大の差分角度（例：20度）
+    const float MAX_DIFFERENCE = 20.0f;
+
+    // 現在の針金と正解の角度の絶対差分
+    float diffAngle_ = std::abs(goalAngle_ - currentAngle_);
+
+    // 差分が MAX_DIFFERENCE 以上の場合は 0.0f (回転なし)
+    if (diffAngle_ >= MAX_DIFFERENCE)
+    {
+        return 0.0f;
+    }
+
+    // 差分が 0.0f の場合は 1.0f (最大回転)
+    // 差分が大きくなるほど、1.0fから0.0fに近づく
+    // (MAX_DIFFERENCE - diffAngle_) / MAX_DIFFERENCE で 1.0f から 0.0f に線形に変化
+    float rate = (MAX_DIFFERENCE - diffAngle_) / MAX_DIFFERENCE;
+
+    // スムーズな回転のために、rateを2乗などしても良い
+    // return rate * rate;
+
+    return rate;
+}
+
+void Wire::DrawDebug(void)
+{
+    auto& size = Application::GetInstance().GetWindowSize();
+    DrawFormatString(size.width - 200, 64, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
+    DrawFormatString(size.width - 200, 80, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
+}
+
 void Wire::OnUpdate(float deltaTime)
 {
+    
 }
 
 void Wire::UpdateOnStage(float deltaTime)
@@ -232,16 +254,26 @@ void Wire::UpdateOnStage(float deltaTime)
 
 void Wire::UpdateInVentory(float deltaTime)
 {
+    // 追従
+    ItemBase::FollowTarget(deltaTime, TARGET_POS);
+
+    // 装備しているかどうか
+
+    ItemBase::UpdateUsed(deltaTime);
 }
 
 void Wire::UpdateInUse(float deltaTime)
 {
+    ItemBase::FollowTarget(deltaTime, TARGET_POS);
+
+    transform_.quaRotLocal = Quaternion::Euler({ AsoUtility::Deg2RadF(INIT_QUAROTLOCAL.x),
+       AsoUtility::Deg2RadF(0.0f),AsoUtility::Deg2RadF(INIT_QUAROTLOCAL.z) });
 }
 
 void Wire::UpdateUsedUp(float deltaTime)
 {
-}
 
+}
 
 void Wire::SetDefault(void)
 {

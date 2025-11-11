@@ -38,7 +38,7 @@ void ResourceManager::Init(void)
 	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage2.mv1");
 	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/eStage.mv1");
 	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/Horror_Game_Starter_Kit.mv1");
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage.mv1");
+	//res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/stage.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
 	// フラッシュライトモデル
@@ -104,6 +104,10 @@ void ResourceManager::Init(void)
 	// 影
 	res = std::make_shared<RES>(RES_T::IMG, PATH_IMG + L"Shadow/Shadow.png");
 	resourcesMap_.emplace(SRC::SHADOW, res);
+
+	// ダミー
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/dummy.mv1");
+	resourcesMap_.emplace(SRC::DUMMY, res);
 }
 
 void ResourceManager::Release(void)

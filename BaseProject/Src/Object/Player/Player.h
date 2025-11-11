@@ -16,8 +16,8 @@ class UIComponent;
 class Collider;
 class Capsule;
 
-class Player 
-	: 
+class Player
+	:
 	public Charactor
 {
 public:
@@ -26,7 +26,8 @@ public:
 	static constexpr float MOVE_RUN_SPEED = 10.0f;				// 走りスピード
 	static constexpr float MOUSE_SENSITIVITY = 0.002f;			// マウス感度
 
-	static constexpr float MAX_SAN_VALUE = 100.0f;
+	static constexpr float MAX_SAN_VALUE = 50.0f;
+	static constexpr float MAX_HP = 100.0f;
 
 	Player(void);
 	~Player(void);
@@ -56,6 +57,19 @@ public:
 
 	void SetSanityLevel(float value);
 
+	float GetHealthRatio(void) const;
+
+	float GetSanityRatio(void) const;
+
+	void SetHitPoint(float value);
+
+	void TakeDamage(float damege);
+
+
+	float GetHp(void);
+
+	float GetSanity(void);
+
 private:
 
 	TimeLimitComponent* tLimit_;		// 酸素コンポーネント
@@ -71,7 +85,7 @@ private:
 	int runSH_;			// 走るの音
 	bool isRunSH_;		// 走るの音を再生するかどうか
 
-	float hp_;			
+	float hp_;
 	float sanV_;		// san値
 
 	void SetGoalRotate(float rotRad);

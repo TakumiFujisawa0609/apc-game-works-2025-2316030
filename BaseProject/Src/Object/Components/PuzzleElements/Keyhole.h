@@ -17,19 +17,19 @@ public:
     virtual ~Keyhole(void);
 
     void Init(void);
-	void OnUpdate(float deltaTime)override;
+    void OnUpdate(float deltaTime)override;
     void Draw(void);
 
     // 角度を設定
     void SetAngle(float angle);
 
-	void SetIsSuccess(bool isSuccess);
+    void SetIsSuccess(bool isSuccess);
 
-	bool GetIsSuccess(void) const;
+    bool GetIsSuccess(void) const;
 
 private:
 
-	bool isSuccess_; // 解錠成功フラグ
-
+    bool isSuccess_; // 解錠成功フラグ
+    float goalAngle_;
 };
 

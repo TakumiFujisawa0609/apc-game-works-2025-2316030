@@ -1,7 +1,7 @@
 #pragma once
 #include "../ItemBase.h"
 class PermanentItemBase :
-    public ItemBase
+	public ItemBase
 {
 public:
 

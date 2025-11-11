@@ -10,8 +10,8 @@ class SlotBase :
 	public std::enable_shared_from_this<SlotBase>
 {
 public:
-    SlotBase(void);
-    ~SlotBase(void);
+	SlotBase(void);
+	~SlotBase(void);
 
 	void Update(float deltaTime);
 	void Draw(void);
@@ -66,9 +66,9 @@ public:
 	int GetCurrentSelectedIndex(void);
 
 protected:
-    
-    std::wstring slotName_;
-    // スロットが格納するアイテムリスト
+
+	std::wstring slotName_;
+	// スロットが格納するアイテムリスト
 	std::vector<std::shared_ptr<ItemBase>> slots_;
 	int currentSelectedIndex_;
 

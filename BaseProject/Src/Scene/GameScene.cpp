@@ -36,6 +36,8 @@
 
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
 
+#include "../Object/Stage/Dummy.h"
+
 #include"../DrawUtil.h"
 
 namespace {
@@ -62,11 +64,10 @@ GameScene::GameScene(SceneController& controller) :Scene(controller)
 	int sw, sh, depth;
 	GetScreenState(&sw, &sh, &depth);
 
-
-	spownPos_.push_back({ -600.0f, 150.0f, 150.0f });
-	spownPos_.push_back({ -700.0f, 150.0f, 150.0f });
-	spownPos_.push_back({ -800.0f, 150.0f, 150.0f });
-	spownPos_.push_back({ -900.0f, 150.0f, 150.0f });
+	spownPos_.push_back({ -1697.0f, 150.0f, -405.0f });
+	spownPos_.push_back({ -1888.0f, 150.0f, -410.0f });
+	spownPos_.push_back({ -1702.0f, 150.0f, 1207.0f });
+	spownPos_.push_back({ -2457.0f, 150.0f, 2190.0f });
 }
 
 GameScene::~GameScene()
@@ -80,7 +81,7 @@ void GameScene::Init(Input& input)
 	player_ = std::make_shared<Player>();
 	player_->InitComponents();
 	player_->Init();
-	
+
 	// 敵の基底クラス
 	eBase_ = std::make_shared<EnemyBase>(*player_);
 
@@ -89,7 +90,7 @@ void GameScene::Init(Input& input)
 	// ひとつの型でアイテムを管理する
 	const int INIT_POOL_SIZE = 6;
 	itemPool_.reserve(INIT_POOL_SIZE);
-	
+
 	auto light = std::make_shared<HandLight>(*player_);
 	light->Init();
 	light->SetTargetPos(&player_->GetTransform());
@@ -102,13 +103,14 @@ void GameScene::Init(Input& input)
 	lockpick->Init();
 	lockpick->SetTargetPos(&player_->GetTransform());
 	itemPool_.push_back(lockpick);
-	
-	// ランダム生成のアイテム
-	randomItems_.reserve(4);
 
 	auto wire = std::make_shared<Wire>(*player_);
 	wire->Init();
-	randomItems_.push_back(wire);
+	wire->SetPos({ -3540.0f,150.0f,3250.0f });
+	itemPool_.push_back(wire);
+
+	// ランダム生成のアイテム
+	randomItems_.reserve(3);
 
 	auto battery = std::make_shared<Battery>(*player_);
 	battery->Init();
@@ -159,9 +161,14 @@ void GameScene::Init(Input& input)
 	// ステータス
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
 
+	dummy_ = std::make_shared<Dummy>();
+	dummy_->Init();
+
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
 	isFps_ = true;
+
+	UpdateTaskState(TASK::FIND_LIGHT);
 
 	ChangeState(STATE::MAINGAME);
 }
@@ -179,35 +186,82 @@ void GameScene::Draw()
 
 void GameScene::DrawUI(void)
 {
-	if (IsHitItems())
+
+	if (draw_ = &GameScene::NormalDraw)
 	{
-		const TCHAR* text_to_display = _T("右クリック or Aボタン");
-		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
+		if (IsHitItems())
+		{
+			const TCHAR* text_to_display = _T("右クリック or Aボタン");
+			int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
+			auto size = Application::GetInstance().GetWindowSize();
+			// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
+			int draw_x = (size.width / 2) - (text_width / 2);
+
+			// Y座標: 画面全体の高さの 4分の3 の位置
+			int draw_y = (size.height * 3) / 4;
+
+			// 3. テキストを描画
+
+			// 赤色で描画
+			int color = GetColor(255, 255, 255);
+
+			// 描画関数でテキストを表示
+			DrawString(draw_x, draw_y, text_to_display, color);
+		}
+
+		if (IsHitDoor())
+		{
+			const TCHAR* text_to_display = _T("Fキー or Aボタン");
+			int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
+
+			auto size = Application::GetInstance().GetWindowSize();
+			// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
+			int draw_x = (size.width / 2) - (text_width / 2);
+
+			// Y座標: 画面全体の高さの 4分の3 の位置
+			int draw_y = (size.height * 3) / 4;
+
+			// 3. テキストを描画
+
+			// 赤色で描画
+			int color = GetColor(255, 255, 255);
+
+			// 描画関数でテキストを表示
+			DrawString(draw_x, draw_y, text_to_display, color);
+		}
+
+		// ウィンドウサイズを取得
 		auto size = Application::GetInstance().GetWindowSize();
-		// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
-		int draw_x = (size.width / 2) - (text_width / 2);
-
-		// Y座標: 画面全体の高さの 4分の3 の位置
-		int draw_y = (size.height * 3) / 4;
-
-		// 3. テキストを描画
-
-		// 赤色で描画
+		int draw_x = size.width - 300; // 右端から300pxの位置
+		int draw_y = 20;               // 上から20pxの位置
 		int color = GetColor(255, 255, 255);
 
-		// 描画関数でテキストを表示
-		DrawString(draw_x, draw_y, text_to_display, color);
+		// 完了メッセージの描画
+		if (clearMessageTimer_ > 0.0f)
+		{
+			// 完了メッセージは黄色で表示
+			int clearColor = GetColor(255, 255, 0);
+			DrawString(draw_x, draw_y, clearMessage_.c_str(), clearColor);
+			draw_y += 30; // 次のメッセージ位置をずらす
+		}
+
+		// 現在のタスクの描画
+		if (!currentTaskMessage_.empty())
+		{
+			DrawString(draw_x, draw_y, L"--- Current Task ---", color);
+			DrawString(draw_x, draw_y + 30, currentTaskMessage_.c_str(), color);
+		}
+
+		player_->DrawUI();
+
+		DrawUIItemPool();
+
+		itemSlot_->Draw();
+
+		// プレイヤー状態
+		//status_->Draw();
 	}
-
-	player_->DrawUI();
-
-	DrawUIItemPool();
-
-	itemSlot_->Draw();
-
-	// プレイヤー状態
-	//status_->Draw();
 }
 
 void GameScene::FadeInUpdate(Input& input)
@@ -232,7 +286,7 @@ void GameScene::NormalUpdate(Input& input)
 		camera->SetOperableCamera(false);
 	}
 
-	if (ins.IsNew(KEY_INPUT_P))
+	if (player_->GetHp() <= 0 || player_->GetSanity() <= 0)
 	{
 		controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
 		return;
@@ -257,7 +311,7 @@ void GameScene::NormalUpdate(Input& input)
 void GameScene::FadeOutUpdate(Input& input)
 {
 	if (++frame_ >= fade_interval) {
-		controller_.ChangeScene(std::make_shared<OverScene>(controller_),input);
+		controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
 		return;
 	}
 }
@@ -338,9 +392,9 @@ void GameScene::FadeDraw()
 {
 
 	float rate = static_cast<float>(frame_) /
-					static_cast<float>(fade_interval);
+		static_cast<float>(fade_interval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));
-	DrawBox(0, 0, 640, 480, 0x000000,true);
+	DrawBox(0, 0, 640, 480, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 }
@@ -354,7 +408,7 @@ void GameScene::LoadLocationData()
 		int count;
 	};
 	Header header = {};
-	auto fHandle=FileRead_open(L"./location.dat");
+	auto fHandle = FileRead_open(L"./location.dat");
 	FileRead_read(&header, sizeof(header), fHandle);
 	locationData_.resize(header.count);
 	for (auto& location : locationData_) {
@@ -365,7 +419,7 @@ void GameScene::LoadLocationData()
 		FileRead_read(&location.pos, sizeof(location.pos), static_cast<int>(fHandle));
 		FileRead_read(&location.angle, sizeof(location.angle), static_cast<int>(fHandle));
 	}
-	
+
 	FileRead_close(fHandle);
 }
 
@@ -399,7 +453,7 @@ void GameScene::HandleMouseWheel(Input& input)
 	{
 		return;
 	}
-	
+
 	auto& ins = InputManager::GetInstance();
 	static int wheelCounter = 0;
 	int wheelDelta = ins.GetWheelDelta();
@@ -419,7 +473,7 @@ void GameScene::HandleMouseWheel(Input& input)
 	}
 }
 
-void GameScene::UpdateTutorial(float deltaTime,Input& input)
+void GameScene::UpdateTutorial(float deltaTime, Input& input)
 {
 	// 衝突判定
 	stage_->Update(deltaTime);
@@ -444,21 +498,80 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 	{
 		ObtainItem();
 		isHitItem_ = false;
+		UpdateItemTasks();
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_E))
+	if (ins.IsTrgDown(KEY_INPUT_E) && itemSlot_->GetCurrentItem() != nullptr)
 	{
 		if (itemSlot_)
 		{
 			itemSlot_->UseCurrentItem();
+
+			CleanUpItemPool();
+		}
+	}
+	auto camera = Application::GetInstance().GetCamera();
+
+	for (const auto& item : itemPool_)
+	{
+		if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(item))
+		{
+			if (lockpick->GetState() == ItemBase::STATE::ININVENTORY)
+			{
+
+				if (ins.IsTrgDown(KEY_INPUT_F) && IsHitDoor())
+				{
+					auto unlickScene = std::make_shared<UnlickScene>(controller_);
+
+					std::shared_ptr<Wire> wire = nullptr;
+					std::shared_ptr<Lockpick> lockpick = nullptr;
+
+					// itemPool_からWireとLockpickを見つける
+					for (const auto& item : itemPool_)
+					{
+						if (auto w = std::dynamic_pointer_cast<Wire>(item))
+						{
+							wire = w;
+						}
+						if (auto lp = std::dynamic_pointer_cast<Lockpick>(item))
+						{
+							lockpick = lp;
+						}
+					}
+
+					// 見つかったアイテムをUnlickSceneに設定
+					if (player_ && wire && lockpick)
+					{
+						unlickScene->SetPlayer(player_);
+						unlickScene->SetWire(wire);
+						unlickScene->SetLockPick(lockpick);
+
+						controller_.PushScene(unlickScene, input);
+						camera->SetOperableCamera(false);
+					}
+				}
+			}
+		}
+	}
+
+	for (const auto& item : itemPool_)
+	{
+		if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(item))
+		{
+			if (lockpick->IsSuccess())
+			{
+				controller_.ChangeScene(std::make_shared<ClearScene>(controller_), input);
+				return;
+			}
 		}
 	}
 
 	// 衝突判定
 	stage_->Update(deltaTime);
+	dummy_->Update(deltaTime);
 
 	player_->Update(deltaTime);
-	//eBase_->Update(deltaTime);
+	eBase_->Update(deltaTime);
 
 	// スロット
 	itemSlot_->Update(deltaTime);
@@ -473,7 +586,7 @@ void GameScene::DrawTutorial(void)
 {
 	// オブジェクト
 	stage_->Draw();
-	//eBase_->Draw();
+	eBase_->Draw();
 	player_->Draw();
 
 	DrawItemPool();
@@ -487,6 +600,9 @@ void GameScene::DrawMainGame(void)
 
 	// オブジェクト
 	stage_->Draw();
+	dummy_->Draw();
+	eBase_->Draw();
+
 	player_->Draw();
 
 	DrawItemPool();
@@ -528,6 +644,8 @@ void GameScene::ObtainItem(void)
 	{
 		return;
 	}
+
+	obtainedItem->ChangeState(ItemBase::STATE::ININVENTORY);
 
 	if (auto light = std::dynamic_pointer_cast<HandLight>(obtainedItem))
 	{
@@ -615,4 +733,137 @@ bool GameScene::IsHitItems(void)
 	return isObtainItems() != nullptr;
 }
 
+void GameScene::CleanUpItemPool(void)
+{
+	itemPool_.erase(
+		std::remove_if(itemPool_.begin(), itemPool_.end(),
+			[](const std::shared_ptr<ItemBase>& item) {
+				if (item->IsDisabledItem())
+				{
+					return true;
+				}
 
+				return false;
+			}),
+		itemPool_.end());
+}
+
+bool GameScene::IsHitDoor(void) const
+{
+	const auto& camera = Application::GetInstance().GetCamera();
+	VECTOR cPos = camera->GetPos();
+	VECTOR tPos = camera->GetTargetPos(); // カメラ注視点
+	float minItemDistanceSq = FLT_MAX; // 最小アイテム距離の二乗
+
+	// アイテムとステージの衝突情報を取得
+	auto itemHit = MV1CollCheck_Line(dummy_->GetTransform().modelId, -1, cPos, tPos);
+	auto stageHit = MV1CollCheck_Line(stage_->GetTransform().modelId, -1, cPos, tPos);
+
+	// 1. アイテムにレイが当たったか
+	if (itemHit.HitFlag == 1)
+	{
+		// カメラからアイテム衝突位置までの距離の二乗を計算
+		float itemDistSq = VSquareSize(VSub(itemHit.HitPosition, cPos));
+
+		// カメラからステージ衝突位置までの距離の二乗を計算
+		float stageDistSq = VSquareSize(VSub(stageHit.HitPosition, cPos));
+
+		// 2. アイテムがステージよりも手前にあるか、またはステージに当たっていないか
+		// (ステージに当たっていない場合は stageHit.HitFlag が 0 で、stageDistSq が大きい値になるはず)
+
+		// **重要な判定:** アイテムへの距離がステージへの距離より小さい、またはステージへの衝突がない
+		if (itemDistSq < stageDistSq || stageHit.HitFlag == 0)
+		{
+			// 有効なアイテム衝突。最も近いアイテムを更新
+			if (itemDistSq < minItemDistanceSq)
+			{
+				minItemDistanceSq = itemDistSq;
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void GameScene::UpdateTaskState(TASK task)
+{
+	// 同じタスクなら何もしない
+	if (task_ == task) return;
+
+	// 前のタスクの完了メッセージを設定
+	switch (task_)
+	{
+	case TASK::FIND_LIGHT:
+		clearMessage_ = L"タスク完了: ライトを手に入れた!";
+		break;
+	case TASK::FIND_WIRE:
+		clearMessage_ = L"タスク完了: ワイヤーを手に入れた!";
+		break;
+	case TASK::FIND_DOOR:
+		clearMessage_ = L"タスク完了: ドアを見つけた!";
+		break;
+		break;
+	case TASK::CLEARED:
+		clearMessage_ = L""; // ゲームクリア時は表示しない
+		break;
+	default:
+		clearMessage_ = L"";
+		break;
+	}
+
+	// 新しいタスクを設定
+	task_ = task;
+
+	// 新しいタスクの表示メッセージを設定
+	switch (task)
+	{
+	case TASK::FIND_LIGHT:
+		currentTaskMessage_ = L"目標: Hand Lightを探して手に入れろ";
+		break;
+	case TASK::FIND_WIRE:
+		currentTaskMessage_ = L"目標: Wireを探して手に入れろ";
+		break;
+	case TASK::FIND_DOOR:
+		currentTaskMessage_ = L"目標: 閉じられた脱出ドアを探せ";
+		break;
+	case TASK::CLEARED:
+		currentTaskMessage_ = L"";
+		break;
+	}
+
+	// 完了メッセージの表示時間をリセット
+	if (!clearMessage_.empty())
+	{
+		clearMessageTimer_ = CLEAR_MSG_DURATION;
+	}
+}
+
+void GameScene::UpdateItemTasks(void)
+{
+	bool hasWire = false;
+	bool hasLockpick = false;
+
+	for (const auto& item : itemPool_)
+	{
+		if (auto w = std::dynamic_pointer_cast<Wire>(item))
+		{
+			if (w->GetState() == ItemBase::STATE::ININVENTORY) hasWire = true;
+		}
+		if (auto lp = std::dynamic_pointer_cast<Lockpick>(item))
+		{
+			if (lp->GetState() == ItemBase::STATE::ININVENTORY) hasLockpick = true;
+		}
+	}
+
+	if (task_ == TASK::FIND_LIGHT) // Lightを取得したか
+	{
+		// LightのININVENTORY状態のチェックが必要だが、ここでは簡略化し、次のタスクへ
+		UpdateTaskState(TASK::FIND_WIRE);
+	}
+	else if (task_ == TASK::FIND_WIRE && hasWire)
+	{
+		// Wireを取得した -> Door探しのタスクへ
+		UpdateTaskState(TASK::FIND_DOOR);
+	}
+}

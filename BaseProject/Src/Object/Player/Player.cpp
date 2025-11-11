@@ -17,9 +17,10 @@ Player::Player(void)
     :
     tLimit_(nullptr),
     input_(nullptr),
-    sanV_(MAX_SAN_VALUE)
+    sanV_(MAX_SAN_VALUE),
+    hp_(MAX_HP)
 {
-	
+
 }
 
 Player::~Player(void)
@@ -30,20 +31,20 @@ Player::~Player(void)
 
 void Player::Init(void)
 {
-	// モデル情報
-	//transform_.pos = { -2000.0f, 200.0f, -1500.0f };
-	//transform_.pos = { 500.0f, 200.0f, 800.0f };
-	transform_.pos = { -500.0f, 600.0f, 100.0f };
-	transform_.scl = { 1.0f, 1.0f, 1.0f };
+    // モデル情報
+    //transform_.pos = { -2000.0f, 200.0f, -1500.0f };
+    //transform_.pos = { 500.0f, 200.0f, 800.0f };
+    transform_.pos = { -500.0f, 13.0f, 100.0f };
+    transform_.scl = { 1.0f, 1.0f, 1.0f };
     transform_.quaRot = Quaternion();
     transform_.quaRotLocal =
         Quaternion::Euler({ 0.0f,180.0f,0.0f });
-	transform_.Update();
+    transform_.Update();
 
-	SetMousePoint(Application::GetInstance().GetWindowSize().width / 2,
-		Application::GetInstance().GetWindowSize().height / 2);
+    SetMousePoint(Application::GetInstance().GetWindowSize().width / 2,
+        Application::GetInstance().GetWindowSize().height / 2);
 
-	moveSpeed_ = MOVE_WALK_SPEED; // 移動速度
+    moveSpeed_ = MOVE_WALK_SPEED; // 移動速度
     moveDir_ = AsoUtility::VECTOR_ZERO; // 移動方向
     movedPos_ = transform_.pos;
 
@@ -52,7 +53,7 @@ void Player::Init(void)
     stepRotTime_ = 0.0f;
 
     yaw = 0.0f;       // 水平回転（ヨー）
-	pitch = 0.0f;     // 垂直回転（ピッチ）
+    pitch = 0.0f;     // 垂直回転（ピッチ）
 
     // カプセルの初期化
     InitializeCapsule({ 0.0f, 180.0f, 0.0f }, { 0.0f, -20.0f, 0.0f }, 20.0f);
@@ -74,7 +75,7 @@ void Player::InitComponents(void)
 
 void Player::Update(float deltaTime)
 {
-	Charactor::Update(deltaTime);
+    Charactor::Update(deltaTime);
 
     tLimit_->GetTimeValue();
 }
@@ -208,10 +209,10 @@ void Player::Draw(void)
 #ifdef _DEBUG
 
     //capsule_->Draw();
-    DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+    //DrawFormatString(0, 20, GetColor(255, 255, 255), L"pos=(%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
-    
+
     auto  size = Application::GetInstance().GetWindowSize();
     //DrawFormatString(size.width - 150, 176, GetColor(255, 255, 255), L"sanV = %.2f", sanV_);
 
@@ -222,12 +223,12 @@ void Player::Draw(void)
 
 TimeLimitComponent* Player::GetTimeLimitComp()
 {
-	return tLimit_;
+    return tLimit_;
 }
 
 PlayerInput* Player::GetInputComp()
 {
-	return input_;
+    return input_;
 }
 
 bool Player::TakeItem(int itemId, int count)
@@ -255,32 +256,104 @@ void Player::DrawUI(void)
 
     auto size = Application::GetInstance().GetWindowSize();
 
-    // --- UI描画の位置と設定 ---
-    int drawX = 40; // 右から250ピクセルの位置
-    int drawY = size.height - 100;  // 下から50ピクセルの位置
-    int uiWidth = 200;
-    int uiHeight = 20;
+    // 画面左上隅の開始座標
+    int baseX = 20;
+    int baseY = 25;
 
-    //// value_が浮動小数点型であると仮定し、最大値で割って残量比率を計算
-    float ratio = sanV_ / MAX_SAN_VALUE;
-    if (ratio < 0.0f) ratio = 0.0f;
+    int gaugeWidth = 250;
+    int gaugeHeight = 20;
+    int spacing = 18;
 
-    // --- 1. ゲージの背景を描画 (灰色) ---
-    DrawBox(drawX, drawY, drawX + uiWidth, drawY + uiHeight, GetColor(50, 50, 50), TRUE);
+    // --- HP ゲージ (左上) ---
+    float hpRatio = GetHealthRatio(); // PlayerクラスからHP比率を取得すると仮定
+    int hpDrawY = baseY;
 
-    // --- 2. 残量ゲージを描画 (緑色) ---
-    // 残量に応じた幅
-    int fillWidth = (int)(uiWidth * ratio);
-    DrawBox(drawX, drawY, drawX + fillWidth, drawY + uiHeight, GetColor(0, 255, 0), TRUE);
+    // HPゲージ描画ロジック (赤色)
+    DrawFormatString(baseX, hpDrawY - spacing, GetColor(255, 255, 255), L"HEALTH");
+    DrawBox(baseX, hpDrawY, baseX + gaugeWidth, hpDrawY + gaugeHeight, GetColor(50, 50, 50), TRUE);
+    DrawBox(baseX, hpDrawY, baseX + (int)(gaugeWidth * hpRatio), hpDrawY + gaugeHeight, GetColor(255, 0, 0), TRUE);
 
-    // --- 3. 残量パーセンテージをテキストで描画 ---
-    int percent = (int)(ratio * 100.0f);
-    DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"正気度残量: %d%%", percent);
+    // --- 正気度ゲージ (HPの下) ---
+    float sanityRatio = GetSanityRatio(); // Playerクラスから正気度比率を取得すると仮定
+    int sanityDrawY = hpDrawY + gaugeHeight + spacing;
+
+    // 正気度ゲージ描画ロジック (青色)
+    DrawFormatString(baseX, sanityDrawY - spacing, GetColor(255, 255, 255), L"SANITY");
+    DrawBox(baseX, sanityDrawY, baseX + gaugeWidth, sanityDrawY + gaugeHeight, GetColor(50, 50, 50), TRUE);
+    DrawBox(baseX, sanityDrawY, baseX + (int)(gaugeWidth * sanityRatio), sanityDrawY + gaugeHeight, GetColor(0, 0, 200), TRUE);
 }
 
 void Player::SetSanityLevel(float value)
 {
     sanV_ += value;
+}
+
+float Player::GetHealthRatio(void) const
+{
+    int currentHP = static_cast<int>(hp_);
+    int maxHP = static_cast<int>(MAX_HP);
+
+    if (maxHP <= 0) {
+        return 0.0f;
+    }
+
+    float ratio = static_cast<float>(currentHP) / static_cast<float>(maxHP);
+
+    // 0未満にならないようにクランプ
+    if (ratio < 0.0f) {
+        ratio = 0.0f;
+    }
+
+    return ratio;
+}
+
+float Player::GetSanityRatio(void) const
+{
+    int currentSanity = static_cast<int>(sanV_);
+    int maxSanity = static_cast<int>(MAX_SAN_VALUE);
+
+    if (maxSanity <= 0) {
+        return 0.0f;
+    }
+
+    float ratio = static_cast<float>(currentSanity) / static_cast<float>(maxSanity);
+
+    // 0未満にならないようにクランプ
+    if (ratio < 0.0f) {
+        ratio = 0.0f;
+    }
+
+    return ratio;
+}
+
+void Player::SetHitPoint(float value)
+{
+    hp_ += value;
+
+    if (hp_ >= MAX_HP)
+    {
+        hp_ = MAX_HP;
+    }
+}
+
+void Player::TakeDamage(float damege)
+{
+    hp_ -= damege;
+
+    if (hp_ < 0.0f)
+    {
+        hp_ = 0.0f;
+    }
+}
+
+float Player::GetHp(void)
+{
+    return hp_;
+}
+
+float Player::GetSanity(void)
+{
+    return sanV_;
 }
 
 void Player::SetGoalRotate(float rotRad)

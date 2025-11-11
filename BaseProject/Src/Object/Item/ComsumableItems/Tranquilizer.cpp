@@ -65,6 +65,7 @@ void Tranquilizer::Draw(void)
 
 void Tranquilizer::Use(void)
 {
+	isDisabled_ = true;
 	player_.SetSanityLevel(50);
 }
 

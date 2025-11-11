@@ -32,6 +32,9 @@ public:
 	// 保有するノードを返す
 	const std::vector<PatrolNode>& GetNodes(void) const;
 
+	// 現在の位置から最も近いPatrolNodeのインデックスを返す
+	int FindClosestNodeIndex(const VECTOR& currentPos) const;
+
 private:
 	std::vector<PatrolNode> nodes;		// 巡回ノードを格納したvector配列
 	PATHTYPE pathType_;					// 巡回タイプ

@@ -28,7 +28,8 @@ public:
 		RUN_SE,
 		WALK_SE,
 		ENEMY,
-		SHADOW
+		SHADOW,
+		DUMMY
 	};
 
 	// 明示的にインステンスを生成する
