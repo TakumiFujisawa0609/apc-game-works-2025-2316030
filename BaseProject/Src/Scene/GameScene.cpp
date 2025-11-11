@@ -471,6 +471,18 @@ void GameScene::HandleMouseWheel(Input& input)
 		itemSlot_->CycleByWheel(false);
 		wheelCounter = 0;
 	}
+
+	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP))
+	{
+		// 上ボタン: アイテムを前に戻す (インデックスを減らす)
+		itemSlot_->CycleByWheel(true);
+	}
+	// JOYPAD_BTN::DOWN を十字ボタンの下として使用
+	else if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
+	{
+		// 下ボタン: アイテムを後ろに進める (インデックスを増やす)
+		itemSlot_->CycleByWheel(false);
+	}
 }
 
 void GameScene::UpdateTutorial(float deltaTime, Input& input)
@@ -494,14 +506,14 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTrgMouseRight() && IsHitItems())
+	if ((ins.IsTrgMouseRight()|| ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && IsHitItems())
 	{
 		ObtainItem();
 		isHitItem_ = false;
 		UpdateItemTasks();
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_E) && itemSlot_->GetCurrentItem() != nullptr)
+	if ((ins.IsTrgDown(KEY_INPUT_E) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && itemSlot_->GetCurrentItem() != nullptr)
 	{
 		if (itemSlot_)
 		{
@@ -514,7 +526,7 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 
 	for (const auto& item : itemPool_)
 	{
-		if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(item))
+		if (auto lockpick = std::dynamic_pointer_cast<Wire>(item))
 		{
 			if (lockpick->GetState() == ItemBase::STATE::ININVENTORY)
 			{
@@ -600,7 +612,7 @@ void GameScene::DrawMainGame(void)
 
 	// オブジェクト
 	stage_->Draw();
-	dummy_->Draw();
+	//dummy_->Draw();
 	eBase_->Draw();
 
 	player_->Draw();
