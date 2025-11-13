@@ -426,7 +426,7 @@ void Camera::SetBeforeDrawFPSMouse(void)
 		// 位置(FPSなのでfollowTransformがあればそこを基準にする)
 		pos_ = followTransform_ ? followTransform_->pos : pos_;
 
-		pos_.y += 160.0f;
+		pos_.y += 180.0f;
 		// 前方方向ベクトルを計算
 		VECTOR forward = {
 			cosf(angles_.x) * sinf(angles_.y),
@@ -442,8 +442,6 @@ void Camera::SetBeforeDrawFPSMouse(void)
 
 		// 毎フレームマウスを中央に戻す
 		SetMousePoint(centerX, centerY);
-
-
 
 		// 値を小さくするほど、回転速度が遅くなります。
 		const float GAMEPAD_SENSITIVITY = 0.025f;

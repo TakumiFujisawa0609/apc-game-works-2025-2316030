@@ -244,7 +244,7 @@ void SlotBase::RemoveItem(const std::shared_ptr<ItemBase>& item)
 	if (it != slots_.end())
 	{
 		// 削除する要素のインデックスを計算
-		indexToRemove = std::distance(slots_.begin(), it);
+		indexToRemove = static_cast<int>(std::distance(slots_.begin(), it));
 
 		// 要素をリストから削除
 		slots_.erase(it);
@@ -261,7 +261,7 @@ void SlotBase::RemoveItem(const std::shared_ptr<ItemBase>& item)
 			if (newIndex >= static_cast<int>(slots_.size())) // 削除により currentSelectedIndex_ が新しいサイズを超えた場合
 			{
 				// 末尾の要素を削除した場合、新しい末尾を選択 (サイズが1以上の場合)
-				newIndex = slots_.size() - 1;
+				newIndex = static_cast<int>(slots_.size() - 1);
 			}
 
 			currentSelectedIndex_ = newIndex;

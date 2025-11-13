@@ -6,15 +6,15 @@
 #include<chrono>
 
 #include"../Application.h"
-#include"../Input.h"//入力用
+#include"../Input.h"
 #include"../Utility/AsoUtility.h"
 #include"../Manager/Camera.h"
 #include"../Manager/InputManager.h"
-#include"../Manager/ResourceManager.h"//リソース管理用
-#include"../Manager/SceneController.h"//シーンの切り替えに使う
-#include"OverScene.h"//次のシーン
+#include"../Manager/ResourceManager.h"
+#include"../Manager/SceneController.h"
+#include"OverScene.h"
 #include "ClearScene.h"
-#include"PauseScene.h"//ポーズシーン
+#include"PauseScene.h"
 #include"UnlickScene.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Enemy/EnemyBase.h"
@@ -95,7 +95,7 @@ void GameScene::Init(Input& input)
 	light->Init();
 	light->SetTargetPos(&player_->GetTransform());
 	player_->SetHandLight(light);
-	// ステージでてきおうさせるライトを設定する
+	// ステージで適応させるライトを設定する
 	stage_->SetCurrentHandLight(light);
 	itemPool_.push_back(light);
 
@@ -125,7 +125,7 @@ void GameScene::Init(Input& input)
 	tranquilizer->Init();
 	randomItems_.push_back(tranquilizer);
 
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	unsigned seed = static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count());
 	std::default_random_engine  generator(seed);
 
 	for (auto& item : randomItems_)
@@ -135,7 +135,7 @@ void GameScene::Init(Input& input)
 			break;
 		}
 
-		std::uniform_int_distribution<int> distribution(0, spownPos_.size() - 1);
+		std::uniform_int_distribution<int> distribution(0, static_cast<int>(spownPos_.size() - 1));
 		int randomIndex = distribution(generator);
 
 		VECTOR selectedPos = spownPos_[randomIndex];
@@ -318,7 +318,6 @@ void GameScene::FadeOutUpdate(Input& input)
 
 void GameScene::NormalDraw()
 {
-
 	switch (state_)
 	{
 	case GameScene::STATE::TUTORIAL:

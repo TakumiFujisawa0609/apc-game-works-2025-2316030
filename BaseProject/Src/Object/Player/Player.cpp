@@ -32,8 +32,6 @@ Player::~Player(void)
 void Player::Init(void)
 {
     // モデル情報
-    //transform_.pos = { -2000.0f, 200.0f, -1500.0f };
-    //transform_.pos = { 500.0f, 200.0f, 800.0f };
     transform_.pos = { -500.0f, 13.0f, 100.0f };
     transform_.scl = { 1.0f, 1.0f, 1.0f };
     transform_.quaRot = Quaternion();
@@ -109,8 +107,6 @@ void Player::OnUpdate(float deltaTime)
     // プレイヤーの回転をカメラと同期
     transform_.quaRot = qYaw.Mult(qPitch);
 
-    // === 入力で移動方向を決定 ===
-
     // カメラ情報取得
     auto camera = Application::GetInstance().GetCamera();
 
@@ -141,7 +137,6 @@ void Player::OnUpdate(float deltaTime)
     if (ins.IsNew(KEY_INPUT_S) || pad.Y > 500) moveDir_ = VAdd(moveDir_, VScale(forward, -1.0f));
     if (ins.IsNew(KEY_INPUT_D) || pad.X > 500) moveDir_ = VAdd(moveDir_, right);
     if (ins.IsNew(KEY_INPUT_A) || pad.X < -500) moveDir_ = VAdd(moveDir_, VScale(right, -1.0f));
-
 
     moveSpeed_ = MOVE_WALK_SPEED;
 
