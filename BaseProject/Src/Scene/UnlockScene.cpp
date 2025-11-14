@@ -13,7 +13,7 @@
 
 #include "../Object/Components/PuzzleElements/KeyholePlate.h"
 #include "../Object/Components/PuzzleElements/Keyhole.h"
-#include "UnlickScene.h"
+#include "UnlockScene.h"
 
 using namespace std;
 
@@ -23,24 +23,24 @@ namespace {
 	constexpr int margin_size = 20;//ポーズメニュー枠の余白
 }
 
-UnlickScene::UnlickScene(SceneController& controller)
+UnlockScene::UnlockScene(SceneController& controller)
 	:
 	Scene(controller),
 	player_(nullptr),
 	wire_(nullptr),
 	lockpick_(nullptr),
 	frame_(0),
-	update_(&UnlickScene::AppearUpdate),
-	draw_(&UnlickScene::ProcessDraw)
+	update_(&UnlockScene::AppearUpdate),
+	draw_(&UnlockScene::ProcessDraw)
 {
 
 }
 
-UnlickScene::~UnlickScene(void)
+UnlockScene::~UnlockScene(void)
 {
 }
 
-void UnlickScene::Init(Input& input)
+void UnlockScene::Init(Input& input)
 {
 	// 針金の初期化
 	wire_->Init();
@@ -60,53 +60,52 @@ void UnlickScene::Init(Input& input)
 	lockpick_->SetIsUnlocking(true);
 }
 
-void UnlickScene::Update(Input& input)
+void UnlockScene::Update(Input& input)
 {
 	(this->*update_)(input);
 }
 
-void UnlickScene::Draw(void)
+void UnlockScene::Draw(void)
 {
 	(this->*draw_)();
 }
 
-void UnlickScene::DrawUI(void)
+void UnlockScene::DrawUI(void)
 {
 	wire_->DrawDebug();
 }
 
-void UnlickScene::SetPlayer(std::shared_ptr<Player> player)
+void UnlockScene::SetPlayer(std::shared_ptr<Player> player)
 {
 	player_ = player;
 }
 
-void UnlickScene::SetWire(std::shared_ptr<Wire> wire)
+void UnlockScene::SetWire(std::shared_ptr<Wire> wire)
 {
 	wire_ = wire;
 }
 
-void UnlickScene::SetLockPick(std::shared_ptr<Lockpick> lPick)
+void UnlockScene::SetLockPick(std::shared_ptr<Lockpick> lPick)
 {
 	lockpick_ = lPick;
 }
 
-void UnlickScene::AppearUpdate(Input& input)
+void UnlockScene::AppearUpdate(Input& input)
 {
 	if (++frame_ >= appear_interval) {
-		update_ = &UnlickScene::NormalUpdate;
-		draw_ = &UnlickScene::NormalDraw;
+		update_ = &UnlockScene::NormalUpdate;
+		draw_ = &UnlockScene::NormalDraw;
 		return;
 	}
 }
 
-void UnlickScene::NormalUpdate(Input& input)
+void UnlockScene::NormalUpdate(Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsTrgDown(KEY_INPUT_SPACE) || ins.IsClickMouseLeft())
-	{
-		update_ = &UnlickScene::DisappearUpdate;
-		draw_ = &UnlickScene::ProcessDraw;
+	if (ins.IsTrgDown(KEY_INPUT_SPACE) || ins.IsClickMouseLeft()){
+		update_ = &UnlockScene::DisappearUpdate;
+		draw_ = &UnlockScene::ProcessDraw;
 		return;
 	}
 
@@ -133,11 +132,9 @@ void UnlickScene::NormalUpdate(Input& input)
 
 	keyhole_->OnUpdate(time);
 
-	if (ins.IsTrgDown(KEY_INPUT_A) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
-	{
+	if (ins.IsTrgDown(KEY_INPUT_A) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)){
 
-		if (wire_->IsDifference())
-		{
+		if (wire_->IsDifference()){
 			// ロックレベルを設定
 			lockpick_->SetLockLevel(wire_->GetLockLevel());
 
@@ -147,8 +144,8 @@ void UnlickScene::NormalUpdate(Input& input)
 
 
 			// クリア判定を出す
-			update_ = &UnlickScene::DisappearUpdate;
-			draw_ = &UnlickScene::ProcessDraw;
+			update_ = &UnlockScene::DisappearUpdate;
+			draw_ = &UnlockScene::ProcessDraw;
 			return;
 		}
 
@@ -160,7 +157,7 @@ void UnlickScene::NormalUpdate(Input& input)
 	//keyhole_->Update(time);
 }
 
-void UnlickScene::DisappearUpdate(Input& input)
+void UnlockScene::DisappearUpdate(Input& input)
 {
 	if (--frame_ <= 0) {
 		lockpick_->SetIsUnlocking(false);
@@ -171,7 +168,7 @@ void UnlickScene::DisappearUpdate(Input& input)
 	}
 }
 
-void UnlickScene::ProcessDraw()
+void UnlockScene::ProcessDraw()
 {
 	const Size& wsize = Application::GetInstance().GetWindowSize();
 	int centerY = wsize.height / 2;//画面中心Y
@@ -195,7 +192,7 @@ void UnlickScene::ProcessDraw()
 		0xfffffff, false, 3.0f);
 }
 
-void UnlickScene::NormalDraw()
+void UnlockScene::NormalDraw()
 {
 	const Size& wsize = Application::GetInstance().GetWindowSize();
 	//白っぽいセロファン
@@ -214,7 +211,7 @@ void UnlickScene::NormalDraw()
 	LockPickingDraw();
 }
 
-void UnlickScene::LockPickingDraw(void)
+void UnlockScene::LockPickingDraw(void)
 {
 	// 鍵穴
 	keyhole_->Draw();

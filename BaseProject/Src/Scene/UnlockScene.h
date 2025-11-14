@@ -7,12 +7,12 @@ class Wire;
 class KeyholePlate;
 class Keyhole;
 
-class UnlickScene :
+class UnlockScene :
     public Scene
 {
 public:
-    UnlickScene(SceneController& controller);
-    ~UnlickScene(void);
+    UnlockScene(SceneController& controller);
+    ~UnlockScene(void);
 
     virtual void Init(Input& input)override;
     virtual void Update(Input& input)override;
@@ -33,8 +33,8 @@ private:
 
     int frame_ = 0;         // 毎フレーム計測用
 
-    using UpdateFunc_t = void (UnlickScene::*)(Input& input);
-    using DrawFunc_t = void (UnlickScene::*)(void);
+    using UpdateFunc_t = void (UnlockScene::*)(Input& input);
+    using DrawFunc_t = void (UnlockScene::*)(void);
 
     UpdateFunc_t update_;//毎フレーム更新関数ポインタ
     DrawFunc_t draw_;//毎フレーム描画関数ポインタ

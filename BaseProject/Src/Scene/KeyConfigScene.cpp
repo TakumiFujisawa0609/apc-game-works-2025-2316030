@@ -299,7 +299,7 @@ void KeyConfigScene::EdittingUpdate(Input& input)
 
 	
 	//for (auto& state : record) {
-	for(int i=0;i<(int)PeripheralType::end; ++i) {
+	for (int i = 0; i < (int)PeripheralType::end; ++i) {
 		auto it = std::find_if(record.begin(), record.end(), [i](const Input::InputState& state) {
 			return PeripheralType(i) == state.type;
 			});
@@ -317,11 +317,11 @@ void KeyConfigScene::EdittingUpdate(Input& input)
 		}
 		else {
 			Input::InputState state = {};
-			
+
 			if ((PeripheralType)i == PeripheralType::keyboard && pressedKeyCode >= 0) {
 				state.code = pressedKeyCode;
 			}
-			else if ((PeripheralType)i  == PeripheralType::gamepad && pressedPadCode > 0) {
+			else if ((PeripheralType)i == PeripheralType::gamepad && pressedPadCode > 0) {
 				state.code = pressedPadCode;
 			}
 			else if ((PeripheralType)i == PeripheralType::x_analog && pressedAnalogCode != AnalogInputType::none) {
@@ -331,7 +331,7 @@ void KeyConfigScene::EdittingUpdate(Input& input)
 				state.type = (PeripheralType)i;
 				record.push_back(state);
 			}
-			
+
 		}
 	}
 	lastKeyState_ = currentKeyState_;

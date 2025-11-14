@@ -15,7 +15,7 @@
 #include"OverScene.h"
 #include "ClearScene.h"
 #include"PauseScene.h"
-#include"UnlickScene.h"
+#include"UnlockScene.h"
 #include"../Object/Player/Player.h"
 #include"../Object/Enemy/EnemyBase.h"
 #include"../Object/Stage/Stage.h"
@@ -532,7 +532,7 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 
 				if (ins.IsTrgDown(KEY_INPUT_F) && IsHitDoor())
 				{
-					auto unlickScene = std::make_shared<UnlickScene>(controller_);
+					auto unlickScene = std::make_shared<UnlockScene>(controller_);
 
 					std::shared_ptr<Wire> wire = nullptr;
 					std::shared_ptr<Lockpick> lockpick = nullptr;

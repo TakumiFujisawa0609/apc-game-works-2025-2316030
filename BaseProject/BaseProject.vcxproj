@@ -205,7 +205,7 @@
     <ClCompile Include="Src\Object\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Components\UI\Components\UIComponent.cpp" />
     <ClCompile Include="Src\Object\Components\UI\UIElement.cpp" />
-    <ClCompile Include="Src\Scene\UnlickScene.cpp" />
+    <ClCompile Include="Src\Scene\UnlockScene.cpp" />
     <ClCompile Include="Src\Object\Item\ComsumableItems\Tranquilizer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -321,7 +321,7 @@
     <ClInclude Include="Src\Object\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Components\UI\Components\UIComponent.h" />
     <ClInclude Include="Src\Object\Components\UI\UIElement.h" />
-    <ClInclude Include="Src\Scene\UnlickScene.h" />
+    <ClInclude Include="Src\Scene\UnlockScene.h" />
     <ClInclude Include="Src\Object\Item\ComsumableItems\Tranquilizer.h" />
   </ItemGroup>
   <ItemGroup>

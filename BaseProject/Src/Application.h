@@ -5,7 +5,6 @@
 class Input;
 class SceneController;
 class Camera;
-class Config;
 
 struct Size {
 	int width;//幅
@@ -101,9 +100,6 @@ public:
 	// 入力の取得
 	std::shared_ptr<Input> GetInput(void) const;
 
-	// 設定の取得
-	std::shared_ptr<Config> GetConfig(void) const;
-
 private:
 	Application();//コンストラクタをprivateに
 	//コピー＆代入の禁止
@@ -121,9 +117,6 @@ private:
 
 	// カメラ
 	std::shared_ptr<Camera> camera_;
-
-	// 設定
-	std::shared_ptr<Config> config_;
 
 	// 初期化失敗
 	bool isInitFailed_;

@@ -80,8 +80,7 @@ void Application::Init(int w, int h)
     }
 
     // 設定の初期化
-    config_ = std::make_shared<Config>();
-    config_->Init();
+    Config::CreateInstance();
 
     //カメラ初期化
 	camera_ = std::make_shared<Camera>();
@@ -132,8 +131,6 @@ void Application::Run()
         input_->Update();
         inputManager.Update();
 
-        config_->Update();
-
         controller_->Update(*input_);
         camera_->Update();
 
@@ -172,14 +169,14 @@ void Application::Run()
 void Application::Terminate()
 {
     InputManager::GetInstance().Destroy();
-	ResourceManager::GetInstance().Destroy();
+    ResourceManager::GetInstance().Destroy();
+    Config::GetInstance().Destroy();
 
     // Effekseerを終了する。
     Effkseer_End();
 
     // DxLib終了
-    if (DxLib_End() == -1)
-    {
+    if (DxLib_End() == -1){
         isReleaseFailed_ = true;
     }
 
@@ -244,11 +241,6 @@ std::shared_ptr<Input> Application::GetInput(void) const
     return input_;
 }
 
-std::shared_ptr<Config> Application::GetConfig(void) const
-{
-    return config_;
-}
-
 void Application::Init3D(void)
 {
     // 背景色設定
@@ -280,8 +272,7 @@ void Application::Init3D(void)
 
 void Application::InitEffekseer(void)
 {
-    if (Effekseer_Init(8000) == -1)
-    {
+    if (Effekseer_Init(8000) == -1){
         DxLib_End();
     }
 
@@ -293,8 +284,7 @@ void Application::InitEffekseer(void)
 void Application::CalcFrameRate(void)
 {
     int now = GetNowCount();
-    if (now - startTime_ >= 1000)
-    {
+    if (now - startTime_ >= 1000){
         fps_ = frameCount_;
         frameCount_ = 0;
         startTime_ = now;
