@@ -10,6 +10,11 @@ PermanentItemBase::~PermanentItemBase(void)
 {
 }
 
+bool PermanentItemBase::IsActive(void)
+{
+	return isActive_;
+}
+
 void PermanentItemBase::UpdateState(float deltaTime)
 {
 	ItemBase::UpdateState(deltaTime);

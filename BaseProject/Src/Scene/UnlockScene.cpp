@@ -1,5 +1,6 @@
 ﻿#include <DxLib.h>
 #include"../Utility/AsoUtility.h"
+#include"../Manager/Config.h"
 #include"../Manager/SceneController.h"
 #include"../Manager/InputManager.h"
 #include"../Manager/Camera.h"
@@ -170,9 +171,9 @@ void UnlockScene::DisappearUpdate(Input& input)
 
 void UnlockScene::ProcessDraw()
 {
-	const Size& wsize = Application::GetInstance().GetWindowSize();
-	int centerY = wsize.height / 2;//画面中心Y
-	int frameHalfHeight = (wsize.height - margin_size * 2) / 2;//枠の高さの半分
+	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
+	int centerY = wsize.height_ / 2;//画面中心Y
+	int frameHalfHeight = (wsize.height_ - wsize.height_ * 0.04166f * 2) / 2;//枠の高さの半分
 
 	//出現・消滅時の高さ変化率(0.0～1.0)
 	float rate = static_cast<float>(frame_) /
@@ -182,30 +183,30 @@ void UnlockScene::ProcessDraw()
 
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
-	DrawBox(margin_size, centerY - frameHalfHeight,
-		wsize.width - margin_size, centerY + frameHalfHeight,
+	DrawBox(wsize.width_ * 0.03125f, centerY - frameHalfHeight,
+		wsize.width_ - wsize.width_ * 0.03125f, centerY + frameHalfHeight,
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//白枠
-	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(centerY - frameHalfHeight),
-		static_cast<float>(wsize.width - margin_size), static_cast<float>(centerY + frameHalfHeight),
+	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(centerY - frameHalfHeight),
+		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(centerY + frameHalfHeight),
 		0xfffffff, false, 3.0f);
 }
 
 void UnlockScene::NormalDraw()
 {
-	const Size& wsize = Application::GetInstance().GetWindowSize();
+	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
-	DrawBox(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
+	DrawBox(wsize.width_ * 0.03125f, wsize.height_* 0.04166f,
+		wsize.width_ - wsize.width_ * 0.03125f, wsize.height_ - wsize.height_ * 0.04166f,
 		0xfffffff, true);
 	wire_->DrawDebug();
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//白枠
-	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
-		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
+	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ * 0.04166f),
+		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xfffffff, false, 3.0f);
 	//DrawString(margin_size + 10, margin_size + 10, L"Pause Scene", 0x0000ff);
 	LockPickingDraw();

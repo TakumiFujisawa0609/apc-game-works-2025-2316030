@@ -28,7 +28,7 @@ private:
     int asMenuIndex_;
 
     bool isFullS_;	// フルスクリーンであるかどうか
-    float width_, height_;
+    int width_, height_;
 
     // マウス感度
     float mouseSensitivity_;
@@ -62,8 +62,8 @@ private:
     UpdateFunc_t update_;//Update用のメンバ関数ポインタ
     DrawFunc_t draw_;//Draw用のメンバ関数ポインタ
 
-    void PreferencesUpdate(Input&);    //設定(環境系)
-    void AdvancedSettingUpdate(Input&);//設定(PC詳細設定)
+    void PreferencesUpdate(Input& input);    //設定(環境系)
+    void AdvancedSettingUpdate(Input& input);//設定(PC詳細設定)
 
     void PreferencesDraw(void);
     void AdvancedSettingDraw(void);

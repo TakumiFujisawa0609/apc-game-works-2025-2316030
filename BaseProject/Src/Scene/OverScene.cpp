@@ -2,6 +2,7 @@
 #include<DxLib.h>
 #include<cassert>
 #include "../Application.h"
+#include "../Manager/Config.h"
 #include"../Manager/SceneController.h"
 #include"../Manager/InputManager.h"
 #include"../Manager/ResourceManager.h"
@@ -77,19 +78,17 @@ void OverScene::FadeOutUpadte(Input& input)
 
 void OverScene::NormalDraw()
 {
-	auto size = Application::GetInstance().GetWindowSize();
-	DrawRotaGraph(size.width / 2, static_cast<int>(size.height / 2 * 0.8f), 0.5, 0.0, imgH_, true);
+	auto& size = Config::GetInstance().GetWindowSize();
+	DrawRotaGraph(size.width_ / 2, static_cast<int>(size.height_ / 2 * 0.8f), 0.5, 0.0, imgH_, true);
 
 	const TCHAR* text_to_display = _T("Space or Aボタン");
 	int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
 	// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
-	int draw_x = (size.width / 2) - (text_width / 2);
+	int draw_x = (size.width_ / 2) - (text_width / 2);
 
 	// Y座標: 画面全体の高さの 4分の3 の位置
-	int draw_y = (size.height * 3) / 4;
-
-	// 3. テキストを描画
+	int draw_y = (size.height_ * 3) / 4;
 
 	// 赤色で描画
 	int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)

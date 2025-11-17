@@ -1,4 +1,6 @@
 #include "../Application.h"
+#include "../Manager/Config.h"
+#include "../PermanentItems/PermanentItemBase.h"
 #include "../ComsumableItems/Battery.h"
 #include "../PermanentItems/HandLight.h"
 #include "../PermanentItems/Lockpick.h"
@@ -37,28 +39,23 @@ void SlotBase::Draw(void)
 	//DrawFormatString(10, 50, GetColor(255, 255, 255), L"Current: %ls", itemName.c_str());
 
 	// アプリケーションのウィンドウサイズを取得
-	auto size = Application::GetInstance().GetWindowSize();
+	auto& size = Config::GetInstance().GetWindowSize();
 
 	int numSlots = static_cast<int>(slots_.size());
-	//if (numSlots == 0)
-	//{
-	//	// アイテムがない場合は何もしない
-	//	DrawFormatString(10, 50, GetColor(255, 255, 255), L"Current: None");
-	//	return;
-	//}
 
 	// スロット全体の幅を計算
-	int totalWidth = numSlots * SLOT_WIDTH + (numSlots - 1) * SLOT_PADDING;
+	int totalWidth = numSlots * size.width_ * 0.1f + (numSlots - 1) * size.width_ * 0.0125f;
 
 	// 描画開始X座標 (画面中央に配置)
-	int startX = (size.width - totalWidth) / 2;
+	int startX = (size.width_ - totalWidth) / 2;
+
 	// 描画Y座標 (画面下部から少し上に配置)
-	int startY = size.height - SLOT_HEIGHT - 30;
+	int startY = size.height_ - size.height_ * 0.19583f;
 
 	// --- 1. スロットとアイコンの描画 ---
 	for (int i = 0; i < numSlots; ++i)
 	{
-		int drawX = startX + i * (SLOT_WIDTH + SLOT_PADDING);
+		int drawX = startX + i * size.width_ * 0.1125f;
 		int drawY = startY;
 
 		// アイテム
@@ -67,7 +64,7 @@ void SlotBase::Draw(void)
 		// --- 1-1. 背景ボックスの描画 ---
 		// 半透明の暗い背景 (サバイバルゲームのHUD風)
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-		DrawBox(drawX, drawY, drawX + SLOT_WIDTH, drawY + SLOT_HEIGHT, GetColor(0, 0, 0), TRUE);
+		DrawBox(drawX, drawY, drawX + size.width_ * 0.1f, drawY + size.height_ * 0.133f, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		// --- 1-2. アイコンの描画 (ここではモデル表示を省略し、仮の色で代替) ---
@@ -78,12 +75,14 @@ void SlotBase::Draw(void)
 		else if (std::dynamic_pointer_cast<Hemostatic>(item)) iconColor = GetColor(255, 0, 0);
 
 		// アイテムが無効な場合は薄暗くする
+		auto currentItem = GetCurrentItem();
+		auto perItem = std::dynamic_pointer_cast<PermanentItemBase>(currentItem);
 		if (item->IsDisabledItem()) {
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 		}
 
 		// 仮のアイコンを描画 (内側の四角)
-		DrawBox(drawX + 4, drawY + 4, drawX + SLOT_WIDTH - 4, drawY + SLOT_HEIGHT - 4, iconColor, TRUE);
+		DrawBox(drawX + size.width_ * 0.00625f, drawY + size.height_ * 0.00833f, drawX + size.width_ * 0.09375f, drawY + size.height_ * 0.125f, iconColor, TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 
@@ -95,10 +94,10 @@ void SlotBase::Draw(void)
 			int highlightThickness = 3;
 
 			// 外側の枠を描画 (GetColor(255, 255, 255) は白)
-			DrawBox(drawX, drawY, drawX + SLOT_WIDTH, drawY + highlightThickness, highlightColor, TRUE); // 上
-			DrawBox(drawX, drawY + SLOT_HEIGHT - highlightThickness, drawX + SLOT_WIDTH, drawY + SLOT_HEIGHT, highlightColor, TRUE); // 下
-			DrawBox(drawX, drawY, drawX + highlightThickness, drawY + SLOT_HEIGHT, highlightColor, TRUE); // 左
-			DrawBox(drawX + SLOT_WIDTH - highlightThickness, drawY, drawX + SLOT_WIDTH, drawY + SLOT_HEIGHT, highlightColor, TRUE); // 右
+			DrawBox(drawX, drawY, drawX + size.width_*0.1f, drawY + size.height_*0.00416f, highlightColor, TRUE); // 上
+			DrawBox(drawX, drawY + size.height_ * 0.129166f, drawX + size.width_ * 0.1f, drawY + size.height_ * 0.133f, highlightColor, TRUE); // 下
+			DrawBox(drawX, drawY, drawX + size.width_ * 0.003125f, drawY + size.height_ * 0.133f, highlightColor, TRUE); // 左
+			DrawBox(drawX + size.width_ * 0.096875f, drawY, drawX + size.width_ * 0.1f, drawY + size.height_ * 0.133f, highlightColor, TRUE); // 右
 		}
 
 		// --- 1-4. スタック数/残数表示 (ここでは実装省略) ---
@@ -113,7 +112,7 @@ void SlotBase::Draw(void)
 
 		// 選択スロットの真下に情報を表示
 		int textDrawX = startX + currentSelectedIndex_ * (SLOT_WIDTH + SLOT_PADDING);
-		int textDrawY = startY + SLOT_HEIGHT + 5; // スロットの下に配置
+		int textDrawY = startY + size.height_ * 0.14375f; // スロットの下に配置
 
 		// アイテム名を表示
 		DrawFormatString(textDrawX, textDrawY, GetColor(255, 255, 255), L"%ls", itemName.c_str());

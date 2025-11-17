@@ -1,4 +1,4 @@
-#include "../../../Application.h"
+#include "../../../Manager/Config.h"
 #include "../../../Common/Quaternion.h"
 #include "../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
@@ -57,7 +57,7 @@ void Hemostatic::Draw(void)
 		GetUse() != USE::NONE)
 	{
 		MV1DrawModel(transform_.modelId);
-		auto  size = Application::GetInstance().GetWindowSize();
+		auto& size = Config::GetInstance().GetWindowSize();
 		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
 	}

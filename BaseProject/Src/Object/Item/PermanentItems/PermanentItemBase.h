@@ -11,7 +11,12 @@ public:
 	void Update(float deltaTime) override = 0;
 	void Draw(void) override = 0;
 
+	virtual bool IsActive(void);
+
 protected:
+
+	bool isActive_;
+
 	// ゲーム内空間でのアイテムの更新
 	virtual void UpdateState(float deltaTime);
 	virtual void UpdateOnStage(float deltaTime);

@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../Application.h"
+#include "../Manager/Config.h"
 #include "../Utility/AsoUtility.h"
 #include "../../../Manager/Camera.h"
 #include "PlazzleElementBase.h"
@@ -67,10 +68,10 @@ void PlazzleElementBase::InitModel(float distance, VECTOR size, Quaternion quaRo
 	// ワールド座標での座標
 	transform_.pos = modelPos;
 
-	auto sizeW = Application::GetInstance().GetWindowSize();
+	auto sizeW = Config::GetInstance().GetWindowSize();
 
 	// スクリーン座標系に変換するためz座標の情報は不要
-	VECTOR worldPos = { static_cast<float>(sizeW.width / 2),static_cast<float>(sizeW.height),0.0f };
+	VECTOR worldPos = { static_cast<float>(sizeW.width_ / 2),static_cast<float>(sizeW.height_),0.0f };
 
 	// 座標をスクリーン座標系に変換
 	VECTOR screenPos = ConvWorldPosToScreenPos(worldPos);
@@ -88,11 +89,11 @@ void PlazzleElementBase::InitModel(float distance, VECTOR size, Quaternion quaRo
 
 void PlazzleElementBase::InitImg(float posX, float posY, float scale, float angle)
 {
-	auto sizeW_ = Application::GetInstance().GetWindowSize();
+	auto& sizeW_ = Config::GetInstance().GetWindowSize();
 
 	// スクリーン座標
-	posX_ = sizeW_.width / 2 + posX;
-	posY_ = sizeW_.height / 2 + posY;
+	posX_ = sizeW_.width_ / 2 + posX;
+	posY_ = sizeW_.height_ / 2 + posY;
 
 	// 拡大率
 	scale_ = scale;

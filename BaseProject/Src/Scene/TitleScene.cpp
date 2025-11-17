@@ -3,6 +3,7 @@
 #include<memory>
 #include<cassert>
 #include "../Application.h"
+#include "../Manager/Config.h"
 #include "../Manager/InputManager.h"
 #include"../Manager/SceneController.h"
 #include"../Manager/ResourceManager.h"
@@ -131,9 +132,8 @@ void TitleScene::FadeDraw()
 void TitleScene::NormalDraw()
 {
 
-	auto size = Application::GetInstance().GetWindowSize();
-	DrawRotaGraph(size.width / 2, static_cast<int>(size.height / 2 * 0.8f), 0.4, 0.0, titleH_, true);
-
+	auto& size = Config::GetInstance().GetWindowSize();
+	DrawRotaGraph(size.width_ / 2, static_cast<int>(size.height_ / 2 * 0.8f), 0.4, 0.0, titleH_, true);
 
 	//const TCHAR* text_to_display = _T("Space or AÉ{É^Éì");
 	//int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
@@ -158,8 +158,9 @@ void TitleScene::NormalDraw()
 
 void TitleScene::DrawMenuList(void)
 {
-	constexpr int line_start_y = margin_size + 250;
-	constexpr int line_start_x = margin_size + 250;
+	auto& size = Config::GetInstance().GetWindowSize();
+	int line_start_y = size.height_ * 0.04166f + size.height_ * 0.520833f;
+	int line_start_x = size.width_ * 0.03125f + size.width_ * 0.390625f;
 	int lineY = line_start_y;
 
 	auto currentStr = menuList_[currentIndex_];
@@ -167,11 +168,11 @@ void TitleScene::DrawMenuList(void)
 		int lineX = line_start_x;
 		unsigned int col = 0x4444ff;
 		if (row == currentStr) {
-			DrawString(lineX - 20, lineY, L"ÅÀ", 0xff0000);
+			DrawString(lineX - size.width_ * 0.03125f, lineY, L"ÅÀ", 0xff0000);
 			col = 0xff00ff;
-			lineX += 10;
+			lineX += size.width_ * 0.015625f;
 		}
-		DrawFormatString(lineX + 1, lineY + 1, 0x000000, L"%s", row.c_str());
+		DrawFormatString(lineX + size.width_ * 0.0015625f, lineY + size.height_ * 0.0020833f, 0x000000, L"%s", row.c_str());
 		DrawFormatString(lineX, lineY, col, L"%s", row.c_str());
 		lineY += input_list_row_height;
 	}

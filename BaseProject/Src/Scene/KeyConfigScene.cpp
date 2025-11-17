@@ -1,6 +1,7 @@
 #include<DxLib.h>
 #include "KeyConfigScene.h"
 #include"../Application.h"
+#include "../Manager/Config.h"
 #include"../Manager/SceneController.h"
 #include"../Input.h"
 #include"../StringUtiligy.h"
@@ -112,18 +113,18 @@ void KeyConfigScene::Update(Input& input)
 
 void KeyConfigScene::Draw()
 {
-	const Size& wsize = Application::GetInstance().GetWindowSize();
+	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	//緑っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 240);
-	DrawBox(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
+	DrawBox(wsize.width_ * 0.03125f, wsize.height_ * 0.04166f,
+		wsize.width_ - wsize.width_ * 0.03125f, wsize.height_ - wsize.height_ * 0.04166f,
 		0xaaffaa, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//緑
-	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
-		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
+	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ * 0.04166f),
+		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ - wsize.height_ * 0.04166f),
 		0x00ff00, false, 3.0f);
-	DrawString(margin_size + 10, margin_size + 10, L"キーコンフィグ", 0x000000);
+	DrawString(wsize.width_ * 0.03125f + wsize.width_ * 0.015625f, wsize.height_ * 0.04166f + wsize.height_ * 0.02833f, L"キーコンフィグ", 0x000000);
 
 	DrawInputList();
 }
@@ -179,7 +180,7 @@ void KeyConfigScene::DrawInputList()
 			}
 			else if (record.type == PeripheralType::x_analog) {
 				DrawFormatString(colX, rowY, eventColor,
-					L"%s:%s", periName.c_str(), analogNameTable_[ record.code].c_str());
+					L"%s:%s", periName.c_str(), analogNameTable_[record.code].c_str());
 			}
 			colX += input_list_col_width;
 		}

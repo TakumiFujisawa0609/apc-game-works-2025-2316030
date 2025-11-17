@@ -45,8 +45,8 @@ public:
 	// 静的インスタンスの取得
 	static Application& GetInstance();
 
-	// ウィンドウサイズの取得
-	const Size& GetWindowSize()const;
+	//// ウィンドウサイズの取得
+	//const Size& GetWindowSize()const;
 
 	/// <summary>
 	/// アプリケーションの初期化

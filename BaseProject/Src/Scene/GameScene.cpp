@@ -8,6 +8,7 @@
 #include"../Application.h"
 #include"../Input.h"
 #include"../Utility/AsoUtility.h"
+#include "../Manager/Config.h"
 #include"../Manager/Camera.h"
 #include"../Manager/InputManager.h"
 #include"../Manager/ResourceManager.h"
@@ -166,6 +167,7 @@ void GameScene::Init(Input& input)
 
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
+	Application::GetInstance().GetCamera()->SetOperableCamera(true);
 	isFps_ = true;
 
 	UpdateTaskState(TASK::FIND_LIGHT);
@@ -186,7 +188,7 @@ void GameScene::Draw()
 
 void GameScene::DrawUI(void)
 {
-
+	auto& size = Config::GetInstance().GetWindowSize();
 	if (draw_ = &GameScene::NormalDraw)
 	{
 		if (IsHitItems())
@@ -194,12 +196,11 @@ void GameScene::DrawUI(void)
 			const TCHAR* text_to_display = _T("右クリック or Aボタン");
 			int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
-			auto size = Application::GetInstance().GetWindowSize();
 			// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
-			int draw_x = (size.width / 2) - (text_width / 2);
+			int draw_x = (size.width_ / 2) - (text_width / 2);
 
 			// Y座標: 画面全体の高さの 4分の3 の位置
-			int draw_y = (size.height * 3) / 4;
+			int draw_y = (size.height_ * 3) / 4;
 
 			// 3. テキストを描画
 
@@ -215,12 +216,11 @@ void GameScene::DrawUI(void)
 			const TCHAR* text_to_display = _T("Fキー or Aボタン");
 			int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
-			auto size = Application::GetInstance().GetWindowSize();
 			// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
-			int draw_x = (size.width / 2) - (text_width / 2);
+			int draw_x = (size.width_ / 2) - (text_width / 2);
 
 			// Y座標: 画面全体の高さの 4分の3 の位置
-			int draw_y = (size.height * 3) / 4;
+			int draw_y = (size.height_ * 3) / 4;
 
 			// 3. テキストを描画
 
@@ -231,10 +231,8 @@ void GameScene::DrawUI(void)
 			DrawString(draw_x, draw_y, text_to_display, color);
 		}
 
-		// ウィンドウサイズを取得
-		auto size = Application::GetInstance().GetWindowSize();
-		int draw_x = size.width - 300; // 右端から300pxの位置
-		int draw_y = 20;               // 上から20pxの位置
+		int draw_x = size.width_ - size.width_ * 0.46875f; // 右端から300pxの位置
+		int draw_y = size.height_ * 0.04166f;               // 上から20pxの位置
 		int color = GetColor(255, 255, 255);
 
 		// 完了メッセージの描画
@@ -243,14 +241,14 @@ void GameScene::DrawUI(void)
 			// 完了メッセージは黄色で表示
 			int clearColor = GetColor(255, 255, 0);
 			DrawString(draw_x, draw_y, clearMessage_.c_str(), clearColor);
-			draw_y += 30; // 次のメッセージ位置をずらす
+			draw_y += size.height_ * 0.0625f; // 次のメッセージ位置をずらす
 		}
 
 		// 現在のタスクの描画
 		if (!currentTaskMessage_.empty())
 		{
 			DrawString(draw_x, draw_y, L"--- Current Task ---", color);
-			DrawString(draw_x, draw_y + 30, currentTaskMessage_.c_str(), color);
+			DrawString(draw_x, draw_y + size.height_ * 0.0625f, currentTaskMessage_.c_str(), color);
 		}
 
 		player_->DrawUI();
@@ -364,12 +362,12 @@ void GameScene::NormalDraw()
 		const TCHAR* text_to_display = _T("右クリック or Aボタン");
 		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
-		auto size = Application::GetInstance().GetWindowSize();
+		auto& size = Config::GetInstance().GetWindowSize();
 		// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
-		int draw_x = (size.width / 2) - (text_width / 2);
+		int draw_x = (size.width_ / 2) - (text_width / 2);
 
 		// Y座標: 画面全体の高さの 4分の3 の位置
-		int draw_y = (size.height * 3) / 4;
+		int draw_y = (size.height_ * 3) / 4;
 
 		// 3. テキストを描画
 

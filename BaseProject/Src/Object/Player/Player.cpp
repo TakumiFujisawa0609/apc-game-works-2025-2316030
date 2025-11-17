@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include <memory>
 #include "../../Application.h"
+#include "../../Manager/Config.h"
 #include "../../Utility/AsoUtility.h"
 #include "../../Manager/Camera.h"
 #include "../../Manager/InputManager.h"
@@ -39,8 +40,8 @@ void Player::Init(void)
         Quaternion::Euler({ 0.0f,180.0f,0.0f });
     transform_.Update();
 
-    SetMousePoint(Application::GetInstance().GetWindowSize().width / 2,
-        Application::GetInstance().GetWindowSize().height / 2);
+    SetMousePoint(Config::GetInstance().GetWindowSize().width_ / 2,
+        Config::GetInstance().GetWindowSize().height_ / 2);
 
     moveSpeed_ = MOVE_WALK_SPEED; // 移動速度
     moveDir_ = AsoUtility::VECTOR_ZERO; // 移動方向
@@ -80,7 +81,7 @@ void Player::Update(float deltaTime)
 
 void Player::OnUpdate(float deltaTime)
 {
-    if (!light_.lock()->IsDisabledItem())
+    if (!light_.lock()->IsActive())
     {
         sanV_ -= Application::GetInstance().GetDeltaTime();
     }
@@ -208,7 +209,7 @@ void Player::Draw(void)
 
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
 
-    auto  size = Application::GetInstance().GetWindowSize();
+    auto& size = Config::GetInstance().GetWindowSize();
     //DrawFormatString(size.width - 150, 176, GetColor(255, 255, 255), L"sanV = %.2f", sanV_);
 
 
@@ -249,15 +250,15 @@ void Player::SetHandLight(std::weak_ptr<HandLight> handLight)
 void Player::DrawUI(void)
 {
 
-    auto size = Application::GetInstance().GetWindowSize();
+    auto& size = Config::GetInstance().GetWindowSize();
 
     // 画面左上隅の開始座標
-    int baseX = 20;
-    int baseY = 25;
+    int baseX = size.width_ * 0.03125f;
+    int baseY = size.height_ * 0.0520833f;
 
-    int gaugeWidth = 250;
-    int gaugeHeight = 20;
-    int spacing = 18;
+    int gaugeWidth = size.width_ * 0.390625f;
+    int gaugeHeight = size.height_ * 0.04166f;
+    int spacing = size.height_ * 0.0375f;
 
     // --- HP ゲージ (左上) ---
     float hpRatio = GetHealthRatio(); // PlayerクラスからHP比率を取得すると仮定

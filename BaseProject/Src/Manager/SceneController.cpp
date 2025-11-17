@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include <cassert>
 #include "SceneController.h"
+#include "../Manager/Config.h"
 #include "../Application.h"
 #include"../Scene/Scene.h"
 
@@ -62,7 +63,7 @@ void SceneController::DrawUI()
 
 void SceneController::PushScene(std::shared_ptr<Scene> scene, Input& input)
 {
-	auto size = Application::GetInstance().GetWindowSize();
+	auto size = Config::GetInstance().GetWindowSize();
 
 	//// êVÇµÇ¢ó†âÊñ ÇçÏê¨
 	//int newScreenH = MakeScreen(size.width, size.height, true);
@@ -104,8 +105,8 @@ void SceneController::JumpScene(std::shared_ptr<Scene> scene, Input& input)
 	scenes_.clear();
 	scenes_.push_back(scene);
 
-	auto sizeW = Application::GetInstance().GetWindowSize();
-	int newScreenH = MakeScreen(sizeW.width, sizeW.height);
+	auto sizeW = Config::GetInstance().GetWindowSize();
+	int newScreenH = MakeScreen(sizeW.width_, sizeW.height_);
 	scenes_.back()->SetRenderTarget(newScreenH);
 
 	scenes_.back()->Init(input);

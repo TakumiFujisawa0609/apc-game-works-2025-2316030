@@ -54,10 +54,10 @@ Application::GetInstance()
     return *instance_;
 }
 
-const Size& Application::GetWindowSize() const
-{
-    return windowSize_;
-}
+//const Size& Application::GetWindowSize() const
+//{
+//    return windowSize_;
+//}
 
 void Application::Init(int w, int h)
 {

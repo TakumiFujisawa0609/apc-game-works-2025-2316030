@@ -1,5 +1,6 @@
 #include <functional>
 #include "../../../Application.h"
+#include "../../../Manager/Config.h"
 #include "../../../Common/Quaternion.h"
 #include "../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
@@ -36,6 +37,7 @@ void HandLight::Init(void)
 	isEquipment_ = false;
 	isEfficacy_ = false;
 	isDisabled_ = false;
+	isActive_ = false;
 
 	canToggle_ = true;
 	toggleTimer_ = 0.0f;
@@ -69,7 +71,7 @@ void HandLight::Draw(void)
 		GetUse() != USE::NONE)
 	{
 		MV1DrawModel(transform_.modelId);
-		auto  size = Application::GetInstance().GetWindowSize();
+		auto& size = Config::GetInstance().GetWindowSize();
 		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
 	}
@@ -141,7 +143,7 @@ void HandLight::UpdateRenderer(float deltaTime)
 	float max = MAX_VALUE;
 	float raito = value_ / max;
 	if (raito < 0.0f)raito = 0.0f;
-	if (isDisabled_)
+	if (isActive_)
 	{
 		if (raito <= 0.0f)
 		{
@@ -196,17 +198,17 @@ void HandLight::DrawUI(void)
 {
 	if (GetState() == STATE::ININVENTORY)
 	{
-		auto size = Application::GetInstance().GetWindowSize();
+		auto& size = Config::GetInstance().GetWindowSize();
 
 		// --- UI描画の位置と設定 ---
 		// 画面右下から配置を調整 (例: 右端から 250px、下端から 50px の位置)
-		int uiWidth = 200;
-		int uiHeight = 20;
+		int uiWidth = size.width_ * 0.3125f;
+		int uiHeight = size.width_ * 0.01f;
 
 		// X座標: 画面幅 - 幅 - マージン
-		int drawX = size.width - uiWidth - 50;
+		int drawX = size.width_ - uiWidth - size.width_ * 0.078125f;
 		// Y座標: 画面高さ - 高さ - マージン
-		int drawY = size.height - uiHeight - 100; // アイテムスロットと被らないように配置を調整
+		int drawY = size.height_ - uiHeight - size.width_ * 0.1875f; // アイテムスロットと被らないように配置を調整
 
 		// ... ゲージの描画ロジックはそのまま利用 ...
 		float ratio = value_ / MAX_VALUE;
@@ -222,7 +224,7 @@ void HandLight::DrawUI(void)
 
 		// 3. テキスト表示
 		int percent = (int)(ratio * 100.0f);
-		DrawFormatString(drawX, drawY - 20, GetColor(255, 255, 255), L"LIGHT: %d%%", percent);
+		DrawFormatString(drawX, drawY - size.height_ * 0.04167f, GetColor(255, 255, 255), L"LIGHT: %d%%", percent);
 	}
 }
 
@@ -275,21 +277,21 @@ void HandLight::UpdateInUse(float deltaTime)
 	}
 	if (canToggle_ && ins.IsClickMouseLeft())
 	{
-		isDisabled_ = !isDisabled_;
+		isActive_ = !isActive_;
 
 		// トグルを実行したらクールダウン開始
 		canToggle_ = false;
 		toggleTimer_ = 0.0f;
 	}
 
-	if (isDisabled_)
+	if (isActive_)
 	{
 		value_ -= Application::GetInstance().GetDeltaTime();
 
 		if (value_ <= 0.0f)
 		{
 			value_ = 0.0f;
-			isDisabled_ = false;
+			isActive_ = false;
 		}
 	}
 

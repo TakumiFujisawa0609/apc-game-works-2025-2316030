@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include "../../../Application.h"
+#include "../../../Manager/Config.h"
 #include "../../../Common/Quaternion.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/Camera.h"
@@ -42,6 +43,7 @@ void Lockpick::Init(void)
 	isEquipment_ = false;
 	isEfficacy_ = false;
 	isDisabled_ = false;
+	isActive_ = false;
 	isSuccess_ = false;
 	ChangeState(STATE::ONSTAGE);
 }
@@ -64,7 +66,7 @@ void Lockpick::Draw(void)
 		GetUse() != USE::NONE)
 	{
 		MV1DrawModel(transform_.modelId);
-		auto  size = Application::GetInstance().GetWindowSize();
+		auto& size = Config::GetInstance().GetWindowSize();
 		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
 	}

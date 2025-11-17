@@ -1,6 +1,7 @@
 #include<DxLib.h>
 #include "CommandListScene.h"
 #include"../Application.h"
+#include "../Manager/Config.h"
 #include"../Manager/SceneController.h"
 #include"../Input.h"
 namespace {
@@ -26,18 +27,18 @@ void CommandListScene::Update(Input& input)
 
 void CommandListScene::Draw()
 {
-	const Size& wsize = Application::GetInstance().GetWindowSize();
+	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	//紫っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 240);
-	DrawBox(margin_size, margin_size,
-		wsize.width - margin_size, wsize.height - margin_size,
+	DrawBox(wsize.width_ * 0.03125f, wsize.height_ * 0.04166f,
+		wsize.width_ - wsize.width_ * 0.03125f, wsize.height_ - wsize.height_ * 0.04166f,
 		0xffaaff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//紫
-	DrawBoxAA(static_cast<float>(margin_size), static_cast<float>(margin_size),
-		static_cast<float>(wsize.width - margin_size), static_cast<float>(wsize.height - margin_size),
+	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ * 0.04166f),
+		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xff00ff, false, 3.0f);
-	DrawString(margin_size + 10, margin_size + 10, L"コマンド表", 0x008800);
+	DrawString(wsize.width_ * 0.03125f + wsize.width_ * 0.015625f, wsize.height_ * 0.04166f + wsize.height_ * 0.020833f, L"コマンド表", 0x008800);
 }
 
 void CommandListScene::DrawUI(void)

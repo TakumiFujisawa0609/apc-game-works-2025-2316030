@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../../../Application.h"
+#include "../../../../Manager/Config.h"
 #include "../../../../Manager/InputManager.h"
 #include "PlayerInput.h"
 
@@ -13,8 +14,8 @@ PlayerInput::PlayerInput(std::shared_ptr<Charactor> owner)
 {
 	// マウス初期位置を画面中央にセット
 	SetMousePoint(
-		Application::GetInstance().GetWindowSize().width / 2,
-		Application::GetInstance().GetWindowSize().height / 2);
+		Config::GetInstance().GetWindowSize().width_ / 2,
+		Config::GetInstance().GetWindowSize().height_ / 2);
 }
 
 PlayerInput::~PlayerInput(void)
@@ -34,8 +35,8 @@ void PlayerInput::Update(float deltaTime)
 	int mx, my;
 	GetMousePoint(&mx, &my);
 
-	mouseDeltaX_ = static_cast<float>(mx - Application::GetInstance().GetWindowSize().width / 2);
-	mouseDeltaY_ = static_cast<float>(my - Application::GetInstance().GetWindowSize().height / 2);
+	mouseDeltaX_ = static_cast<float>(mx - Config::GetInstance().GetWindowSize().width_ / 2);
+	mouseDeltaY_ = static_cast<float>(my - Config::GetInstance().GetWindowSize().height_ / 2);
 }
 
 float PlayerInput::GetMoveForward(void) const

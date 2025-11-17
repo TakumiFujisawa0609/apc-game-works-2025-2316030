@@ -2,6 +2,7 @@
 #include <chrono>
 #include <cmath>
 #include "../../Application.h"
+#include "../../Manager/Config.h"
 #include "../../Common/Quaternion.h"
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/Camera.h"
@@ -238,9 +239,9 @@ float Wire::GetLockRotationRate(void) const
 
 void Wire::DrawDebug(void)
 {
-    auto& size = Application::GetInstance().GetWindowSize();
-    DrawFormatString(size.width - 200, 64, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
-    DrawFormatString(size.width - 200, 80, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
+    auto& size = Config::GetInstance().GetWindowSize();
+    DrawFormatString(size.width_ - size.width_*0.3125f, size.height_*0.133f, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
+    DrawFormatString(size.width_ - size.width_ * 0.3125f, size.height_*0.166f, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
 }
 
 void Wire::OnUpdate(float deltaTime)
