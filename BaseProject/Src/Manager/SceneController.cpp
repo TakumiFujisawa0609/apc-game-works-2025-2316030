@@ -3,22 +3,24 @@
 #include "SceneController.h"
 #include "../Manager/Config.h"
 #include "../Application.h"
-#include"../Scene/Scene.h"
+#include "../Scene/Scene.h"
+#include "../Scene/PauseScene.h"
+#include "../Scene/SystemSettingScene.h"
+#include "../Scene/UnlockScene.h"
 
 void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 {
-	for (auto& s : scenes_)
-	{
-		DeleteGraph(s->GetRenderTarget());
+	for (auto& s : scenes_){
+		if (s->GetRenderTarget() != -1) {
+			DeleteGraph(s->GetRenderTarget());
+		}
 	}
 	scenes_.clear();
 
-	if (scenes_.empty()) 
-	{
+	if (scenes_.empty()) {
 		scenes_.push_back(scene);
 	}
-	else 
-	{
+	else {
 		scenes_.back() = scene;
 	}
 
@@ -47,14 +49,23 @@ void SceneController::Update(Input& input)
 	scenes_.back()->Update(input);
 }
 
-void SceneController::Draw()
+void SceneController::Draw(void)
 {
 	for (auto& scene : scenes_) {
+		if (std::dynamic_pointer_cast<UnlockScene>(scene) != nullptr) {
+			continue;
+		}
+		if (std::dynamic_pointer_cast<PauseScene>(scene) != nullptr) {
+			continue;
+		}
+		if (std::dynamic_pointer_cast<SystemSettingScene>(scene) != nullptr) {
+			continue;
+		}
 		scene->Draw();
 	}
 }
 
-void SceneController::DrawUI()
+void SceneController::DrawUI(void)
 {
 	for (auto& scene : scenes_) {
 		scene->DrawUI();
@@ -89,7 +100,6 @@ void SceneController::PushScene(std::shared_ptr<Scene> scene, Input& input)
 void SceneController::PopScene(Input& input)
 {
 	if (scenes_.size() > 1) {
-
 		int screenH = scenes_.back()->GetRenderTarget();
 		DeleteGraph(screenH);
 		scenes_.pop_back();
@@ -98,8 +108,7 @@ void SceneController::PopScene(Input& input)
 
 void SceneController::JumpScene(std::shared_ptr<Scene> scene, Input& input)
 {
-	for (auto& s : scenes_)
-	{
+	for (auto& s : scenes_){
 		DeleteGraph(s->GetRenderTarget());
 	}
 	scenes_.clear();
@@ -111,6 +120,24 @@ void SceneController::JumpScene(std::shared_ptr<Scene> scene, Input& input)
 
 	scenes_.back()->Init(input);
 	Application::GetInstance().ResetDeltaTime();
+}
+
+void SceneController::DrawPushScene(void)
+{
+	for (const auto& scene : scenes_) {
+		auto unlockScene = std::dynamic_pointer_cast<UnlockScene>(scene);
+		if (unlockScene != nullptr) {
+			unlockScene->Draw();
+		}
+		auto pauseScene = std::dynamic_pointer_cast<PauseScene>(scene);
+		if (pauseScene != nullptr) {
+			pauseScene->Draw();
+		}
+		auto settingScene = std::dynamic_pointer_cast<SystemSettingScene>(scene);
+		if (settingScene != nullptr) {
+			settingScene->Draw();
+		}
+	}
 }
 
 int SceneController::GetDepthScreen(void) const

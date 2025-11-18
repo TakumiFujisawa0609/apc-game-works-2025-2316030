@@ -129,7 +129,7 @@ void PauseScene::ProcessDraw()
 {
 	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	int centerY = wsize.height_ / 2;//画面中心Y
-	int frameHalfHeight = (wsize.height_ - wsize.height_ * 0.4166f * 2) / 2;//枠の高さの半分
+	int frameHalfHeight = static_cast<int>(wsize.height_ - wsize.height_ * 0.4166f * 2) / 2;//枠の高さの半分
 
 	//出現・消滅時の高さ変化率(0.0～1.0)
 	float rate = static_cast<float>(frame_) / 
@@ -139,8 +139,8 @@ void PauseScene::ProcessDraw()
 
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
-	DrawBox(wsize.width_ * 0.03125f, centerY - frameHalfHeight,
-		wsize.width_ - wsize.width_ * 0.03125f, centerY + frameHalfHeight,
+	DrawBox(static_cast<int>(wsize.width_ * 0.03125f), static_cast<int>(centerY - frameHalfHeight),
+		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<int>(centerY + frameHalfHeight),
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//白枠
@@ -155,23 +155,23 @@ void PauseScene::NormalDraw()
 	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
-	DrawBox(wsize.width_*0.03125f, wsize.height_*0.04166f,
-		wsize.width_ - wsize.width_ * 0.03125f, wsize.height_ - wsize.height_ * 0.04166f,
+	DrawBox(static_cast<int>(wsize.width_ * 0.03125f), static_cast<int>(wsize.height_ * 0.04166f),
+		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<int>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//白枠
 	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ * 0.04166f),
 		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xfffffff, false, 3.0f);
-	DrawString(wsize.width_ * 0.03125f + 10, wsize.height_ * 0.04166f + wsize.height_ * 0.020833f, L"Pause Scene", 0x0000ff);
+	DrawString(static_cast<int>(wsize.width_ * 0.03125f + 10), static_cast<int>(wsize.height_ * 0.04166f + wsize.height_ * 0.020833f), L"Pause Scene", 0x0000ff);
 	DrawMenuList();
 }
 
 void PauseScene::DrawMenuList()
 {
 	auto& wsize = Config::GetInstance().GetWindowSize();
-	int line_start_y = wsize.height_ * 0.04166f + wsize.height_ * 0.3125f;
-	int line_start_x = wsize.width_ * 0.03125f + wsize.width_* 0.390625f;
+	int line_start_y = static_cast<int>(wsize.height_ * 0.04166f + wsize.height_ * 0.3125f);
+	int line_start_x = static_cast<int>(wsize.width_ * 0.03125f + wsize.width_* 0.390625f);
 	int lineY = line_start_y;
 	
 	auto currentStr = menuList_[currentIndex_];
@@ -179,11 +179,11 @@ void PauseScene::DrawMenuList()
 		int lineX = line_start_x;
 		unsigned int col = 0x4444ff;
 		if (row == currentStr) {
-			DrawString(lineX - wsize.width_ * 0.03125f, lineY, L"⇒",0xff0000);
+			DrawString(static_cast<int>(lineX - wsize.width_ * 0.03125f), lineY, L"⇒",0xff0000);
 			col = 0xff00ff;
-			lineX += wsize.width_ * 0.015625f;
+			lineX += static_cast<int>(wsize.width_ * 0.015625f);
 		}
-		DrawFormatString(lineX+wsize.width_* 0.0015625f, lineY+wsize.height_* 0.0020833f, 0x000000, L"%s", row.c_str());
+		DrawFormatString(static_cast<int>(lineX+wsize.width_* 0.0015625f), static_cast<int>(lineY+wsize.height_* 0.0020833f), 0x000000, L"%s", row.c_str());
 		DrawFormatString(lineX, lineY, col, L"%s", row.c_str());
 		lineY += input_list_row_height;
 	}

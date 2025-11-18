@@ -29,12 +29,12 @@ public:
 	/// <summary>
 	/// 手持ちのシーンを描画する
 	/// </summary>
-	void Draw();
+	void Draw(void);
 
 	/// <summary>
 	/// UI専用の描画
 	/// </summary>
-	void DrawUI();
+	void DrawUI(void);
 
 	/// <summary>
 	/// シーンを新しく「積む」
@@ -53,6 +53,7 @@ public:
 	/// <param name="scene">ジャンプ先シーン</param>
 	void JumpScene(std::shared_ptr<Scene> scene,Input& input);
 
+	void DrawPushScene(void);
 
 	// 描画スクリーンを取得する
 	int GetDepthScreen(void) const;

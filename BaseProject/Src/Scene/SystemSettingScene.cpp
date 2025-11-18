@@ -1,4 +1,4 @@
-#include<memory>
+ï»¿#include<memory>
 #include<DxLib.h>
 #include "SystemSettingScene.h"
 #include"../Application.h"
@@ -8,9 +8,9 @@
 #include "../Manager/InputManager.h"
 #include"../Input.h"
 namespace {
-	constexpr int appear_interval = 20;//oŒ»‚Ü‚Å‚ÌƒtƒŒ[ƒ€
-	constexpr int input_list_row_height = 40;//ƒƒjƒ…[‚Ì‚P‚Â‚ ‚½‚è‚Ì‚‚³
-	constexpr int margin_size = 20;//ƒ|[ƒYƒƒjƒ…[˜g‚Ì—]”’
+	constexpr int appear_interval = 20;//å‡ºç¾ã¾ã§ã®ãƒ•ãƒ¬ãƒ¼ãƒ 
+	constexpr int input_list_row_height = 40;//ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ï¼‘ã¤ã‚ãŸã‚Šã®é«˜ã•
+	constexpr int margin_size = 20;//ãƒãƒ¼ã‚ºãƒ¡ãƒ‹ãƒ¥ãƒ¼æ ã®ä½™ç™½
 }
 
 
@@ -32,21 +32,25 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 	mainMenuIndex_ = 0;
 	prefMenuIndex_ = 0;
 	asMenuIndex_ = 0;
+	wMenuIndex_ = 0;
 
-	// ƒƒCƒ“ƒƒjƒ…[
+	isInitialize_ = false;
+	asState_ = AdvancedSettingState::MainMenu;
+
+	// ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼
 	menuList_ = {
-		L"Ú×İ’è",
-		L"“ü—Í"
+		L"è©³ç´°è¨­å®š",
+		L"å…¥åŠ›"
 	};
 
 	mainMenuFuncTable_ = {
-		{L"Ú×İ’è",[this](Input& input) {
+		{L"è©³ç´°è¨­å®š",[this](Input& input) {
 				update_ = &SystemSettingScene::AdvancedSettingUpdate;
 				draw_ = &SystemSettingScene::AdvancedSettingDraw;
 				frame_ = 0;
 			}	
 		},
-		{L"“ü—Í",[this](Input& input) {
+		{L"å…¥åŠ›",[this](Input& input) {
 				update_ = &SystemSettingScene::PreferencesUpdate;
 				draw_ = &SystemSettingScene::PreferencesDraw;
 				frame_ = 0;
@@ -54,91 +58,114 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 		}
 	};
 
-	// ŠÂ‹«İ’è
+	// ç’°å¢ƒè¨­å®š
 	prefeMenuList_ = {
-		L"ƒ}ƒEƒXŠ´“x",
-		L"ƒpƒbƒh‚ÌU“®",
-		L"BGM‚Ì‰¹—Ê",
-		L"SE‚Ì‰¹—Ê",
-		L"ƒfƒtƒHƒ‹ƒg‚Ìó‘Ô‚É–ß‚·",
-		L"“K—p",
-		L"–ß‚é"
+		L"ãƒã‚¦ã‚¹æ„Ÿåº¦",
+		L"ãƒ‘ãƒƒãƒ‰ã®æŒ¯å‹•",
+		L"BGMã®éŸ³é‡",
+		L"SEã®éŸ³é‡",
+		L"ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®çŠ¶æ…‹ã«æˆ»ã™",
+		L"é©ç”¨",
+		L"æˆ»ã‚‹"
 	};
 
 	prefeMenuTable_ = {
-		{L"ƒ}ƒEƒXŠ´“x",[this](Input&) {
+		{L"ãƒã‚¦ã‚¹æ„Ÿåº¦",[this](Input&) {
 				config_.SetMouseSensitivity(mouseSensitivity_);
 			}
 		},
-		{L"ƒpƒbƒh‚ÌU“®",[this](Input&) {
+		{L"ãƒ‘ãƒƒãƒ‰ã®æŒ¯å‹•",[this](Input&) {
 				config_.SetJoyPadVibration(isVibration_);
 			}
 		},
-		{L"BGM‚Ì‰¹—Ê",[this](Input&) {
+		{L"BGMã®éŸ³é‡",[this](Input&) {
 				config_.SetBGMVolume(bgmVolume_);
 			}
 		},
-		{L"SE‚Ì‰¹—Ê",[this](Input&) {
+		{L"SEã®éŸ³é‡",[this](Input&) {
 				config_.SetSEVolume(seVolume_);
 			}
 		},
-		{L"ƒfƒtƒHƒ‹ƒg‚Ìó‘Ô‚É–ß‚·",[this](Input&) {
+		{L"ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®çŠ¶æ…‹ã«æˆ»ã™",[this](Input&) {
 
 			}
 		},
-		{L"“K—p",[this](Input&) {
+		{L"é©ç”¨",[this](Input&) {
 
 			}
 		},
-		{L"–ß‚é",[this](Input& input) {
+		{L"æˆ»ã‚‹",[this](Input& input) {
 				controller_.PopScene(input);
 			}
 		}
 	};
 
-	// Ú×İ’è
+	// è©³ç´°è¨­å®š
 	asmList_ = {
-		L"•\¦ƒ‚[ƒh",
-		L"ƒEƒBƒ“ƒhƒEƒTƒCƒY",
-		L"–ß‚é"
+		L"è¡¨ç¤ºãƒ¢ãƒ¼ãƒ‰",
+		L"ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º",
+		L"æˆ»ã‚‹"
 	};
 
 	asmTable_ = {
-		{L"•\¦ƒ‚[ƒh",[this](Input&) {
+		{L"è¡¨ç¤ºãƒ¢ãƒ¼ãƒ‰",[this](Input&) {
 				config_.SetFullScreen(isFullS_);
 			}
 		},
-		{L"ƒEƒBƒ“ƒhƒEƒTƒCƒY",[this](Input&) {
+		{L"ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º",[this](Input&) {
 				if (!config_.IsFullScreen()) {
-					config_.SetWindowSize(width_,height_);
+					asState_ = AdvancedSettingState::WindowSize;
 				}
 			}
 		},
-		{L"–ß‚é",[this](Input& input) {
+		{L"æˆ»ã‚‹",[this](Input& input) {
 				controller_.PopScene(input);
+			}
+		}
+	};
+
+	windowSizeList_ = {
+		L"1280Ã—720",
+		L"1920Ã—1080"
+	};
+	windowSizeTable_ = {
+		{L"1280Ã—720",[this](Input&) {
+				width_ = 1280;
+				height_ = 720;
+				config_.SetWindowSize(width_, height_);
+			}
+		},
+		{L"1920Ã—1080",[this](Input&) {
+				width_ = 1920;
+				height_ = 1080;
+				config_.SetWindowSize(width_, height_);
 			}
 		}
 	};
 }
 
 void SystemSettingScene::Init(Input& input)
-{	
-	// ƒƒCƒ“ƒƒjƒ…[
+{
+	isInitialize_ = true;
+
+	// ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼
 	InitMenuName(menuList_[mainMenuIndex_], mainMenuFuncTable_, input);
 
-	// ŠÂ‹«İ’èƒƒjƒ…[
+	// ç’°å¢ƒè¨­å®šãƒ¡ãƒ‹ãƒ¥ãƒ¼
 	InitMenuName(prefeMenuList_[prefMenuIndex_], prefeMenuTable_, input);
 
-	// Ú×İ’è
+	// è©³ç´°è¨­å®š
 	InitMenuName(asmList_[asMenuIndex_], asmTable_, input);
 
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åˆ‡ã‚Šæ›¿ãˆãƒ¡ãƒ‹ãƒ¥ãƒ¼
+	InitMenuName(windowSizeList_[wMenuIndex_], windowSizeTable_, input);
 }
 
 void SystemSettingScene::Update(Input& input)
 {
 	bool mainMenuIndexChanged = false;
 
-	// ƒƒCƒ“ƒƒjƒ…[‚ÌØ‚è‘Ö‚¦
+	// ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®åˆ‡ã‚Šæ›¿ãˆ
 	if(ins.IsTrgDown(KEY_INPUT_E)){
 		mainMenuIndex_ = static_cast<int>((mainMenuIndex_ + menuList_.size() - 1) % menuList_.size());
 		mainMenuIndexChanged = true;
@@ -148,12 +175,12 @@ void SystemSettingScene::Update(Input& input)
 		mainMenuIndexChanged = true;
 	}
 
-	// ƒƒCƒ“ƒƒjƒ…[‚ÌƒCƒ“ƒfƒbƒNƒX‚ª•ÏX‚³‚ê‚½‚çA‘Î‰‚·‚éŠÖ”‚ğŒÄ‚Ño‚µ‚ÄƒTƒuƒƒjƒ…[‚É‘JˆÚ
+	// ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãŒå¤‰æ›´ã•ã‚ŒãŸã‚‰ã€å¯¾å¿œã™ã‚‹é–¢æ•°ã‚’å‘¼ã³å‡ºã—ã¦ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«é·ç§»
 	if (mainMenuIndexChanged) {
-		// Œ»İ‚ÌƒCƒ“ƒfƒbƒNƒX‚É‘Î‰‚·‚éƒƒjƒ…[–¼‚ğæ“¾
+		// ç¾åœ¨ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã«å¯¾å¿œã™ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼åã‚’å–å¾—
 		const std::wstring& selectedMenuName = menuList_[mainMenuIndex_];
 
-		// ŠÖ”ƒe[ƒuƒ‹‚©‚ç‘Î‰‚·‚éŠÖ”‚ğ’T‚µ‚ÄÀs
+		// é–¢æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã‹ã‚‰å¯¾å¿œã™ã‚‹é–¢æ•°ã‚’æ¢ã—ã¦å®Ÿè¡Œ
 		auto it = mainMenuFuncTable_.find(selectedMenuName);
 		if (it != mainMenuFuncTable_.end()) {
 			it->second(input);
@@ -166,18 +193,18 @@ void SystemSettingScene::Update(Input& input)
 void SystemSettingScene::Draw()
 {
 	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
-	//Â‚Á‚Û‚¢ƒZƒƒtƒ@ƒ“
+	//é’ã£ã½ã„ã‚»ãƒ­ãƒ•ã‚¡ãƒ³
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 240);
-	DrawBox(wsize.width_* 0.03125f, wsize.height_* 0.04166f,
-		wsize.width_ - wsize.width_ * 0.03125f, wsize.height_ - wsize.height_ * 0.04166f,
+	DrawBox(static_cast<int>(wsize.width_* 0.03125f), static_cast<int>(wsize.height_* 0.04166f),
+		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<int>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xaaaaff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	//Â
+	//é’
 	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ * 0.04166f),
 		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ - wsize.height_ * 0.04166f),
 		0x0000ff, false, 3.0f);
-	DrawString(wsize.width_ * 0.03125f + wsize.width_ * 0.015625f, wsize.height_ * 0.04166f + wsize.height_ * 0.020833f, L"ƒVƒXƒeƒ€İ’è", 0xff0000);
+	DrawString(static_cast<int>(wsize.width_ * 0.03125f + wsize.width_ * 0.015625f), static_cast<int>(wsize.height_ * 0.04166f + wsize.height_ * 0.020833f), L"ã‚·ã‚¹ãƒ†ãƒ è¨­å®š", 0xff0000);
 
 	(this->*draw_)();
 }
@@ -189,10 +216,10 @@ void SystemSettingScene::DrawUI(void)
 void SystemSettingScene::PreferencesUpdate(Input& input)
 {
 	if (input.IsTriggered("ok")) {
-		// Œ»İ‘I‘ğ‚³‚ê‚Ä‚¢‚éƒƒCƒ“ƒƒjƒ…[‚Ì€–Ú–¼‚ğæ“¾
+		// ç¾åœ¨é¸æŠã•ã‚Œã¦ã„ã‚‹ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®é …ç›®åã‚’å–å¾—
 		const std::wstring& selectedMenuName = prefeMenuList_[prefMenuIndex_];
 
-		// ŠÖ”ƒe[ƒuƒ‹‚©‚ç‘Î‰‚·‚éŠÖ”‚ğ’T‚µ‚ÄÀs (ƒTƒuƒƒjƒ…[‚Ö‚Ì‘JˆÚ)
+		// é–¢æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã‹ã‚‰å¯¾å¿œã™ã‚‹é–¢æ•°ã‚’æ¢ã—ã¦å®Ÿè¡Œ (ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã¸ã®é·ç§»)
 		auto it = prefeMenuTable_.find(selectedMenuName);
 		if (it != prefeMenuTable_.end()) {
 			it->second(input);
@@ -200,7 +227,7 @@ void SystemSettingScene::PreferencesUpdate(Input& input)
 		return;
 	}
 
-	// ‘€ìŒn‚Ìİ’è
+	// æ“ä½œç³»ã®è¨­å®š
 	static int wheelCounter = 0;
 	int wheelDelta = ins.GetWheelDelta();
 	wheelCounter += wheelDelta;
@@ -218,31 +245,79 @@ void SystemSettingScene::PreferencesUpdate(Input& input)
 
 void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 {
-	if (input.IsTriggered("ok")) {
-		// Œ»İ‘I‘ğ‚³‚ê‚Ä‚¢‚éƒƒCƒ“ƒƒjƒ…[‚Ì€–Ú–¼‚ğæ“¾
-		const std::wstring& selectedMenuName = asmList_[asMenuIndex_];
-
-		// ŠÖ”ƒe[ƒuƒ‹‚©‚ç‘Î‰‚·‚éŠÖ”‚ğ’T‚µ‚ÄÀs (ƒTƒuƒƒjƒ…[‚Ö‚Ì‘JˆÚ)
-		auto it = asmTable_.find(selectedMenuName);
-		if (it != asmTable_.end()) {
-			it->second(input);
-		}
-		return;
-	}
-
-	// ƒXƒNƒŠ[ƒ“Œn‚Ìİ’è
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ç³»ã®è¨­å®š
 	static int wheelCounter = 0;
 	int wheelDelta = ins.GetWheelDelta();
 	wheelCounter += wheelDelta;
 
-	if (wheelCounter > 1){
-		asMenuIndex_ = static_cast<int>((asMenuIndex_ + asmList_.size() - 1) % asmList_.size());
-		wheelCounter = 0;
+	switch (asState_)
+	{
+	case SystemSettingScene::AdvancedSettingState::MainMenu:
+		if (asmList_[asMenuIndex_] == L"è¡¨ç¤ºãƒ¢ãƒ¼ãƒ‰" && ins.IsTrgDown(KEY_INPUT_SPACE)) {
+			isFullS_ = !isFullS_; // ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆ
+
+			// è¨­å®šã‚’Configã«åæ˜ ã•ã›ã‚‹ãŸã‚ã«ã€å¯¾å¿œã™ã‚‹é–¢æ•°ã‚’å®Ÿè¡Œ
+			auto it = asmTable_.find(L"è¡¨ç¤ºãƒ¢ãƒ¼ãƒ‰");
+			if (it != asmTable_.end()) {
+				it->second(input);
+			}
+		}
+		if (asmList_[asMenuIndex_] == L"ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º" && ins.IsTrgDown(KEY_INPUT_SPACE)) {
+			isFullS_ = !isFullS_; // ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³çŠ¶æ…‹ã‚’åˆ‡ã‚Šæ›¿ãˆ
+
+			// è¨­å®šã‚’Configã«åæ˜ ã•ã›ã‚‹ãŸã‚ã«ã€å¯¾å¿œã™ã‚‹é–¢æ•°ã‚’å®Ÿè¡Œ
+			auto it = asmTable_.find(L"ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º");
+			if (it != asmTable_.end()) {
+				it->second(input);
+			}
+		}
+
+		if (input.IsTriggered("ok")) {
+			// ç¾åœ¨é¸æŠã•ã‚Œã¦ã„ã‚‹ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®é …ç›®åã‚’å–å¾—
+			const std::wstring& selectedMenuName = asmList_[asMenuIndex_];
+
+			// é–¢æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã‹ã‚‰å¯¾å¿œã™ã‚‹é–¢æ•°ã‚’æ¢ã—ã¦å®Ÿè¡Œ (ã‚µãƒ–ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã¸ã®é·ç§»)
+			auto it = asmTable_.find(selectedMenuName);
+			if (it != asmTable_.end()) {
+				it->second(input);
+			}
+			return;
+		}
+		if (wheelCounter > 1) {
+			asMenuIndex_ = static_cast<int>((asMenuIndex_ + asmList_.size() - 1) % asmList_.size());
+			wheelCounter = 0;
+		}
+		else if (wheelCounter <= -1) {
+			asMenuIndex_ = (asMenuIndex_ + 1) % asmList_.size();
+			wheelCounter = 0;
+		}
+		break;
+	case SystemSettingScene::AdvancedSettingState::WindowSize:
+		if (input.IsTriggered("ok")) {
+			const std::wstring& selectedSizeName = windowSizeList_[wMenuIndex_];
+			auto it = windowSizeTable_.find(selectedSizeName);
+			if (it != windowSizeTable_.end()) {
+				it->second(input); // ã‚µã‚¤ã‚ºå¤‰æ›´ã¨Configã¸ã®é©ç”¨ã‚’å®Ÿè¡Œ
+
+				// ã‚µã‚¤ã‚ºæ±ºå®šå¾Œã€ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«æˆ»ã‚‹
+				asState_ = AdvancedSettingState::MainMenu;
+			}
+			return;
+		}
+
+		if (wheelCounter > 1) {
+			wMenuIndex_ = static_cast<int>((wMenuIndex_ + windowSizeList_.size() - 1) % windowSizeList_.size());
+			wheelCounter = 0;
+		}
+		else if (wheelCounter <= -1) {
+			wMenuIndex_ = (wMenuIndex_ + 1) % windowSizeList_.size();
+			wheelCounter = 0;
+		}
+		break;
+	default:
+		break;
 	}
-	else if (wheelCounter <= -1){
-		asMenuIndex_ = (asMenuIndex_ + 1) % asmList_.size();
-		wheelCounter = 0;
-	}
+	
 
 }
 
@@ -250,8 +325,8 @@ void SystemSettingScene::PreferencesDraw(void)
 {
 	DrawFormatString(100, 100, GetColor(0, 0, 0), L"pre");
 	auto& size = Config::GetInstance().GetWindowSize();
-	int line_start_y =  size.height_ * 0.25f;
-	int line_start_x = size.width_ * 0.03125f + size.width_ * 0.390625f;
+	int line_start_y = static_cast<int>(size.height_ * 0.25f);
+	int line_start_x = static_cast<int>(size.width_ * 0.03125f + size.width_ * 0.390625f);
 	int lineY = line_start_y;
 
 	auto& currentStr = prefeMenuList_[prefMenuIndex_];
@@ -259,13 +334,13 @@ void SystemSettingScene::PreferencesDraw(void)
 		int lineX = line_start_x;
 		unsigned int col = 0x4444ff;
 		if (row == currentStr) {
-			DrawString(lineX - size.width_ * 0.03125f, lineY, L"Ë", 0xff0000);
+			DrawString(static_cast<int>(lineX - size.width_ * 0.03125f), lineY, L"â‡’", 0xff0000);
 			col = 0xff00ff;
-			lineX += size.width_ * 0.015625f;
+			lineX += static_cast<int>(size.width_ * 0.015625f);
 		}
-		DrawFormatString(lineX + size.width_ * 0.0015625f, lineY + size.height_ * 0.0020833f, 0x000000, L"%s", row.c_str());
+		DrawFormatString(static_cast<int>(lineX + size.width_ * 0.0015625f), static_cast<int>(lineY + size.height_ * 0.0020833f), 0x000000, L"%s", row.c_str());
 		DrawFormatString(lineX, lineY, col, L"%s", row.c_str());
-		lineY += size.height_ * 0.0833f;
+		lineY += static_cast<int>(size.height_ * 0.0833f);
 	}
 }
 
@@ -273,30 +348,71 @@ void SystemSettingScene::AdvancedSettingDraw(void)
 {
 	DrawFormatString(100, 100, GetColor(0, 0, 0), L"advenced");
 	auto& size = Config::GetInstance().GetWindowSize();
-	int line_start_y = size.height_ * 0.25f;
-	int line_start_x = size.width_ * 0.03125f + size.width_ * 0.390625f;
-	int lineY = line_start_y;
+	int line_start_y = static_cast<int>(size.height_ * 0.25f);
+	int line_start_x = static_cast<int>(size.width_ * 0.03125f + size.width_ * 0.390625f);
+	int lineY = line_start_y; // æç”»é–‹å§‹Yåº§æ¨™
 
 	auto& currentStr = asmList_[asMenuIndex_];
 	for (auto& row : asmList_) {
 		int lineX = line_start_x;
 		unsigned int col = 0x4444ff;
 		if (row == currentStr) {
-			DrawString(lineX - size.width_ * 0.03125f, lineY, L"Ë", 0xff0000);
+			DrawString(static_cast<int>(lineX - size.width_ * 0.03125f), lineY, L"â‡’", 0xff0000);
 			col = 0xff00ff;
-			lineX += size.width_ * 0.015625f;
+			lineX += static_cast<int>(size.width_ * 0.015625f);
 		}
 		std::wstring display_text = L"";
-		if (row == L"•\¦ƒ‚[ƒh") {
-			// Œ»İ‚Ìİ’èƒ‚[ƒh‚É‰‚¶‚½•¶š—ñ‚ğæ“¾
-			const std::wstring mode_text = isFullS_ ? L" (ƒtƒ‹ƒXƒNƒŠ[ƒ“)" : L" (ƒEƒBƒ“ƒhƒEƒ‚[ƒh)";
+
+		if (row == L"è¡¨ç¤ºãƒ¢ãƒ¼ãƒ‰") {
+			// ç¾åœ¨ã®è¨­å®šãƒ¢ãƒ¼ãƒ‰ã«å¿œã˜ãŸæ–‡å­—åˆ—ã‚’å–å¾—
+			const std::wstring mode_text = isFullS_ ? L" (ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³)" : L" (ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¢ãƒ¼ãƒ‰)";
 			display_text = mode_text;
+			if (row == currentStr) {
+				DrawFormatString(static_cast<int>(lineX + size.width_ * 0.55f), static_cast<int>(lineY + size.height_ * 0.0020833f), 0x00ff00, L"[SPACE]ã§åˆ‡ã‚Šæ›¿ãˆ");
+			}
+		}
+		else if (row == L"ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚º") {
+			// ç¾åœ¨ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºã‚’è¡¨ç¤º
+			display_text = L" (" + std::to_wstring(width_) + L"Ã—" + std::to_wstring(height_) + L")";
+			if (row == currentStr && !isFullS_ && asState_ == AdvancedSettingState::MainMenu) {
+				DrawFormatString(static_cast<int>(lineX + size.width_ * 0.55f), static_cast<int>(lineY + size.height_ * 0.0020833f), 0x00ff00, L"[OK]ã§é¸æŠ");
+			}
+			else if (isFullS_) {
+				// ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®å ´åˆã¯é¸æŠä¸å¯ã§ã‚ã‚‹ã“ã¨ã‚’ç¤ºã™
+				// æç”»ä½ç½®ã‚’ row ã®é«˜ã•ã«åˆã‚ã›ã¦ lineY ã‚’ä½¿ç”¨
+				DrawFormatString(static_cast<int>(lineX + size.width_ * 0.55f), static_cast<int>(lineY + size.height_ * 0.0020833f), 0x888888, L" (ãƒ•ãƒ«ã‚¹ã‚¯ãƒªãƒ¼ãƒ³æ™‚ã¯å¤‰æ›´ä¸å¯)");
+			}
 		}
 
-		DrawFormatString(lineX + size.width_ * 0.0015625f, lineY + size.height_ * 0.0020833f, 0x000000, L"%s", row.c_str());
+		DrawFormatString(static_cast<int>(lineX + size.width_ * 0.0015625f), static_cast<int>(lineY + size.height_ * 0.0020833f), 0x000000, L"%s", row.c_str());
 		DrawFormatString(lineX, lineY, col, L"%s", row.c_str());
-		DrawFormatString(lineX+size.width_*0.3125f, line_start_y + size.height_ * 0.0020833f, 0x000000, L"%s", display_text.c_str());
-		lineY += size.height_ * 0.0833f;
+
+		DrawFormatString(static_cast<int>(lineX + size.width_ * 0.3125f), static_cast<int>(lineY + size.height_ * 0.0020833f), 0x000000, L"%s", display_text.c_str());
+
+		// æ¬¡ã®è¡Œã¸ç§»å‹•
+		lineY += static_cast<int>(size.height_ * 0.0833f);
+	}
+
+	if (asState_ == AdvancedSettingState::WindowSize) {
+		int wLineY = static_cast<int>(lineY + size.height_ * 0.02f); // lineYã¯æ—¢ã«æœ€å¾Œã®é …ç›®ã®æ¬¡ã®ä½ç½®ã«ãªã£ã¦ã„ã‚‹ãŸã‚ã€å°‘ã—ã ã‘ãƒãƒ¼ã‚¸ãƒ³ã‚’åŠ ãˆã‚‹
+		int wLineX = static_cast<int>(line_start_x + size.width_ * 0.05f); // ãƒ¡ã‚¤ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‹ã‚‰å°‘ã—å³ã«ãšã‚‰ã™
+
+		auto& currentWStr = windowSizeList_[wMenuIndex_];
+
+		for (auto& wRow : windowSizeList_) {
+			unsigned int col = 0xeeeeee;
+			int currentWLineX = wLineX;
+
+			if (wRow == currentWStr) {
+				DrawString(static_cast<int>(currentWLineX - size.width_ * 0.03125f), wLineY, L"â–¶", 0xffff00);
+				col = 0xffffff;
+				currentWLineX += static_cast<int>(size.width_ * 0.015625f);
+			}
+
+			DrawFormatString(static_cast<int>(currentWLineX + size.width_ * 0.0015625f), static_cast<int>(wLineY + size.height_ * 0.0020833f), 0x000000, L"%s", wRow.c_str());
+			DrawFormatString(currentWLineX, wLineY, col, L"%s", wRow.c_str());
+			wLineY += static_cast<int>(size.height_ * 0.0833f);
+		}
 	}
 }
 

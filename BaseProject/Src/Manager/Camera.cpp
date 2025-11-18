@@ -5,6 +5,7 @@
 #include "../Utility/AsoUtility.h"
 #include "../Application.h"
 #include "../Input.h"
+#include "../Manager/Config.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/ResourceManager.h"
 #include "../Object/Common/Transform.h"
@@ -84,7 +85,7 @@ void Camera::SetBeforeDraw(Input& input)
 			}
 			MouseMove(&angles_.y, &angles_.x, 1.f);
 		}
-		SetMousePoint(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2);
+		SetMousePoint(Config::GetInstance().GetWindowSize().width_ / 2, Config::GetInstance().GetWindowSize().height_ / 2);
 		SetBeforeDrawFollowMouse(input);
 		break;
 
@@ -121,9 +122,9 @@ void Camera::MouseMove(float* x_m, float* y_m, const float fov_per)
 {
 	int x_t, y_t;
 	GetMousePoint(&x_t, &y_t);
-	*x_m += float(std::clamp(x_t - Application::SCREEN_SIZE_X / 2, -120, 120)) * fov_per / GetFPS() * 5;
-	*y_m += float(std::clamp(y_t - Application::SCREEN_SIZE_Y / 2, -120, 120)) * fov_per / GetFPS() * 5;
-	SetMousePoint(Application::SCREEN_SIZE_X / 2, Application::SCREEN_SIZE_Y / 2);
+	*x_m += float(std::clamp(x_t - Config::GetInstance().GetWindowSize().width_ / 2, -120, 120)) * fov_per / GetFPS() * 5;
+	*y_m += float(std::clamp(y_t - Config::GetInstance().GetWindowSize().height_ / 2, -120, 120)) * fov_per / GetFPS() * 5;
+	SetMousePoint(Config::GetInstance().GetWindowSize().width_ / 2, Config::GetInstance().GetWindowSize().height_ / 2);
 	if (angles_.x > 10.0f)
 	{
 		angles_.x = 10.0f;
@@ -403,8 +404,8 @@ void Camera::SetBeforeDrawFPSMouse(void)
 	int mouseX, mouseY;
 	GetMousePoint(&mouseX, &mouseY);
 
-	int centerX = Application::SCREEN_SIZE_X / 2;
-	int centerY = Application::SCREEN_SIZE_Y / 2;
+	int centerX = Config::GetInstance().GetWindowSize().width_ / 2;
+	int centerY = Config::GetInstance().GetWindowSize().width_ / 2;
 
 	int dx = mouseX - centerX;
 	int dy = mouseY - centerY;

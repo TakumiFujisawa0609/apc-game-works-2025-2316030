@@ -221,5 +221,6 @@ void ItemBase::FollowTarget(float deltaTime, VECTOR targetPos)
 
 	// 常にカメラの注視点方向をアイテムが向くようにする
 	transform_.quaRot = Quaternion::LookRotation(lookRotation, AsoUtility::AXIS_Y);
+	transform_.quaRot.y += 0.04f;
 }
 

@@ -173,7 +173,7 @@ void UnlockScene::ProcessDraw()
 {
 	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	int centerY = wsize.height_ / 2;//画面中心Y
-	int frameHalfHeight = (wsize.height_ - wsize.height_ * 0.04166f * 2) / 2;//枠の高さの半分
+	int frameHalfHeight = static_cast<int>((wsize.height_ - wsize.height_ * 0.04166f * 2) / 2);//枠の高さの半分
 
 	//出現・消滅時の高さ変化率(0.0～1.0)
 	float rate = static_cast<float>(frame_) /
@@ -183,8 +183,8 @@ void UnlockScene::ProcessDraw()
 
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
-	DrawBox(wsize.width_ * 0.03125f, centerY - frameHalfHeight,
-		wsize.width_ - wsize.width_ * 0.03125f, centerY + frameHalfHeight,
+	DrawBox(static_cast<int>(wsize.width_ * 0.03125f), centerY - frameHalfHeight,
+		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), centerY + frameHalfHeight,
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//白枠
@@ -198,8 +198,8 @@ void UnlockScene::NormalDraw()
 	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
-	DrawBox(wsize.width_ * 0.03125f, wsize.height_* 0.04166f,
-		wsize.width_ - wsize.width_ * 0.03125f, wsize.height_ - wsize.height_ * 0.04166f,
+	DrawBox(static_cast<int>(wsize.width_ * 0.03125f), static_cast<int>(wsize.height_* 0.04166f),
+		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<int>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xfffffff, true);
 	wire_->DrawDebug();
 

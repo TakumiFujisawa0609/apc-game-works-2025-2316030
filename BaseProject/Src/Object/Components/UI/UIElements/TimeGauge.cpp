@@ -4,6 +4,7 @@
 #include <format>
 #include <DxLib.h>
 #include "../../../../Application.h"
+#include "../../../../Manager/Config.h"
 #include "../../Gameplay/OxygenComponent.h"
 #include "TimeGauge.h"
 
@@ -11,8 +12,8 @@ TimeGauge::TimeGauge(TimeLimitComponent& tLimit)
 	:
 	tLimit_(tLimit)
 {
-	gaugeCenterX_ = static_cast<float>(Application::SCREEN_SIZE_X * 0.05);
-	gaugeCenterY_ = static_cast<float>(Application::SCREEN_SIZE_Y * 0.68);
+	gaugeCenterX_ = static_cast<float>(Config::GetInstance().GetWindowSize().width_ * 0.05);
+	gaugeCenterY_ = static_cast<float>(Config::GetInstance().GetWindowSize().height_ * 0.68);
 	gaugeRadius_ = std::min(gaugeCenterX_, gaugeCenterY_) * 0.5f;
 
 }

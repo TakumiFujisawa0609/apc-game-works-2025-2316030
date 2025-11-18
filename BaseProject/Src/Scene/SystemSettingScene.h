@@ -21,11 +21,21 @@ private:
 
     Config& config_;
 
+    enum class AdvancedSettingState {
+        MainMenu,
+        WindowSize
+    };
+
     int frame_;
 
     int mainMenuIndex_;
     int prefMenuIndex_;
     int asMenuIndex_;
+    int wMenuIndex_;
+
+    bool isInitialize_;
+
+    AdvancedSettingState asState_;
 
     bool isFullS_;	// フルスクリーンであるかどうか
     int width_, height_;
@@ -69,5 +79,12 @@ private:
     void AdvancedSettingDraw(void);
 
     void InitMenuName(std::wstring menuListIndex, std::map<std::wstring, std::function<void(Input&)>> table, Input& input);
+
+    // ウインドウサイズ切り替え
+    using WindowSize_t = std::function<void(Input&)>;
+    std::vector<std::wstring> windowSizeList_;
+    std::map<std::wstring, WindowSize_t> windowSizeTable_;
+
+
 };
 

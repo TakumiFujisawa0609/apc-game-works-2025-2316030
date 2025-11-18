@@ -231,8 +231,8 @@ void GameScene::DrawUI(void)
 			DrawString(draw_x, draw_y, text_to_display, color);
 		}
 
-		int draw_x = size.width_ - size.width_ * 0.46875f; // 右端から300pxの位置
-		int draw_y = size.height_ * 0.04166f;               // 上から20pxの位置
+		int draw_x = static_cast<int>(size.width_ - size.width_ * 0.46875f); // 右端から300pxの位置
+		int draw_y = static_cast<int>(size.height_ * 0.04166f);               // 上から20pxの位置
 		int color = GetColor(255, 255, 255);
 
 		// 完了メッセージの描画
@@ -241,14 +241,14 @@ void GameScene::DrawUI(void)
 			// 完了メッセージは黄色で表示
 			int clearColor = GetColor(255, 255, 0);
 			DrawString(draw_x, draw_y, clearMessage_.c_str(), clearColor);
-			draw_y += size.height_ * 0.0625f; // 次のメッセージ位置をずらす
+			draw_y += static_cast<int>(size.height_ * 0.0625f); // 次のメッセージ位置をずらす
 		}
 
 		// 現在のタスクの描画
 		if (!currentTaskMessage_.empty())
 		{
 			DrawString(draw_x, draw_y, L"--- Current Task ---", color);
-			DrawString(draw_x, draw_y + size.height_ * 0.0625f, currentTaskMessage_.c_str(), color);
+			DrawString(draw_x, static_cast<int>(draw_y + size.height_ * 0.0625f), currentTaskMessage_.c_str(), color);
 		}
 
 		player_->DrawUI();

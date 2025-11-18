@@ -33,7 +33,7 @@ Player::~Player(void)
 void Player::Init(void)
 {
     // モデル情報
-    transform_.pos = { -500.0f, 13.0f, 100.0f };
+    transform_.pos = { -500.0f, 13.0f, 200.0f };
     transform_.scl = { 1.0f, 1.0f, 1.0f };
     transform_.quaRot = Quaternion();
     transform_.quaRotLocal =
@@ -81,6 +81,8 @@ void Player::Update(float deltaTime)
 
 void Player::OnUpdate(float deltaTime)
 {
+    //SetMousePoint(Config::GetInstance().GetWindowSize().width_ / 2, Config::GetInstance().GetWindowSize().height_ / 2);
+
     if (!light_.lock()->IsActive())
     {
         sanV_ -= Application::GetInstance().GetDeltaTime();
@@ -106,7 +108,7 @@ void Player::OnUpdate(float deltaTime)
     Quaternion qPitch = Quaternion::AngleAxis(AsoUtility::Deg2RadF(angles.x), AsoUtility::AXIS_X);
 
     // プレイヤーの回転をカメラと同期
-    transform_.quaRot = qYaw.Mult(qPitch);
+    //transform_.quaRot = qYaw.Mult(qPitch);
 
     // カメラ情報取得
     auto camera = Application::GetInstance().GetCamera();
@@ -152,7 +154,7 @@ void Player::OnUpdate(float deltaTime)
         rotRad = std::atan2(moveDir_.x, moveDir_.z);
 
         // 正規化して移動量を算出
-        VECTOR direction = VNorm(transform_.quaRot.PosAxis(moveDir_));
+        VECTOR direction = VNorm(moveDir_);
 
         // 移動量
         movePow_ = VScale(direction, moveSpeed_);
@@ -253,12 +255,12 @@ void Player::DrawUI(void)
     auto& size = Config::GetInstance().GetWindowSize();
 
     // 画面左上隅の開始座標
-    int baseX = size.width_ * 0.03125f;
-    int baseY = size.height_ * 0.0520833f;
+    int baseX = static_cast<int>(size.width_ * 0.03125f);
+    int baseY = static_cast<int>(size.height_ * 0.0520833f);
 
-    int gaugeWidth = size.width_ * 0.390625f;
-    int gaugeHeight = size.height_ * 0.04166f;
-    int spacing = size.height_ * 0.0375f;
+    int gaugeWidth = static_cast<int>(size.width_ * 0.390625f);
+    int gaugeHeight = static_cast<int>(size.height_ * 0.04166f);
+    int spacing = static_cast<int>(size.height_ * 0.0375f);
 
     // --- HP ゲージ (左上) ---
     float hpRatio = GetHealthRatio(); // PlayerクラスからHP比率を取得すると仮定

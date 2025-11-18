@@ -202,13 +202,13 @@ void HandLight::DrawUI(void)
 
 		// --- UI描画の位置と設定 ---
 		// 画面右下から配置を調整 (例: 右端から 250px、下端から 50px の位置)
-		int uiWidth = size.width_ * 0.3125f;
-		int uiHeight = size.width_ * 0.01f;
+		int uiWidth = static_cast<int>(size.width_ * 0.3125f);
+		int uiHeight = static_cast<int>(size.width_ * 0.01f);
 
 		// X座標: 画面幅 - 幅 - マージン
-		int drawX = size.width_ - uiWidth - size.width_ * 0.078125f;
+		int drawX = static_cast<int>(size.width_ - uiWidth - size.width_ * 0.078125f);
 		// Y座標: 画面高さ - 高さ - マージン
-		int drawY = size.height_ - uiHeight - size.width_ * 0.1875f; // アイテムスロットと被らないように配置を調整
+		int drawY = static_cast<int>(size.height_ - uiHeight - size.width_ * 0.1875f); // アイテムスロットと被らないように配置を調整
 
 		// ... ゲージの描画ロジックはそのまま利用 ...
 		float ratio = value_ / MAX_VALUE;
@@ -224,7 +224,7 @@ void HandLight::DrawUI(void)
 
 		// 3. テキスト表示
 		int percent = (int)(ratio * 100.0f);
-		DrawFormatString(drawX, drawY - size.height_ * 0.04167f, GetColor(255, 255, 255), L"LIGHT: %d%%", percent);
+		DrawFormatString(drawX, static_cast<int>(drawY - size.height_ * 0.04167f), GetColor(255, 255, 255), L"LIGHT: %d%%", percent);
 	}
 }
 

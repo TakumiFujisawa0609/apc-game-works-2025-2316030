@@ -240,8 +240,8 @@ float Wire::GetLockRotationRate(void) const
 void Wire::DrawDebug(void)
 {
     auto& size = Config::GetInstance().GetWindowSize();
-    DrawFormatString(size.width_ - size.width_*0.3125f, size.height_*0.133f, GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
-    DrawFormatString(size.width_ - size.width_ * 0.3125f, size.height_*0.166f, GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
+    DrawFormatString(static_cast<int>(size.width_ - size.width_ * 0.3125f), static_cast<int>(size.height_ * 0.133f), GetColor(0, 0, 0), L"目標値=(%.2f)", goalAngle_);
+    DrawFormatString(static_cast<int>(size.width_ - size.width_ * 0.3125f), static_cast<int>(size.height_ * 0.166f), GetColor(0, 0, 0), L"現在値=(%.2f)", currentAngle_);
 }
 
 void Wire::OnUpdate(float deltaTime)

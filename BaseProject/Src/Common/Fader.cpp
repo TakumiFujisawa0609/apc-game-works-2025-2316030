@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../Application.h"
+#include "../Manager/Config.h"
 #include "../Manager/ResourceManager.h"
 #include "Fader.h"
 
@@ -117,8 +118,8 @@ void Fader::Draw(void)
 		// 背景の黒塗り
 		DrawBox(
 			0, 0,
-			Application::SCREEN_SIZE_X,
-			Application::SCREEN_SIZE_Y,
+			Config::GetInstance().GetWindowSize().width_,
+			Config::GetInstance().GetWindowSize().height_,
 			0x000000, true);
 
 		// ローディングバー描画

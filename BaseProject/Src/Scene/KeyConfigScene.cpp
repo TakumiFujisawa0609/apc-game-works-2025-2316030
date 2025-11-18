@@ -116,15 +116,15 @@ void KeyConfigScene::Draw()
 	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	//緑っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 240);
-	DrawBox(wsize.width_ * 0.03125f, wsize.height_ * 0.04166f,
-		wsize.width_ - wsize.width_ * 0.03125f, wsize.height_ - wsize.height_ * 0.04166f,
+	DrawBox(static_cast<int>(wsize.width_ * 0.03125f), static_cast<int>(wsize.height_ * 0.04166f),
+		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<int>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xaaffaa, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	//緑
 	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ * 0.04166f),
 		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ - wsize.height_ * 0.04166f),
 		0x00ff00, false, 3.0f);
-	DrawString(wsize.width_ * 0.03125f + wsize.width_ * 0.015625f, wsize.height_ * 0.04166f + wsize.height_ * 0.02833f, L"キーコンフィグ", 0x000000);
+	DrawString(static_cast<int>(wsize.width_ * 0.03125f + wsize.width_ * 0.015625f), static_cast<int>(wsize.height_ * 0.04166f + wsize.height_ * 0.02833f), L"キーコンフィグ", 0x000000);
 
 	DrawInputList();
 }

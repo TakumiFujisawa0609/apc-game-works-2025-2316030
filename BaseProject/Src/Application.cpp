@@ -44,7 +44,7 @@ void Application::CreateInstance(void)
 	if (instance_ == nullptr) {
 		instance_ = new Application();
 	}
-	instance_->Init(640,480);
+	instance_->Init();
 
 }
 
@@ -54,20 +54,13 @@ Application::GetInstance()
     return *instance_;
 }
 
-//const Size& Application::GetWindowSize() const
-//{
-//    return windowSize_;
-//}
-
-void Application::Init(int w, int h)
+void Application::Init(void)
 {
     // アプリケーションの初期設定
     SetWindowText(L"LURK");
 
-    // ウィンドウサイズ
-    windowSize_ = { w,h };
-    SetGraphMode(w, h, 32);
-    ChangeWindowMode(true);
+    // 設定の初期化
+    Config::CreateInstance();
 
     // 使用する Direct3D のバージョンの設定
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
@@ -78,9 +71,6 @@ void Application::Init(int w, int h)
         isInitFailed_ = true;
         return;
     }
-
-    // 設定の初期化
-    Config::CreateInstance();
 
     //カメラ初期化
 	camera_ = std::make_shared<Camera>();
@@ -146,7 +136,11 @@ void Application::Run()
         // 主にポストエフェクト用
         camera_->Draw();
 
+        // シーンごとのUI描画
         controller_->DrawUI();
+
+        // 追加されたシーンの描画
+        controller_->DrawPushScene();
 
         // FPSカウント更新
         frameCount_++;
@@ -154,8 +148,8 @@ void Application::Run()
 
 #ifdef _DEBUG
 
-        /* DrawFrameRate();
-        DrawDrawCall();*/
+         DrawFrameRate();
+        DrawDrawCall();
 
 #endif // DEBUG
 
@@ -297,12 +291,13 @@ void Application::DrawFrameRate(void)
     if (fps_ < 30)color = GetColor(255, 0, 0);
     else if (fps_ < 55)color = GetColor(255, 255, 0);
 
-    DrawFormatString(windowSize_.width - 150, 0, color, L"FPS : %d", fps_);
-    DrawFormatString(windowSize_.width - 150, 16, color, L"deltaTime : %2f", deltaTime_);
+    auto& windowSize = Config::GetInstance().GetWindowSize();
+    DrawFormatString(windowSize.width_ - static_cast<int>(windowSize.width_ * 0.19f), 0, color, L"FPS : %d", fps_);
+    DrawFormatString(windowSize.width_ - static_cast<int>(windowSize.width_ * 0.19f), 16, color, L"deltaTime : %2f", deltaTime_);
 }
 
 void Application::DrawDrawCall(void)
 {
-    DrawFormatString(windowSize_.width - 150, 32, GetColor(255, 255, 255), L"DrawCall = %d", GetDrawCallCount());
-
+    auto& windowSize = Config::GetInstance().GetWindowSize();
+    DrawFormatString(windowSize.width_ - static_cast<int>(windowSize.width_ * 0.10f), 32, GetColor(255, 255, 255), L"DrawCall = %d", GetDrawCallCount());
 }

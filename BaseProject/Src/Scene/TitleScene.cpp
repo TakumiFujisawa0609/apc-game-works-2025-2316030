@@ -17,7 +17,7 @@ namespace {
 
 namespace {
 	constexpr int appear_interval = 20;//出現までのフレーム
-	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
+	constexpr float input_list_row_height = 1.0f / 12.0f;//メニューの１つあたりの高さ
 	constexpr int margin_size = 20;//ポーズメニュー枠の余白
 }
 
@@ -159,21 +159,30 @@ void TitleScene::NormalDraw()
 void TitleScene::DrawMenuList(void)
 {
 	auto& size = Config::GetInstance().GetWindowSize();
-	int line_start_y = size.height_ * 0.04166f + size.height_ * 0.520833f;
-	int line_start_x = size.width_ * 0.03125f + size.width_ * 0.390625f;
+	int line_start_y = static_cast<int>(size.height_ * 0.5625f);
+	int line_start_x = static_cast<int>(size.width_ * 0.421875f);
 	int lineY = line_start_y;
-
-	auto currentStr = menuList_[currentIndex_];
+	auto& currentStr = menuList_[currentIndex_];
 	for (auto& row : menuList_) {
 		int lineX = line_start_x;
 		unsigned int col = 0x4444ff;
+
+		// 選択カーソル (⇒) の描画
 		if (row == currentStr) {
-			DrawString(lineX - size.width_ * 0.03125f, lineY, L"⇒", 0xff0000);
+			lineX += static_cast<int>(size.width_ * 0.01625f);
+			DrawString(lineX, lineY, L"⇒", 0xff0000);
 			col = 0xff00ff;
-			lineX += size.width_ * 0.015625f;
+			lineX += static_cast<int>(size.width_ * 0.015625f);
 		}
-		DrawFormatString(lineX + size.width_ * 0.0015625f, lineY + size.height_ * 0.0020833f, 0x000000, L"%s", row.c_str());
+
+		// --- 項目テキスト描画 (影/アウトライン) ---
+		int shadow_offset_x = static_cast<int>(size.width_ * 0.0015625f);
+		int shadow_offset_y = static_cast<int>(size.height_ * 0.0020833f);
+
+		DrawFormatString(lineX + shadow_offset_x, lineY + shadow_offset_y, 0x000000, L"%s", row.c_str());
+
+		// --- 項目テキスト描画 (本体) ---
 		DrawFormatString(lineX, lineY, col, L"%s", row.c_str());
-		lineY += input_list_row_height;
+		lineY += static_cast<int>(size.height_ * input_list_row_height);
 	}
 }

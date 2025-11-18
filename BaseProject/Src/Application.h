@@ -6,11 +6,6 @@ class Input;
 class SceneController;
 class Camera;
 
-struct Size {
-	int width;//幅
-	int height;//高さ
-};
-
 /// <summary>
 /// アプリケーションの起動と終了を
 /// コントロールするシングルトンクラス
@@ -45,14 +40,11 @@ public:
 	// 静的インスタンスの取得
 	static Application& GetInstance();
 
-	//// ウィンドウサイズの取得
-	//const Size& GetWindowSize()const;
-
 	/// <summary>
 	/// アプリケーションの初期化
 	/// </summary>
 	/// <returns>true:初期化成功 / false:初期化失敗</returns>
-	void Init(int w = 640, int h = 480);
+	void Init(void);
 
 	/// <summary>
 	/// ゲームを起動する(メインループを実行)
@@ -132,9 +124,6 @@ private:
 
 	// FPS
 	int fps_;
-
-	// ウィンドウサイズ
-	Size windowSize_ = { 640,480 };
 
 	// 前フレーム処理を開始した瞬間時刻
 	int lastTime_;

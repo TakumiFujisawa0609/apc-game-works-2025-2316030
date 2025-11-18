@@ -9,7 +9,7 @@ public:
 	struct WindowSize
 	{
 		int width_,
-			height_;
+			height_; 
 	};
 
 	// 明示的にインスタンスを生成
@@ -26,13 +26,14 @@ public:
 
 	// スクリーンのサイズの取得・設定
 	const WindowSize& GetWindowSize(void) const;
-	void SetWindowSize(int width = 640, int height = 480);
+	void SetWindowSize(int width = 1280, int height = 720);
 
 	// フルスクリーンの状態確認・状態変更
 	bool IsFullScreen(void) const;
 	void SetFullScreen(bool isFull = false);
 
-	void FullScreenWindow(void);
+	// モード切替時の初期化
+	void ScreenInitialize(void);
 
 	// マウス感度の取得・設定
 	float GetMouseSensitivity(void) const;
@@ -65,6 +66,7 @@ private:
 	bool isFullS_;	// フルスクリーンであるかどうか
 
 	// 解像度変更
+	int fullScreenWidth_, fullScreenHeight_;
 
 	// 入力関係
 
