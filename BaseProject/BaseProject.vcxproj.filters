@@ -222,6 +222,9 @@
     <ClCompile Include="Src\Object\Stage\Dummy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Renderer\LightRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application.h">
@@ -566,6 +569,9 @@
     <ClInclude Include="Src\Object\Stage\Dummy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Renderer\LightRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
@@ -579,5 +585,7 @@
   <ItemGroup>
     <FxCompile Include="Src\Shader\Model\SpotLightAndPointLightVS.hlsl" />
     <FxCompile Include="Src\Shader\Model\SpotLightAndPointLightPS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\SkinMeshVS.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\DepthMap.hlsl" />
   </ItemGroup>
 </Project>

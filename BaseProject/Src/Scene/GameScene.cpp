@@ -608,7 +608,8 @@ void GameScene::DrawMainGame(void)
 {
 
 	// オブジェクト
-	stage_->Draw();
+	//stage_->Draw();
+
 	//dummy_->Draw();
 	eBase_->Draw();
 
@@ -616,8 +617,16 @@ void GameScene::DrawMainGame(void)
 
 	DrawItemPool();
 
-
 	itemSlot_->Draw();
+
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	int depthScreen = controller_.GetDepthScreen();
+
+	DrawGraph(0, 0, stage_->GetRenderererDepthScreen(), false);
+
+
+
 }
 
 void GameScene::ChangeState(STATE state)

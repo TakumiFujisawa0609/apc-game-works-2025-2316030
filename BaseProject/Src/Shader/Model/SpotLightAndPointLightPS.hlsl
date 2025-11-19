@@ -37,7 +37,13 @@ struct LightCalculationData {
 	float lLightDirectionCosA;
 };
 
-float4 main(PS_INPUT PSInput) : SV_TARGET0
+struct PS_MULTI_OUTPUT
+{
+	float4 Output	: SV_TARGET0;
+	float4 Depth : SV_TARGET1;
+};
+
+PS_MULTI_OUTPUT main(PS_INPUT PSInput) : SV_TARGET0
 {
 
 	float4 color;
@@ -191,6 +197,13 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 
 	//出力カラー計算++++++++++++++++++++++++++++++++++++++++++++++++(終了)
 
+	// 出力
+	PS_MULTI_OUTPUT ret;
+
+	ret.Output = retColor.rgba;
+	//ret.Output = float4(1.0f, 0.5f, 0.5f, 1.0f);
+	ret.Depth = float4(PSInput.vwPos.z / 1500.0f, PSInput.vwPos.y / 1500.0f, PSInput.vwPos.x / 1500.0f, 1.0f);
+	
 	//出力パラメータを返す
-	return retColor;
+	return ret;
 }

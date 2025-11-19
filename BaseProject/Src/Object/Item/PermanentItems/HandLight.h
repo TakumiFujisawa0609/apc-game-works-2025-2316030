@@ -38,6 +38,8 @@ public:
 
     void ChangeBattery(float value);
 
+    int GetRendererDepthScreen(void);
+
 private:
 
     virtual void OnUpdate(float deltaTime) override;

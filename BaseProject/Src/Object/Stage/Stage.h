@@ -33,11 +33,14 @@ public:
 	// モデル描画用
 	void InitRenderer(void);
 
+	// レンダラーの深度バッファ用スクリーンの取得
+	int GetRenderererDepthScreen(void);
+
 private:
 
-	// モデル描画用
-	std::unique_ptr<ModelMaterial> material_;
-	std::unique_ptr<ModelRenderer> renderer_;
+	//// モデル描画用
+	//std::unique_ptr<ModelMaterial> material_;
+	//std::unique_ptr<ModelRenderer> renderer_;
 
 	Player& player_;
 	EnemyBase& eBase_;

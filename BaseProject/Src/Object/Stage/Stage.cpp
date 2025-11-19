@@ -202,3 +202,8 @@ void Stage::InitRenderer(void)
 	//handLight_.InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
 	handLight_.lock()->InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
 }
+
+int Stage::GetRenderererDepthScreen(void)
+{
+	return handLight_.lock()->GetRendererDepthScreen();
+}

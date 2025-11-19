@@ -1,4 +1,5 @@
 #include "../Application.h"
+#include "../Manager/SceneController.h"
 #include "ModelMaterial.h"
 
 ModelMaterial::ModelMaterial(
@@ -117,6 +118,9 @@ void ModelMaterial::SetTextureAddress(TEXADDRESS texA)
 
 bool ModelMaterial::IsWriteDepth(void)
 {
+	if (Application::GetInstance().GetSceneController()->GetDepthScreen() != -1) {
+		return true;
+	}
 	return false;
 }
 

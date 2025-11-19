@@ -52,6 +52,7 @@ void HandLight::Init(void)
 	value_ = MAX_VALUE;
 	ChangeState(STATE::ONSTAGE);
 
+	InitLightRenderer(TYPE::REGIDBODY, transform_.modelId);
 }
 
 void HandLight::Update(float deltaTime)
@@ -60,6 +61,8 @@ void HandLight::Update(float deltaTime)
 
 	// それぞれの状態での更新
 	UpdateState(deltaTime);
+
+	UpdateRenderer(deltaTime);
 
 	// モデルの更新
 	transform_.Update();
@@ -71,6 +74,7 @@ void HandLight::Draw(void)
 		GetUse() != USE::NONE)
 	{
 		MV1DrawModel(transform_.modelId);
+		DrawRenderer();
 		auto& size = Config::GetInstance().GetWindowSize();
 		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
@@ -101,9 +105,10 @@ void HandLight::InitLightRenderer(const TYPE& type, int modelId)
 	SetGlobalAmbientLight(GetColorF(0.0f, 0.0f, 0.0f, 0.0f));
 
 	// モデル描画用
-	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 2, L"SpotLightAndPointLightPS.cso", 3);
-	material_->AddConstBufVS({ transform_.pos.x,transform_.pos.y,transform_.pos.z,0.0f });
-	material_->AddConstBufVS({ dir.x + 0.1f,dir.y,dir.z,0.0f });
+	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 0, L"SpotLightAndPointLightPS.cso", 3);
+	if (type == TYPE::SKINING) {
+		material_ = std::make_unique<ModelMaterial>(L"SkinMesh.cso", 0, L"SpotLightAndPointLightPS.cso", 3);
+	}
 	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
 	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
 	float currentTime = GetNowCount() / 1000.0f;
@@ -231,6 +236,11 @@ void HandLight::DrawUI(void)
 void HandLight::ChangeBattery(float value)
 {
 	value_ = value;
+}
+
+int HandLight::GetRendererDepthScreen(void)
+{
+	return renderer_->GetDepthScreen();
 }
 
 void HandLight::OnUpdate(float deltaTime)
