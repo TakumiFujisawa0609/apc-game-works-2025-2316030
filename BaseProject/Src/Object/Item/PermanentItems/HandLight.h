@@ -1,7 +1,7 @@
 #pragma once
 
-class ModelMaterial;
-class ModelRenderer;
+class LightRenderer;
+class DepthRenderer;
 
 #include "PermanentItemBase.h"
 class HandLight :
@@ -19,7 +19,7 @@ public:
     static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
     static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
 
-    static constexpr float MAX_VALUE = 100.0f;
+    static constexpr float MAX_VALUE = 10.0f;
 
     // 調整用座標
     static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
@@ -31,12 +31,11 @@ public:
     void Update(float deltaTime) override;
     void Draw(void) override;
 
-    void InitLightRenderer(const TYPE& type, int modelId);
-    void UpdateRenderer(float deltaTime);
-    void DrawRenderer(void);
     void DrawUI(void);
 
     void ChangeBattery(float value);
+
+    float GetRemainingPercentage(void);
 
     int GetRendererDepthScreen(void);
 
@@ -52,8 +51,8 @@ private:
     virtual void UpdateUsedUp(float deltaTime) override;
 
     // モデル描画用
-    std::unique_ptr<ModelMaterial> material_;
-    std::unique_ptr<ModelRenderer> renderer_;
+    std::unique_ptr<LightRenderer> renderer_;
+    std::unique_ptr<DepthRenderer> depthRenderer_;
 
     float value_;     // 残量
     float blinkIntensity_;// 点滅強度
@@ -62,10 +61,8 @@ private:
     const float TOGGLE_COOLDOWN = 0.2f; // 0.2秒間のクールダウン
     float toggleTimer_;                 // クリック受け付け
 
-    float blinkTimer_;
-    float nextBlinkDuration_;
-    bool isBlinkActive_;
-    const float BLINK_MIN_DURATION = 0.05f;
-    const float BLINK_MAX_DURATION = 0.3f;
+    // レンダラー初期化
+    void InitRenderer(void);
+
 };
 

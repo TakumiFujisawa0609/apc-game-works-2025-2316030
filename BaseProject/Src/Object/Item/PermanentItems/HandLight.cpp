@@ -6,8 +6,8 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/Camera.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../../Renderer/ModelMaterial.h"
-#include "../../../Renderer/ModelRenderer.h"
+#include "../../../Renderer/LightRenderer.h"
+#include "../../../Renderer/DepthRenderer.h"
 #include "HandLight.h"
 
 HandLight::HandLight(Player& player)
@@ -42,17 +42,11 @@ void HandLight::Init(void)
 	canToggle_ = true;
 	toggleTimer_ = 0.0f;
 
-	blinkTimer_ = 0.0f;
-	nextBlinkDuration_ = 0.0f;
-	isBlinkActive_ = false;
-
-	float randomValue = (float)GetRand(10000) / 10000.0f;
-	nextBlinkDuration_ = BLINK_MIN_DURATION + (BLINK_MAX_DURATION - BLINK_MIN_DURATION) * randomValue;
-
 	value_ = MAX_VALUE;
 	ChangeState(STATE::ONSTAGE);
+	
 
-	InitLightRenderer(TYPE::REGIDBODY, transform_.modelId);
+
 }
 
 void HandLight::Update(float deltaTime)
@@ -62,8 +56,11 @@ void HandLight::Update(float deltaTime)
 	// それぞれの状態での更新
 	UpdateState(deltaTime);
 
-	UpdateRenderer(deltaTime);
+	if (value_ / MAX_VALUE < 0.0f)value_ = 0.0f;
 
+	renderer_->UpdateRenderer(deltaTime, isActive_);
+	depthRenderer_->UpdateRenderer(deltaTime);
+	
 	// モデルの更新
 	transform_.Update();
 }
@@ -74,129 +71,11 @@ void HandLight::Draw(void)
 		GetUse() != USE::NONE)
 	{
 		MV1DrawModel(transform_.modelId);
-		DrawRenderer();
-		auto& size = Config::GetInstance().GetWindowSize();
-		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
+
+		renderer_->DrawRenderer();
+		depthRenderer_->DrawRenderer();
 		return;
 	}
-}
-
-void HandLight::InitLightRenderer(const TYPE& type, int modelId)
-{
-	float OutAngle = 0.5f;
-	float InAngle = 0.15f;
-	float Range = 500.0f;
-	float Atten0 = 0.5f;
-	float Atten1 = 0.0005f;
-	float Atten2 = 0.001f;
-
-	VECTOR dir = transform_.quaRot.GetForward();
-
-	ChangeLightTypeSpot(
-		VGet(transform_.pos.x, transform_.pos.y, transform_.pos.z),
-		VGet(dir.x, dir.y, dir.z),
-		OutAngle,
-		InAngle,
-		Range,
-		Atten0,
-		Atten1,
-		Atten2);
-
-	SetGlobalAmbientLight(GetColorF(0.0f, 0.0f, 0.0f, 0.0f));
-
-	// モデル描画用
-	material_ = std::make_unique<ModelMaterial>(L"SpotLightAndPointLightVS.cso", 0, L"SpotLightAndPointLightPS.cso", 3);
-	if (type == TYPE::SKINING) {
-		material_ = std::make_unique<ModelMaterial>(L"SkinMesh.cso", 0, L"SpotLightAndPointLightPS.cso", 3);
-	}
-	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
-	material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
-	float currentTime = GetNowCount() / 1000.0f;
-	float sin_value = (std::sin(5.0f * currentTime) + 1.0f) / 2.0f;
-	blinkIntensity_ = 0.2f + (1.0f - 0.2f) * sin_value;
-	material_->AddConstBufPS({ blinkIntensity_,0.0f,0.0f,0.0f });
-
-	renderer_ = std::make_unique<ModelRenderer>(modelId, *material_);
-
-}
-
-void HandLight::UpdateRenderer(float deltaTime)
-{
-	float OutAngle = 0.5f;
-	float InAngle = 0.15f;
-	float Range = 1000.0f;
-	float Atten0 = 0.5f;
-	float Atten1 = 0.0005f;
-	float Atten2 = 0.0f;
-
-	VECTOR dir = transform_.quaRot.GetForward();
-
-	ChangeLightTypeSpot(
-		VGet(transform_.pos.x, transform_.pos.y, transform_.pos.z),
-		VGet(dir.x, dir.y, dir.z),
-		OutAngle,
-		InAngle,
-		Range,
-		Atten0,
-		Atten1,
-		Atten2);
-
-	material_->SetConstBufVS(0, { transform_.pos.x,transform_.pos.y,transform_.pos.z,0.0f });
-
-	material_->SetConstBufVS(1, { dir.x + 0.1f,dir.y,dir.z,0.0f });
-
-	float max = MAX_VALUE;
-	float raito = value_ / max;
-	if (raito < 0.0f)raito = 0.0f;
-	if (isActive_)
-	{
-		if (raito <= 0.0f)
-		{
-			blinkIntensity_ = 0.0f;
-		}
-		else if (raito < 0.3f)
-		{
-			blinkTimer_ += deltaTime;
-			if (blinkTimer_ >= nextBlinkDuration_)
-			{
-				// 時間が来たら状態を反転させる
-				isBlinkActive_ = !isBlinkActive_;
-
-				// 次の不規則な間隔を再設定
-				float randomValue = (float)GetRand(10000) / 10000.0f;
-				nextBlinkDuration_ = BLINK_MIN_DURATION + (BLINK_MAX_DURATION - BLINK_MIN_DURATION) * randomValue;
-				blinkTimer_ = 0.0f;
-
-			}
-			if (isBlinkActive_)
-			{
-				blinkIntensity_ = 1.0f;
-			}
-			else
-			{
-				blinkIntensity_ = 0.2f;
-			}
-			float currentTime = GetNowCount() / 1000.0f;
-			float sin_value = (std::sin(5.0f * currentTime) + 1.0f) / 2.0f;
-			blinkIntensity_ = 0.2f + (1.0f - 0.2f) * sin_value;
-		}
-		else
-		{
-			blinkIntensity_ = 1.0f;
-		}
-
-		material_->SetConstBufPS(2, { blinkIntensity_,0.0f,0.0f,0.0f });
-	}
-	else
-	{
-		blinkIntensity_ = 0.0f;
-		material_->SetConstBufPS(2, { blinkIntensity_,0.0f,0.0f,0.0f });
-	}
-}
-
-void HandLight::DrawRenderer(void)
-{
-	renderer_->Draw();
 }
 
 void HandLight::DrawUI(void)
@@ -238,9 +117,17 @@ void HandLight::ChangeBattery(float value)
 	value_ = value;
 }
 
+float HandLight::GetRemainingPercentage(void)
+{
+	return value_ / MAX_VALUE;
+}
+
 int HandLight::GetRendererDepthScreen(void)
 {
-	return renderer_->GetDepthScreen();
+	return renderer_->GetRendererDepthScreen();
+	if (depthRenderer_ != nullptr) {
+		return depthRenderer_->GetRendererDepthScreen();
+	}
 }
 
 void HandLight::OnUpdate(float deltaTime)
@@ -311,4 +198,15 @@ void HandLight::UpdateUsedUp(float deltaTime)
 {
 	//// アイテムが今後使用できなくなった場合
 	//isDisabled_ = true;
+}
+
+void HandLight::InitRenderer(void)
+{
+	renderer_ = std::make_unique<LightRenderer>();
+	renderer_->SetHandLight(this);
+	renderer_->InitLightRenderer(LightRenderer::TYPE::REGIDBODY, transform_.modelId);
+
+	depthRenderer_ = std::make_unique<DepthRenderer>();
+	depthRenderer_->InitLightRenderer(DepthRenderer::TYPE::REGIDBODY,transform_.modelId);
+
 }

@@ -10,8 +10,9 @@ class PatrolPath;
 
 class NavGridManager;
 
-class ModelMaterial;
-class ModelRenderer;
+class LightRenderer;
+
+class DepthRenderer;
 
 class Stage :
     public ActorBase
@@ -38,9 +39,9 @@ public:
 
 private:
 
-	//// ƒ‚ƒfƒ‹•`‰æ—p
-	//std::unique_ptr<ModelMaterial> material_;
-	//std::unique_ptr<ModelRenderer> renderer_;
+	// ƒ‚ƒfƒ‹•`‰æ—p
+	std::unique_ptr<LightRenderer> renderer_;
+	std::unique_ptr<DepthRenderer> depthRenderer_;
 
 	Player& player_;
 	EnemyBase& eBase_;

@@ -202,7 +202,8 @@ PS_MULTI_OUTPUT main(PS_INPUT PSInput) : SV_TARGET0
 
 	ret.Output = retColor.rgba;
 	//ret.Output = float4(1.0f, 0.5f, 0.5f, 1.0f);
-	ret.Depth = float4(PSInput.vwPos.z / 1500.0f, PSInput.vwPos.y / 1500.0f, PSInput.vwPos.x / 1500.0f, 1.0f);
+	//ret.Depth = float4(PSInput.vwPos.z / 1500.0f, PSInput.vwPos.y / 1500.0f, PSInput.vwPos.x / 1500.0f, 1.0f);
+	ret.Depth = lightData.TextureDiffuseColor;
 	
 	//出力パラメータを返す
 	return ret;

@@ -608,7 +608,7 @@ void GameScene::DrawMainGame(void)
 {
 
 	// オブジェクト
-	//stage_->Draw();
+	stage_->Draw();
 
 	//dummy_->Draw();
 	eBase_->Draw();
@@ -623,7 +623,7 @@ void GameScene::DrawMainGame(void)
 
 	int depthScreen = controller_.GetDepthScreen();
 
-	DrawGraph(0, 0, stage_->GetRenderererDepthScreen(), false);
+	DrawGraph(0, 0, depthScreen, false);
 
 
 

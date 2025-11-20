@@ -12,8 +12,8 @@
 #include "../Enemy/Patrol/PatrolNode.h"
 #include "../Enemy/Patrol/PatrolPath.h"
 #include "../Enemy/AStar/NavGridManager.h"
-#include "../Renderer/ModelMaterial.h"
-#include "../Renderer/ModelRenderer.h"
+#include "../Renderer/LightRenderer.h"
+#include "../Renderer/DepthRenderer.h"
 #include "Stage.h"
 
 Stage::Stage(Player& player, EnemyBase& enemyBase)
@@ -67,7 +67,11 @@ void Stage::Update(float deltaTime)
 void Stage::OnUpdate(float deltaTime)
 {
 	//handLight_.UpdateRenderer(deltaTime);
-	handLight_.lock()->UpdateRenderer(deltaTime);
+	//handLight_.lock()->UpdateRenderer(deltaTime);
+	std::shared_ptr<HandLight> handLightPtr = handLight_.lock();
+	renderer_->UpdateRenderer(deltaTime, handLightPtr->IsActive());
+
+	depthRenderer_->UpdateRenderer(deltaTime);
 }
 
 void Stage::Draw(void)
@@ -75,7 +79,11 @@ void Stage::Draw(void)
 
 	//MV1DrawModel(transform_.modelId);
 	
-	handLight_.lock()->DrawRenderer();
+	//handLight_.lock()->DrawRenderer();
+
+	renderer_->DrawRenderer();
+
+	depthRenderer_->DrawRenderer();
 
 #ifdef _DEBUG
 
@@ -194,16 +202,24 @@ void Stage::InitObstacles(void)
 
 void Stage::InitRenderer(void)
 {
-	//Transform hlt = handLight_.GetTransform();
-	Transform hlt = handLight_.lock()->GetTransform();
-	VECTOR forward = hlt.quaRot.GetForward();
-	VECTOR dir = VNorm(forward);
-
 	//handLight_.InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
-	handLight_.lock()->InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
+	//handLight_.lock()->InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
+	std::shared_ptr<HandLight> handLightPtr = handLight_.lock();
+	if (handLightPtr != nullptr) {
+		renderer_ = std::make_unique<LightRenderer>();
+		renderer_->SetHandLight(handLightPtr.get());
+		renderer_->InitLightRenderer(LightRenderer::TYPE::REGIDBODY, transform_.modelId);
+	}
+
+	depthRenderer_ = std::make_unique<DepthRenderer>();
+	depthRenderer_->InitLightRenderer(DepthRenderer::TYPE::REGIDBODY, transform_.modelId);
 }
 
 int Stage::GetRenderererDepthScreen(void)
 {
-	return handLight_.lock()->GetRendererDepthScreen();
+	//return handLight_.lock()->GetRendererDepthScreen();
+	return renderer_->GetRendererDepthScreen();
+	if (depthRenderer_ != nullptr) {
+		return depthRenderer_->GetRendererDepthScreen();
+	}
 }
