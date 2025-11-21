@@ -45,8 +45,15 @@ void ModelRenderer::Draw(void)
 	// テクスチャアドレスタイプを変更
 	SetTextureAddressModeUV(texAType, texAType);
 
+	SetWriteZBuffer3D(true);
+	SetUseZBuffer3D(true);
+
 	// 描画
 	MV1DrawModel(modelId_);
+
+
+	SetWriteZBuffer3D(false);
+	SetUseZBuffer3D(false);
 
 	// テクスチャアドレスタイプを元に戻す
 	SetTextureAddressModeUV(DX_TEXADDRESS_CLAMP, DX_TEXADDRESS_CLAMP);

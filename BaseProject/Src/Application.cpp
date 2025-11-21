@@ -22,6 +22,7 @@ const std::wstring Application::PATH_SOUND = L"Data/Sound/";
 
 Application::Application() 
     :
+    dofParam_(),
     isInitFailed_(false),
     isReleaseFailed_(false),
     isGemeEnd_(false),
@@ -215,6 +216,11 @@ void Application::ResetDeltaTime(void)
     deltaTime_ = 0.0f;
 }
 
+const Application::DofParam& Application::GetDofParam(void) const
+{
+    return dofParam_;
+}
+
 std::shared_ptr<Camera> Application::GetCamera(void)
 {
     return camera_;
@@ -262,6 +268,13 @@ void Application::Init3D(void)
     //SetFogColor(255, 255, 255);
     SetFogColor(0, 0, 0);
     SetFogStartEnd(100.0f, 20000.0f);
+    
+    // 被写界深度パラメータ
+    //dofParam_.focusEnd = 800.0f;
+    dofParam_.focusEnd = 0.1f;
+    //dofParam_.blurSize = 10000.0f;
+    dofParam_.blurSize = 0.3f;
+
 }
 
 void Application::InitEffekseer(void)

@@ -595,5 +595,6 @@
     <FxCompile Include="Src\Shader\Model\DepthMapPS.hlsl" />
     <FxCompile Include="Src\Shader\Model\NomalMeshDepthMapVS.hlsl" />
     <FxCompile Include="Src\Shader\Model\SkinMeshDepthMapVS.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\DoF.hlsl" />
   </ItemGroup>
 </Project>

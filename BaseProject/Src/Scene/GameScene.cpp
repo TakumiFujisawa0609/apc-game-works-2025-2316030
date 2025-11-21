@@ -39,6 +39,9 @@
 
 #include "../Object/Stage/Dummy.h"
 
+#include "../Renderer/PixelMaterial.h"
+#include "../Renderer/PixelRenderer.h"
+
 #include"../DrawUtil.h"
 
 namespace {
@@ -165,9 +168,34 @@ void GameScene::Init(Input& input)
 	dummy_ = std::make_shared<Dummy>();
 	dummy_->Init();
 
+	const auto& sizeW = Config::GetInstance().GetWindowSize();
+
+	//// ポストエフェクト用(被写界深度)
+	//dofMaterial_ = std::make_unique<PixelMaterial>(L"DoF.cso", 1);
+
+	//// 使用するテクスチャ
+	//dofMaterial_->AddTextureBuf(controller_.GetMainScreen());
+	//dofMaterial_->AddTextureBuf(controller_.GetDepthScreen());
+	//dofMaterial_->AddTextureBuf(controller_.GetBlur1Screen());
+	//dofMaterial_->AddTextureBuf(controller_.GetBlur2Screen());
+
+	//// 被写界深度のパラメータ
+	//const auto& dofParam = Application::GetInstance().GetDofParam();
+	//dofMaterial_->AddConstBuf({
+	//	dofParam.focusEnd,dofParam.blurSize,0.0f,0.0f });
+
+	//// 描画機能の作成
+	//dofRenderer_ = std::make_unique<PixelRenderer>(*dofMaterial_);
+	//dofRenderer_->MakeSquereVertex(Vector2(0, 0),
+	//	Vector2(sizeW.width_, sizeW.height_));
+
+	//dofRenderer_->MakeSquereVertex(Vector2(0, 0),
+	//	Vector2(640, 480));
+
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
 	Application::GetInstance().GetCamera()->SetOperableCamera(true);
+	
 	isFps_ = true;
 
 	UpdateTaskState(TASK::FIND_LIGHT);
@@ -260,6 +288,14 @@ void GameScene::DrawUI(void)
 		// プレイヤー状態
 		//status_->Draw();
 	}
+}
+
+void GameScene::DrawPostEffect(void)
+{
+	/*dofRenderer_->Draw();*/
+
+
+	//DrawGraph(0, 0, controller_.GetDepthScreen(), false);
 }
 
 void GameScene::FadeInUpdate(Input& input)
@@ -618,14 +654,6 @@ void GameScene::DrawMainGame(void)
 	DrawItemPool();
 
 	itemSlot_->Draw();
-
-	SetDrawScreen(DX_SCREEN_BACK);
-
-	int depthScreen = controller_.GetDepthScreen();
-
-	DrawGraph(0, 0, depthScreen, false);
-
-
 
 }
 

@@ -13,7 +13,12 @@ class SceneController
 private:
 	std::list<std::shared_ptr<Scene>> scenes_;//次はここをlist化します
 	
-	int newScreenH_;			// 最初の描画先
+	int mainScreen_;			// 最初の描画先
+
+	int depthScreen_;
+	int blur1Screen_;	// ブラースクリーン１
+	int blur2Screen_;	// ブラースクリーン２
+
 
 public:
 	/// <summary>
@@ -55,7 +60,16 @@ public:
 
 	void DrawPushScene(void);
 
-	// 描画スクリーンを取得する
+	// メイン用スクリーンの取得
+	int GetMainScreen(void) const;
+
+	// 深度バッファ用スクリーンを取得する
 	int GetDepthScreen(void) const;
+
+	// ブラー１用のスクリーンの取得
+	int GetBlur1Screen(void) const;
+
+	// ブラー２用スクリーンの取得
+	int GetBlur2Screen(void) const;
 };
 

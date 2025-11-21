@@ -40,7 +40,7 @@ public:
 private:
 
 	// ƒ‚ƒfƒ‹•`‰æ—p
-	std::unique_ptr<LightRenderer> renderer_;
+	//std::unique_ptr<LightRenderer> renderer_;
 	std::unique_ptr<DepthRenderer> depthRenderer_;
 
 	Player& player_;

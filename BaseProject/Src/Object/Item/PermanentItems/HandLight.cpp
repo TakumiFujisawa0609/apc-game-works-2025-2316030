@@ -46,7 +46,7 @@ void HandLight::Init(void)
 	ChangeState(STATE::ONSTAGE);
 	
 
-
+	InitRenderer();
 }
 
 void HandLight::Update(float deltaTime)
@@ -58,8 +58,8 @@ void HandLight::Update(float deltaTime)
 
 	if (value_ / MAX_VALUE < 0.0f)value_ = 0.0f;
 
-	renderer_->UpdateRenderer(deltaTime, isActive_);
-	depthRenderer_->UpdateRenderer(deltaTime);
+	//renderer_->UpdateRenderer(deltaTime, isActive_);
+	//depthRenderer_->UpdateRenderer(deltaTime);
 	
 	// ƒ‚ƒfƒ‹‚ÌXV
 	transform_.Update();
@@ -72,8 +72,8 @@ void HandLight::Draw(void)
 	{
 		MV1DrawModel(transform_.modelId);
 
-		renderer_->DrawRenderer();
-		depthRenderer_->DrawRenderer();
+		//renderer_->DrawRenderer();
+		//depthRenderer_->DrawRenderer();
 		return;
 	}
 }
@@ -124,7 +124,7 @@ float HandLight::GetRemainingPercentage(void)
 
 int HandLight::GetRendererDepthScreen(void)
 {
-	return renderer_->GetRendererDepthScreen();
+	//return renderer_->GetRendererDepthScreen();
 	if (depthRenderer_ != nullptr) {
 		return depthRenderer_->GetRendererDepthScreen();
 	}
@@ -202,11 +202,11 @@ void HandLight::UpdateUsedUp(float deltaTime)
 
 void HandLight::InitRenderer(void)
 {
-	renderer_ = std::make_unique<LightRenderer>();
-	renderer_->SetHandLight(this);
-	renderer_->InitLightRenderer(LightRenderer::TYPE::REGIDBODY, transform_.modelId);
+	//renderer_ = std::make_unique<LightRenderer>();
+	//renderer_->SetHandLight(this);
+	//renderer_->InitLightRenderer(LightRenderer::TYPE::REGIDBODY, transform_.modelId);
 
-	depthRenderer_ = std::make_unique<DepthRenderer>();
-	depthRenderer_->InitLightRenderer(DepthRenderer::TYPE::REGIDBODY,transform_.modelId);
+	//depthRenderer_ = std::make_unique<DepthRenderer>();
+	//depthRenderer_->InitLightRenderer(DepthRenderer::TYPE::REGIDBODY,transform_.modelId);
 
 }

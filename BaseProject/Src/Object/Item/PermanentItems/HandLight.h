@@ -51,7 +51,7 @@ private:
     virtual void UpdateUsedUp(float deltaTime) override;
 
     // ƒ‚ƒfƒ‹•`‰æ—p
-    std::unique_ptr<LightRenderer> renderer_;
+    //std::unique_ptr<LightRenderer> renderer_;
     std::unique_ptr<DepthRenderer> depthRenderer_;
 
     float value_;     // Žc—Ê
