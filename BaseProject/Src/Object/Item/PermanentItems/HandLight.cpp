@@ -128,6 +128,7 @@ int HandLight::GetRendererDepthScreen(void)
 	if (depthRenderer_ != nullptr) {
 		return depthRenderer_->GetRendererDepthScreen();
 	}
+	return false;
 }
 
 void HandLight::OnUpdate(float deltaTime)

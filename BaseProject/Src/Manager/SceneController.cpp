@@ -24,17 +24,18 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 	else {
 		scenes_.back() = scene;
 	}
+	
+
+	auto& sizeW = Config::GetInstance().GetWindowSize();
+
+	// メイン用スクリーンの作成
+	mainScreen_ = MakeScreen(sizeW.width_, sizeW.height_, true);
 
 	// 深度バッファ用スクリーン
 	// ( １チャンネル浮動小数点２４ビットテクスチャ )
 	SetCreateDrawValidGraphChannelNum(1);
 	SetDrawValidFloatTypeGraphCreateFlag(TRUE);
 	SetCreateGraphChannelBitDepth(24);
-
-	auto& sizeW = Config::GetInstance().GetWindowSize();
-
-	// メイン用スクリーンの作成
-	mainScreen_ = MakeScreen(sizeW.width_, sizeW.height_, true);
 
 	// 深度バッファ用のスクリーンの作成
 	depthScreen_ = MakeScreen(sizeW.width_, sizeW.height_, true);
@@ -49,6 +50,7 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 	scenes_.back()->Init(input);//シーンの初期化
 
 	Application::GetInstance().ResetDeltaTime();
+
 }
 
 void SceneController::Update(Input& input)
@@ -59,7 +61,9 @@ void SceneController::Update(Input& input)
 void SceneController::Draw(void)
 {
 	//SetDrawScreen(mainScreen_);
-	ClearDrawScreen();
+
+	//ClearDrawScreen();
+
 	for (auto& scene : scenes_) {
 		if (std::dynamic_pointer_cast<UnlockScene>(scene) != nullptr) {
 			continue;
@@ -73,30 +77,22 @@ void SceneController::Draw(void)
 		scene->Draw();
 	}
 
-
-	SetDrawScreen(DX_SCREEN_BACK);
+	//SetDrawScreen(DX_SCREEN_BACK);
 	//ClearDrawScreen();
 
-	//if (auto gameScene = std::dynamic_pointer_cast<GameScene>(scenes_.back())) {
-	//	//// a. ブラーテクスチャの更新（mainScreen_の内容を使って）
-	//	//const auto& sizeW = Config::GetInstance().GetWindowSize();
-	//	//int mainScreen = GetMainScreen();
-	//	//int blur1Screen = GetBlur1Screen();
-	//	//int blur2Screen = GetBlur2Screen();
+	if (auto gameScene = std::dynamic_pointer_cast<GameScene>(scenes_.back())) {
 
-	//	//// GameScene::DrawMainGameから移動
-	//	//GraphFilterRectBlt(mainScreen, blur1Screen, 0, 0, sizeW.width_, sizeW.height_, 0, 0, DX_GRAPH_FILTER_GAUSS, 16, 200);
-	//	//GraphFilterRectBlt(blur1Screen, blur2Screen, 0, 0, sizeW.width_, sizeW.height_, 0, 0, DX_GRAPH_FILTER_GAUSS, 16, 200);
+		// b. DoF ポストエフェクトの描画（DX_SCREEN_BACKに出力される）
+		gameScene->DrawPostEffect();
 
-	//	//// b. DoF ポストエフェクトの描画（DX_SCREEN_BACKに出力される）
-	//	//gameScene->DrawPostEffect();
+		//DrawGraph(0, 0, GetMainScreen(), false);
 
-	//	DrawGraph(0, 0, GetMainScreen(), false);
+	}
+	else {
+		
+		DrawGraph(0, 0, GetMainScreen(), false);
+	}
 
-	//}
-	//else {
-	//	DrawGraph(0, 0, GetMainScreen(), false);
-	//}
 }
 
 void SceneController::DrawUI(void)

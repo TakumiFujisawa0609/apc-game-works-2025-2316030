@@ -9,7 +9,7 @@ ModelRenderer::ModelRenderer(int modelId, ModelMaterial& modelMaterial)
 }
 
 ModelRenderer::ModelRenderer(std::vector<Transform>& trans, ModelMaterial& modelMaterial)
-	:trans_(trans),modelMaterial_(modelMaterial)
+	: trans_(trans), modelMaterial_(modelMaterial), modelId_(-1), depthScreen_(-1)
 {
 }
 
@@ -50,7 +50,6 @@ void ModelRenderer::Draw(void)
 
 	// •`‰æ
 	MV1DrawModel(modelId_);
-
 
 	SetWriteZBuffer3D(false);
 	SetUseZBuffer3D(false);

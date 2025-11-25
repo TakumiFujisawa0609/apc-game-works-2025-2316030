@@ -71,7 +71,7 @@ void Stage::OnUpdate(float deltaTime)
 	std::shared_ptr<HandLight> handLightPtr = handLight_.lock();
 	//renderer_->UpdateRenderer(deltaTime, handLightPtr->IsActive());
 
-	//depthRenderer_->UpdateRenderer(deltaTime);
+	depthRenderer_->UpdateRenderer(deltaTime);
 }
 
 void Stage::Draw(void)
@@ -211,16 +211,16 @@ void Stage::InitRenderer(void)
 		renderer_->InitLightRenderer(LightRenderer::TYPE::REGIDBODY, transform_.modelId);*/
 	}
 
-	//depthRenderer_ = std::make_unique<DepthRenderer>();
-	//depthRenderer_->InitLightRenderer(DepthRenderer::TYPE::REGIDBODY, transform_.modelId);
+	depthRenderer_ = std::make_unique<DepthRenderer>();
+	depthRenderer_->InitLightRenderer(DepthRenderer::TYPE::REGIDBODY, transform_.modelId);
 }
 
 int Stage::GetRenderererDepthScreen(void)
 {
 	//return handLight_.lock()->GetRendererDepthScreen();
 	//return renderer_->GetRendererDepthScreen();
-	//if (depthRenderer_ != nullptr) {
-	//	return depthRenderer_->GetRendererDepthScreen();
-	//}
+	if (depthRenderer_ != nullptr) {
+		return depthRenderer_->GetRendererDepthScreen();
+	}
 	return false;
 }

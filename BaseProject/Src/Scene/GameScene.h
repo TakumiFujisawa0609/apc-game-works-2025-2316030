@@ -180,5 +180,7 @@ private:
 
 	void UpdateItemTasks(void);
 
+
+	int gameScreen_;
 };
 

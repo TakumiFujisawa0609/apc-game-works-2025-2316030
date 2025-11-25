@@ -13,11 +13,11 @@ class SceneController
 private:
 	std::list<std::shared_ptr<Scene>> scenes_;//次はここをlist化します
 	
-	int mainScreen_;			// 最初の描画先
+	int mainScreen_=-1;			// 最初の描画先
 
-	int depthScreen_;
-	int blur1Screen_;	// ブラースクリーン１
-	int blur2Screen_;	// ブラースクリーン２
+	int depthScreen_ = -1;
+	int blur1Screen_ = -1;	// ブラースクリーン１
+	int blur2Screen_ = -1;	// ブラースクリーン２
 
 
 public:

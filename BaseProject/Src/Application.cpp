@@ -125,14 +125,17 @@ void Application::Run()
         controller_->Update(*input_);
         camera_->Update();
 
+        // 描画
+        //---------------------------------
+
+        // シーンごとの描画
+        controller_->Draw();
+
         // カメラ設定
         camera_->SetBeforeDraw(*input_);
 
         // Effekseerにより再生中のエフェクトを描画する
         DrawEffekseer3D();
-
-        // シーンごとの描画
-        controller_->Draw();
 
         // 主にポストエフェクト用
         camera_->Draw();
@@ -142,6 +145,8 @@ void Application::Run()
 
         // 追加されたシーンの描画
         controller_->DrawPushScene();
+
+        //---------------------------------
 
         // FPSカウント更新
         frameCount_++;
@@ -270,10 +275,10 @@ void Application::Init3D(void)
     SetFogStartEnd(100.0f, 20000.0f);
     
     // 被写界深度パラメータ
-    //dofParam_.focusEnd = 800.0f;
-    dofParam_.focusEnd = 0.1f;
-    //dofParam_.blurSize = 10000.0f;
-    dofParam_.blurSize = 0.3f;
+    dofParam_.focusEnd = 800.0f;
+    //dofParam_.focusEnd = 0.1f;
+    dofParam_.blurSize = 10000.0f;
+    //dofParam_.blurSize = 0.3f;
 
 }
 
