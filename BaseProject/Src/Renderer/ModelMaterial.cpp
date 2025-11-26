@@ -30,6 +30,8 @@ ModelMaterial::ModelMaterial(
 	// テクスチャアドレス
 	texAddress_ = TEXADDRESS::CLAMP;
 
+	// 深度バッファへの書き込み
+	isWriteDepth_ = false;
 }
 
 void ModelMaterial::AddConstBufVS(const FLOAT4& contBuf)
@@ -113,6 +115,11 @@ ModelMaterial::TEXADDRESS ModelMaterial::GetTextureAddress(void) const
 void ModelMaterial::SetTextureAddress(TEXADDRESS texA)
 {
 	texAddress_ = texA;
+}
+
+void ModelMaterial::SetWriteDepth(bool isWriteDepth)
+{
+	isWriteDepth_ = isWriteDepth;
 }
 
 bool ModelMaterial::IsWriteDepth(void)

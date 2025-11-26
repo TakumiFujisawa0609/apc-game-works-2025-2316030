@@ -12,8 +12,7 @@
 #include "../Enemy/Patrol/PatrolNode.h"
 #include "../Enemy/Patrol/PatrolPath.h"
 #include "../Enemy/AStar/NavGridManager.h"
-#include "../Renderer/ModelMaterial.h"
-#include "../Renderer/ModelRenderer.h"
+#include "../Renderer/LightRenderer.h"
 #include "Stage.h"
 
 Stage::Stage(Player& player, EnemyBase& enemyBase)
@@ -66,16 +65,12 @@ void Stage::Update(float deltaTime)
 
 void Stage::OnUpdate(float deltaTime)
 {
-	//handLight_.UpdateRenderer(deltaTime);
-	handLight_.lock()->UpdateRenderer(deltaTime);
+	renderer_->UpdateRenderer(deltaTime, handLight_.lock().get()->IsActive());
 }
 
 void Stage::Draw(void)
 {
-
-	//MV1DrawModel(transform_.modelId);
-	
-	handLight_.lock()->DrawRenderer();
+	renderer_->DrawRenderer();
 
 #ifdef _DEBUG
 
@@ -194,11 +189,8 @@ void Stage::InitObstacles(void)
 
 void Stage::InitRenderer(void)
 {
-	//Transform hlt = handLight_.GetTransform();
-	Transform hlt = handLight_.lock()->GetTransform();
-	VECTOR forward = hlt.quaRot.GetForward();
-	VECTOR dir = VNorm(forward);
-
-	//handLight_.InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
-	handLight_.lock()->InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
+	renderer_ = std::make_unique<LightRenderer>();
+	std::shared_ptr<HandLight> handLightPtr = handLight_.lock();
+	renderer_->SetHandLight(handLightPtr.get());
+	renderer_->InitLightRenderer(LightRenderer::TYPE::REGIDBODY, transform_.modelId);
 }

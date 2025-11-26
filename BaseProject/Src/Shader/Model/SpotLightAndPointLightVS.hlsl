@@ -12,6 +12,10 @@
 // 定数バッファ：スロット4番目
 cbuffer cbParam : register(b4)
 {
+	float4 g_camera_pos;
+	float g_fog_start;
+	float g_fog_end;
+	float2 padding;
 }
 
 VS_OUTPUT main(VS_INPUT VSInput)
@@ -62,6 +66,9 @@ VS_OUTPUT main(VS_INPUT VSInput)
 
 	// ライトから見た座標
 	ret.lightAtPos = float3(1.0f, 1.0f, 1.0f);
+
+	// フォグの強さ
+	ret.fogFactor = g_fog_end - length(lWorldPosition.xyz - g_camera_pos) / g_fog_end - g_fog_start;
 
 	return ret;
 }

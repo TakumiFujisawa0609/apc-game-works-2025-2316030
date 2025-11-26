@@ -14,6 +14,15 @@ class Application
 {
 public:
 
+	struct Fog
+	{
+		// フォグの始まり
+		float fogStart_;
+
+		// フォグの終わり
+		float fogEnd_;
+	};
+
 	// スクリーンサイズ
 	static constexpr int SCREEN_SIZE_X = 1024;
 	static constexpr int SCREEN_SIZE_Y = 640;
@@ -152,6 +161,6 @@ private:
 	// ドローコールの表示
 	void DrawDrawCall(void);
 
-
+	Fog fog;
 };
 

@@ -31,12 +31,11 @@ public:
     void Update(float deltaTime) override;
     void Draw(void) override;
 
-    void InitLightRenderer(const TYPE& type, int modelId);
-    void UpdateRenderer(float deltaTime);
-    void DrawRenderer(void);
     void DrawUI(void);
 
     void ChangeBattery(float value);
+
+    float GetRemainingPercentage(void);
 
 private:
 
@@ -60,10 +59,5 @@ private:
     const float TOGGLE_COOLDOWN = 0.2f; // 0.2秒間のクールダウン
     float toggleTimer_;                 // クリック受け付け
 
-    float blinkTimer_;
-    float nextBlinkDuration_;
-    bool isBlinkActive_;
-    const float BLINK_MIN_DURATION = 0.05f;
-    const float BLINK_MAX_DURATION = 0.3f;
 };
 

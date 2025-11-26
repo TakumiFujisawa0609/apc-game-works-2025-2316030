@@ -13,7 +13,8 @@ class SceneController
 private:
 	std::list<std::shared_ptr<Scene>> scenes_;//Ÿ‚Í‚±‚±‚ğlist‰»‚µ‚Ü‚·
 	
-	int newScreenH_;			// Å‰‚Ì•`‰ææ
+	int mainScreen_;			// Å‰‚Ì•`‰ææ
+	int depthScreen_;			// [“xƒ}ƒbƒv
 
 public:
 	/// <summary>

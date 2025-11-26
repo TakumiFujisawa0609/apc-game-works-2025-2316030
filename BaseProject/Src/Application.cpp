@@ -88,6 +88,8 @@ void Application::Init(void)
     // フォントの作成
     fontHandle_ = CreateFontToHandle(L"メイリオ", 24, 3, DX_FONTTYPE_NORMAL);
 
+
+
     // キー制御初期化
 	SetUseDirectInputFlag(TRUE);
 	input_ = std::make_shared<Input>();
@@ -123,6 +125,9 @@ void Application::Run()
 
         controller_->Update(*input_);
         camera_->Update();
+
+        SetDrawScreen(DX_SCREEN_BACK);
+        ClearDrawScreen();
 
         // カメラ設定
         camera_->SetBeforeDraw(*input_);
@@ -258,10 +263,12 @@ void Application::Init3D(void)
     ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
 
     // フォグ設定
-    SetFogEnable(false);
-    //SetFogColor(255, 255, 255);
+    SetFogEnable(true);
     SetFogColor(0, 0, 0);
-    SetFogStartEnd(100.0f, 20000.0f);
+    fog.fogStart_ = 100.0f;
+    fog.fogEnd_ = 2000.0f;
+    SetFogStartEnd(fog.fogStart_, fog.fogEnd_);
+    GetFogStartEnd(&fog.fogStart_, &fog.fogEnd_);
 }
 
 void Application::InitEffekseer(void)
