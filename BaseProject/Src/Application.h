@@ -95,6 +95,9 @@ public:
 	// フォントの取得
 	int GetFontHandle(void)const;
 
+	// フォグの取得
+	const Fog& GetFog(void) const;
+
 	// シーンコントローラーの取得
 	std::shared_ptr<SceneController> GetSceneController(void) const;
 
@@ -161,6 +164,6 @@ private:
 	// ドローコールの表示
 	void DrawDrawCall(void);
 
-	Fog fog;
+	Fog fog_;
 };
 

@@ -124,7 +124,7 @@ void ModelMaterial::SetWriteDepth(bool isWriteDepth)
 
 bool ModelMaterial::IsWriteDepth(void)
 {
-	return false;
+	return isWriteDepth_;
 }
 
 int ModelMaterial::GetShaderVS(void) const

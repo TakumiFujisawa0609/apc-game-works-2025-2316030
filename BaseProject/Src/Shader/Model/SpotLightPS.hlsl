@@ -17,7 +17,7 @@ cbuffer cbParam : register(b4)
 	float4 g_diff_color;
 	float4 g_ambient_color;
 	float g_blink_intensity;
-	float3 padding1;
+	float3 g_fog_color;
 }
 
 struct LightCalculationData {
@@ -190,6 +190,15 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	retColor.a = lightData.TextureDiffuseColor.a * material.diffuse.a * g_base.factorColor.a;
 
 	//出力カラー計算++++++++++++++++++++++++++++++++++++++++++++++++(終了)
+
+	//return retColor;
+
+
+	// フォグ計算
+	float fog_amount = 1.0f - PSInput.fogFactor;
+	retColor.rgb = lerp(g_fog_color, retColor.rgb, fog_amount);
+
+	retColor.rgb *= PSInput.fogFactor;
 
 	//出力パラメータを返す
 	return retColor;

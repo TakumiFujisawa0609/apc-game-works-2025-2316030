@@ -26,7 +26,6 @@ public:
     ~LightRenderer(void);
 
     void InitLightRenderer(const TYPE& type, int modelId);
-    void UpdateRenderer(float deltaTime);
     void UpdateRenderer(float deltaTime, bool isActive);
     void DrawRenderer(void);
 

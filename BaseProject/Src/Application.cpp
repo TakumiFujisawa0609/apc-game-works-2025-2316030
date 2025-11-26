@@ -230,6 +230,11 @@ int Application::GetFontHandle(void) const
     return fontHandle_;
 }
 
+const Application::Fog& Application::GetFog(void) const
+{
+    return fog_;
+}
+
 std::shared_ptr<SceneController> Application::GetSceneController(void) const
 {
     return controller_;
@@ -265,10 +270,10 @@ void Application::Init3D(void)
     // ÉtÉHÉOê›íË
     SetFogEnable(true);
     SetFogColor(0, 0, 0);
-    fog.fogStart_ = 100.0f;
-    fog.fogEnd_ = 2000.0f;
-    SetFogStartEnd(fog.fogStart_, fog.fogEnd_);
-    GetFogStartEnd(&fog.fogStart_, &fog.fogEnd_);
+    fog_.fogStart_ = 100.0f;
+    fog_.fogEnd_ = 2000.0f;
+    SetFogStartEnd(fog_.fogStart_, fog_.fogEnd_);
+    GetFogStartEnd(&fog_.fogStart_, &fog_.fogEnd_);
 }
 
 void Application::InitEffekseer(void)

@@ -68,7 +68,23 @@ VS_OUTPUT main(VS_INPUT VSInput)
 	ret.lightAtPos = float3(1.0f, 1.0f, 1.0f);
 
 	// フォグの強さ
-	ret.fogFactor = g_fog_end - length(lWorldPosition.xyz - g_camera_pos) / g_fog_end - g_fog_start;
+	// カメラ位置と頂点位置の距離を求める (ワールド座標)
+	float distance = length(lWorldPosition.xyz - g_camera_pos.xyz);
+
+	// フォグの距離範囲 (ゼロ除算対策も兼ねる)
+	float fog_density = g_fog_end - g_fog_start;
+
+	// Start == End など、フォグが定義されていない場合はフォグを適用しない (1.0)
+	if (fog_density <= 0.0001f)
+	{
+		ret.fogFactor = 1.0f;
+	}
+	else
+	{
+		// ユーザーの計算式: (終了距離 - 距離) / (終了距離 - 開始距離) を適用し、[0.0, 1.0] にクランプ
+		// distance <= start の時 1.0、distance >= end の時 0.0 となる
+		ret.fogFactor = clamp((g_fog_end - distance) / fog_density, 0.0f, 1.0f);
+	}
 
 	return ret;
 }
