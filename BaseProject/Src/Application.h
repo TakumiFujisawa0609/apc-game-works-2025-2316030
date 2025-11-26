@@ -41,13 +41,6 @@ public:
 	static const std::wstring PATH_SOUND;
 	//-------------------------------------------
 
-	// 被写界深度
-	struct DofParam
-	{
-		float focusEnd;		// ぼかさない距離
-		float blurSize;		// ぼかし距離
-	};
-
 	~Application();//デストラクタ
 
 	// 明示的にインスタンスを生成する
@@ -96,9 +89,6 @@ public:
 	// デルタタイムをリセットする
 	void ResetDeltaTime(void);
 
-	// 被写界深度のパラメータ取得
-	const DofParam& GetDofParam(void) const;
-
 	// カメラの取得
 	std::shared_ptr<Camera> GetCamera(void);
 
@@ -128,8 +118,6 @@ private:
 
 	// カメラ
 	std::shared_ptr<Camera> camera_;
-
-	DofParam dofParam_;
 
 	// 初期化失敗
 	bool isInitFailed_;

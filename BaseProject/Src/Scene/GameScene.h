@@ -20,9 +20,6 @@ class PlayerStatusUI;
 
 class Dummy;
 
-class PixelMaterial;
-class PixelRenderer;
-
 class GameScene :
 	public Scene
 {
@@ -50,9 +47,8 @@ public:
 	/// </summary>
 	virtual void Draw(void) override;
 
-	void DrawUI(void)override;
 
-	void DrawPostEffect(void);
+	void DrawUI(void)override;
 
 	enum class TASK
 	{
@@ -121,11 +117,6 @@ private:
 
 	std::shared_ptr<Dummy> dummy_;
 
-
-	// 被写界深度
-	std::unique_ptr<PixelMaterial> dofMaterial_;
-	std::unique_ptr<PixelRenderer> dofRenderer_;
-
 	// アイテム全体を処理
 	void UpdateItemPool(float deltaTime);
 	void DrawItemPool(void);
@@ -179,8 +170,5 @@ private:
 	constexpr static float CLEAR_MSG_DURATION = 3.0f; // 完了メッセージの表示秒数 (3秒)
 
 	void UpdateItemTasks(void);
-
-
-	int gameScreen_;
 };
 

@@ -1,19 +1,10 @@
 #pragma once
 #include <memory>
-<<<<<<< HEAD
 
 class ModelMaterial;
 class ModelRenderer;
 class HandLight;
 
-=======
-#include <DxLib.h>
-
-class ModelMaterial;
-class ModelRenderer;
-
-class HandLight;
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 class LightRenderer
 {
 public:
@@ -35,10 +26,7 @@ public:
     ~LightRenderer(void);
 
     void InitLightRenderer(const TYPE& type, int modelId);
-<<<<<<< HEAD
     void UpdateRenderer(float deltaTime);
-=======
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
     void UpdateRenderer(float deltaTime, bool isActive);
     void DrawRenderer(void);
 
@@ -59,9 +47,6 @@ private:
     bool isBlinkActive_;
     const float BLINK_MIN_DURATION = 0.05f;
     const float BLINK_MAX_DURATION = 0.3f;
-<<<<<<< HEAD
 
-=======
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 };
 

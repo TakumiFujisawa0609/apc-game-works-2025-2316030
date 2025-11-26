@@ -22,7 +22,6 @@ const std::wstring Application::PATH_SOUND = L"Data/Sound/";
 
 Application::Application() 
     :
-    dofParam_(),
     isInitFailed_(false),
     isReleaseFailed_(false),
     isGemeEnd_(false),
@@ -127,22 +126,17 @@ void Application::Run()
         controller_->Update(*input_);
         camera_->Update();
 
-<<<<<<< HEAD
         SetDrawScreen(DX_SCREEN_BACK);
         ClearDrawScreen();
-=======
-        // 描画
-        //---------------------------------
-
-        // シーンごとの描画
-        controller_->Draw();
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 
         // カメラ設定
         camera_->SetBeforeDraw(*input_);
 
         // Effekseerにより再生中のエフェクトを描画する
         DrawEffekseer3D();
+
+        // シーンごとの描画
+        controller_->Draw();
 
         // 主にポストエフェクト用
         camera_->Draw();
@@ -152,8 +146,6 @@ void Application::Run()
 
         // 追加されたシーンの描画
         controller_->DrawPushScene();
-
-        //---------------------------------
 
         // FPSカウント更新
         frameCount_++;
@@ -228,11 +220,6 @@ void Application::ResetDeltaTime(void)
     deltaTime_ = 0.0f;
 }
 
-const Application::DofParam& Application::GetDofParam(void) const
-{
-    return dofParam_;
-}
-
 std::shared_ptr<Camera> Application::GetCamera(void)
 {
     return camera_;
@@ -278,21 +265,10 @@ void Application::Init3D(void)
     // フォグ設定
     SetFogEnable(true);
     SetFogColor(0, 0, 0);
-<<<<<<< HEAD
     fog.fogStart_ = 100.0f;
     fog.fogEnd_ = 2000.0f;
     SetFogStartEnd(fog.fogStart_, fog.fogEnd_);
     GetFogStartEnd(&fog.fogStart_, &fog.fogEnd_);
-=======
-    SetFogStartEnd(100.0f, 20000.0f);
-    
-    // 被写界深度パラメータ
-    dofParam_.focusEnd = 800.0f;
-    //dofParam_.focusEnd = 0.1f;
-    dofParam_.blurSize = 10000.0f;
-    //dofParam_.blurSize = 0.3f;
-
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 }
 
 void Application::InitEffekseer(void)

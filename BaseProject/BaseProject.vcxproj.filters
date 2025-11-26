@@ -225,12 +225,6 @@
     <ClCompile Include="Src\Renderer\LightRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-<<<<<<< HEAD
-=======
-    <ClCompile Include="Src\Renderer\DepthRenderer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application.h">
@@ -578,12 +572,6 @@
     <ClInclude Include="Src\Renderer\LightRenderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-<<<<<<< HEAD
-=======
-    <ClInclude Include="Src\Renderer\DepthRenderer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
@@ -595,12 +583,7 @@
     <None Include="Src\Shader\Common\VertexToPixelHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\Shader\Model\NormalMeshSpotLightVS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\SpotLightPS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\SkinMeshSpotLightVS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\DepthMapPS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\NomalMeshDepthMapVS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\SkinMeshDepthMapVS.hlsl" />
-    <FxCompile Include="Src\Shader\PostEffect\DoF.hlsl" />
+    <FxCompile Include="Src\Shader\Model\SpotLightAndPointLightVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\SpotLightAndPointLightPS.hlsl" />
   </ItemGroup>
 </Project>

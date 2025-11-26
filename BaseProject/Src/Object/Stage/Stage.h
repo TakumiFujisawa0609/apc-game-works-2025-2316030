@@ -11,11 +11,6 @@ class PatrolPath;
 class NavGridManager;
 
 class LightRenderer;
-<<<<<<< HEAD
-=======
-
-class DepthRenderer;
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 
 class Stage :
     public ActorBase
@@ -37,18 +32,10 @@ public:
 	// モデル描画用
 	void InitRenderer(void);
 
-	// レンダラーの深度バッファ用スクリーンの取得
-	int GetRenderererDepthScreen(void);
-
 private:
 
 	// モデル描画用
-<<<<<<< HEAD
 	std::unique_ptr<LightRenderer> renderer_;
-=======
-	//std::unique_ptr<LightRenderer> renderer_;
-	std::unique_ptr<DepthRenderer> depthRenderer_;
->>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 
 	Player& player_;
 	EnemyBase& eBase_;

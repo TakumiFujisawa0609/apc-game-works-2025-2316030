@@ -4,12 +4,12 @@
 #include "../Object/Common/Transform.h"
 
 ModelRenderer::ModelRenderer(int modelId, ModelMaterial& modelMaterial)
-	: modelId_(modelId), modelMaterial_(modelMaterial), depthScreen_(-1)
+	: modelId_(modelId), modelMaterial_(modelMaterial)
 {
 }
 
 ModelRenderer::ModelRenderer(std::vector<Transform>& trans, ModelMaterial& modelMaterial)
-	: trans_(trans), modelMaterial_(modelMaterial), modelId_(-1), depthScreen_(-1)
+	:trans_(trans),modelMaterial_(modelMaterial)
 {
 }
 
@@ -26,10 +26,10 @@ void ModelRenderer::Draw(void)
 	// 深度バッファへの書きこみ
 	if (modelMaterial_.IsWriteDepth())
 	{
-		depthScreen_ = Application::GetInstance().GetSceneController()->GetDepthScreen();
+		int depthScreen = Application::GetInstance().GetSceneController()->GetDepthScreen();
 
 		// マルチレンダーターゲット
-		SetRenderTargetToShader(1, depthScreen_);
+		SetRenderTargetToShader(1, depthScreen);
 	}
 
 	// シェーダ設定(頂点)
@@ -45,14 +45,8 @@ void ModelRenderer::Draw(void)
 	// テクスチャアドレスタイプを変更
 	SetTextureAddressModeUV(texAType, texAType);
 
-	SetWriteZBuffer3D(true);
-	SetUseZBuffer3D(true);
-
 	// 描画
 	MV1DrawModel(modelId_);
-
-	SetWriteZBuffer3D(false);
-	SetUseZBuffer3D(false);
 
 	// テクスチャアドレスタイプを元に戻す
 	SetTextureAddressModeUV(DX_TEXADDRESS_CLAMP, DX_TEXADDRESS_CLAMP);
@@ -231,12 +225,4 @@ void ModelRenderer::SetReservePS(void)
 	// ピクセルシェーダー設定
 	SetUsePixelShader(modelMaterial_.GetShaderPS());
 
-}
-
-int ModelRenderer::GetDepthScreen(void)
-{
-	if (depthScreen_ != -1) {
-		return depthScreen_;
-	}
-	return false;
 }
