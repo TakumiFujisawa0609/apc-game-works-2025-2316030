@@ -2,7 +2,8 @@
 
 PermanentItemBase::PermanentItemBase(Player& player)
 	:
-	ItemBase(player)
+	ItemBase(player),
+	isActive_(false)
 {
 }
 

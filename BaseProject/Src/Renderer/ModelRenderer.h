@@ -30,6 +30,9 @@ public:
 
 	void DrawModels(int num);
 
+	// 深度バッファ用スクリーンの取得
+	int GetDepthScreen(void);
+
 private:
 
 	// モデルのハンドルID

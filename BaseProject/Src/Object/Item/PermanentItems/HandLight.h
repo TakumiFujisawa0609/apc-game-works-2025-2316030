@@ -1,7 +1,7 @@
 #pragma once
 
-class ModelMaterial;
-class ModelRenderer;
+class LightRenderer;
+class DepthRenderer;
 
 #include "PermanentItemBase.h"
 class HandLight :
@@ -19,7 +19,7 @@ public:
     static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
     static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
 
-    static constexpr float MAX_VALUE = 100.0f;
+    static constexpr float MAX_VALUE = 10.0f;
 
     // 調整用座標
     static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
@@ -37,6 +37,11 @@ public:
 
     float GetRemainingPercentage(void);
 
+<<<<<<< HEAD
+=======
+    int GetRendererDepthScreen(void);
+
+>>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 private:
 
     virtual void OnUpdate(float deltaTime) override;
@@ -49,8 +54,8 @@ private:
     virtual void UpdateUsedUp(float deltaTime) override;
 
     // モデル描画用
-    std::unique_ptr<ModelMaterial> material_;
-    std::unique_ptr<ModelRenderer> renderer_;
+    //std::unique_ptr<LightRenderer> renderer_;
+    std::unique_ptr<DepthRenderer> depthRenderer_;
 
     float value_;     // 残量
     float blinkIntensity_;// 点滅強度
@@ -59,5 +64,11 @@ private:
     const float TOGGLE_COOLDOWN = 0.2f; // 0.2秒間のクールダウン
     float toggleTimer_;                 // クリック受け付け
 
+<<<<<<< HEAD
+=======
+    // レンダラー初期化
+    void InitRenderer(void);
+
+>>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 };
 

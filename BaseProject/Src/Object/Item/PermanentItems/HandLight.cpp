@@ -6,8 +6,8 @@
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Manager/Camera.h"
 #include "../../../Utility/AsoUtility.h"
-#include "../../../Renderer/ModelMaterial.h"
-#include "../../../Renderer/ModelRenderer.h"
+#include "../../../Renderer/LightRenderer.h"
+#include "../../../Renderer/DepthRenderer.h"
 #include "HandLight.h"
 
 HandLight::HandLight(Player& player)
@@ -44,7 +44,9 @@ void HandLight::Init(void)
 
 	value_ = MAX_VALUE;
 	ChangeState(STATE::ONSTAGE);
+	
 
+	InitRenderer();
 }
 
 void HandLight::Update(float deltaTime)
@@ -54,6 +56,11 @@ void HandLight::Update(float deltaTime)
 	// それぞれの状態での更新
 	UpdateState(deltaTime);
 
+	if (value_ / MAX_VALUE < 0.0f)value_ = 0.0f;
+
+	//renderer_->UpdateRenderer(deltaTime, isActive_);
+	//depthRenderer_->UpdateRenderer(deltaTime);
+	
 	// モデルの更新
 	transform_.Update();
 }
@@ -64,8 +71,9 @@ void HandLight::Draw(void)
 		GetUse() != USE::NONE)
 	{
 		MV1DrawModel(transform_.modelId);
-		auto& size = Config::GetInstance().GetWindowSize();
-		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
+
+		//renderer_->DrawRenderer();
+		//depthRenderer_->DrawRenderer();
 		return;
 	}
 }
@@ -111,7 +119,20 @@ void HandLight::ChangeBattery(float value)
 
 float HandLight::GetRemainingPercentage(void)
 {
+<<<<<<< HEAD
 	return value_/ MAX_VALUE;
+=======
+	return value_ / MAX_VALUE;
+}
+
+int HandLight::GetRendererDepthScreen(void)
+{
+	//return renderer_->GetRendererDepthScreen();
+	if (depthRenderer_ != nullptr) {
+		return depthRenderer_->GetRendererDepthScreen();
+	}
+	return false;
+>>>>>>> ecefbc80def25fa1d0a042bdaabdac08dc61600b
 }
 
 void HandLight::OnUpdate(float deltaTime)
@@ -182,4 +203,15 @@ void HandLight::UpdateUsedUp(float deltaTime)
 {
 	//// アイテムが今後使用できなくなった場合
 	//isDisabled_ = true;
+}
+
+void HandLight::InitRenderer(void)
+{
+	//renderer_ = std::make_unique<LightRenderer>();
+	//renderer_->SetHandLight(this);
+	//renderer_->InitLightRenderer(LightRenderer::TYPE::REGIDBODY, transform_.modelId);
+
+	//depthRenderer_ = std::make_unique<DepthRenderer>();
+	//depthRenderer_->InitLightRenderer(DepthRenderer::TYPE::REGIDBODY,transform_.modelId);
+
 }
