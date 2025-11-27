@@ -264,8 +264,8 @@ void Application::Init3D(void)
 
     SetLightEnable(true);
 
-    // ライトの設定
-    ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
+    //// ライトの設定
+    //ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
 
     // フォグ設定
     SetFogEnable(true);
@@ -274,6 +274,7 @@ void Application::Init3D(void)
     fog_.fogEnd_ = 2000.0f;
     SetFogStartEnd(fog_.fogStart_, fog_.fogEnd_);
     GetFogStartEnd(&fog_.fogStart_, &fog_.fogEnd_);
+
 }
 
 void Application::InitEffekseer(void)

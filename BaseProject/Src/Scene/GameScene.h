@@ -52,6 +52,7 @@ public:
 
 	enum class TASK
 	{
+		NONE,
 		FIND_LIGHT,
 		FIND_WIRE,
 		FIND_DOOR,
@@ -124,9 +125,6 @@ private:
 
 	// ホイール入力
 	void HandleMouseWheel(Input& input);
-
-	// メインカメラがfps視点であるがどうか
-	bool isFps_;
 
 	enum class STATE
 	{

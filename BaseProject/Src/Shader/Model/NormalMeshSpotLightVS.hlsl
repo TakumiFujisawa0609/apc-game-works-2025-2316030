@@ -67,6 +67,25 @@ VS_OUTPUT main(VS_INPUT VSInput)
 	// ライトから見た座標
 	ret.lightAtPos = float3(1.0f, 1.0f, 1.0f);
 
+
+	// フォグ
+	VsFog fog;
+
+	// フォグの距離
+	float fogRange = g_fog_end - g_fog_start;
+
+	// フォグend
+	if (fogRange > 0.0001f)
+	{
+		fog.linearAdd = g_fog_end / fogRange;
+		fog.linearDiv = -1.0f / fogRange;
+	}
+	else{
+		fog.linearAdd = 1.0f;
+		fog.linearDiv = 0.0f;
+	}
+	
+
 	// フォグの強さ
 	// カメラ位置と頂点位置の距離を求める (ワールド座標)
 	float distance = length(lWorldPosition.xyz - g_camera_pos.xyz);

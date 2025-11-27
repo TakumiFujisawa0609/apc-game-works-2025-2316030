@@ -30,23 +30,15 @@
 
 
 #include "../Object/Item/Wire.h"
-
 #include "../Object/Components/Gameplay/OxygenComponent.h"
-
 #include "../Object/Item/ItemStrage/SlotBase.h"
-
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
-
 #include "../Object/Stage/Dummy.h"
-
 #include"../DrawUtil.h"
 
 namespace {
 	constexpr int fade_interval = 30;
 	float DegreeToRadian(float degree) {
-		//0`360¨0`2ƒÎ
-		//0`180¨0`ƒÎ
-		//€180 x ƒÎ
 		return (degree * DX_PI_F) / 180.0f;
 	}
 }
@@ -54,11 +46,9 @@ namespace {
 
 GameScene::GameScene(SceneController& controller) :Scene(controller)
 {
-
 	update_ = &GameScene::FadeInUpdate;
 	draw_ = &GameScene::FadeDraw;
 	frame_ = fade_interval;
-	isFps_ = true;
 	imgH_ = -1;
 	isHitItem_ = false;
 	state_ = STATE::MAINGAME;
@@ -69,6 +59,8 @@ GameScene::GameScene(SceneController& controller) :Scene(controller)
 	spownPos_.push_back({ -1888.0f, 150.0f, -410.0f });
 	spownPos_.push_back({ -1702.0f, 150.0f, 1207.0f });
 	spownPos_.push_back({ -2457.0f, 150.0f, 2190.0f });
+
+	task_ = TASK::NONE;
 }
 
 GameScene::~GameScene()
@@ -168,7 +160,6 @@ void GameScene::Init(Input& input)
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
 	Application::GetInstance().GetCamera()->SetOperableCamera(true);
-	isFps_ = true;
 
 	UpdateTaskState(TASK::FIND_LIGHT);
 
@@ -446,7 +437,7 @@ void GameScene::DrawUIItemPool(void)
 
 void GameScene::HandleMouseWheel(Input& input)
 {
-	if (!itemSlot_)
+	if (itemSlot_ != nullptr)
 	{
 		return;
 	}
@@ -649,7 +640,7 @@ void GameScene::ObtainItem(void)
 {
 	std::shared_ptr<ItemBase> obtainedItem = isObtainItems();
 
-	if (!obtainedItem)
+	if (obtainedItem != nullptr)
 	{
 		return;
 	}
