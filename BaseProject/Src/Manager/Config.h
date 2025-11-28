@@ -6,8 +6,8 @@ class Config
 {
 public:
 
-	struct WindowSize
-	{
+	// ウィンドウサイズ
+	struct WindowSize{
 		int width_,
 			height_; 
 	};

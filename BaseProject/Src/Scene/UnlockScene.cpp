@@ -30,7 +30,6 @@ UnlockScene::UnlockScene(SceneController& controller)
 	player_(nullptr),
 	wire_(nullptr),
 	lockpick_(nullptr),
-	frame_(0),
 	update_(&UnlockScene::AppearUpdate),
 	draw_(&UnlockScene::ProcessDraw)
 {
@@ -134,7 +133,6 @@ void UnlockScene::NormalUpdate(Input& input)
 	keyhole_->OnUpdate(time);
 
 	if (ins.IsTrgDown(KEY_INPUT_A) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)){
-
 		if (wire_->IsDifference()){
 			// ロックレベルを設定
 			lockpick_->SetLockLevel(wire_->GetLockLevel());
@@ -149,13 +147,7 @@ void UnlockScene::NormalUpdate(Input& input)
 			draw_ = &UnlockScene::ProcessDraw;
 			return;
 		}
-
 	}
-
-	//// 指定の角度に到達したら解錠完了
-	//lockpick_->UpdateUnlock(time);
-
-	//keyhole_->Update(time);
 }
 
 void UnlockScene::DisappearUpdate(Input& input)

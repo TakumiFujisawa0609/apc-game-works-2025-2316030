@@ -46,16 +46,21 @@ public:
 	// 状態の変更
 	virtual void ChangeState(STATE state);
 
+	// インベントリ内での状態の変更
 	virtual void ChangeUse(USE use);
 
+	// 使用可能状態かを取得
 	virtual bool IsDisabledItem(void) const;
 
+	// 状態の取得
 	virtual STATE GetState(void) const;
 
+	// インベントリ内での状態の取得
 	virtual USE GetUse(void) const;
 
 	virtual void DrawUI(void);
 
+	// ランダム生成時の座標位置の設定
 	virtual void SetPos(VECTOR pos);
 
 protected:
@@ -65,8 +70,8 @@ protected:
 	bool isEfficacy_;	// 効果があるかどうか
 	bool isDisabled_;	// 使用できるかどうか
 
-	bool isInUse_;
-	bool isUsed_;
+	bool isInUse_;		// 
+	bool isUsed_;		// 
 
 	Player& player_;
 

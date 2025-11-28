@@ -180,6 +180,5 @@ void HandLight::UpdateInUse(float deltaTime)
 
 void HandLight::UpdateUsedUp(float deltaTime)
 {
-	//// アイテムが今後使用できなくなった場合
-	//isDisabled_ = true;
+	// 今後ライトを使用できなくなった場合
 }

@@ -172,8 +172,7 @@ void Stage::InitPatrolInfo(void)
 	
 	// 敵に巡回パスを設定
 	// paths_の0番目のパスを設定
-	if (!paths_.empty())
-	{
+	if (!paths_.empty()){
 		eBase_.SetPatrolPath(paths_[0]);
 	}
 

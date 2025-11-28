@@ -254,7 +254,8 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 	{
 	case SystemSettingScene::AdvancedSettingState::MainMenu:
 		if (asmList_[asMenuIndex_] == L"表示モード" && ins.IsTrgDown(KEY_INPUT_SPACE)) {
-			isFullS_ = !isFullS_; // フルスクリーン状態を切り替え
+			// フルスクリーン状態を切り替え
+			isFullS_ = !isFullS_;
 
 			// 設定をConfigに反映させるために、対応する関数を実行
 			auto it = asmTable_.find(L"表示モード");
@@ -263,7 +264,8 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 			}
 		}
 		if (asmList_[asMenuIndex_] == L"ウィンドウサイズ" && ins.IsTrgDown(KEY_INPUT_SPACE)) {
-			isFullS_ = !isFullS_; // フルスクリーン状態を切り替え
+			// フルスクリーン状態を切り替え
+			isFullS_ = !isFullS_;
 
 			// 設定をConfigに反映させるために、対応する関数を実行
 			auto it = asmTable_.find(L"ウィンドウサイズ");
@@ -297,7 +299,8 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 			const std::wstring& selectedSizeName = windowSizeList_[wMenuIndex_];
 			auto it = windowSizeTable_.find(selectedSizeName);
 			if (it != windowSizeTable_.end()) {
-				it->second(input); // サイズ変更とConfigへの適用を実行
+				// サイズ変更とConfigへの適用を実行
+				it->second(input);
 
 				// サイズ決定後、メインメニューに戻る
 				asState_ = AdvancedSettingState::MainMenu;

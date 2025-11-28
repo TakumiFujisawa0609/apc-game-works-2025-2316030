@@ -14,13 +14,9 @@ class Application
 {
 public:
 
-	struct Fog
-	{
-		// フォグの始まり
-		float fogStart_;
-
-		// フォグの終わり
-		float fogEnd_;
+	struct Fog{
+		// 始点、終点
+		float fogStart_,fogEnd_;
 	};
 
 	// スクリーンサイズ

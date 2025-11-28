@@ -39,13 +39,10 @@ public:
     // ワイヤーを動かして探る
     void UpdateExplore(float deltaTime);
 
-    /// <summary>
-    /// 差分が0の時にtrueを返す
-    /// </summary>
-    /// <param name=""></param>
-    /// <returns></returns>
+    // 差分が0の時にtrueを返す
     bool IsDifference(void);
 
+    // ロックの段階取得
     int GetLockLevel(void);
 
     // 初期状態に戻すかどうか
@@ -54,8 +51,10 @@ public:
     // 初期状態を設定
     void SetIsDefault(bool flag);
 
+    // クリア判定の取得
     bool isGameClear(void);
 
+    // 鍵回転率の取得
     float GetLockRotationRate(void) const;
 
     void DrawDebug(void);

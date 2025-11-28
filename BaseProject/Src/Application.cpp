@@ -30,7 +30,8 @@ Application::Application()
     lastTime_(-1),
     deltaTime_(0.0f),
     startTime_(-1),
-    fontHandle_(-1)
+    fontHandle_(-1),
+    fog_({})
 {
 }
 
@@ -87,8 +88,6 @@ void Application::Init(void)
 
     // フォントの作成
     fontHandle_ = CreateFontToHandle(L"メイリオ", 24, 3, DX_FONTTYPE_NORMAL);
-
-
 
     // キー制御初期化
 	SetUseDirectInputFlag(TRUE);

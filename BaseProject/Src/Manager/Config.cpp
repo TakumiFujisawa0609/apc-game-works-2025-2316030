@@ -13,8 +13,7 @@ Config::Config(void)
 
 void Config::CreateInstance()
 {
-	if (instance_ == nullptr)
-	{
+	if (instance_ == nullptr){
 		instance_ = new Config();
 		instance_->Init();
 	}
@@ -27,8 +26,7 @@ Config& Config::GetInstance()
 
 void Config::Init(void)
 {
-	if (!isFullS_)
-	{
+	if (!isFullS_){
 		window_.width_ = 1280;
 		window_.height_ = 720;
 	}
@@ -64,20 +62,15 @@ void Config::ScreenInitialize(void)
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	if (!isFullS_) {
-	/*	window_.width_ = 1280;
-		window_.height_ = 720;*/
 		SetGraphMode(window_.width_, window_.height_, 32);
 		ChangeWindowMode(true);
 	}
 	else {
 		fullScreenWidth_ = GetSystemMetrics(SM_CXSCREEN);
 		fullScreenHeight_ = GetSystemMetrics(SM_CYSCREEN);
-		//SetGraphMode(fullScreenWidth_, fullScreenHeight_, 32);
 		ChangeWindowMode(false);
 		
 		SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_DESKTOP);
-		//SetFullScreenResolutionMode(DX_FSRESOLUTIONMODE_MAXIMUM);
-
 	}
 }
 

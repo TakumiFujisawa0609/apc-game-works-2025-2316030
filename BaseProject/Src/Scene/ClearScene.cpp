@@ -105,7 +105,6 @@ void ClearScene::FadeDraw()
 {
 	float rate = static_cast<float>(frame_) /
 		static_cast<float>(fade_interval);
-	//DrawRotaGraph(320, 240, 1.0f, 0.0f, imgH_, true);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));
 	DrawBox(0, 0, 640, 480, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);

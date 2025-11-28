@@ -24,23 +24,17 @@ class EnemyBase :
 {
 public:
 
-    static constexpr VECTOR POS = { -1713.0f,200.0f,2580.0f };
-    static constexpr VECTOR SCALE = { 1.0f,1.0f ,1.0f };
-    static constexpr VECTOR QUAROT_LOCAL = { 0.0f,180.0f,0.0f };
+    static constexpr VECTOR POS = { -1713.0f,200.0f,2580.0f };          // 座標位置
+    static constexpr VECTOR SCALE = { 1.0f,1.0f ,1.0f };                // 拡大率
+    static constexpr VECTOR QUAROT_LOCAL = { 0.0f,180.0f,0.0f };        // ローカル回転
 
-    static constexpr VECTOR TOP = {0.0f,160.0f,0.0f};
-    static constexpr VECTOR DOWN = {0.0f,0.0f,0.0f};
-    static constexpr float RADIUS = 20.0f;
-
-    // 視野の広さ
-    static constexpr float EYE_VIEW_RANGE = 250.0f;
-    //static constexpr float ATTACK_RANGE = 100.0f;
-
-    // 攻撃範囲の広さ
-    static constexpr float ATTACK_RANGE = 175.0f;
-
-    // 視野角
-    static constexpr float VIEW_ANGLE = 30.0f;
+    static constexpr VECTOR TOP = {0.0f,160.0f,0.0f};                   // カプセルの上部
+    static constexpr VECTOR DOWN = {0.0f,0.0f,0.0f};                    // カプセルの下部
+    static constexpr float RADIUS = 20.0f;                              // カプセルの半径
+    static constexpr float EYE_VIEW_RANGE = 250.0f;                     // 視野の広さ
+    static constexpr float ATTACK_RANGE = 175.0f;                       // 攻撃範囲の広さ
+    static constexpr float VIEW_ANGLE = 30.0f;                          // 視野角
+    static constexpr float TIME_ROT = 1.0f;                             // 回転完了するまでの時間
 
     enum class STATE
     {
@@ -52,15 +46,12 @@ public:
 
     enum class ANIM
     {
-        PATROL,
-        CHASE,
-        ATTACK,
-        IDLE,
-        LOOK
+        PATROL, // 巡回
+        CHASE,  // 追跡
+        ATTACK, // 攻撃
+        IDLE,   // 待機
+        LOOK    // 警戒
     };
-
-    // 回転完了するまでの時間
-    static constexpr float TIME_ROT = 1.0f;
 
     EnemyBase(Player& player);
     ~EnemyBase(void);
@@ -93,15 +84,14 @@ protected:
     // 音を検知したかどうか
     bool isHearingSound_;
 
-    int frame_;
+    int frame_;                             // フレーム
 
-    EnemyPatrolComponent* patrolComponent_;     // 移動
+    EnemyPatrolComponent* patrolComponent_; // 移動
     EnemyChaseComponent* chaseComponent_;   // 追跡
 
     STATE state_;       // 現在の行動パターン
 
-    // 巡回パスの情報
-    std::shared_ptr<PatrolPath> patrolPath_;
+    std::shared_ptr<PatrolPath> patrolPath_;    // 巡回パス
     int currentPatrolPathIndex_;                // 現在のパスの番号
 
     std::unique_ptr<AnimationController> animationController_;  // アニメーション
@@ -109,12 +99,12 @@ protected:
     // アニメーションの初期化
     virtual void InitAnimation(void);
 
-    std::shared_ptr<NavGridManager> navGridManager_;
+    std::shared_ptr<NavGridManager> navGridManager_;        // A*経路探索
 
     bool isWaiting_;            // 待機中かどうか
     float currentWaitTime_;     // 現在の待機残り時間
-    float dis_;
-    int currentNode_;
+    float dis_;                 // プレイヤーとの距離
+    int currentNode_;           // 現在の追跡ノード
 
 private:
 
@@ -126,24 +116,30 @@ private:
     void CollisionGravity(void);        // 重力との衝突判定
     void CalcGravityPow(void);          // 重力加算処理
 
-    void ChangeState(STATE state);
+    void ChangeState(STATE state);      // 状態の変更
 
-    bool EyeSerch(void);
+    bool EyeSerch(void);                // 視覚判定
 
-    bool HearingSound(void);
+    bool HearingSound(void);            // 聴覚判定
 
     void DrawDebug(void);
 
-    void UpdatePatrol(float deltaTime);
-    void UpdateChase(float deltaTime);
+    void UpdatePatrol(float deltaTime); // 徘徊状態の更新
+    void UpdateChase(float deltaTime);  // 追跡状態の更新
 
-    // A*のメイン関数
+    // A*でのパスを探す
     std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
 
-    // A*のヘルパー関数
+    // A*のノードのコスト計算
     float GetHCost(AStarNode* a, AStarNode* b);
+    
+    // 隣り合うノードの位置の取得
     std::vector<AStarNode*> GetNeighbors(AStarNode* node);
+    
+    // A*の隣り合うノード同士の距離
     float GetDistance(AStarNode* a, AStarNode* b);
+
+    // ノードを辿らせる
     std::vector<VECTOR> RetracePath(AStarNode* start, AStarNode* end);
 
     // A*ノードを比較するための構造体（Fスコアが低い方を優先）
@@ -152,18 +148,13 @@ private:
         bool operator()(const AStarNode* a, const AStarNode* b) const;
     };
 
-    std::vector<VECTOR> currentPath_;
-    int currentPathIndex_ = 0;
-    float pathRecalcTimer_ = 0.0f;
-    float time_ = 0.0f;
+    bool isDamageCheckActive_;              // 攻撃判定
+    bool hasPlayerBeenHit_;                 // プレイヤーに対して攻撃があたった場合
 
-    bool isDamageCheckActive_;
-    bool hasPlayerBeenHit_;
+    void HandleAttackCollsion(float deltaTime);     // ダメージ判定
 
-    void HandleAttackCollsion(float deltaTime);
+    bool isAttackRange(void);           // 攻撃判定
 
-    bool isAttackRange(void);
-
-    bool isAttack_;
+    bool isAttack_;                     // 攻撃をするかどうか
 };
 

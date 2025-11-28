@@ -51,7 +51,7 @@ GameScene::GameScene(SceneController& controller) :Scene(controller)
 	frame_ = fade_interval;
 	imgH_ = -1;
 	isHitItem_ = false;
-	state_ = STATE::MAINGAME;
+	progress_ = PROGRESS::MAINGAME;
 	int sw, sh, depth;
 	GetScreenState(&sw, &sh, &depth);
 
@@ -88,7 +88,6 @@ void GameScene::Init(Input& input)
 	light->Init();
 	light->SetTargetPos(&player_->GetTransform());
 	player_->SetHandLight(light);
-	// ステージで適応させるライトを設定する
 	stage_->SetCurrentHandLight(light);
 	itemPool_.push_back(light);
 
@@ -142,7 +141,6 @@ void GameScene::Init(Input& input)
 
 	eBase_->SetNavGridManagedr(stage_->GetNavGridMananger());
 	eBase_->Init();
-
 	eBase_->InitComponents();
 
 	stage_->Init();
@@ -163,7 +161,7 @@ void GameScene::Init(Input& input)
 
 	UpdateTaskState(TASK::FIND_LIGHT);
 
-	ChangeState(STATE::MAINGAME);
+	ChangeProgress(PROGRESS::MAINGAME);
 }
 
 void GameScene::Update(Input& input)
@@ -192,8 +190,6 @@ void GameScene::DrawUI(void)
 
 			// Y座標: 画面全体の高さの 4分の3 の位置
 			int draw_y = (size.height_ * 3) / 4;
-
-			// 3. テキストを描画
 
 			// 赤色で描画
 			int color = GetColor(255, 255, 255);
@@ -283,12 +279,12 @@ void GameScene::NormalUpdate(Input& input)
 
 	float time = Application::GetInstance().GetDeltaTime();
 
-	switch (state_)
+	switch (progress_)
 	{
-	case GameScene::STATE::TUTORIAL:
+	case GameScene::PROGRESS::TUTORIAL:
 		UpdateTutorial(time, input);
 		break;
-	case GameScene::STATE::MAINGAME:
+	case GameScene::PROGRESS::MAINGAME:
 		UpdateMainGame(time, input);
 		break;
 	default:
@@ -307,12 +303,12 @@ void GameScene::FadeOutUpdate(Input& input)
 
 void GameScene::NormalDraw()
 {
-	switch (state_)
+	switch (progress_)
 	{
-	case GameScene::STATE::TUTORIAL:
+	case GameScene::PROGRESS::TUTORIAL:
 		DrawTutorial();
 		break;
-	case GameScene::STATE::MAINGAME:
+	case GameScene::PROGRESS::MAINGAME:
 		DrawMainGame();
 		break;
 	default:
@@ -328,6 +324,7 @@ void GameScene::NormalDraw()
 	auto& ins = InputManager::GetInstance();
 
 	VECTOR targetPos = { -2317.0f,189.0f,-1558.0f };
+
 	// 球体1 (標的) の情報
 	VECTOR TargetCenter = VGet(-2317.0f, 189.0f, -1558.0f);
 	const float TargetRadius = 120.0f; // 標的の半径
@@ -338,8 +335,10 @@ void GameScene::NormalDraw()
 
 	// 判定に必要な、半径の合計を事前に計算
 	const float CombinedRadius = TargetRadius + OtherRadius;
+	
 	// 最適化のため、半径の合計の二乗も計算
 	const float CombinedRadiusSq = CombinedRadius * CombinedRadius;
+	
 	// 1. 中心点間のベクトルの差を計算 (V2 - V1)
 	VECTOR DifferenceVector = VSub(OtherCenter, TargetCenter);
 
@@ -371,14 +370,10 @@ void GameScene::NormalDraw()
 
 #pragma endregion
 
-	//DrawFormatString(0, 52, GetColor(0, 0, 0), L"cAngle=(%.2f,%.2f,%.2f)", angles_.x, angles_.y, angles_.z);
-	//DrawString(10, 0, L"Game Scene", 0xffffff);
-
 }
 
 void GameScene::FadeDraw()
 {
-
 	float rate = static_cast<float>(frame_) /
 		static_cast<float>(fade_interval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));
@@ -600,7 +595,7 @@ void GameScene::DrawMainGame(void)
 
 	// オブジェクト
 	stage_->Draw();
-	//dummy_->Draw();
+
 	eBase_->Draw();
 
 	player_->Draw();
@@ -611,16 +606,16 @@ void GameScene::DrawMainGame(void)
 	itemSlot_->Draw();
 }
 
-void GameScene::ChangeState(STATE state)
+void GameScene::ChangeProgress(PROGRESS progress)
 {
-	state_ = state;
+	progress_ = progress;
 
-	switch (state_)
+	switch (progress_)
 	{
-	case GameScene::STATE::TUTORIAL:
+	case GameScene::PROGRESS::TUTORIAL:
 		ChangeTutorial();
 		break;
-	case GameScene::STATE::MAINGAME:
+	case GameScene::PROGRESS::MAINGAME:
 		ChangeMainGame();
 		break;
 	default:

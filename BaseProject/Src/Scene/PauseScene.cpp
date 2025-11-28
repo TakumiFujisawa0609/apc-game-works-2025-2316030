@@ -21,17 +21,16 @@ namespace {
 
 PauseScene::PauseScene(SceneController& controller) :
 	Scene(controller),
-	frame_(0),
 	update_(&PauseScene::AppearUpdate),
 	draw_(&PauseScene::ProcessDraw)
 {
 	menuList_ = {
-					L"コマンド表",
-					L"設定メニュー",
-					L"キーコンフィグ",
-					L"戻る",
-					L"タイトルに戻る",
-					L"ゲームを終了する"
+		L"コマンド表",
+		L"設定メニュー",
+		L"キーコンフィグ",
+		L"戻る",
+		L"タイトルに戻る",
+		L"ゲームを終了する"
 	};
 	menuFuncTable_ = {
 		{L"コマンド表",[this](Input& input) {

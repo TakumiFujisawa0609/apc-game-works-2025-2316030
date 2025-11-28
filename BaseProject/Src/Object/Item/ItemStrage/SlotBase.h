@@ -53,8 +53,10 @@ public:
 		return true;
 	}
 
+	// 現在のアイテムを使用する
 	void UseCurrentItem(void);
 
+	// 現在のアイテムのポインタを返す
 	std::shared_ptr<ItemBase> GetCurrentItem(void) const;
 
 	// アイテムの切り替え
@@ -63,20 +65,22 @@ public:
 	// 循環切り替えする
 	void CycleByWheel(bool scrollUp);
 
+	// 現在選択されているインデックスを返す
 	int GetCurrentSelectedIndex(void);
 
 protected:
 
-	std::wstring slotName_;
 	// スロットが格納するアイテムリスト
 	std::vector<std::shared_ptr<ItemBase>> slots_;
-	int currentSelectedIndex_;
+	int currentSelectedIndex_;		// 現在のインデックス
 
 	// 循環切り替えを計算する
 	void UpdateIndex(int direction);
 
+	// アイテムの削除
 	void RemoveItem(const std::shared_ptr<ItemBase>& item);
 
+	// 現在のアイテムのタイプを返す
 	std::wstring GetCurrentItemType(void) const;
 };
 

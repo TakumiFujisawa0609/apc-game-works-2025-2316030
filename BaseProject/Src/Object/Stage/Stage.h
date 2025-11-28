@@ -23,10 +23,13 @@ public:
 	virtual void OnUpdate(float deltaTime) override;
 	virtual void Draw(void) override;
 
+	// 使用するハンドライトを設定する
 	void SetCurrentHandLight(std::shared_ptr<HandLight> light);
 
+	// 巡回用のパスを取得する
 	const std::shared_ptr<PatrolPath>& GetPatrolPath(const size_t& index) const;
 
+	// A*経路探索の取得
 	std::shared_ptr<NavGridManager> GetNavGridMananger(void);
 
 	// モデル描画用
@@ -37,15 +40,23 @@ private:
 	// モデル描画用
 	std::unique_ptr<LightRenderer> renderer_;
 
+	// プレイヤーの参照
 	Player& player_;
+
+	// 敵の参照
 	EnemyBase& eBase_;
-	//HandLight& handLight_;
+	
+	// ここでは循環参照を防ぐためにweak_ptrを使ってハンドライトを定義する
 	std::weak_ptr<HandLight> handLight_;
 
-	std::vector<PatrolNode> nodes_;		// 巡回用のノード
-	std::vector<std::shared_ptr<PatrolPath>> paths_;		// 巡回用のパス
+	// 巡回用のノード
+	std::vector<PatrolNode> nodes_;
 
-	std::vector<Transform> obstacles_;	// 障害物として認識されるもの
+	// 巡回用のパス
+	std::vector<std::shared_ptr<PatrolPath>> paths_;
+
+	// 障害物として認識されるもの
+	std::vector<Transform> obstacles_;
 
 	// 巡回情報の初期化
 	void InitPatrolInfo(void);
@@ -53,6 +64,7 @@ private:
 	// 障害物の初期化
 	void InitObstacles(void);
 
+	// A*経路探索
 	std::shared_ptr<NavGridManager> navManager_;
 };
 

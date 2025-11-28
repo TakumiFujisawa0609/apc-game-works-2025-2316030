@@ -7,8 +7,6 @@ class ConsumableItemBase :
 	public ItemBase
 {
 public:
-
-
 	ConsumableItemBase(Player& player);
 	~ConsumableItemBase(void) override = default;
 	void Init(void) override = 0;

@@ -11,10 +11,13 @@ class Input;
 class SceneController
 {
 private:
-	std::list<std::shared_ptr<Scene>> scenes_;//次はここをlist化します
-	
-	int mainScreen_;			// 最初の描画先
-	int depthScreen_;			// 深度マップ
+	std::list<std::shared_ptr<Scene>> scenes_;
+
+	// 最初の描画先
+	int mainScreen_ = -1;
+
+	// 深度マップ
+	int depthScreen_ = -1;			
 
 public:
 	/// <summary>
@@ -54,9 +57,14 @@ public:
 	/// <param name="scene">ジャンプ先シーン</param>
 	void JumpScene(std::shared_ptr<Scene> scene,Input& input);
 
+
+	/// <summary>
+	/// 最後に追加したシーンを描画する
+	/// </summary>
+	/// <param name=""></param>
 	void DrawPushScene(void);
 
-	// 描画スクリーンを取得する
+	// 深度バッファ描画スクリーンを取得する
 	int GetDepthScreen(void) const;
 };
 

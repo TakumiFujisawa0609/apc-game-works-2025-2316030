@@ -10,52 +10,58 @@ class TitleScene :
 public:
 	TitleScene(SceneController& controller);
 	~TitleScene();
-	/// <summary>
-	/// シーン開始時に一度だけ呼ばれる初期化関数
-	/// </summary>
-	/// <param name="input">入力クラス</param>
-	virtual void Init(Input& input)override;
 
-	/// <summary>
-	/// 毎フレーム状態を更新する
-	/// </summary>
-	/// <param name="input">入力クラス</param>
-	virtual void Update(Input& input)override;
-
-	/// <summary>
-	/// 毎フレーム描画する
-	/// </summary>
-	virtual void Draw(void)override;
-
-	virtual void DrawUI(void)override;
+	void Init(Input& input)override;
+	void Update(Input& input)override;
+	void Draw(void)override;
+	void DrawUI(void)override;
 
 private:
 
+	// タイトル画像
 	int titleH_;
-	int frame_ = 0;
+	
+	// タイトルサウンド
 	int soundH_;
 
+	// 現在のインデックス
 	int currentIndex_ = 0;
+
 	//メニューの文字列と関数のテーブル
 	using MenuFunc_t = std::function<void(Input&)>;
-	std::vector<std::wstring> menuList_;
-	std::map<std::wstring, MenuFunc_t> menuFuncTable_;
 
+	// タイトルメニューの配列
+	std::vector<std::wstring> menuList_;
+
+	// メニューテーブル
+	std::map<std::wstring, MenuFunc_t> menuFuncTable_;
 
 	//メンバ関数ポインタ型の別名を定義
 	using UpdateFunc_t = void (TitleScene::*)(Input&);
 	using DrawFunc_t = void(TitleScene::*)();
 	
-	UpdateFunc_t update_;//Update用のメンバ関数ポインタ
-	DrawFunc_t draw_;//Draw用のメンバ関数ポインタ
+	//Update用のメンバ関数ポインタ
+	UpdateFunc_t update_;
 
-	//切り替えるべき関数を書いていく
-	void FadeInUpdate(Input&);//フェードイン
-	void NormalUpdate(Input&);//通常(入力受付)
-	void FadeOutUpdate(Input&);//フェードアウト
+	//Draw用のメンバ関数ポインタ
+	DrawFunc_t draw_;
 
-	void FadeDraw();//フェード時の描画
-	void NormalDraw();//通常時の描画
+	// 更新関数
+	//フェードイン
+	void FadeInUpdate(Input&);
+
+	//通常(入力受付)
+	void NormalUpdate(Input&);
+	
+	//フェードアウト
+	void FadeOutUpdate(Input&);
+
+	// 描画関数
+	//フェード時の描画
+	void FadeDraw();
+
+	//通常時の描画
+	void NormalDraw();
 
 	void DrawMenuList(void);
 

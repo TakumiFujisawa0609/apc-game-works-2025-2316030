@@ -111,9 +111,9 @@ void TitleScene::NormalUpdate(Input& input)
 
 void TitleScene::FadeOutUpdate(Input& input)
 {
-	if (++frame_ >= fade_interval) {//‘JˆÚğŒ
+	if (++frame_ >= fade_interval){ 
 		controller_.ChangeScene(std::make_shared<GameScene>(controller_), input);
-		return;//ƒV[ƒ“‚ğ“ü‚ê‘Ö‚¦‚½‚çˆ—‚ğ‘Å‚¿Ø‚é
+		return;
 	}
 }
 

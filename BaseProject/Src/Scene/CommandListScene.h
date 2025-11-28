@@ -6,9 +6,9 @@ class CommandListScene :
 public:
     CommandListScene(SceneController& controller);
 
-    virtual void Init(Input& input)override;
-    virtual void Update(Input& input)override;
-    virtual void Draw(void)override;
-    virtual void DrawUI(void)override;
+    void Init(Input& input)override;
+    void Update(Input& input)override;
+    void Draw(void)override;
+    void DrawUI(void)override;
 };
 
