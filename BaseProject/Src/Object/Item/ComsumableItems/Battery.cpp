@@ -42,8 +42,6 @@ void Battery::Init(void)
 
 void Battery::Update(float deltaTime)
 {
-	// モデル情報の動機
-
 	// それぞれの状態での更新
 	UpdateState(deltaTime);
 
@@ -59,13 +57,12 @@ void Battery::Draw(void)
 		MV1DrawModel(transform_.modelId);
 		return;
 	}
-	//DrawSphere3D(transform_.pos, 32, 16, GetColor(255, 0, 255), GetColor(255, 0, 255), false);
 }
 
 void Battery::Use(void)
 {
-	isDisabled_ = true;
 	hLight_.lock()->ChangeBattery(100);
+	isDisabled_ = true;
 }
 
 void Battery::SetHandLight(std::shared_ptr<HandLight> light)
@@ -88,7 +85,6 @@ void Battery::UpdateInVentory(float deltaTime)
 void Battery::UpdateInUse(float deltaTime)
 {
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
-
 }
 
 void Battery::UpdateUsedUp(float deltaTime)

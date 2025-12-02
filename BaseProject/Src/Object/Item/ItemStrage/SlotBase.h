@@ -17,8 +17,7 @@ public:
 	void Draw(void);
 
 	template<typename U>
-	bool AddItem(std::shared_ptr<U> item)
-	{
+	bool AddItem(std::shared_ptr<U> item){
 		// UがItemBaseを継承していることをコンパイル時に確認
 		static_assert(std::is_base_of_v<ItemBase, U>, "U must be derived from ItemBase");
 
@@ -30,14 +29,12 @@ public:
 		slots_.push_back(compatibleItem);
 
 		// ItemBase側にスロットのオーナーとインデックスを設定
-		if (compatibleItem)
-		{
+		if (compatibleItem){
 			compatibleItem->SetOwnerSlot(shared_from_this(), newIndex);
 		}
 
 		// 最初のアイテムが追加された場合、それを選択状態にする
-		if (currentSelectedIndex_ == -1)
-		{
+		if (currentSelectedIndex_ == -1){
 			currentSelectedIndex_ = newIndex;
 			// 初期状態をINUSEにする（選択状態）
 			compatibleItem->ChangeState(ItemBase::STATE::ININVENTORY);
@@ -47,7 +44,6 @@ public:
 			// 2つ目以降はININVENTORY状態にする
 			compatibleItem->ChangeState(ItemBase::STATE::ININVENTORY);
 			compatibleItem->ChangeUse(ItemBase::USE::NONE);
-
 		}
 
 		return true;

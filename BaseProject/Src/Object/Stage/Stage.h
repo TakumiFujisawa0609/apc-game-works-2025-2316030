@@ -4,12 +4,9 @@
 class Player;
 class EnemyBase;
 class HandLight;
-
 class PatrolNode;
 class PatrolPath;
-
 class NavGridManager;
-
 class LightRenderer;
 
 class Stage :
@@ -17,11 +14,11 @@ class Stage :
 {
 public:
 	Stage(Player& player, EnemyBase& enemyBase);
-	virtual ~Stage(void);
-	virtual void Init(void) override;
-	virtual void Update(float deltaTime) override;
-	virtual void OnUpdate(float deltaTime) override;
-	virtual void Draw(void) override;
+	~Stage(void);
+	void Init(void) override;
+	void Update(float deltaTime) override;
+	void OnUpdate(float deltaTime) override;
+	void Draw(void) override;
 
 	// 使用するハンドライトを設定する
 	void SetCurrentHandLight(std::shared_ptr<HandLight> light);

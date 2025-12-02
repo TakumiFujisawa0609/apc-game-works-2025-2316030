@@ -25,10 +25,17 @@ public:
 	float GetDepletionRate(void) const;
 
 private:
-	float value_;		// 現在の値
-	float maxValue_;	// 最大値
-	float depletionRate_; // 消費率（秒あたりの減少量）
-	bool isDepleted_;	// 値切れフラグ
 
+	// 現在の値
+	float value_;
+
+	// 最大値
+	float maxValue_;
+
+	// 消費率（秒あたりの減少量）
+	float depletionRate_;
+
+	// 値切れフラグ
+	bool isDepleted_;
 };
 

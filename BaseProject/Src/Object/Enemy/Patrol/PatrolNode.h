@@ -4,17 +4,12 @@
 class PatrolNode
 {
 public:
-	struct Vector3
-	{
-		float x, y, z;
-	};
 
-	enum class ACTTYPE
-	{
-		NONE,
-		LOCKAROUND,
-		LISTEN,
-		TRIGGEREVENT
+	enum class ACTTYPE{
+		NONE,			// なし
+		LOCKAROUND,		// 見渡す
+		LISTEN,			// 音を聞く
+		TRIGGEREVENT	// イベント発生
 	};
 
 	PatrolNode(VECTOR pos, float time, ACTTYPE type);
@@ -34,8 +29,13 @@ public:
 
 private:
 
-	VECTOR pos_;		//	ワールド座標
-	float waitTime_;	// 到達した後、次に移動を開始するまでの時間
-	ACTTYPE actionType_;	// このノードで実行する特殊行動
+	//	ワールド座標
+	VECTOR pos_;
+
+	// 到達した後、次に移動を開始するまでの時間
+	float waitTime_;
+
+	// このノードで実行する特殊行動
+	ACTTYPE actionType_;
 };
 

@@ -119,6 +119,8 @@ public:
 	bool IsPadBtnTrgDown(JOYPAD_NO no, JOYPAD_BTN btn) const;
 	bool IsPadBtnTrgUp(JOYPAD_NO no, JOYPAD_BTN btn) const;
 
+
+	// ƒzƒC[ƒ‹‚Ì•Ï‰»—Ê‚ğæ“¾
 	int GetWheelDelta() const;
 private:
 

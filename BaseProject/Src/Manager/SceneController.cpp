@@ -24,7 +24,7 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 		scenes_.back() = scene;
 	}
 
-	auto& sizeW = Config::GetInstance().GetWindowSize();
+	const auto& sizeW = Config::GetInstance().GetWindowSize();
 
 	// 新しいシーン用のスクリーンの作成
 	mainScreen_ = MakeScreen(sizeW.width_, sizeW.height_, true);
@@ -41,7 +41,8 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 	SetDrawValidFloatTypeGraphCreateFlag(FALSE);
 	SetCreateGraphChannelBitDepth(0);
 
-	scenes_.back()->Init(input);//シーンの初期化
+	//シーンの初期化
+	scenes_.back()->Init(input);
 
 	Application::GetInstance().ResetDeltaTime();
 }
@@ -76,7 +77,7 @@ void SceneController::DrawUI(void)
 
 void SceneController::PushScene(std::shared_ptr<Scene> scene, Input& input)
 {
-	auto size = Config::GetInstance().GetWindowSize();
+	const auto& size = Config::GetInstance().GetWindowSize();
 
 	// 新しい裏画面を作成
 	mainScreen_=MakeScreen(size.width_, size.height_, true);
@@ -114,7 +115,7 @@ void SceneController::JumpScene(std::shared_ptr<Scene> scene, Input& input)
 	scenes_.clear();
 	scenes_.push_back(scene);
 
-	auto sizeW = Config::GetInstance().GetWindowSize();
+	const auto& sizeW = Config::GetInstance().GetWindowSize();
 	int newScreenH = MakeScreen(sizeW.width_, sizeW.height_);
 	scenes_.back()->SetRenderTarget(newScreenH);
 
@@ -144,5 +145,3 @@ int SceneController::GetDepthScreen(void) const
 {
 	return depthScreen_;
 }
-
-

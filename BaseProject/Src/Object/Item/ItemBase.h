@@ -11,16 +11,16 @@ class ItemBase :
 {
 public:
 
-	enum class STATE
-	{
+	// アイテムの所持状態
+	enum class STATE{
 		NONE,		// なし
 		ONSTAGE,	// 拾うことができる状態
 		ININVENTORY// UIに表示され、使用装備が可能
 	};
 
-	enum class USE	// インベントリ状態で判別される状態
-	{
-		NONE,
+	// インベントリ状態で判別される状態
+	enum class USE	{
+		NONE,		// なし
 		INUSE,		// 現在使用中
 		USEDUP,		// 使用済みでインベントリから削除される状態
 	};
@@ -58,26 +58,36 @@ public:
 	// インベントリ内での状態の取得
 	virtual USE GetUse(void) const;
 
+	// UI描画
 	virtual void DrawUI(void);
 
 	// ランダム生成時の座標位置の設定
 	virtual void SetPos(VECTOR pos);
 
 protected:
-	int imgH_;			// 画像ハンドル
-	bool isOnStage_;	// ステージにあるかどうか
-	bool isEquipment_;	// 装備中かどうか
-	bool isEfficacy_;	// 効果があるかどうか
-	bool isDisabled_;	// 使用できるかどうか
 
-	bool isInUse_;		// 
-	bool isUsed_;		// 
+	// 画像ハンドル
+	int imgH_;
 
+	// ステージにあるかどうか
+	bool isOnStage_;
+
+	// 装備中かどうか
+	bool isEquipment_;
+
+	// 効果があるかどうか
+	bool isEfficacy_;
+
+	// 使用できるかどうか
+	bool isDisabled_;
+
+	// プレイヤー
 	Player& player_;
 
-	// 状態
+	// 所持状態
 	STATE state_;
 
+	// インベントリ内状態
 	USE use_;
 
 	// 追従対象の座標
@@ -102,8 +112,11 @@ protected:
 	virtual void FollowTarget(float deltaTime,VECTOR targetPos);
 	
 	// アイテムスロット
-	std::weak_ptr<SlotBase> ownerSlot_;		// スロット
-	int slotIndex_;							// スロット数
+	// スロット
+	std::weak_ptr<SlotBase> ownerSlot_;
+
+	// スロット数
+	int slotIndex_;
 
 };
 

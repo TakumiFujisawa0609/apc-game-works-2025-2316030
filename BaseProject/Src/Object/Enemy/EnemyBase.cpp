@@ -14,8 +14,7 @@
 #include "../Player/Player.h"
 #include "EnemyBase.h"
 
-const std::map<EnemyBase::STATE, const wchar_t*>stateNames =
-{
+const std::map<EnemyBase::STATE, const wchar_t*>stateNames ={
     {EnemyBase::STATE::PATROL,L"PATROL"},
     {EnemyBase::STATE::CHASE,L"CHASE"},
     {EnemyBase::STATE::ATTACK,L"ATTACK"},
@@ -55,9 +54,8 @@ void EnemyBase::Init(void)
     transform_.MakeCollider(Collider::TYPE::ENEMY);
 
     // 状態の初期化
-
-    moveSpeed_ = 8.0f; // 移動速度
-    moveDir_ = AsoUtility::VECTOR_ZERO; // 移動方向
+    moveSpeed_ = WALK_SPEED;
+    moveDir_ = AsoUtility::VECTOR_ZERO;
     movedPos_ = transform_.pos;
 
     state_ = STATE::IDLE;
@@ -379,7 +377,6 @@ bool EnemyBase::HearingSound(void)
 
 void EnemyBase::DrawDebug(void)
 {
-
     // ラジアンに変換
     float viewRad = AsoUtility::Deg2RadF(VIEW_ANGLE);
 
@@ -442,7 +439,6 @@ void EnemyBase::DrawDebug(void)
 
     //DrawTriangle3D(pos0, Apos1, Apos2, 0xff4500, true);
     //DrawTriangle3D(pos0, Apos3, Apos1, 0xff4500, true);
-
 
 #pragma endregion
 }
@@ -592,12 +588,13 @@ void EnemyBase::UpdateChase(float deltaTime)
     // 補間速度をCHASEに合わせて調整
     transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 7.0f * deltaTime); // 5.0fから7.0fに少し上げる
 
-
 }
 
 std::vector<VECTOR> EnemyBase::FindPath(VECTOR startPos, VECTOR endPos)
 {
-    if (!navGridManager_) return {};
+    if (!navGridManager_) {
+        return {};
+    }
 
     // 探索前のノードリセット
     navGridManager_->ResetAllNodes();
@@ -668,8 +665,7 @@ std::vector<AStarNode*> EnemyBase::GetNeighbors(AStarNode* node)
     int checkX[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
     int checkZ[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 
-    for (int i = 0; i < 8; ++i)
-    {
+    for (int i = 0; i < 8; ++i){
         int neighborX = node->gridX_ + checkX[i];
         int neighborZ = node->gridZ_ + checkZ[i];
 

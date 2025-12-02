@@ -63,8 +63,7 @@ void Lockpick::Draw(void)
 {
 
 	if (GetState() == STATE::ONSTAGE ||
-		GetUse() != USE::NONE)
-	{
+		GetUse() != USE::NONE){
 		MV1DrawModel(transform_.modelId);
 		auto& size = Config::GetInstance().GetWindowSize();
 		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
@@ -91,8 +90,7 @@ void Lockpick::UpdateOnStage(float deltaTime)
 
 
 	//拾われるとUpdateInVentoryに遷移
-	if (!isOnStage_)
-	{
+	if (!isOnStage_){
 		ChangeState(STATE::ININVENTORY);
 	}
 }
@@ -173,14 +171,12 @@ void Lockpick::SetDefault(void)
 
 void Lockpick::UpdateUnlock(float deltaTime)
 {
-	if (isDefault_)
-	{
+	if (isDefault_){
 		SetDefault();
 	}
 
 	// 回転割合
-	if (isUnlocking_ && isSuccess_)
-	{
+	if (isUnlocking_ && isSuccess_){
 		//// 目標角度を例えば -30度 (度からラジアンに変換)
 		//const float GOAL_ROT = AsoUtility::Deg2RadF(-30.0f);
 		//// 回転速度

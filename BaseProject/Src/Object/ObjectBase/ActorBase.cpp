@@ -16,8 +16,7 @@ ActorBase::~ActorBase(void)
 
 void ActorBase::Update(float deltaTime)
 {
-	for (auto& comp : components_)
-	{
+	for (auto& comp : components_){
 		comp->Update(deltaTime);
 	}
 	OnUpdate(deltaTime);

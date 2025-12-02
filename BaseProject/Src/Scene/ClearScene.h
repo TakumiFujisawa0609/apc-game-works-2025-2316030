@@ -8,15 +8,15 @@ public:
 	ClearScene(SceneController& controller);
 	~ClearScene();
 
-	virtual void Init(Input& input)override;
-	virtual void Update(Input& input)override;
-	virtual void Draw(void)override;
-	virtual void DrawUI(void)override;
+	void Init(Input& input)override;
+	void Update(Input& input)override;
+	void Draw(void)override;
+	void DrawUI(void)override;
 
 private:
 
-	int imgH_ = 0;
-	int soundH_;
+	int imgH_ = -1;
+	int soundH_ = -1;
 	using UpdateFunc_t = void(ClearScene::*)(Input& input);
 	using DrawFunc_t = void(ClearScene::*)();
 

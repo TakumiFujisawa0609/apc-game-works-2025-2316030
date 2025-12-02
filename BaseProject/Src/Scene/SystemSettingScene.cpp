@@ -8,9 +8,9 @@
 #include "../Manager/InputManager.h"
 #include"../Input.h"
 namespace {
-	constexpr int appear_interval = 20;//出現までのフレーム
-	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
-	constexpr int margin_size = 20;//ポーズメニュー枠の余白
+	constexpr int appear_interval = 20;			//出現までのフレーム
+	constexpr int input_list_row_height = 40;	//メニューの１つあたりの高さ
+	constexpr int margin_size = 20;				//ポーズメニュー枠の余白
 }
 
 
@@ -19,9 +19,11 @@ auto& ins = InputManager::GetInstance();
 SystemSettingScene::SystemSettingScene(SceneController& controller)
 	:
 	Scene(controller),
-	config_(Config::GetInstance())
+	config_(Config::GetInstance()),
+	mouseSensitivity_(config_.GetMouseSensitivity()),
+	isVibration_(config_.isJoyPadVibrationFlag()),
+	bgmVolume_()
 {
-	mouseSensitivity_ = config_.GetMouseSensitivity();
 	isVibration_ = config_.isJoyPadVibrationFlag();
 	bgmVolume_ = config_.GetBGMVolume();
 	seVolume_ = config_.GetSEVolume();

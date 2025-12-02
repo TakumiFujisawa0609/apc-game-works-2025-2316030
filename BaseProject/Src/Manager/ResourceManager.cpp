@@ -7,8 +7,7 @@ ResourceManager* ResourceManager::instance_ = nullptr;
 
 void ResourceManager::CreateInstance(void)
 {
-	if (instance_ == nullptr)
-	{
+	if (instance_ == nullptr){
 		instance_ = new ResourceManager();
 	}
 	instance_->Init();
@@ -109,8 +108,7 @@ void ResourceManager::Init(void)
 
 void ResourceManager::Release(void)
 {
-	for (auto& p : loadedMap_)
-	{
+	for (auto& p : loadedMap_){
 		p.second.Release();
 	}
 
@@ -120,8 +118,7 @@ void ResourceManager::Release(void)
 void ResourceManager::Destroy(void)
 {
 	Release();
-	for (auto& res : resourcesMap_)
-	{
+	for (auto& res : resourcesMap_){
 		res.second->Release();
 		//delete res.second;
 	}
@@ -132,8 +129,7 @@ void ResourceManager::Destroy(void)
 const Resource& ResourceManager::Load(const SRC& src)
 {
 	Resource& res = _Load(src);
-	if (res.type_ == Resource::TYPE::NONE)
-	{
+	if (res.type_ == Resource::TYPE::NONE){
 		return dummy_;
 	}
 	return res;
@@ -142,8 +138,7 @@ const Resource& ResourceManager::Load(const SRC& src)
 int ResourceManager::LoadModelDuplicate(const SRC& src)
 {
 	Resource& res = _Load(src);
-	if (res.type_ == Resource::TYPE::NONE)
-	{
+	if (res.type_ == Resource::TYPE::NONE){
 		return -1;
 	}
 
@@ -162,15 +157,13 @@ Resource& ResourceManager::_Load(SRC src)
 
 	// ロード済みチェック
 	const auto& lPair = loadedMap_.find(src);
-	if (lPair != loadedMap_.end())
-	{
+	if (lPair != loadedMap_.end()){
 		return *resourcesMap_.find(src)->second;
 	}
 
 	// リソース登録チェック
 	const auto& rPair = resourcesMap_.find(src);
-	if (rPair == resourcesMap_.end())
-	{
+	if (rPair == resourcesMap_.end()){
 		// 登録されていない
 		return dummy_;
 	}

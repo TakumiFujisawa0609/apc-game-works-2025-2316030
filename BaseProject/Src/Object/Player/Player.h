@@ -4,15 +4,8 @@
 // 入力系
 class TimeLimitComponent;
 class PlayerInput;
-
-//// インベントリ
-//class Inventory;
-
 class HandLight;
-
-// 描画系
 class UIComponent;
-
 class Collider;
 class Capsule;
 
@@ -22,12 +15,20 @@ class Player
 {
 public:
 
-	static constexpr float MOVE_WALK_SPEED = 5.0f;				// 歩きスピード
-	static constexpr float MOVE_RUN_SPEED = 10.0f;				// 走りスピード
-	static constexpr float MOUSE_SENSITIVITY = 0.002f;			// マウス感度
+	// 歩きスピード
+	static constexpr float MOVE_WALK_SPEED = 5.0f;
 
-	static constexpr float MAX_SAN_VALUE = 50.0f;				// 最大正気度
-	static constexpr float MAX_HP = 100.0f;						// 最大HP
+	// 走りスピード
+	static constexpr float MOVE_RUN_SPEED = 10.0f;
+
+	// マウス感度
+	static constexpr float MOUSE_SENSITIVITY = 0.002f;
+
+	// 最大正気度
+	static constexpr float MAX_SAN_VALUE = 50.0f;
+
+	// 最大HP
+	static constexpr float MAX_HP = 100.0f;
 
 	Player(void);
 	~Player(void);

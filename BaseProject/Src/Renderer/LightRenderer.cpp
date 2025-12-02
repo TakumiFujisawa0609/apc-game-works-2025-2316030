@@ -20,17 +20,13 @@ LightRenderer::~LightRenderer(void)
 
 void LightRenderer::InitLightRenderer(const TYPE& type, int modelId)
 {
-
-    float OutAngle = 0.5f;
-    float InAngle = 0.15f;
-    float Range = 500.0f;
-    float Atten0 = 0.5f;
-    float Atten1 = 0.0005f;
-    float Atten2 = 0.001f;
-
+    // ライト位置の取得
     VECTOR pos = light_->GetTransform().pos;
+    
+    // ライト方向の取得
     VECTOR dir = light_->GetTransform().quaRot.GetForward();
 
+    // メインライトをスポットライトに変更
     ChangeLightTypeSpot(
         VGet(pos.x, pos.y, pos.z),
         VGet(dir.x, dir.y, dir.z),
@@ -41,26 +37,30 @@ void LightRenderer::InitLightRenderer(const TYPE& type, int modelId)
         ATTEN1,
         ATTEN2);
 
-        SetGlobalAmbientLight(GetColorF(0.0f, 0.0f, 0.0f, 0.0f));
+    // メインライトの環境光の設定
+    SetGlobalAmbientLight(GetColorF(0.0f, 0.0f, 0.0f, 0.0f));
 
-        material_ = std::make_unique<ModelMaterial>(L"NormalMeshSpotLightVS.cso", 2, L"SpotLightPS.cso", 3);
-        if (type == TYPE::SKINING) {
-            material_ = std::make_unique<ModelMaterial>(L"SkinMeshSpotLightVS.cso", 2, L"SpotLightPS.cso", 3);
-        }
-        VECTOR cPos = Application::GetInstance().GetCamera()->GetPos();
-        auto& fog = Application::GetInstance().GetFog();
-        material_->AddConstBufVS({ cPos.x,cPos.y,cPos.z,0.0f });
-        material_->AddConstBufVS({ fog.fogStart_,fog.fogEnd_,0.0f,0.0f });
+    material_ = std::make_unique<ModelMaterial>(L"NormalMeshSpotLightVS.cso", 2, L"SpotLightPS.cso", 3);
+    if (type == TYPE::SKINING) {
+        material_ = std::make_unique<ModelMaterial>(L"SkinMeshSpotLightVS.cso", 2, L"SpotLightPS.cso", 3);
+    }
+    VECTOR cPos = Application::GetInstance().GetCamera()->GetPos();
+    auto& fog = Application::GetInstance().GetFog();
+    material_->AddConstBufVS({ cPos.x,cPos.y,cPos.z,0.0f });
+    material_->AddConstBufVS({ fog.fogStart_,fog.fogEnd_,0.0f,0.0f });
 
-        material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
-        material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
-        float currentTime = GetNowCount() / 1000.0f;
-        float sin_value = (std::sin(5.0f * currentTime) + 1.0f) / 2.0f;
-        blinkIntensity_ = 0.2f + (1.0f - 0.2f) * sin_value;
-        material_->AddConstBufPS({ blinkIntensity_,0.0f,0.0f,0.0f });
-        material_->SetWriteDepth(false);
+    material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
+    material_->AddConstBufPS({ 0.3f,0.3f,0.3f,1.0f });
 
-        renderer_ = std::make_unique<ModelRenderer>(modelId, *material_);
+    // 点滅強度の設定
+    float currentTime = GetNowCount() / 1000.0f;
+    float sin_value = (std::sin(5.0f * currentTime) + 1.0f) / 2.0f;
+    blinkIntensity_ = 0.2f + (1.0f - 0.2f) * sin_value;
+    
+    material_->AddConstBufPS({ blinkIntensity_,0.0f,0.0f,0.0f });
+    material_->SetWriteDepth(false);
+
+    renderer_ = std::make_unique<ModelRenderer>(modelId, *material_);
 }
 
 void LightRenderer::UpdateRenderer(float deltaTime, bool isActive)
@@ -82,7 +82,6 @@ void LightRenderer::UpdateRenderer(float deltaTime, bool isActive)
     material_->SetConstBufVS(0, { cPos.x,cPos.y,cPos.z,0.0f });
     auto& fog = Application::GetInstance().GetFog();
     material_->SetConstBufVS(1, { fog.fogStart_,fog.fogEnd_,0.0f,0.0f });
-
 
     float raito = light_->GetRemainingPercentage();
     if (isActive) {

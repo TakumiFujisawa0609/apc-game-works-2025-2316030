@@ -37,15 +37,15 @@ void Keyhole::OnUpdate(float deltaTime)
     // Lerp‚Å‰ñ“]
     float diff = goalRotZ - currentRotZ;
 
-    if (std::abs(diff) > 0.001f)
-    {
+    if (std::abs(diff) > 0.001f){
         float delta = diff * LERP_RATE;
         // –Ú•W‚ð’´‚¦‚È‚¢‚æ‚¤‚É•â³
-        if (std::abs(delta) > std::abs(diff)) { delta = diff; }
+        if (std::abs(delta) > std::abs(diff)) {
+            delta = diff; 
+        }
         currentRotZ += delta;
     }
-    else
-    {
+    else{
         currentRotZ = goalRotZ;
     }
 

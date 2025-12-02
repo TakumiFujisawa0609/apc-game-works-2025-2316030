@@ -34,17 +34,29 @@ public:
        float moveSpeed,
        Quaternion& outRotation);
 
+   // œpœjƒm[ƒh‚Æ‚Ì‹——£‚ğæ“¾
    float GetDis(void);
+
+   // Œ»İ‚Ìœpœjƒm[ƒh
    int GetCurrentNode(void);
 
    void DrawDebug(std::shared_ptr<PatrolPath> path, int currentIndex);
 
 private:
-    bool isWaiting_;            // ‘Ò‹@’†‚©‚Ç‚¤‚©
-    float currentWaitTime_;     // Œ»İ‚Ì‘Ò‹@c‚èŠÔ
-    Quaternion outRotation_;    // ‰ñ“]Šp“x
 
+    // ‘Ò‹@’†‚©‚Ç‚¤‚©
+    bool isWaiting_;
+
+    // Œ»İ‚Ì‘Ò‹@c‚èŠÔ
+    float currentWaitTime_;
+
+    // ‰ñ“]Šp“x
+    Quaternion outRotation_;
+
+    // œpœjƒm[ƒh‚Æ‚Ì‹——£
     float dis_;
+
+    // Œ»İ‚Ìœpœjƒm[ƒh
     int currentNode_;
 
     // üˆÍ‚ğŒ©‰ñ‚·

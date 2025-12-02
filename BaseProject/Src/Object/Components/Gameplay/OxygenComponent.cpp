@@ -20,7 +20,9 @@ TimeLimitComponent::~TimeLimitComponent()
 
 void TimeLimitComponent::Update(float deltaTime)
 {
-	if (isDepleted_) return;
+	if (isDepleted_) {
+		return;
+	}
 
 	// ŠÔ‚ªŒ¸­‚·‚éˆ—
 	value_ -= depletionRate_ * deltaTime;
@@ -38,7 +40,9 @@ float TimeLimitComponent::GetTimeValue(void) const
 
 void TimeLimitComponent::AddTimeValue(float amount)
 {
-	if (isDepleted_) return;
+	if (isDepleted_) {
+		return;
+	}
 	value_ = std::clamp(value_ + amount, 0.0f, maxValue_);
 }
 
@@ -50,7 +54,9 @@ bool TimeLimitComponent::IsTimeDepleted() const
 void TimeLimitComponent::Consume(float deltaTime)
 {
 	value_ -= depletionRate_ * deltaTime;
-	if (value_ < 0.0f)value_ = 0.0f;
+	if (value_ < 0.0f) {
+		value_ = 0.0f;
+	}
 }
 
 float TimeLimitComponent::GetDepletionRate(void) const

@@ -9,17 +9,25 @@ class HandLight :
 {
 public:
 
-    enum class TYPE
-    {
+    enum class TYPE{
         REGIDBODY,
         SKINING
     };
 
-    static constexpr VECTOR INIT_POS = { -500.0f, 150.0f, 150.0f };              // 初期座標
-    static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };           // 初期拡大率
-    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };    // 初期ローカル回転
+    // 初期座標
+    static constexpr VECTOR INIT_POS = { -500.0f, 150.0f, 150.0f };
+    
+    // 初期拡大率
+    static constexpr VECTOR INIT_SCL = { 0.05f,0.05f,0.05f };
+    
+    // 初期ローカル回転
+    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,-90.0f,0.0f };
 
+    // バッテリー残量
     static constexpr float MAX_VALUE = 100.0f;
+
+    // 0.2秒間のクールダウン
+    const float TOGGLE_COOLDOWN = 0.2f;
 
     // 調整用座標
     static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
@@ -52,12 +60,14 @@ private:
     std::unique_ptr<ModelMaterial> material_;
     std::unique_ptr<ModelRenderer> renderer_;
 
-    float value_;     // 残量
-    float blinkIntensity_;// 点滅強度
+    // 残量
+    float value_;
 
+    // クリック受け付けが可能かどうか
     bool canToggle_;
-    const float TOGGLE_COOLDOWN = 0.2f; // 0.2秒間のクールダウン
-    float toggleTimer_;                 // クリック受け付け
+
+    // クリック受け付け
+    float toggleTimer_;
 
 };
 

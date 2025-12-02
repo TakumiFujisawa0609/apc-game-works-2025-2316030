@@ -11,8 +11,7 @@ public:
 	static constexpr float SPEED_ALPHA = 5.0f;
 
 	// 状態
-	enum class STATE
-	{
+	enum class STATE{
 		NONE,
 		FADE_OUT,	// 徐々に暗転
 		FADE_IN		// 徐々に明転
@@ -37,7 +36,7 @@ public:
 	void SetLoadingBarFrame(int loadingBarFrame);
 private:
 
-
+	// リソースマネージャ参照
 	ResourceManager& resMng_;
 
 	// 状態

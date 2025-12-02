@@ -48,9 +48,10 @@ void Stage::Init(void)
 
 void Stage::Update(float deltaTime)
 {
+	// 当たり判定の設定
+
 	player_.ClearCollider();
 	player_.AddCollider(transform_.collider);
-
 
 	eBase_.ClearCollider();
 	eBase_.AddCollider(transform_.collider);
@@ -59,12 +60,12 @@ void Stage::Update(float deltaTime)
 	eBase_.SetObstacle(obstacles_);
 	//eBase_.SetNavGridManagedr(navManager_);
 
-
 	OnUpdate(deltaTime);
 }
 
 void Stage::OnUpdate(float deltaTime)
 {
+	// ライトシェーダ―の更新バッファ
 	renderer_->UpdateRenderer(deltaTime, handLight_.lock().get()->IsActive());
 }
 
@@ -125,7 +126,6 @@ void Stage::Draw(void)
 #endif // _DEBUGe
 
 
-
 }
 
 void Stage::SetCurrentHandLight(std::shared_ptr<HandLight> light)
@@ -178,6 +178,8 @@ void Stage::InitPatrolInfo(void)
 
 	navManager_ = std::make_shared<NavGridManager>();
 	navManager_->InitGrid(100, 100, 200);
+
+	// 障害物判定の設定
 	//navManager_->CheckObstacles(obstacles_);
 }
 

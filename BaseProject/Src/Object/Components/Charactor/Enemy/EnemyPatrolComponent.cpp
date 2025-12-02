@@ -28,8 +28,7 @@ void EnemyPatrolComponent::Update(float deltaTime)
 	// 敵ベースを取得
 	std::shared_ptr<ActorBase> owner = this->GetOwner().lock();
 
-	if (!owner)
-	{
+	if (!owner){
 		return;
 	}
 
@@ -52,10 +51,14 @@ void EnemyPatrolComponent::Update(float deltaTime)
 void EnemyPatrolComponent::Patrol(float deltaTime, Transform& transform, std::shared_ptr<PatrolPath> path, int& currentIndex, VECTOR& moveDir, VECTOR& movePow, float moveSpeed, Quaternion& outRotation)
 {
     std::shared_ptr<Charactor> owner = this->GetCharactor().lock();
-    if (!owner || !path)return;
+    if (!owner || !path) {
+        return;
+    }
 
     EnemyBase* enemyBase = static_cast<EnemyBase*>(owner.get());
-    if (!enemyBase) return;
+    if (!enemyBase) {
+        return;
+    }
 
     // outMoveDirを初期化 (移動しない場合のため)
     moveDir = AsoUtility::VECTOR_ZERO;
@@ -68,20 +71,17 @@ void EnemyPatrolComponent::Patrol(float deltaTime, Transform& transform, std::sh
     // ----------------------------------------------------
     // 待機処理
     // ----------------------------------------------------
-    if (isWaiting_)
-    {
+    if (isWaiting_){
         currentWaitTime_ -= deltaTime;
 
-        if (currentWaitTime_ <= 0.0f)
-        {
+        if (currentWaitTime_ <= 0.0f){
             // 待機終了。次のノードへ進む
             isWaiting_ = false;
 
             // 状態をPATROL（移動）に戻す
             //enemyBase->ChangeState(EnemyBase::STATE::PATROL);
         }
-        else
-        {
+        else{
             // 次のノードのインデックスを更新
             path->GetNextNode(currentIndex);
             currentNode_ = currentIndex;
@@ -109,8 +109,7 @@ void EnemyPatrolComponent::Patrol(float deltaTime, Transform& transform, std::sh
     dis_ = distance;
 
     // 目標位置に到達したかをチェック（許容誤差1.0f）
-    if (distance < 5.5f)
-    {
+    if (distance < 5.5f){
         // 目標に到達したら待機状態に遷移
         isWaiting_ = true;
         currentWaitTime_ = targetNode.GetWaitTime();
@@ -130,8 +129,7 @@ void EnemyPatrolComponent::Patrol(float deltaTime, Transform& transform, std::sh
         //    //enemyBase->ChangeState(EnemyBase::STATE::IDLE);
         //}
     }
-    else
-    {
+    else{
         // 移動方向を設定 (出力)
         VECTOR moveDirection = VNorm(moveVector);
         moveDir = moveDirection;

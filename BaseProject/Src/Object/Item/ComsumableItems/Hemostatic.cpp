@@ -42,8 +42,6 @@ void Hemostatic::Init(void)
 
 void Hemostatic::Update(float deltaTime)
 {
-	// モデル情報の動機
-
 	// それぞれの状態での更新
 	UpdateState(deltaTime);
 
@@ -54,11 +52,9 @@ void Hemostatic::Update(float deltaTime)
 void Hemostatic::Draw(void)
 {
 	if (GetState() == STATE::ONSTAGE ||
-		GetUse() != USE::NONE)
-	{
+		GetUse() != USE::NONE){
 		MV1DrawModel(transform_.modelId);
 		auto& size = Config::GetInstance().GetWindowSize();
-		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
 	}
 }
@@ -72,7 +68,6 @@ void Hemostatic::Use(void)
 void Hemostatic::OnUpdate(float deltaTime)
 {
 	ConsumableItemBase::UpdateOnStage(deltaTime);
-
 }
 
 void Hemostatic::UpdateOnStage(float deltaTime)

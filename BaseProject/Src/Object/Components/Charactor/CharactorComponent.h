@@ -18,7 +18,8 @@ public:
 
 protected:
 
-	std::weak_ptr<Charactor> charaOwner_;	// Charactorを継承したクラス
+	// Charactorを継承したクラス
+	std::weak_ptr<Charactor> charaOwner_;
 
 };
 

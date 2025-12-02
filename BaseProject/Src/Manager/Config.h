@@ -59,11 +59,14 @@ private:
 	Config(void);
 	~Config(void) = default;
 	
+	// インスタンス
 	static Config* instance_;
 
 	// グラフィック関係
 	WindowSize window_;
-	bool isFullS_;	// フルスクリーンであるかどうか
+
+	// フルスクリーンであるかどうか
+	bool isFullS_;	
 
 	// 解像度変更
 	int fullScreenWidth_, fullScreenHeight_;

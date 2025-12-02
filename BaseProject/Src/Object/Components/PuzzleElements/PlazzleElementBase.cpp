@@ -68,7 +68,7 @@ void PlazzleElementBase::InitModel(float distance, VECTOR size, Quaternion quaRo
 	// ワールド座標での座標
 	transform_.pos = modelPos;
 
-	auto sizeW = Config::GetInstance().GetWindowSize();
+	const auto& sizeW = Config::GetInstance().GetWindowSize();
 
 	// スクリーン座標系に変換するためz座標の情報は不要
 	VECTOR worldPos = { static_cast<float>(sizeW.width_ / 2),static_cast<float>(sizeW.height_),0.0f };

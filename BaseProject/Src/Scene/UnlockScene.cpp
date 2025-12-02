@@ -141,7 +141,6 @@ void UnlockScene::NormalUpdate(Input& input)
 			lockpick_->SetIsSuccess(true);
 			lockpick_->UpdateUnlock(time);
 
-
 			// クリア判定を出す
 			update_ = &UnlockScene::DisappearUpdate;
 			draw_ = &UnlockScene::ProcessDraw;
@@ -179,6 +178,7 @@ void UnlockScene::ProcessDraw()
 		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), centerY + frameHalfHeight,
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 	//白枠
 	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(centerY - frameHalfHeight),
 		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(centerY + frameHalfHeight),
@@ -190,17 +190,25 @@ void UnlockScene::NormalDraw()
 	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
+
 	DrawBox(static_cast<int>(wsize.width_ * 0.03125f), static_cast<int>(wsize.height_* 0.04166f),
 		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<int>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xfffffff, true);
+
+#ifdef _DEBUG
+
 	wire_->DrawDebug();
 
+#endif // _DEBUG
+
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
 	//白枠
 	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ * 0.04166f),
 		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xfffffff, false, 3.0f);
-	//DrawString(margin_size + 10, margin_size + 10, L"Pause Scene", 0x0000ff);
+
+	// 解錠の描画
 	LockPickingDraw();
 }
 

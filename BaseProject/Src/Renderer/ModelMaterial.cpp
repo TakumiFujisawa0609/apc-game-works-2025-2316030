@@ -5,7 +5,6 @@ ModelMaterial::ModelMaterial(
 	std::wstring shaderFileNameVS, int constBufFloat4SizeVS,
 	std::wstring shaderFileNamePS, int constBufFloat4SizePS)
 {
-
 	// 頂点シェーダのロード
 	shaderVS_ = LoadVertexShader(
 		(Application::PATH_SHADER + shaderFileNameVS).c_str());
@@ -15,7 +14,6 @@ ModelMaterial::ModelMaterial(
 
 	// 頂点シェーダー用の定数バッファを作成
 	constBufVS_ = CreateShaderConstantBuffer(sizeof(FLOAT4) * constBufFloat4SizeVS);
-
 
 	// ピクセルシェーダのロード
 	shaderPS_ = LoadPixelShader(
@@ -36,60 +34,44 @@ ModelMaterial::ModelMaterial(
 
 void ModelMaterial::AddConstBufVS(const FLOAT4& contBuf)
 {
-
-	if (constBufFloat4SizeVS_ > constBufsVS_.size())
-	{
+	if (constBufFloat4SizeVS_ > constBufsVS_.size()){
 		constBufsVS_.emplace_back(contBuf);
 	}
-
 }
 
 void ModelMaterial::AddConstBufPS(const FLOAT4& contBuf)
 {
-
-	if (constBufFloat4SizePS_ > constBufsPS_.size())
-	{
+	if (constBufFloat4SizePS_ > constBufsPS_.size()){
 		constBufsPS_.emplace_back(contBuf);
 	}
-
 }
 
 void ModelMaterial::SetConstBufVS(int idx, const FLOAT4& contBuf)
 {
-
-	if (idx >= constBufsVS_.size())
-	{
+	if (idx >= constBufsVS_.size()){
 		return;
 	}
 
 	constBufsVS_[idx] = contBuf;
-
 }
 
 void ModelMaterial::SetConstBufPS(int idx, const FLOAT4& contBuf)
 {
-
-	if (idx >= constBufsPS_.size())
-	{
+	if (idx >= constBufsPS_.size()){
 		return;
 	}
 
 	constBufsPS_[idx] = contBuf;
-
 }
 
 void ModelMaterial::SetTextureBuf(int slot, int texDiffuse)
 {
-
-	if (textures_.count(slot) == 0)
-	{
+	if (textures_.count(slot) == 0){
 		textures_.emplace(slot, texDiffuse);
 	}
-	else
-	{
+	else{
 		textures_[slot] = texDiffuse;
 	}
-
 }
 
 const std::vector<FLOAT4>& ModelMaterial::GetConstBufsVS(void) const

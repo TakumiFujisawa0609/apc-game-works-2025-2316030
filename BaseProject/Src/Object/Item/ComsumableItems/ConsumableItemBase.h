@@ -12,7 +12,6 @@ public:
 	void Init(void) override = 0;
 	void Update(float deltaTime) override = 0;
 	void Draw(void) override = 0;
-
 	virtual void Use(void) = 0;
 
 protected:
@@ -24,9 +23,6 @@ protected:
 
 	virtual void UpdateInUse(float deltaTime) = 0;
 	virtual void UpdateUsedUp(float deltaTime) = 0;
-
-
-private:
 
 };
 

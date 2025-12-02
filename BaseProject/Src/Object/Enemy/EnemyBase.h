@@ -15,7 +15,6 @@ class EnemyChaseComponent;
 
 class PatrolNode;
 class PatrolPath;
-
 class NavGridManager;
 
 class Player;
@@ -24,28 +23,49 @@ class EnemyBase :
 {
 public:
 
-    static constexpr VECTOR POS = { -1713.0f,200.0f,2580.0f };          // 座標位置
-    static constexpr VECTOR SCALE = { 1.0f,1.0f ,1.0f };                // 拡大率
-    static constexpr VECTOR QUAROT_LOCAL = { 0.0f,180.0f,0.0f };        // ローカル回転
+    // 座標位置
+    static constexpr VECTOR POS = { -1713.0f,200.0f,2580.0f };
 
-    static constexpr VECTOR TOP = {0.0f,160.0f,0.0f};                   // カプセルの上部
-    static constexpr VECTOR DOWN = {0.0f,0.0f,0.0f};                    // カプセルの下部
-    static constexpr float RADIUS = 20.0f;                              // カプセルの半径
-    static constexpr float EYE_VIEW_RANGE = 250.0f;                     // 視野の広さ
-    static constexpr float ATTACK_RANGE = 175.0f;                       // 攻撃範囲の広さ
-    static constexpr float VIEW_ANGLE = 30.0f;                          // 視野角
-    static constexpr float TIME_ROT = 1.0f;                             // 回転完了するまでの時間
+    // 拡大率
+    static constexpr VECTOR SCALE = { 1.0f,1.0f ,1.0f };
 
-    enum class STATE
-    {
+    // ローカル回転
+    static constexpr VECTOR QUAROT_LOCAL = { 0.0f,180.0f,0.0f };
+
+    // カプセルの上部
+    static constexpr VECTOR TOP = {0.0f,160.0f,0.0f};
+
+    // カプセルの下部
+    static constexpr VECTOR DOWN = {0.0f,0.0f,0.0f};
+    
+    // カプセルの半径
+    static constexpr float RADIUS = 20.0f;
+    
+    // 視野の広さ
+    static constexpr float EYE_VIEW_RANGE = 250.0f;
+
+    // 攻撃範囲の広さ
+    static constexpr float ATTACK_RANGE = 175.0f;
+    
+    // 視野角
+    static constexpr float VIEW_ANGLE = 30.0f;
+    
+    // 回転完了するまでの時間
+    static constexpr float TIME_ROT = 1.0f;
+
+    // 歩き速度
+    static constexpr float WALK_SPEED = 8.0f;
+
+    // 行動パターン
+    enum class STATE{
         PATROL, // 巡回
         CHASE,  // 追跡
         ATTACK, // 攻撃
         IDLE    // 待機
     };
 
-    enum class ANIM
-    {
+    // アニメーション状態
+    enum class ANIM{
         PATROL, // 巡回
         CHASE,  // 追跡
         ATTACK, // 攻撃
@@ -73,59 +93,91 @@ public:
 
 protected:
 
-    // モデル情報初期化
-    virtual void InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal);
-
+    // プレイヤー参照
     Player& player_;
-
+    
     // 視界内にプレイヤーが入っているか
     bool isPlayerInSight_;
 
     // 音を検知したかどうか
     bool isHearingSound_;
 
-    int frame_;                             // フレーム
+    // フレーム
+    int frame_;
 
-    EnemyPatrolComponent* patrolComponent_; // 移動
-    EnemyChaseComponent* chaseComponent_;   // 追跡
+    // 移動
+    EnemyPatrolComponent* patrolComponent_;
+    
+    // 追跡
+    EnemyChaseComponent* chaseComponent_;
 
-    STATE state_;       // 現在の行動パターン
+    // 現在の行動パターン
+    STATE state_;
 
-    std::shared_ptr<PatrolPath> patrolPath_;    // 巡回パス
-    int currentPatrolPathIndex_;                // 現在のパスの番号
+    // 巡回パス
+    std::shared_ptr<PatrolPath> patrolPath_;
+    
+    // 現在のパスの番号
+    int currentPatrolPathIndex_;
 
-    std::unique_ptr<AnimationController> animationController_;  // アニメーション
+    // アニメーション
+    std::unique_ptr<AnimationController> animationController_;
+
+    // モデル情報初期化
+    virtual void InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal);
 
     // アニメーションの初期化
     virtual void InitAnimation(void);
 
-    std::shared_ptr<NavGridManager> navGridManager_;        // A*経路探索
+    // A*経路探索
+    std::shared_ptr<NavGridManager> navGridManager_;
 
-    bool isWaiting_;            // 待機中かどうか
-    float currentWaitTime_;     // 現在の待機残り時間
-    float dis_;                 // プレイヤーとの距離
-    int currentNode_;           // 現在の追跡ノード
+    // 待機中かどうか
+    bool isWaiting_;
+
+    // 現在の待機残り時間
+    float currentWaitTime_;
+
+    // プレイヤーとの距離
+    float dis_;
+
+    // 現在の追跡ノード
+    int currentNode_;
 
 private:
 
     // 回転処理
     void Rotate(void);
 
-    void Collision(void);               // 衝突判定
-    void CollisionCapsule(void);        // カプセルとの衝突判定
-    void CollisionGravity(void);        // 重力との衝突判定
-    void CalcGravityPow(void);          // 重力加算処理
+    // 衝突判定
+    void Collision(void);
 
-    void ChangeState(STATE state);      // 状態の変更
+    // カプセルとの衝突判定
+    void CollisionCapsule(void);
+    
+    // 重力との衝突判定
+    void CollisionGravity(void);
+    
+    // 重力加算処理
+    void CalcGravityPow(void);
 
-    bool EyeSerch(void);                // 視覚判定
+    // 状態の変更
+    void ChangeState(STATE state);
 
-    bool HearingSound(void);            // 聴覚判定
+    // 視覚判定
+    bool EyeSerch(void);
 
+    // 聴覚判定
+    bool HearingSound(void);
+
+    // デバック描画
     void DrawDebug(void);
 
-    void UpdatePatrol(float deltaTime); // 徘徊状態の更新
-    void UpdateChase(float deltaTime);  // 追跡状態の更新
+    // 徘徊状態の更新
+    void UpdatePatrol(float deltaTime);
+
+    // 追跡状態の更新
+    void UpdateChase(float deltaTime);
 
     // A*でのパスを探す
     std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
@@ -148,13 +200,19 @@ private:
         bool operator()(const AStarNode* a, const AStarNode* b) const;
     };
 
-    bool isDamageCheckActive_;              // 攻撃判定
-    bool hasPlayerBeenHit_;                 // プレイヤーに対して攻撃があたった場合
+    // 攻撃判定
+    bool isDamageCheckActive_;
 
-    void HandleAttackCollsion(float deltaTime);     // ダメージ判定
+    // プレイヤーに対して攻撃があたった場合
+    bool hasPlayerBeenHit_;
 
-    bool isAttackRange(void);           // 攻撃判定
+    // ダメージ判定
+    void HandleAttackCollsion(float deltaTime);
 
-    bool isAttack_;                     // 攻撃をするかどうか
+    // 攻撃判定
+    bool isAttackRange(void);
+
+    // 攻撃をするかどうか
+    bool isAttack_;
 };
 

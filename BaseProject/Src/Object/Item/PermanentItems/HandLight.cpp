@@ -61,8 +61,7 @@ void HandLight::Update(float deltaTime)
 void HandLight::Draw(void)
 {
 	if (GetState() == STATE::ONSTAGE ||
-		GetUse() != USE::NONE)
-	{
+		GetUse() != USE::NONE){
 		MV1DrawModel(transform_.modelId);
 		auto& size = Config::GetInstance().GetWindowSize();
 		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
@@ -72,8 +71,7 @@ void HandLight::Draw(void)
 
 void HandLight::DrawUI(void)
 {
-	if (GetState() == STATE::ININVENTORY)
-	{
+	if (GetState() == STATE::ININVENTORY){
 		auto& size = Config::GetInstance().GetWindowSize();
 
 		// --- UI描画の位置と設定 ---
@@ -120,13 +118,7 @@ void HandLight::OnUpdate(float deltaTime)
 
 void HandLight::UpdateOnStage(float deltaTime)
 {
-	// ステージにアイテムが落ちている状態
-	// アイテムが拾われる処理
-
-
-	//拾われるとUpdateInVentoryに遷移
-	if (!isOnStage_)
-	{
+	if (!isOnStage_){
 		ChangeState(STATE::ININVENTORY);
 	}
 }
@@ -136,28 +128,22 @@ void HandLight::UpdateInVentory(float deltaTime)
 	// 追従
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
 
-	// 装備しているかどうか
-
 	ItemBase::UpdateUsed(deltaTime);
 }
 
 void HandLight::UpdateInUse(float deltaTime)
 {
-
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
 
 	auto& ins = InputManager::GetInstance();
-	if (!canToggle_)
-	{
+	if (!canToggle_){
 		toggleTimer_ += deltaTime; // Application::GetInstance().GetDeltaTime() を使用
-		if (toggleTimer_ >= TOGGLE_COOLDOWN)
-		{
+		if (toggleTimer_ >= TOGGLE_COOLDOWN){
 			canToggle_ = true;
 			toggleTimer_ = 0.0f;
 		}
 	}
-	if (canToggle_ && ins.IsClickMouseLeft())
-	{
+	if (canToggle_ && ins.IsClickMouseLeft()){
 		isActive_ = !isActive_;
 
 		// トグルを実行したらクールダウン開始
@@ -165,12 +151,9 @@ void HandLight::UpdateInUse(float deltaTime)
 		toggleTimer_ = 0.0f;
 	}
 
-	if (isActive_)
-	{
+	if (isActive_){
 		value_ -= Application::GetInstance().GetDeltaTime();
-
-		if (value_ <= 0.0f)
-		{
+		if (value_ <= 0.0f){
 			value_ = 0.0f;
 			isActive_ = false;
 		}

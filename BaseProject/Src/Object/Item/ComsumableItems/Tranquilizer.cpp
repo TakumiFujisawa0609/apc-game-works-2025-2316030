@@ -43,8 +43,6 @@ void Tranquilizer::Init(void)
 
 void Tranquilizer::Update(float deltaTime)
 {
-	// モデル情報の動機
-
 	// それぞれの状態での更新
 	UpdateState(deltaTime);
 
@@ -55,11 +53,9 @@ void Tranquilizer::Update(float deltaTime)
 void Tranquilizer::Draw(void)
 {
 	if (GetState() == STATE::ONSTAGE ||
-		GetUse() != USE::NONE)
-	{
+		GetUse() != USE::NONE){
 		MV1DrawModel(transform_.modelId);
 		auto& size = Config::GetInstance().GetWindowSize();
-		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
 	}
 }

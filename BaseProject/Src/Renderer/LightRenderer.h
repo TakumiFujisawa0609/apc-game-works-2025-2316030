@@ -15,6 +15,8 @@ public:
     static constexpr float ATTEN0 = 0.5f;
     static constexpr float ATTEN1 = 0.0005f;
     static constexpr float ATTEN2 = 0.0f;
+    static constexpr float BLINK_MIN_DURATION = 0.05f;
+    static constexpr float BLINK_MAX_DURATION = 0.3f;
 
     enum class TYPE
     {
@@ -37,15 +39,19 @@ private:
     std::unique_ptr<ModelMaterial> material_;
     std::unique_ptr<ModelRenderer> renderer_;
 
+    // ハンドライト
     HandLight* light_;
 
+    // 点滅強度
     float blinkIntensity_;
 
+    // 点滅時間
     float blinkTimer_;
-    float nextBlinkDuration_;
-    bool isBlinkActive_;
-    const float BLINK_MIN_DURATION = 0.05f;
-    const float BLINK_MAX_DURATION = 0.3f;
 
+    // 点滅間隔
+    float nextBlinkDuration_;
+    
+    // 点滅判定
+    bool isBlinkActive_;
 };
 

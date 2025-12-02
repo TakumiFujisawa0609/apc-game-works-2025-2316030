@@ -24,7 +24,10 @@ public:
     // 障害物情報をNavGridManagerに設定
     void SetObstacle(std::vector<Transform> obstacle);
 
+    // 経過時間を設定
     void SetTime(float time);
+    
+    // 経過時間を取得
     float GetTime(void);
 
 private:
@@ -44,9 +47,17 @@ private:
     //};
 
 private:
+
+    // 現在のパス
     std::vector<VECTOR> currentPath_;
+    
+    // 現在のパスのインデックス
     int currentPathIndex_ = 0;
+    
+    // パス再計算時間
     float pathRecalcTimer_ = 0.0f;
+    
+    // 時間
     float time_ = 0.0f;
 
     // NavGridManagerへのスマートポインタ
