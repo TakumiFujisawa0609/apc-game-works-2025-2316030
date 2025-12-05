@@ -1,5 +1,6 @@
 #pragma once
 #include "../ObjectBase/ActorBase.h"
+#include "../Enemy/AStar/FieldImpactMap.h"
 
 class Player;
 class EnemyBase;
@@ -28,6 +29,9 @@ public:
 
 	// A*経路探索の取得
 	std::shared_ptr<NavGridManager> GetNavGridMananger(void);
+
+	// エリアマップの取得
+	std::shared_ptr<FieldImpactMap> GetFieldImpactMap(void);
 
 	// モデル描画用
 	void InitRenderer(void);
@@ -61,7 +65,13 @@ private:
 	// 障害物の初期化
 	void InitObstacles(void);
 
+	// エリア情報の初期化
+	void InitAreaInfo(void);
+
 	// A*経路探索
 	std::shared_ptr<NavGridManager> navManager_;
+
+	// エリアマップの取得
+	std::shared_ptr<FieldImpactMap> fieldImpactMap_;
 };
 

@@ -11,6 +11,9 @@
 #include "Patrol/PatrolNode.h"
 #include "Patrol/PatrolPath.h"
 #include "AStar/NavGridManager.h"
+#include "AStar/FieldImpactMap.h"
+
+
 #include "../Player/Player.h"
 #include "EnemyBase.h"
 
@@ -218,6 +221,11 @@ void EnemyBase::SetNavGridManagedr(std::shared_ptr<NavGridManager> navGridManage
     navGridManager_ = navGridManager;
 }
 
+void EnemyBase::SetFieldImpactMap(std::shared_ptr<FieldImapactMap> fieldImapactMap)
+{
+    fieldImapctMap_ = fieldImapactMap;
+}
+
 void EnemyBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)
 {
     // モデルの設定
@@ -316,9 +324,17 @@ void EnemyBase::ChangeState(STATE state)
     {
     case EnemyBase::STATE::PATROL:
         animationController_->Play((int)ANIM::PATROL, true, 1.0f);
+        // Patrolに戻るときは、エリアキューをクリアにする
+        while (!areaRouteQueue_.empty()) {
+            areaRouteQueue_.pop();
+        };
+        currentLocalPath_.clear();
+        currentLocalPathIndex_ = 0;
         break;
     case EnemyBase::STATE::CHASE:
         animationController_->Play((int)ANIM::CHASE, true, 0.5f);
+        // 追跡開始時にグローバル経路(エリア間ルートを計算)
+        CalculateGlobalAreaRoute();
         break;
     case EnemyBase::STATE::ATTACK:
         animationController_->Play((int)ANIM::ATTACK, false, 0.5f);
@@ -572,9 +588,100 @@ void EnemyBase::UpdateChase(float deltaTime)
 
 #pragma endregion
 
+#pragma region 元々
+
+    //// 4. 移動方向と回転の設定
+    //// ノードの目標が更新されても、直前のノードから目標ノードへの移動方向を常に計算
+    //VECTOR moveDirection = VNorm(VSub(player_.GetTransform().pos, transform_.pos));
+    //moveDir_ = moveDirection;
+
+    //// moveSpeedはPATROL時より速い値を使うことが多い
+    //movePow_ = VScale(moveDir_, 4.0f);
+
+    //// 回転処理
+    //float rotationY = atan2f(moveDirection.x, moveDirection.z);
+    //Quaternion targetRotation = Quaternion::Euler({ 0.0f, rotationY, 0.0f });
+
+    //// 滑らかに補間
+    //// 補間速度をCHASEに合わせて調整
+    //transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 7.0f * deltaTime); // 5.0fから7.0fに少し上げる
+
+#pragma endregion
+
+    // ローカル経路探索の目標座標
+    VECTOR finalTargetPos = AsoUtility::VECTOR_ZERO;
+    bool needRecalcGlobal = true;   // グロ―バルルート
+
+    // グローバル経路(エリア間ルート)の管理
+    if (areaRouteQueue_.empty()) {
+        // エリアキューが空の場合：最終目的地(プレイヤー)を目標とする
+        finalTargetPos = player_.GetTransform().pos;
+
+        // グローバルルートが見つからない場合も、ローカルで直接プレイヤーを目指すA*を再計算する
+        if (currentLocalPath_.empty() || currentLocalPathIndex_ >= currentLocalPath_.size() || needRecalcGlobal) {
+            CalculateLocalPath(finalTargetPos);
+        }
+    }
+    else {
+        // エリアキューがある場合
+
+        // 次の目標エリアIDを取得(キューの先頭)
+        int nextAreaId = areaRouteQueue_.front();
+
+        // 【実装待ち】
+        // 次の目標エリアへの「接続点（ポータル）」の座標を取得するロジックが必要です
+        // finalTargetPos = fieldImpactMap_->GetConnectionPointToArea(transform_.pos, nextAreaId); 
+
+        // 仮の目標座標（ここではプレイヤー位置をそのまま使用しますが、実際は接続点の座標が入ります）
+        finalTargetPos = player_.GetTransform().pos;
+
+        // ローカル経路が終了した、または次の目標エリアが切り替わった場合
+        if (currentLocalPath_.empty() || currentLocalPathIndex_ >= currentLocalPath_.size() || needsRecalcGlobal) {
+            // 次の接続点（ポータル）までローカルA*を再計算
+            CalculateLocalPath(finalTargetPos);
+        }
+    }
+
+    // 2. ローカル経路（A*結果）の追跡
+    if (currentLocalPath_.empty() || currentLocalPathIndex_ >= currentLocalPath_.size()) {
+        // 経路が見つからない、または経路の終点に到達した場合
+        moveDir_ = AsoUtility::VECTOR_ZERO;
+
+        // エリアを切り替える判定ロジック (キューをpop)
+        if (!areaRouteQueue_.empty()) {
+            // ローカル経路の目標が「接続点」で、そこに到達した場合
+            // 次のエリアに到達したとみなし、キューを Pop し、グローバル経路を再計算するフラグを立てる
+            areaRouteQueue_.pop();
+            // needsRecalcGlobal = true; // 次のフレームで再計算が走る
+
+            // ローカル経路をクリアし、次のローカル探索に備える
+            currentLocalPath_.clear();
+            currentLocalPathIndex_ = 0;
+            return;
+        }
+        return; // 最終目的地にも到達
+    }
+
+    // 3. 移動目標の設定と到達判定 (ローカルパスのウェイポイントを追跡)
+    VECTOR targetPos = currentLocalPath_[currentLocalPathIndex_];
+
+    VECTOR currentPos = transform_.pos;
+    currentPos.y = targetPos.y;
+
+    VECTOR moveVector = VSub(targetPos, currentPos);
+    float distance = VSize(moveVector);
+
+    // ノードに到達したら次のノードへ
+    constexpr float NODE_REACH_THRESHOLD = 10.0f; // 閾値を調整
+
+    if (distance < NODE_REACH_THRESHOLD) {
+        currentLocalPathIndex_++;
+        // 次のノードへの移動は次のフレームで実行
+    }
+
     // 4. 移動方向と回転の設定
     // ノードの目標が更新されても、直前のノードから目標ノードへの移動方向を常に計算
-    VECTOR moveDirection = VNorm(VSub(player_.GetTransform().pos, transform_.pos));
+    VECTOR moveDirection = VNorm(VSub(targetPos, transform_.pos));
     moveDir_ = moveDirection;
 
     // moveSpeedはPATROL時より速い値を使うことが多い
@@ -585,9 +692,36 @@ void EnemyBase::UpdateChase(float deltaTime)
     Quaternion targetRotation = Quaternion::Euler({ 0.0f, rotationY, 0.0f });
 
     // 滑らかに補間
-    // 補間速度をCHASEに合わせて調整
-    transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 7.0f * deltaTime); // 5.0fから7.0fに少し上げる
+    transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 7.0f * deltaTime);
+}
 
+void EnemyBase::CalculateGlobalAreaRoute(void)
+{
+    if (!fieldImapctMap_) {
+        return;
+    }
+
+    // 目標エリアの特定
+    // プレイヤーの座標を目標座標とする
+    VECTOR targetPosition = player_.GetTransform().pos;
+
+    // 自身の現在位置とターゲット座標を基に、エリアIDのキューを計算
+    areaRouteQueue_ = fieldImapctMap_->SearchAreaRouteIndices(transform_.pos, targetPosition);
+
+    // エリアキューが空でないことを確認
+    if (!areaRouteQueue_.empty()) {
+        // ローカル経路探索のインデックスをリセット
+        currentLocalPathIndex_ = 0;
+
+        // 最初の目標エリアへのローカル経路を計算する
+    }
+}
+
+void EnemyBase::CalculateLocalPath(const VECTOR& targetPos) const
+{
+    // 既存のグリットA*をローカル経路探索として再利用
+    currentLocalPath_ = FindPath(transform_.pos, targetPos);
+    currentLocalPathIndex_ = 0;
 }
 
 std::vector<VECTOR> EnemyBase::FindPath(VECTOR startPos, VECTOR endPos)

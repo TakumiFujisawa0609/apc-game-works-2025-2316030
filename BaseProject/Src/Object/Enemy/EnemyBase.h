@@ -6,6 +6,10 @@
 #include <queue>
 #include <unordered_set>
 
+
+class FieldImapactMap;
+class AreaConnection;
+
 class Collider;
 class Capsule;
 class AnimationController;
@@ -85,11 +89,15 @@ public:
     // 移動中に障害物として認識される物を設定する
     void SetObstacle(std::vector<Transform> obstacle);
 
-    // 徘徊用のノードパスをステージから取得する
+    // 徘徊用のノードパスをステージから取得
     void SetPatrolPath(std::shared_ptr<PatrolPath> path);
 
-    // グリッドマネージャーをステージから取得する
+    // グリッドマネージャーをステージから取得
     void SetNavGridManagedr(std::shared_ptr<NavGridManager> navGridManager);
+
+    // フィールド影響マップ(エリア情報)をステージから取得
+    void SetFieldImpactMap(std::shared_ptr<FieldImapactMap> fieldImapactMap);
+
 
 protected:
 
@@ -131,6 +139,21 @@ protected:
 
     // A*経路探索
     std::shared_ptr<NavGridManager> navGridManager_;
+
+    // エリア間経路探索
+
+    // エリア構造全体を管理
+    std::shared_ptr<FieldImapactMap> fieldImapctMap_;
+    
+    // 目標エリアIDのキュー
+    std::queue<int> areaRouteQueue_;
+    
+    // 現在エリア内のA*経路探索(ローカル経路)
+    std::vector<VECTOR> currentLocalPath_;
+
+    // ローカル経路の現在のインデックス
+    int currentLocalPathIndex_;
+
 
     // 待機中かどうか
     bool isWaiting_;
@@ -179,7 +202,13 @@ private:
     // 追跡状態の更新
     void UpdateChase(float deltaTime);
 
-    // A*でのパスを探す
+    // グローバル経路(エリア間ルート)を計算する
+    void CalculateGlobalAreaRoute(void);
+
+    // ローカル経路(エリア内のウェイポイントA＊)を計算する
+    void CalculateLocalPath(const VECTOR& targetPos) const;
+
+    // A*でのパスを探す(ローカル経路探索に再利用)
     std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
 
     // A*のノードのコスト計算

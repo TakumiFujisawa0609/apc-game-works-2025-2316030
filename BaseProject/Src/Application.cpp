@@ -9,7 +9,6 @@
 #include"Manager/SceneController.h"
 #include"Scene/TitleScene.h"
 #include"Scene/GameScene.h"
-
 #include "Application.h"
 
 Application* Application::instance_ = nullptr;
