@@ -218,7 +218,7 @@ void GameScene::DrawUI(void)
 			DrawString(draw_x, draw_y, text_to_display, color);
 		}
 
-		int draw_x = static_cast<int>(size.width_ - size.width_ * 0.46875f); // 右端から300pxの位置
+		int draw_x = static_cast<int>(size.width_ - size.width_ * 0.36875f); // 右端から300pxの位置
 		int draw_y = static_cast<int>(size.height_ * 0.04166f);               // 上から20pxの位置
 		int color = GetColor(255, 255, 255);
 

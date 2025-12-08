@@ -191,8 +191,7 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 
 	//出力カラー計算++++++++++++++++++++++++++++++++++++++++++++++++(終了)
 
-	//return retColor;
-
+	return retColor;
 
 	// フォグ計算
 	float fog_amount = 1.0f - PSInput.fogFactor;
