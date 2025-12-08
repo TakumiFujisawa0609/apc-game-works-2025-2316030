@@ -153,8 +153,8 @@ void Application::Run()
 
 #ifdef _DEBUG
 
-         DrawFrameRate();
-        DrawDrawCall();
+        //DrawFrameRate();
+        //DrawDrawCall();
 
 #endif // DEBUG
 
