@@ -30,15 +30,23 @@
 
 
 #include "../Object/Item/Wire.h"
+
 #include "../Object/Components/Gameplay/OxygenComponent.h"
+
 #include "../Object/Item/ItemStrage/SlotBase.h"
+
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
+
 #include "../Object/Stage/Dummy.h"
+
 #include"../DrawUtil.h"
 
 namespace {
 	constexpr int fade_interval = 30;
 	float DegreeToRadian(float degree) {
+		//0～360→0～2π
+		//0～180→0～π
+		//÷180 x π
 		return (degree * DX_PI_F) / 180.0f;
 	}
 }
@@ -46,6 +54,7 @@ namespace {
 
 GameScene::GameScene(SceneController& controller) :Scene(controller)
 {
+
 	update_ = &GameScene::FadeInUpdate;
 	draw_ = &GameScene::FadeDraw;
 	frame_ = fade_interval;
@@ -59,8 +68,6 @@ GameScene::GameScene(SceneController& controller) :Scene(controller)
 	spownPos_.push_back({ -1888.0f, 150.0f, -410.0f });
 	spownPos_.push_back({ -1702.0f, 150.0f, 1207.0f });
 	spownPos_.push_back({ -2457.0f, 150.0f, 2190.0f });
-
-	task_ = TASK::NONE;
 }
 
 GameScene::~GameScene()
@@ -88,6 +95,7 @@ void GameScene::Init(Input& input)
 	light->Init();
 	light->SetTargetPos(&player_->GetTransform());
 	player_->SetHandLight(light);
+	// ステージで適応させるライトを設定する
 	stage_->SetCurrentHandLight(light);
 	itemPool_.push_back(light);
 
@@ -141,6 +149,7 @@ void GameScene::Init(Input& input)
 
 	eBase_->SetNavGridManagedr(stage_->GetNavGridMananger());
 	eBase_->Init();
+
 	eBase_->InitComponents();
 
 	stage_->Init();
@@ -190,6 +199,8 @@ void GameScene::DrawUI(void)
 
 			// Y座標: 画面全体の高さの 4分の3 の位置
 			int draw_y = (size.height_ * 3) / 4;
+
+			// 3. テキストを描画
 
 			// 赤色で描画
 			int color = GetColor(255, 255, 255);
@@ -324,7 +335,6 @@ void GameScene::NormalDraw()
 	auto& ins = InputManager::GetInstance();
 
 	VECTOR targetPos = { -2317.0f,189.0f,-1558.0f };
-
 	// 球体1 (標的) の情報
 	VECTOR TargetCenter = VGet(-2317.0f, 189.0f, -1558.0f);
 	const float TargetRadius = 120.0f; // 標的の半径
@@ -335,10 +345,8 @@ void GameScene::NormalDraw()
 
 	// 判定に必要な、半径の合計を事前に計算
 	const float CombinedRadius = TargetRadius + OtherRadius;
-	
 	// 最適化のため、半径の合計の二乗も計算
 	const float CombinedRadiusSq = CombinedRadius * CombinedRadius;
-	
 	// 1. 中心点間のベクトルの差を計算 (V2 - V1)
 	VECTOR DifferenceVector = VSub(OtherCenter, TargetCenter);
 
@@ -370,10 +378,14 @@ void GameScene::NormalDraw()
 
 #pragma endregion
 
+	//DrawFormatString(0, 52, GetColor(0, 0, 0), L"cAngle=(%.2f,%.2f,%.2f)", angles_.x, angles_.y, angles_.z);
+	//DrawString(10, 0, L"Game Scene", 0xffffff);
+
 }
 
 void GameScene::FadeDraw()
 {
+
 	float rate = static_cast<float>(frame_) /
 		static_cast<float>(fade_interval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));
@@ -432,7 +444,7 @@ void GameScene::DrawUIItemPool(void)
 
 void GameScene::HandleMouseWheel(Input& input)
 {
-	if (itemSlot_ != nullptr)
+	if (!itemSlot_)
 	{
 		return;
 	}
@@ -489,7 +501,7 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if ((ins.IsTrgMouseRight()|| ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && IsHitItems())
+	if ((ins.IsTrgMouseRight() || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && IsHitItems())
 	{
 		ObtainItem();
 		isHitItem_ = false;
@@ -585,7 +597,6 @@ void GameScene::DrawTutorial(void)
 	player_->Draw();
 
 	DrawItemPool();
-	player_->DrawUI();
 
 	status_->Draw();
 }
@@ -595,15 +606,12 @@ void GameScene::DrawMainGame(void)
 
 	// オブジェクト
 	stage_->Draw();
-
+	//dummy_->Draw();
 	eBase_->Draw();
 
 	player_->Draw();
 
 	DrawItemPool();
-
-
-	itemSlot_->Draw();
 }
 
 void GameScene::ChangeProgress(PROGRESS progress)
@@ -635,7 +643,7 @@ void GameScene::ObtainItem(void)
 {
 	std::shared_ptr<ItemBase> obtainedItem = isObtainItems();
 
-	if (obtainedItem != nullptr)
+	if (!obtainedItem)
 	{
 		return;
 	}

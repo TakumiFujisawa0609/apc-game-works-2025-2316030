@@ -39,6 +39,11 @@ void Stage::Init(void)
 
 	transform_.MakeCollider(Collider::TYPE::STAGE);
 
+	for (int i = 0; i < 20; i++) {
+		MV1SetTextureSampleFilterMode(transform_.modelId, i, DX_DRAWMODE_NEAREST);
+		i++;
+	}
+
 	transform_.Update();
 
 	InitObstacles();
@@ -47,7 +52,7 @@ void Stage::Init(void)
 
 	// 敵にエリアマップを設定
 	if (fieldImpactMap_) {
-		eBase_.SetFieldImpactMap(fieldImpactMap_);
+		//eBase_.SetFieldImpactMap(fieldImpactMap_);
 	}
 }
 
@@ -80,53 +85,41 @@ void Stage::Draw(void)
 
 #ifdef _DEBUG
 
-	//if (!paths_.empty())
-	//{
-	//	const std::shared_ptr<PatrolPath>& path = paths_[0];
-	//	const auto& nodes = path->GetNodes();
+	if (!paths_.empty())
+	{
+		const std::shared_ptr<PatrolPath>& path = paths_[0];
+		const auto& nodes = path->GetNodes();
 
-	//	VECTOR prevPos = { 0.0f, 0.0f, 0.0f };
-	//	bool firstNode = true;
+		VECTOR prevPos = { 0.0f, 0.0f, 0.0f };
+		bool firstNode = true;
 
-	//	for (size_t i = 0; i < nodes.size(); ++i)
-	//	{
-	//		const PatrolNode& node = nodes[i];
-	//		VECTOR currentPos = node.GetPos();
+		for (size_t i = 0; i < nodes.size(); ++i)
+		{
+			const PatrolNode& node = nodes[i];
+			VECTOR currentPos = node.GetPos();
 
-	//		// 1. ノード自体のデバッグ描画 (球体など)
-	//		node.DebugDraw();
+			// 1. ノード自体のデバッグ描画 (球体など)
+			node.DebugDraw();
 
-	//		// 2. ノード間のパスの描画 (線)
-	//		if (!firstNode)
-	//		{
-	//			// ノード間を線で結ぶ
-	//			DrawLine3D(prevPos, currentPos, GetColor(255, 0, 0)); // 赤線
-	//		}
+			// 2. ノード間のパスの描画 (線)
+			if (!firstNode)
+			{
+				// ノード間を線で結ぶ
+				DrawLine3D(prevPos, currentPos, GetColor(255, 0, 0)); // 赤線
+			}
 
-	//		// 3. 次の描画のために現在のノード位置を保存
-	//		prevPos = currentPos;
-	//		firstNode = false;
-	//	}
+			// 3. 次の描画のために現在のノード位置を保存
+			prevPos = currentPos;
+			firstNode = false;
+		}
 
-	//	// パスタイプがループの場合、最後のノードと最初のノードを結ぶ
-	//	if (paths_[0]->GetPathType() == PatrolPath::PATHTYPE::LOOP && nodes.size() > 1)
-	//	{
-	//		VECTOR firstPos = nodes[0].GetPos();
-	//		DrawLine3D(prevPos, firstPos, GetColor(255, 0, 0)); // 赤線
-	//	}
-	//}
-
-	//Transform hlt = handLight_.GetTransform();
-	//VECTOR forward = hlt.quaRot.GetForward();
-	//VECTOR dir = VNorm(forward);
-
-	//auto& windowSize_ = Application::GetInstance().GetWindowSize();
-	//DrawFormatString(0, 32, GetColor(255, 255, 255), L"hPos = (%.2f,%.2f,%.2f)", hlt.pos.x, hlt.pos.y, hlt.pos.z);
-	//DrawFormatString(0, 48, GetColor(255, 255, 255), L"spPos = (%.2f,%.2f,%.2f)", GetLightPosition().x, GetLightPosition().y, GetLightPosition().z);
-
-	//DrawFormatString(0, 64, GetColor(255, 255, 255), L"hdir = (%.2f,%.2f,%.2f)", dir.x, dir.y, dir.z);
-	//DrawFormatString(0, 80, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
-
+		// パスタイプがループの場合、最後のノードと最初のノードを結ぶ
+		if (paths_[0]->GetPathType() == PatrolPath::PATHTYPE::LOOP && nodes.size() > 1)
+		{
+			VECTOR firstPos = nodes[0].GetPos();
+			DrawLine3D(prevPos, firstPos, GetColor(255, 0, 0)); // 赤線
+		}
+	}
 
 #endif // _DEBUGe
 

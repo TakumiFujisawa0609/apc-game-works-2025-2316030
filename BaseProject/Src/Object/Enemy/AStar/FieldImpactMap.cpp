@@ -67,21 +67,23 @@ std::vector<int> FieldImpactMap::FindAreaPath(int startAreaId, int targetAreaId)
 
 float FieldImpactMap::GetHCost(int areaIdA, int areaIdB)
 {
-    // AreaのIDとインデックスが一致しない場合があるので、エリアリストから検索
-    const Area* areaA = nullptr;
-    const Area* areaB = nullptr;
+    //// AreaのIDとインデックスが一致しない場合があるので、エリアリストから検索
+    //const Area* areaA = nullptr;
+    //const Area* areaB = nullptr;
 
-    for (const auto& area : areas_) {
-        if (area.id_ == areaIdA) areaA = &area;
-        if (area.id_ == areaIdB) areaB = &area;
-    }
+    //for (const auto& area : areas_) {
+    //    if (area.id_ == areaIdA) areaA = &area;
+    //    if (area.id_ == areaIdB) areaB = &area;
+    //}
 
-    if (areaA && areaB) {
-        // エリアの中心点間の水平距離を推定コストとする
-        VECTOR diff = VSub(areaA->center_, areaB->center_);
-        // Y軸（高さ）を無視
-        diff.y = 0.0f;
-        return VSize(diff);
-    }
-    return std::numeric_limits<float>::max();
+    //if (areaA && areaB) {
+    //    // エリアの中心点間の水平距離を推定コストとする
+    //    VECTOR diff = VSub(areaA->center_, areaB->center_);
+    //    // Y軸（高さ）を無視
+    //    diff.y = 0.0f;
+    //    return VSize(diff);
+    //}
+    //return std::numeric_limits<float>::max();
+
+    return false;
 }
