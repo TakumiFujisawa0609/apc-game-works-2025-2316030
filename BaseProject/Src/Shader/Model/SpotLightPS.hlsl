@@ -116,9 +116,7 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 
 	//最終的なスポットライトの減衰率を返す
 	//return float4(lLightGen,lLightGen,lLightGen,1.0f);
-
-	//------------------------------
-
+	
 	//有効距離外だったら減衰率を最大にする処理
 	lightData.lLightGen *= step(lightData.lLightDistancePow2, spotL.rangePow2);
 
@@ -128,10 +126,6 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	//return float4(lLightGen, lLightGen, lLightGen, 1.0f);
 
 	//距離・スポットライト減衰計算----------------(終了)
-
-	//シャドウマップの処理
-
-	//------------------------------------------
 
 	//ディフューズ色計算--------------------------(開始)
 
