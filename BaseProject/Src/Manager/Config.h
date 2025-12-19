@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 class Config
 {
 public:
@@ -56,6 +54,8 @@ public:
 
 private:
 
+	// デフォルトコンストラクタをprivateにして、
+	// 外部から生成できない様にする
 	Config(void);
 	~Config(void) = default;
 	

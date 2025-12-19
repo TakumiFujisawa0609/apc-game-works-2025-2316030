@@ -10,6 +10,39 @@ class SlotBase :
 	public std::enable_shared_from_this<SlotBase>
 {
 public:
+
+	// 定数
+
+	// 新しいスロットの幅の値
+	static constexpr float SLOT_WIDTH = 0.10f;
+
+	// スロットの幅補正
+	static constexpr float SLOT_PADDING = 0.0125f;
+
+	// スロットの高さ
+	static constexpr float SLOT_HEIGHT = 0.175f;
+
+	// アイコンの横
+	static constexpr float ICON_WIDTH = 0.0875f;
+
+	// アイコンの縦
+	static constexpr float ICON_HEIGHT = 0.15556f;
+
+	// アイコンのオフセット横
+	static constexpr float ICON_OFFSET_X = 0.00625f;
+
+	// アイコンのオフセット縦
+	static constexpr float ICON_OFFSET_Y = 0.00833f;
+
+	// 枠線の太さ横
+	static constexpr float THICKNESS_WIDTH = 0.003125f;
+
+	// 枠線の太さ縦
+	static constexpr float THICKNESS_HEIGHT = 0.00416f;
+
+	// 
+	static constexpr float START_Y = 0.23f;
+
 	SlotBase(void);
 	~SlotBase(void);
 
@@ -64,11 +97,16 @@ public:
 	// 現在選択されているインデックスを返す
 	int GetCurrentSelectedIndex(void);
 
+	// スロットの取得
+	std::vector<std::shared_ptr<ItemBase>> GetSlots(void) const;
+
 protected:
 
 	// スロットが格納するアイテムリスト
 	std::vector<std::shared_ptr<ItemBase>> slots_;
-	int currentSelectedIndex_;		// 現在のインデックス
+
+	// 現在のインデックス
+	int currentSelectedIndex_;
 
 	// 循環切り替えを計算する
 	void UpdateIndex(int direction);

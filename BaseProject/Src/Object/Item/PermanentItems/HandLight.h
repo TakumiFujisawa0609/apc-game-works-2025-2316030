@@ -45,6 +45,8 @@ public:
 
     float GetRemainingPercentage(void);
 
+    bool GetCanToggle(void);
+
 private:
 
     virtual void OnUpdate(float deltaTime) override;

@@ -140,7 +140,7 @@ void Application::Run()
         camera_->Draw();
 
         // ƒV[ƒ“‚²‚Æ‚ÌUI•`‰æ
-        //controller_->DrawUI();
+        controller_->DrawUI();
 
         // ’Ç‰Á‚³‚ê‚½ƒV[ƒ“‚Ì•`‰æ
         controller_->DrawPushScene();

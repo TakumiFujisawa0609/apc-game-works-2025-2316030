@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\SoundManager.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\FieldImpactMap.cpp" />
     <ClCompile Include="Src\Object\Enemy\AStar\Area.cpp" />
     <ClCompile Include="Src\Renderer\LightRenderer.cpp" />
@@ -218,6 +219,7 @@
     <ClCompile Include="Src\Object\Item\ComsumableItems\Tranquilizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\SoundManager.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\FieldImpactMap.h" />
     <ClInclude Include="Src\Object\Enemy\AStar\Area.h" />
     <ClInclude Include="Src\Renderer\LightRenderer.h" />

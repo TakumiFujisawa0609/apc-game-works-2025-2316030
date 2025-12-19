@@ -112,6 +112,11 @@ float HandLight::GetRemainingPercentage(void)
 	return value_/ MAX_VALUE;
 }
 
+bool HandLight::GetCanToggle(void)
+{
+	return canToggle_;
+}
+
 void HandLight::OnUpdate(float deltaTime)
 {
 }
@@ -141,6 +146,7 @@ void HandLight::UpdateInUse(float deltaTime)
 		if (toggleTimer_ >= TOGGLE_COOLDOWN){
 			canToggle_ = true;
 			toggleTimer_ = 0.0f;
+			isDisabled_ = true;
 		}
 	}
 	if (canToggle_ && ins.IsClickMouseLeft()){
@@ -149,6 +155,7 @@ void HandLight::UpdateInUse(float deltaTime)
 		// トグルを実行したらクールダウン開始
 		canToggle_ = false;
 		toggleTimer_ = 0.0f;
+		isDisabled_ = false;
 	}
 
 	if (isActive_){

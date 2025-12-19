@@ -20,6 +20,20 @@ class GameScene :
 {
 public:
 
+	// 
+	static constexpr float DRAW_X = 0.36875f;
+
+	// 
+	static constexpr float DRAW_Y = 0.04166f;
+
+	//
+	static constexpr float CLEAR_DRAW_Y = 0.0625f;
+
+	// 
+	static constexpr float CURRENT_TASK_DRAW_Y = 0.0625f;
+
+
+
 	GameScene(SceneController& controller);
 	~GameScene();
 

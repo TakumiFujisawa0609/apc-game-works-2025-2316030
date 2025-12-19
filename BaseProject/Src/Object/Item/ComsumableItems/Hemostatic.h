@@ -19,6 +19,10 @@ public:
 
     // ’²®—pÀ•W
     static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
+
+    // ‰ñ•œ—Ê
+    static constexpr float HP_RECOVERY = 50.0f;
+
     
     Hemostatic(Player& player);
     ~Hemostatic(void);

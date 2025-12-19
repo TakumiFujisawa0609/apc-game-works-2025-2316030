@@ -63,7 +63,7 @@ void Tranquilizer::Draw(void)
 void Tranquilizer::Use(void)
 {
 	isDisabled_ = true;
-	player_.SetSanityLevel(50);
+	player_.SetSanityLevel(SANITY_RECCVERY);
 }
 
 void Tranquilizer::OnUpdate(float deltaTime)

@@ -184,20 +184,20 @@ void EnemyBase::Draw(void)
 
 #ifdef _DEBUG
 
-    const auto& sizeW = Config::GetInstance().GetWindowSize();
+    //const auto& sizeW = Config::GetInstance().GetWindowSize();
 
-    const wchar_t* stateName = L"UNKONOWN";
-    auto it = stateNames.find(state_);
-    if (it != stateNames.end())
-    {
-        stateName = it->second;
-    }
+    //const wchar_t* stateName = L"UNKONOWN";
+    //auto it = stateNames.find(state_);
+    //if (it != stateNames.end())
+    //{
+    //    stateName = it->second;
+    //}
 
-    DrawFormatString(sizeW.width_ - sizeW.width_*0.1450f, 48, GetColor(255, 255, 255), L"state: %s", stateName);
+    //DrawFormatString(static_cast<int>(sizeW.width_ - sizeW.width_*0.1450f), 48, GetColor(255, 255, 255), L"state: %s", stateName);
 
-    if (capsule_)capsule_->Draw();
+    //if (capsule_)capsule_->Draw();
 
-    DrawDebug();
+    //DrawDebug();
 
     //DrawFormatString(Application::GetInstance().GetWindowSize().width - 200, 64, GetColor(255, 255, 255), L"pos: (%.2f,%.2f,%.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
     //DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 80, GetColor(255, 255, 255), L"dis: %.2f", patrolComponent_->GetDis());

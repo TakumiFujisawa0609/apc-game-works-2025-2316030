@@ -20,6 +20,9 @@ public:
     // 調整用座標
     static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
 
+    // 正気度回復量
+    static constexpr float SANITY_RECCVERY = 50.0f;
+
     Tranquilizer(Player& player);
     ~Tranquilizer(void);
 

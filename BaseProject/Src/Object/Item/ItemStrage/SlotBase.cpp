@@ -41,24 +41,24 @@ void SlotBase::Draw(void)
 	const float SCALE = 0.6f; // サイズ縮小率 (3/5)
 
 	// 新しいスロットとパディングの幅
-	const float SLOT_WIDTH_RATIO = 0.10f * SCALE;         // 0.0600f
-	const float SLOT_PADDING_RATIO = 0.0125f * SCALE;     // 0.0075f
+	const float SLOT_WIDTH_RATIO = SLOT_WIDTH * SCALE;         // 0.0600f
+	const float SLOT_PADDING_RATIO = SLOT_PADDING * SCALE;     // 0.0075f
 	const float SLOT_TOTAL_STEP = SLOT_WIDTH_RATIO + SLOT_PADDING_RATIO; // 0.0675f
 
 	// 新しいスロットの高さ
-	const float SLOT_HEIGHT_RATIO = 0.175f * SCALE;       // 0.1050f
+	const float SLOT_HEIGHT_RATIO = SLOT_HEIGHT * SCALE;       // 0.1050f
 
 	// 新しいアイコンの縦横比率 (W * 0.0875 * SCALE と H * 0.15556 * SCALE はほぼ等しい)
-	const float ICON_WIDTH_RATIO = 0.0875f * SCALE;       // 0.0525f
-	const float ICON_HEIGHT_RATIO = 0.15556f * SCALE;     // 0.093336f
+	const float ICON_WIDTH_RATIO = ICON_WIDTH * SCALE;       // 0.0525f
+	const float ICON_HEIGHT_RATIO = ICON_HEIGHT * SCALE;     // 0.093336f
 
 	// アイコンのオフセット
-	const float ICON_OFFSET_X_START = 0.00625f * SCALE;   // 0.00375f
-	const float ICON_OFFSET_Y_START = 0.00833f * SCALE;   // 0.004998f
+	const float ICON_OFFSET_X_START = ICON_OFFSET_X * SCALE;   // 0.00375f
+	const float ICON_OFFSET_Y_START = ICON_OFFSET_Y * SCALE;   // 0.004998f
 
 	// 枠線の太さ (絶対値または相対値で調整)
-	const float HIGHLIGHT_THICKNESS_W = 0.003125f * SCALE; // 0.001875f
-	const float HIGHLIGHT_THICKNESS_H = 0.00416f * SCALE;  // 0.002496f
+	const float HIGHLIGHT_THICKNESS_W = THICKNESS_WIDTH * SCALE; // 0.001875f
+	const float HIGHLIGHT_THICKNESS_H = THICKNESS_HEIGHT * SCALE;  // 0.002496f
 
 
 	int numSlots = static_cast<int>(slots_.size());
@@ -72,7 +72,7 @@ void SlotBase::Draw(void)
 	// 描画Y座標 (画面下部から少し上だったものを、画面下部から少し離れた位置に変更し、全体的に上へ移動)
 	// 元の配置基準Y座標 0.19583f から、例えば 0.35f (画面下部から35%の位置) に変更して全体を上へ移動
 	// または、画面下部から固定ピクセルを引くなど、調整が必要です。ここでは比率を大きめにして上へ移動させます
-	int startY = static_cast<int>(size.height_ - size.height_ * 0.23f);
+	int startY = static_cast<int>(size.height_ - size.height_ * START_Y);
 
 	// --- 1. スロットとアイコンの描画 ---
 	for (int i = 0; i < numSlots; ++i){
@@ -93,17 +93,22 @@ void SlotBase::Draw(void)
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		// アイコンの描画
-		int iconColor = GetColor(100, 100, 100);
+		int iconColor = GetColor(255, 255, 255);
 		if (std::dynamic_pointer_cast<Battery>(item)) iconColor = GetColor(0, 255, 0);
 		else if (std::dynamic_pointer_cast<HandLight>(item)) iconColor = GetColor(255, 255, 0);
 		else if (std::dynamic_pointer_cast<Hemostatic>(item)) iconColor = GetColor(255, 0, 0);
 
 		// アイテムが無効な場合は薄暗くする
 		auto currentItem = GetCurrentItem();
-		auto perItem = std::dynamic_pointer_cast<PermanentItemBase>(currentItem);
-		if (item->IsDisabledItem()) {
+		auto perItem = std::dynamic_pointer_cast<PermanentItemBase>(item);
+		auto light = std::dynamic_pointer_cast<HandLight>(item);
+		if (currentItem->IsDisabledItem()) {
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 		}
+
+	    /*if (perItem->IsActive()) {
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
+		}*/
 
 		// 仮のアイコンを描画 (内側の四角)
 		DrawBox(static_cast<int>(drawX + size.width_ * ICON_OFFSET_X_START),
@@ -138,6 +143,7 @@ void SlotBase::Draw(void)
 
 		// 選択スロットの真下に情報を表示
 		int textDrawX = static_cast<int>(startX + currentSelectedIndex_ * size.width_ * SLOT_TOTAL_STEP);
+
 		// スロットの縦幅の変更に伴い、テキスト描画Y座標を調整
 		int textDrawY = static_cast<int>(startY + size.height_ * (SLOT_HEIGHT_RATIO + 0.01f));
 
@@ -197,6 +203,11 @@ void SlotBase::CycleByWheel(bool scrollUp)
 int SlotBase::GetCurrentSelectedIndex(void)
 {
 	return currentSelectedIndex_;
+}
+
+std::vector<std::shared_ptr<ItemBase>> SlotBase::GetSlots(void) const
+{
+	return slots_;
 }
 
 void SlotBase::UpdateIndex(int direction)

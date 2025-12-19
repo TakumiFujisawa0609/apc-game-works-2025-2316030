@@ -61,7 +61,7 @@ void Battery::Draw(void)
 
 void Battery::Use(void)
 {
-	hLight_.lock()->ChangeBattery(100);
+	hLight_.lock()->ChangeBattery(BATTERY_RECOVERY);
 	isDisabled_ = true;
 }
 

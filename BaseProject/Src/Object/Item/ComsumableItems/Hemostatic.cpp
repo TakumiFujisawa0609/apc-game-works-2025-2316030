@@ -62,7 +62,7 @@ void Hemostatic::Draw(void)
 void Hemostatic::Use(void)
 {
 	isDisabled_ = true;
-	player_.SetHitPoint(50.0f);
+	player_.SetHitPoint(HP_RECOVERY);
 }
 
 void Hemostatic::OnUpdate(float deltaTime)

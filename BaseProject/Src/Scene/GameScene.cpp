@@ -27,18 +27,11 @@
 #include "../Object/Item/ComsumableItems/Battery.h"
 #include "../Object/Item/ComsumableItems/Hemostatic.h"
 #include "../Object/Item/ComsumableItems/Tranquilizer.h"
-
-
 #include "../Object/Item/Wire.h"
-
 #include "../Object/Components/Gameplay/OxygenComponent.h"
-
 #include "../Object/Item/ItemStrage/SlotBase.h"
-
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
-
 #include "../Object/Stage/Dummy.h"
-
 #include"../DrawUtil.h"
 
 namespace {
@@ -54,7 +47,6 @@ namespace {
 
 GameScene::GameScene(SceneController& controller) :Scene(controller)
 {
-
 	update_ = &GameScene::FadeInUpdate;
 	draw_ = &GameScene::FadeDraw;
 	frame_ = fade_interval;
@@ -200,8 +192,6 @@ void GameScene::DrawUI(void)
 			// Y座標: 画面全体の高さの 4分の3 の位置
 			int draw_y = (size.height_ * 3) / 4;
 
-			// 3. テキストを描画
-
 			// 赤色で描画
 			int color = GetColor(255, 255, 255);
 
@@ -220,8 +210,6 @@ void GameScene::DrawUI(void)
 			// Y座標: 画面全体の高さの 4分の3 の位置
 			int draw_y = (size.height_ * 3) / 4;
 
-			// 3. テキストを描画
-
 			// 赤色で描画
 			int color = GetColor(255, 255, 255);
 
@@ -229,8 +217,8 @@ void GameScene::DrawUI(void)
 			DrawString(draw_x, draw_y, text_to_display, color);
 		}
 
-		int draw_x = static_cast<int>(size.width_ - size.width_ * 0.36875f); // 右端から300pxの位置
-		int draw_y = static_cast<int>(size.height_ * 0.04166f);               // 上から20pxの位置
+		int draw_x = static_cast<int>(size.width_ - size.width_ * DRAW_X); // 右端から300pxの位置
+		int draw_y = static_cast<int>(size.height_ * DRAW_Y);               // 上から20pxの位置
 		int color = GetColor(255, 255, 255);
 
 		// 完了メッセージの描画
@@ -239,14 +227,14 @@ void GameScene::DrawUI(void)
 			// 完了メッセージは黄色で表示
 			int clearColor = GetColor(255, 255, 0);
 			DrawString(draw_x, draw_y, clearMessage_.c_str(), clearColor);
-			draw_y += static_cast<int>(size.height_ * 0.0625f); // 次のメッセージ位置をずらす
+			draw_y += static_cast<int>(size.height_ * CLEAR_DRAW_Y); // 次のメッセージ位置をずらす
 		}
 
 		// 現在のタスクの描画
 		if (!currentTaskMessage_.empty())
 		{
 			DrawString(draw_x, draw_y, L"--- Current Task ---", color);
-			DrawString(draw_x, static_cast<int>(draw_y + size.height_ * 0.0625f), currentTaskMessage_.c_str(), color);
+			DrawString(draw_x, static_cast<int>(draw_y + size.height_ * CURRENT_TASK_DRAW_Y), currentTaskMessage_.c_str(), color);
 		}
 
 		player_->DrawUI();
@@ -650,29 +638,32 @@ void GameScene::ObtainItem(void)
 
 	obtainedItem->ChangeState(ItemBase::STATE::ININVENTORY);
 
-	if (auto light = std::dynamic_pointer_cast<HandLight>(obtainedItem))
-	{
-		itemSlot_->AddItem(light);
-	}
-	if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(obtainedItem))
-	{
-		itemSlot_->AddItem(lockpick);
-	}
-	if (auto wire = std::dynamic_pointer_cast<Wire>(obtainedItem))
-	{
-		itemSlot_->AddItem(wire);
-	}
-	if (auto battery = std::dynamic_pointer_cast<Battery>(obtainedItem))
-	{
-		itemSlot_->AddItem(battery);
-	}
-	if (auto hemostatic = std::dynamic_pointer_cast<Hemostatic>(obtainedItem))
-	{
-		itemSlot_->AddItem(hemostatic);
-	}
-	if (auto tranquilizer = std::dynamic_pointer_cast<Tranquilizer>(obtainedItem))
-	{
-		itemSlot_->AddItem(tranquilizer);
+
+	if (itemSlot_->GetSlots().size() <= 4) {
+		if (auto light = std::dynamic_pointer_cast<HandLight>(obtainedItem))
+		{
+			itemSlot_->AddItem(light);
+		}
+		if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(obtainedItem))
+		{
+			itemSlot_->AddItem(lockpick);
+		}
+		if (auto wire = std::dynamic_pointer_cast<Wire>(obtainedItem))
+		{
+			itemSlot_->AddItem(wire);
+		}
+		if (auto battery = std::dynamic_pointer_cast<Battery>(obtainedItem))
+		{
+			itemSlot_->AddItem(battery);
+		}
+		if (auto hemostatic = std::dynamic_pointer_cast<Hemostatic>(obtainedItem))
+		{
+			itemSlot_->AddItem(hemostatic);
+		}
+		if (auto tranquilizer = std::dynamic_pointer_cast<Tranquilizer>(obtainedItem))
+		{
+			itemSlot_->AddItem(tranquilizer);
+		}
 	}
 }
 
@@ -738,6 +729,7 @@ bool GameScene::IsHitItems(void)
 
 void GameScene::CleanUpItemPool(void)
 {
+	// 対象のアイテムを配列から削除する
 	itemPool_.erase(
 		std::remove_if(itemPool_.begin(), itemPool_.end(),
 			[](const std::shared_ptr<ItemBase>& item) {

@@ -22,6 +22,9 @@ public:
     // ’²®—pÀ•W
     static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
 
+    // ‰ñ•œ—Ê
+    static constexpr float BATTERY_RECOVERY = 100;
+
     Battery(Player& player);
     ~Battery(void);
 
