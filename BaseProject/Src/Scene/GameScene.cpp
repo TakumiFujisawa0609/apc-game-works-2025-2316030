@@ -357,14 +357,14 @@ void GameScene::NormalDraw()
 	const float CombinedRadius = TargetRadius + OtherRadius;
 	// 最適化のため、半径の合計の二乗も計算
 	const float CombinedRadiusSq = CombinedRadius * CombinedRadius;
-	// 中心点間のベクトルの差を計算 (V2 - V1)
+	// 1. 中心点間のベクトルの差を計算 (V2 - V1)
 	VECTOR DifferenceVector = VSub(OtherCenter, TargetCenter);
 
-	// 中心点間の距離の二乗を計算
+	// 2. 中心点間の距離の二乗を計算
 	//    VSizeSq はベクトルの長さの二乗を返します。
 	float DistanceSq = VSquareSize(DifferenceVector);
 
-	// if文による衝突条件の判定
+	// 3. if文による衝突条件の判定
 	if (DistanceSq <= CombinedRadiusSq){
 		const TCHAR* text_to_display = _T("右クリック or Aボタン");
 		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
@@ -375,6 +375,8 @@ void GameScene::NormalDraw()
 
 		// Y座標: 画面全体の高さの 4分の3 の位置
 		int draw_y = (size.height_ * 3) / 4;
+
+		// 3. テキストを描画
 
 		// 赤色で描画
 		int color = GetColor(255, 255, 255);
@@ -390,6 +392,7 @@ void GameScene::NormalDraw()
 
 void GameScene::FadeDraw()
 {
+
 	float rate = static_cast<float>(frame_) /
 		static_cast<float>(fade_interval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));

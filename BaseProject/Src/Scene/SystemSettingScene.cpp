@@ -8,10 +8,11 @@
 #include "../Manager/InputManager.h"
 #include"../Input.h"
 namespace {
-	constexpr int appear_interval = 20;			//出現までのフレーム
-	constexpr int input_list_row_height = 40;	//メニューの１つあたりの高さ
-	constexpr int margin_size = 20;				//ポーズメニュー枠の余白
+	constexpr int appear_interval = 20;//出現までのフレーム
+	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
+	constexpr int margin_size = 20;//ポーズメニュー枠の余白
 }
+
 
 auto& ins = InputManager::GetInstance();
 
@@ -67,6 +68,7 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 		L"適用",
 		L"戻る"
 	};
+
 	prefeMenuTable_ = {
 		{L"マウス感度",[this](Input&) {
 				config_.SetMouseSensitivity(mouseSensitivity_);
@@ -104,6 +106,7 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 		L"ウィンドウサイズ",
 		L"戻る"
 	};
+
 	asmTable_ = {
 		{L"表示モード",[this](Input&) {
 				config_.SetFullScreen(isFullS_);
@@ -121,7 +124,6 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 		}
 	};
 
-	// ウィンドウ設定
 	windowSizeList_ = {
 		L"1280×720",
 		L"1920×1080"
@@ -416,13 +418,9 @@ void SystemSettingScene::AdvancedSettingDraw(void)
 
 void SystemSettingScene::InitMenuName(std::wstring menuListIndex, std::map<std::wstring, std::function<void(Input&)>> table, Input& input)
 {
-	// メニュー名を取得
 	const std::wstring& initialMenuName = menuListIndex;
-	
-	// メニュー名をキーとして処理テーブルをを検索
 	auto it = table.find(initialMenuName);
 
-	// 対応する処理が存在する場合のみ実行
 	if (it != table.end()) {
 		it->second(input);
 	}

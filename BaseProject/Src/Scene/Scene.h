@@ -12,9 +12,6 @@ protected:
 	SceneController& controller_;	//持ち主の参照
 	ResourceManager& resMng_;		// リソース管理
 	int newRT_;						// scene画面の描画先
-	int frame_;						// 毎フレーム計測用
-	int imgH_;						// 画像ハンドル
-	int soundH_;					// 音ハンドル
 
 public:
 	/// <summary>

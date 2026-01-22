@@ -22,20 +22,22 @@ private:
     // 設定
     Config& config_;
 
-    // 詳細設定
+    // 
     enum class AdvancedSettingState {
         MainMenu,
         WindowSize
     };
 
-    int mainMenuIndex_;                 // メイン設定
-    int prefMenuIndex_;                 // 環境設定用
-    int asMenuIndex_;                   // 詳細設定用
-    int wMenuIndex_;                    // ウィンドウメニュー用
+    int frame_;
+
+    int mainMenuIndex_;                 // メイン設定のインデックス
+    int prefMenuIndex_;                 // 
+    int asMenuIndex_;                   // 
+    int wMenuIndex_;                    // 
 
     bool isInitialize_;                 // 初期化するかどうか
 
-    AdvancedSettingState asState_;      // 詳細設定状態
+    AdvancedSettingState asState_;      // 設定状態
 
     bool isFullS_;	                    // フルスクリーンであるかどうか
     int width_, height_;                // ウィンドウのサイズの縦、横

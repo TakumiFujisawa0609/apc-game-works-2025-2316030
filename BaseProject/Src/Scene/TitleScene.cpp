@@ -24,7 +24,7 @@ namespace {
 TitleScene::TitleScene(SceneController& controller)
 	:
 	Scene(controller),
-	imgH_(-1),
+	titleH_(-1),
 	prevPOVDirection_(-1)
 {
 	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
@@ -60,7 +60,7 @@ void TitleScene::Init(Input& input)
 	update_ = &TitleScene::FadeInUpdate;
 	draw_ = &TitleScene::FadeDraw;
 	frame_ = fade_interval;
-	imgH_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
+	titleH_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
 	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
 	ChangeVolumeSoundMem(255, soundH_);
 }
@@ -197,7 +197,7 @@ void TitleScene::NormalDraw()
 {
 	auto& size = Config::GetInstance().GetWindowSize();
 	// タイトル画像の描画
-	DrawRotaGraph(size.width_ / 2, static_cast<int>(size.height_ / 2 * 0.8f), 0.4, 0.0, imgH_, true);
+	DrawRotaGraph(size.width_ / 2, static_cast<int>(size.height_ / 2 * 0.8f), 0.4, 0.0, titleH_, true);
 
 	// アクションボタンの表示
 	DrawMenuList();

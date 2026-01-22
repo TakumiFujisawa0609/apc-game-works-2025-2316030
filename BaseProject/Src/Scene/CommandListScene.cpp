@@ -5,9 +5,9 @@
 #include"../Manager/SceneController.h"
 #include"../Input.h"
 namespace {
-	constexpr int appear_interval = 20;			//出現までのフレーム
-	constexpr int input_list_row_height = 40;	//メニューの１つあたりの高さ
-	constexpr int margin_size = 20;				//ポーズメニュー枠の余白
+	constexpr int appear_interval = 20;//出現までのフレーム
+	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
+	constexpr int margin_size = 20;//ポーズメニュー枠の余白
 }
 
 CommandListScene::CommandListScene(SceneController& controller):Scene(controller)
