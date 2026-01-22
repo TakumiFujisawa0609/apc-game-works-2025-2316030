@@ -26,9 +26,6 @@ public:
 	virtual void DrawUI(void)override;
 
 private:
-		int imgH_ = 0;
-		int frame_ = 0;
-		int soundH_;
 		using UpdateFunc_t = void(OverScene::*)(Input& input);
 		using DrawFunc_t = void(OverScene::*)();
 

@@ -44,10 +44,6 @@ public:
 
 private:
 
-	int titleH_;				// タイトル画像
-	int frame_ = 0;				// フレーム
-	int soundH_;				// 音
-
 	int currentIndex_ = 0;		// 現在のインデックス
 
 	//メニューの文字列と関数のテーブル
