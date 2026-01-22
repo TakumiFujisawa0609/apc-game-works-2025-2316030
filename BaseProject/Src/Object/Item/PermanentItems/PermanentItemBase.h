@@ -7,17 +7,14 @@ public:
 
 	PermanentItemBase(Player& player);
 	~PermanentItemBase(void);
-
 	void Init(void) override = 0;
 	void Update(float deltaTime) override = 0;
 	void Draw(void) override = 0;
 
-	// 使用中状態を取得
 	virtual bool IsActive(void);
 
 protected:
 
-	// 使用中かどうか
 	bool isActive_;
 
 	// ゲーム内空間でのアイテムの更新
@@ -29,5 +26,8 @@ protected:
 	virtual void UpdateUsed(float deltaTime);
 	virtual void UpdateInUse(float deltaTime) = 0;
 	virtual void UpdateUsedUp(float deltaTime) = 0;
+
+
+private:
 };
 

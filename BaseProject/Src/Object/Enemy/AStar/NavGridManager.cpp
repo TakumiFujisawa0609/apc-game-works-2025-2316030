@@ -10,8 +10,10 @@ void NavGridManager::InitGrid(int gridSizeX, int gridSizeZ, float nodeSize)
 
     navGrid_.resize(gridSizeX_, std::vector<AStarNode>(gridSizeZ_));
 
-    for (int x = 0; x < gridSizeX_; ++x){
-        for (int z = 0; z < gridSizeZ_; ++z){
+    for (int x = 0; x < gridSizeX_; ++x)
+    {
+        for (int z = 0; z < gridSizeZ_; ++z)
+        {
             AStarNode& node = navGrid_[x][z];
             node.gridX_ = x;
             node.gridZ_ = z;
@@ -32,7 +34,8 @@ AStarNode* NavGridManager::NodeFromWorldPoint(VECTOR worldPos)
     int x = (int)(worldPos.x / nodeSize_);
     int z = (int)(worldPos.z / nodeSize_);
 
-    if (x >= 0 && x < gridSizeX_ && z >= 0 && z < gridSizeZ_){
+    if (x >= 0 && x < gridSizeX_ && z >= 0 && z < gridSizeZ_)
+    {
         return &navGrid_[x][z];
     }
     return nullptr;
@@ -40,7 +43,8 @@ AStarNode* NavGridManager::NodeFromWorldPoint(VECTOR worldPos)
 
 AStarNode* NavGridManager::GetNode(int x, int z)
 {
-    if (x >= 0 && x < gridSizeX_ && z >= 0 && z < gridSizeZ_){
+    if (x >= 0 && x < gridSizeX_ && z >= 0 && z < gridSizeZ_)
+    {
         return &navGrid_[x][z];
     }
     return nullptr;
@@ -48,8 +52,10 @@ AStarNode* NavGridManager::GetNode(int x, int z)
 
 void NavGridManager::ResetAllNodes()
 {
-    for (int x = 0; x < gridSizeX_; ++x){
-        for (int z = 0; z < gridSizeZ_; ++z){
+    for (int x = 0; x < gridSizeX_; ++x)
+    {
+        for (int z = 0; z < gridSizeZ_; ++z)
+        {
             navGrid_[x][z].Reset();
         }
     }
@@ -60,19 +66,24 @@ void NavGridManager::CheckObstacles(const std::vector<Transform>& obstacles)
     // 障害物の座標とノードの座標を比較し
     // 障害物と重なるノードのisWalkable をfalseに設定する処理が必要
 
-    // 既存の障害物は上書きするため、全てのノードをリセットして通行可能に戻す
-    
-    ResetAllNodes();
+    // 1. まず全てのノードをリセットして通行可能に戻す(既存の障害物は上書きするため)
+        // 既に InitGrid で行っているかもしれませんが、安全のために全ノードをリセットするのが一般的です。
+        // 今回は CheckObstacles の直前に ResetAllNodes() を呼び出すものとします。
 
-    for (int x = 0; x < gridSizeX_; ++x){
-        for (int z = 0; z < gridSizeZ_; ++z){
-            navGrid_[x][z].isWalkable_ = true;
+    ResetAllNodes(); // 必要に応じて呼び出す
+
+    for (int x = 0; x < gridSizeX_; ++x)
+    {
+        for (int z = 0; z < gridSizeZ_; ++z)
+        {
+            navGrid_[x][z].isWalkable_ = true; // isWalkable_ を true に戻す
         }
     }
 
     // 2. すべての障害物に対してループ
-    for (const auto& obstacleTransform : obstacles){
-        //if (obstacleTransform) continue;
+    for (const auto& obstacleTransform : obstacles)
+    {
+        //if (!obstacleTransform) continue;
 
         // 障害物の境界ボックスのパラメータを取得
         VECTOR obsPos = obstacleTransform.pos;
@@ -85,8 +96,10 @@ void NavGridManager::CheckObstacles(const std::vector<Transform>& obstacles)
         float maxZ = obsPos.z + (obsScale.z / 2.0f);
 
         // 3. 全てのナビゲーションノードに対してループ
-        for (int x = 0; x < gridSizeX_; ++x){
-            for (int z = 0; z < gridSizeZ_; ++z){
+        for (int x = 0; x < gridSizeX_; ++x)
+        {
+            for (int z = 0; z < gridSizeZ_; ++z)
+            {
                 AStarNode& node = navGrid_[x][z];
 
                 // ノードが既に通行不可とマークされていたらスキップ
@@ -99,7 +112,8 @@ void NavGridManager::CheckObstacles(const std::vector<Transform>& obstacles)
                 bool isInsideX = (nodeX >= minX) && (nodeX <= maxX);
                 bool isInsideZ = (nodeZ >= minZ) && (nodeZ <= maxZ);
 
-                if (isInsideX && isInsideZ){
+                if (isInsideX && isInsideZ)
+                {
                     // ノードの中心が障害物の中にあるため、通行不可とマーク
                     node.isWalkable_ = false;
                 }

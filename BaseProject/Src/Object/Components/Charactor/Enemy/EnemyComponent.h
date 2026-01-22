@@ -18,7 +18,6 @@ public:
 
 protected:
 
-    // プレイヤー参照
     Player& player_;
 
 };

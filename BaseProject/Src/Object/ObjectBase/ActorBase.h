@@ -28,7 +28,6 @@ public:
 	virtual void Update(float deltaTime) = 0;
 	virtual void Draw(void) = 0;
 
-	// Transfromの取得
 	const Transform& GetTransform(void) const;
 
 	// コンポーネントの追加

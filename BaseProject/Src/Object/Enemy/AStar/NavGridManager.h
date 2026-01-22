@@ -22,24 +22,16 @@ public:
 	// A*探索前に全てのノードをリセット
 	void ResetAllNodes();
 
-	// X方向のグリットを取得
 	int GetGridSizeX() const { return gridSizeX_; }
-	
-	// Z方向のグリットを取得
 	int GetGridSizeZ() const { return gridSizeZ_; }
 
-	// 障害物情報の受け取り
+	// 【TODO】障害物情報 (Transformなど) を受け取り、isWalkableを設定する関数が必要
 	void CheckObstacles(const std::vector<Transform>& obstacles);
 
 private:
 
-	// A*経路探索用のノード
 	std::vector<std::vector<AStarNode>> navGrid_;
-
-	// X,Z方向のグリッド数
-	int gridSizeX_ = 50, gridSizeZ_ = 50;
-
-	// １グリット当たりのワールドサイズ
-	float nodeSize_ = 100.0f;
+	int gridSizeX_ = 50, gridSizeZ_ = 50;			// X,Z方向のグリッド数
+	float nodeSize_ = 100.0f;					// １グリット当たりのワールドサイズ
 };
 

@@ -1,4 +1,4 @@
-#include "../../../Manager/Config.h"
+ï»¿#include "../../../Manager/Config.h"
 #include "../../../Common/Quaternion.h"
 #include "../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
@@ -20,7 +20,7 @@ Hemostatic::~Hemostatic(void)
 void Hemostatic::Init(void)
 {
 
-	// ƒ‚ƒfƒ‹î•ñ
+	// ãƒ¢ãƒ‡ãƒ«æƒ…å ±
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::HEMOSTATIC));
 	InitModel(
@@ -28,7 +28,7 @@ void Hemostatic::Init(void)
 		INIT_SCL,
 		INIT_QUAROTLOCAL);
 
-	// ó‘Ô‚Ì‰Šú‰»
+	// çŠ¶æ…‹ã®åˆæœŸåŒ–
 	isOnStage_ = true;
 	isEquipment_ = false;
 	isEfficacy_ = false;
@@ -36,25 +36,30 @@ void Hemostatic::Init(void)
 
 	ChangeState(STATE::ONSTAGE);
 
-	// ƒ‚ƒfƒ‹‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
 	transform_.Update();
 }
 
 void Hemostatic::Update(float deltaTime)
 {
-	// ‚»‚ê‚¼‚ê‚Ìó‘Ô‚Å‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«æƒ…å ±ã®å‹•æ©Ÿ
+
+	// ãã‚Œãã‚Œã®çŠ¶æ…‹ã§ã®æ›´æ–°
 	UpdateState(deltaTime);
 
-	// ƒ‚ƒfƒ‹‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
 	transform_.Update();
 }
 
 void Hemostatic::Draw(void)
 {
 	if (GetState() == STATE::ONSTAGE ||
-		GetUse() != USE::NONE){
+		GetUse() != USE::NONE)
+	{
+
 		MV1DrawModel(transform_.modelId);
 		auto& size = Config::GetInstance().GetWindowSize();
+		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
 		return;
 	}
 }
@@ -62,12 +67,13 @@ void Hemostatic::Draw(void)
 void Hemostatic::Use(void)
 {
 	isDisabled_ = true;
-	player_.SetHitPoint(HP_RECOVERY);
+	player_.SetHitPoint(50.0f);
 }
 
 void Hemostatic::OnUpdate(float deltaTime)
 {
 	ConsumableItemBase::UpdateOnStage(deltaTime);
+
 }
 
 void Hemostatic::UpdateOnStage(float deltaTime)

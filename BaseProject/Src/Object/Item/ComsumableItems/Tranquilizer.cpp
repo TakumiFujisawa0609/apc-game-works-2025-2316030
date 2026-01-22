@@ -1,4 +1,4 @@
-#include "../../../Application.h"
+ï»¿#include "../../../Application.h"
 #include "../../../Manager/Config.h"
 #include "../../../Common/Quaternion.h"
 #include "../Manager/InputManager.h"
@@ -21,7 +21,7 @@ Tranquilizer::~Tranquilizer(void)
 void Tranquilizer::Init(void)
 {
 
-	// ƒ‚ƒfƒ‹î•ñ
+	// ãƒ¢ãƒ‡ãƒ«æƒ…å ±
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::TRANQUILIZER));
 	InitModel(
@@ -29,7 +29,7 @@ void Tranquilizer::Init(void)
 		INIT_SCL,
 		INIT_QUAROTLOCAL);
 
-	// ó‘Ô‚Ì‰Šú‰»
+	// çŠ¶æ…‹ã®åˆæœŸåŒ–
 	isOnStage_ = true;
 	isEquipment_ = false;
 	isEfficacy_ = false;
@@ -37,25 +37,31 @@ void Tranquilizer::Init(void)
 
 	ChangeState(STATE::ONSTAGE);
 
-	// ƒ‚ƒfƒ‹‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
 	transform_.Update();
 }
 
 void Tranquilizer::Update(float deltaTime)
 {
-	// ‚»‚ê‚¼‚ê‚Ìó‘Ô‚Å‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«æƒ…å ±ã®å‹•æ©Ÿ
+
+	// ãã‚Œãã‚Œã®çŠ¶æ…‹ã§ã®æ›´æ–°
 	UpdateState(deltaTime);
 
-	// ƒ‚ƒfƒ‹‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
 	transform_.Update();
 }
 
 void Tranquilizer::Draw(void)
 {
 	if (GetState() == STATE::ONSTAGE ||
-		GetUse() != USE::NONE){
+		GetUse() != USE::NONE)
+	{
+
 		MV1DrawModel(transform_.modelId);
 		auto& size = Config::GetInstance().GetWindowSize();
+		//DrawFormatString(size.width - 150, 144, GetColor(255, 255, 255), L"value = %.2f", value_);
+		//DrawSphere3D(transform_.pos, 32, 16, GetColor(255, 0, 255), GetColor(255, 0, 255), false);
 		return;
 	}
 }
@@ -63,7 +69,7 @@ void Tranquilizer::Draw(void)
 void Tranquilizer::Use(void)
 {
 	isDisabled_ = true;
-	player_.SetSanityLevel(SANITY_RECCVERY);
+	player_.SetSanityLevel(50);
 }
 
 void Tranquilizer::OnUpdate(float deltaTime)

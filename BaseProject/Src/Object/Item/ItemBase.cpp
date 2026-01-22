@@ -13,6 +13,8 @@ ItemBase::ItemBase(Player& player)
 	isEquipment_(false),
 	isEfficacy_(false),
 	isDisabled_(false),
+	isInUse_(false),
+	isUsed_(false),
 	state_(STATE::NONE),
 	use_(USE::NONE),
 	targetTransform_(nullptr),
@@ -40,7 +42,8 @@ void ItemBase::SetOwnerSlot(std::shared_ptr<SlotBase> slot, int index)
 
 bool ItemBase::IsCurrentSelected(void) const
 {
-	if (auto slot = ownerSlot_.lock()){
+	if (auto slot = ownerSlot_.lock())
+	{
 		return slot->GetCurrentSelectedIndex() == slotIndex_;
 	}
 	return false;
@@ -192,7 +195,8 @@ void ItemBase::FollowTarget(float deltaTime, VECTOR targetPos)
 
 	// 目標１との距離が小さければ強制的に目標位置に設定する
 	const float STOP_THRESHOLD = 0.5f;
-	if (VSize(VSub(worldTargetPos, transform_.pos)) < STOP_THRESHOLD){
+	if (VSize(VSub(worldTargetPos, transform_.pos)) < STOP_THRESHOLD)
+	{
 		// 目標１に固定してガタつきをなくす
 		transform_.pos = worldTargetPos;
 
@@ -219,3 +223,4 @@ void ItemBase::FollowTarget(float deltaTime, VECTOR targetPos)
 	transform_.quaRot = Quaternion::LookRotation(lookRotation, AsoUtility::AXIS_Y);
 	transform_.quaRot.y += 0.04f;
 }
+

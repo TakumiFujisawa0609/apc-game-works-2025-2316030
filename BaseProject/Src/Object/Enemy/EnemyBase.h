@@ -6,10 +6,6 @@
 #include <queue>
 #include <unordered_set>
 
-
-class FieldImapactMap;
-class AreaConnection;
-
 class Collider;
 class Capsule;
 class AnimationController;
@@ -19,6 +15,7 @@ class EnemyChaseComponent;
 
 class PatrolNode;
 class PatrolPath;
+
 class NavGridManager;
 
 class Player;
@@ -27,55 +24,43 @@ class EnemyBase :
 {
 public:
 
-    // 座標位置
     static constexpr VECTOR POS = { -1713.0f,200.0f,2580.0f };
-
-    // 拡大率
-    static constexpr VECTOR SCALE = { 1.0f,1.0f ,1.0f };
-
-    // ローカル回転
+    static constexpr VECTOR SCALE = { 1.3f,1.3f ,1.3f };
     static constexpr VECTOR QUAROT_LOCAL = { 0.0f,180.0f,0.0f };
 
-    // カプセルの上部
     static constexpr VECTOR TOP = {0.0f,160.0f,0.0f};
-
-    // カプセルの下部
     static constexpr VECTOR DOWN = {0.0f,0.0f,0.0f};
-    
-    // カプセルの半径
     static constexpr float RADIUS = 20.0f;
-    
+
     // 視野の広さ
     static constexpr float EYE_VIEW_RANGE = 250.0f;
+    //static constexpr float ATTACK_RANGE = 100.0f;
 
     // 攻撃範囲の広さ
     static constexpr float ATTACK_RANGE = 175.0f;
-    
+
     // 視野角
     static constexpr float VIEW_ANGLE = 30.0f;
-    
-    // 回転完了するまでの時間
-    static constexpr float TIME_ROT = 1.0f;
 
-    // 歩き速度
-    static constexpr float WALK_SPEED = 8.0f;
-
-    // 行動パターン
-    enum class STATE{
+    enum class STATE
+    {
         PATROL, // 巡回
         CHASE,  // 追跡
         ATTACK, // 攻撃
         IDLE    // 待機
     };
 
-    // アニメーション状態
-    enum class ANIM{
-        PATROL, // 巡回
-        CHASE,  // 追跡
-        ATTACK, // 攻撃
-        IDLE,   // 待機
-        LOOK    // 警戒
+    enum class ANIM
+    {
+        PATROL,
+        CHASE,
+        ATTACK,
+        IDLE,
+        LOOK
     };
+
+    // 回転完了するまでの時間
+    static constexpr float TIME_ROT = 1.0f;
 
     EnemyBase(Player& player);
     ~EnemyBase(void);
@@ -89,82 +74,49 @@ public:
     // 移動中に障害物として認識される物を設定する
     void SetObstacle(std::vector<Transform> obstacle);
 
-    // 徘徊用のノードパスをステージから取得
+    // 徘徊用のノードパスをステージから取得する
     void SetPatrolPath(std::shared_ptr<PatrolPath> path);
 
-    // グリッドマネージャーをステージから取得
-    void SetNavGridManagedr(std::shared_ptr<NavGridManager> navGridManager);
+    // グリッドマネージャーをステージから取得する
+    void SetNavGridManager(std::shared_ptr<NavGridManager> navGridManager);
 
-    // フィールド影響マップ(エリア情報)をステージから取得
-    void SetFieldImpactMap(std::shared_ptr<FieldImapactMap> fieldImapactMap);
-
+    void CollisionPlayer(void);
 
 protected:
 
-    // プレイヤー参照
+    // モデル情報初期化
+    virtual void InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal);
+
     Player& player_;
-    
+
     // 視界内にプレイヤーが入っているか
     bool isPlayerInSight_;
 
     // 音を検知したかどうか
     bool isHearingSound_;
 
-    // フレーム
     int frame_;
+    int attackframe_;
 
-    // 移動
-    EnemyPatrolComponent* patrolComponent_;
-    
-    // 追跡
-    EnemyChaseComponent* chaseComponent_;
+    EnemyPatrolComponent* patrolComponent_;     // 移動
+    EnemyChaseComponent* chaseComponent_;   // 追跡
 
-    // 現在の行動パターン
-    STATE state_;
+    STATE state_;       // 現在の行動パターン
 
-    // 巡回パス
+    // 巡回パスの情報
     std::shared_ptr<PatrolPath> patrolPath_;
-    
-    // 現在のパスの番号
-    int currentPatrolPathIndex_;
+    int currentPatrolPathIndex_;                // 現在のパスの番号
 
-    // アニメーション
-    std::unique_ptr<AnimationController> animationController_;
-
-    // モデル情報初期化
-    virtual void InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal);
+    std::unique_ptr<AnimationController> animationController_;  // アニメーション
 
     // アニメーションの初期化
     virtual void InitAnimation(void);
 
-    // A*経路探索
     std::shared_ptr<NavGridManager> navGridManager_;
 
-    // エリア間経路探索
-
-    // エリア構造全体を管理
-    std::shared_ptr<FieldImapactMap> fieldImapctMap_;
-    
-    // 目標エリアIDのキュー
-    std::queue<int> areaRouteQueue_;
-    
-    // 現在エリア内のA*経路探索(ローカル経路)
-    std::vector<VECTOR> currentLocalPath_;
-
-    // ローカル経路の現在のインデックス
-    int currentLocalPathIndex_;
-
-
-    // 待機中かどうか
-    bool isWaiting_;
-
-    // 現在の待機残り時間
-    float currentWaitTime_;
-
-    // プレイヤーとの距離
+    bool isWaiting_;            // 待機中かどうか
+    float currentWaitTime_;     // 現在の待機残り時間
     float dis_;
-
-    // 現在の追跡ノード
     int currentNode_;
 
 private:
@@ -172,55 +124,29 @@ private:
     // 回転処理
     void Rotate(void);
 
-    // 衝突判定
-    void Collision(void);
+    void Collision(void);               // 衝突判定
+    void CollisionCapsule(void);        // カプセルとの衝突判定
+    void CollisionGravity(void);        // 重力との衝突判定
+    void CalcGravityPow(void);          // 重力加算処理
 
-    // カプセルとの衝突判定
-    void CollisionCapsule(void);
-    
-    // 重力との衝突判定
-    void CollisionGravity(void);
-    
-    // 重力加算処理
-    void CalcGravityPow(void);
-
-    // 状態の変更
     void ChangeState(STATE state);
 
-    // 視覚判定
     bool EyeSerch(void);
 
-    // 聴覚判定
     bool HearingSound(void);
 
-    // デバック描画
     void DrawDebug(void);
 
-    // 徘徊状態の更新
     void UpdatePatrol(float deltaTime);
-
-    // 追跡状態の更新
     void UpdateChase(float deltaTime);
 
-    // グローバル経路(エリア間ルート)を計算する
-    void CalculateGlobalAreaRoute(void);
-
-    // ローカル経路(エリア内のウェイポイントA＊)を計算する
-    void CalculateLocalPath(const VECTOR& targetPos) const;
-
-    // A*でのパスを探す(ローカル経路探索に再利用)
+    // A*のメイン関数
     std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
 
-    // A*のノードのコスト計算
+    // A*のヘルパー関数
     float GetHCost(AStarNode* a, AStarNode* b);
-    
-    // 隣り合うノードの位置の取得
     std::vector<AStarNode*> GetNeighbors(AStarNode* node);
-    
-    // A*の隣り合うノード同士の距離
     float GetDistance(AStarNode* a, AStarNode* b);
-
-    // ノードを辿らせる
     std::vector<VECTOR> RetracePath(AStarNode* start, AStarNode* end);
 
     // A*ノードを比較するための構造体（Fスコアが低い方を優先）
@@ -229,19 +155,18 @@ private:
         bool operator()(const AStarNode* a, const AStarNode* b) const;
     };
 
-    // 攻撃判定
-    bool isDamageCheckActive_;
+    std::vector<VECTOR> currentPath_;
+    int currentPathIndex_ = 0;
+    float pathRecalcTimer_ = 0.0f;
+    float time_ = 0.0f;
 
-    // プレイヤーに対して攻撃があたった場合
+    bool isDamageCheckActive_;
     bool hasPlayerBeenHit_;
 
-    // ダメージ判定
     void HandleAttackCollsion(float deltaTime);
 
-    // 攻撃判定
     bool isAttackRange(void);
 
-    // 攻撃をするかどうか
     bool isAttack_;
 };
 

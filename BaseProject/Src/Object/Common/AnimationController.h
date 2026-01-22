@@ -9,7 +9,8 @@ class AnimationController
 public :
 
 	// アニメーションデータ
-	struct Animation{
+	struct Animation
+	{
 		int model = -1;
 		int attachNo = -1;
 		int animIndex = 0;
@@ -50,10 +51,7 @@ private :
 	// 種類別のアニメーションデータ
 	std::map<int, Animation> animations_;
 
-	// 再生する型
 	int playType_;
-
-	// アニメーションデータ
 	Animation playAnim_;
 
 	// アニメーションをループするかしないか
@@ -63,13 +61,8 @@ private :
 	bool isStop_;
 
 	// アニメーション終了後に繰り返すループステップ
-	// ループステップの始まり
 	float stepEndLoopStart_;
-
-	// ループステップの終わり
 	float stepEndLoopEnd_;
-
-	// ループスピード
 	float endLoopSpeed_;
 
 	// 逆再生

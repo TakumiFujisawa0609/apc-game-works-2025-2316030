@@ -29,7 +29,8 @@ Charactor::~Charactor()
 
 void Charactor::Update(float deltaTime)
 {
-    for (auto& comp : charaComponents_){
+    for (auto& comp : charaComponents_)
+    {
         comp->Update(deltaTime);
     }
     OnUpdate(deltaTime);
@@ -84,18 +85,22 @@ void Charactor::CollisionCapsule(void)
     Capsule cap = Capsule(*capsule_, &trans);
 
     // カプセルとの衝突判定
-    for (const auto& c : colliders_){
+    for (const auto& c : colliders_)
+    {
         auto hits = MV1CollCheck_Capsule(
             c->modelId_, -1,
             cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
 
-        for (int i = 0; i < hits.HitNum; i++){
+        for (int i = 0; i < hits.HitNum; i++)
+        {
             auto hit = hits.Dim[i];
-            for (int tryCnt = 0; tryCnt < 10; tryCnt++){
+            for (int tryCnt = 0; tryCnt < 10; tryCnt++)
+            {
                 int pHit = HitCheck_Capsule_Triangle(
                     cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
                     hit.Position[0], hit.Position[1], hit.Position[2]);
-                if (pHit){
+                if (pHit)
+                {
                     movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 0.01f));
 
                     // カプセルを移動させる
@@ -131,12 +136,14 @@ void Charactor::CollisionGravity(void)
     //天井衝突チェックのために広めに2.0fをかけて判定をとる
     gravHitPosUp_ = VAdd(gravHitPosUp_, VScale(dirUpGravity, checkPow * 2.0f));
     gravHitPosDown_ = VAdd(movedPos_, VScale(dirGravity, checkPow));
-    for (const auto& c : colliders_){
+    for (const auto& c : colliders_)
+    {
         // 地面との衝突
         auto hit = MV1CollCheck_Line(
             c->modelId_, -1, gravHitPosUp_, gravHitPosDown_);
 
-        if (hit.HitFlag > 0 && VDot(dirGravity, velocityY_) > 0.9f){
+        if (hit.HitFlag > 0 && VDot(dirGravity, velocityY_) > 0.9f)
+        {
             // 衝突地点から、少し上に移動
             movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, 2.0f));
 
@@ -161,7 +168,8 @@ void Charactor::CalcGravityPow(void)
 
     // 内積
     float dot = VDot(dirGravity, velocityY_);
-    if (dot >= 0.0f){
+    if (dot >= 0.0f)
+    {
         // 重力方向と反対方向(マイナス)でなければ、Y軸方向の移動変化量を無くす
         velocityY_ = gravity;
     }

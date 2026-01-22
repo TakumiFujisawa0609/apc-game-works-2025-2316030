@@ -19,9 +19,9 @@
 using namespace std;
 
 namespace {
-	constexpr int appear_interval = 30;//出現までのフレーム
-	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
-	constexpr int margin_size = 20;//ポーズメニュー枠の余白
+	constexpr int appear_interval = 30;			//出現までのフレーム
+	constexpr int input_list_row_height = 40;	//メニューの１つあたりの高さ
+	constexpr int margin_size = 20;				//ポーズメニュー枠の余白
 }
 
 UnlockScene::UnlockScene(SceneController& controller)
@@ -30,6 +30,7 @@ UnlockScene::UnlockScene(SceneController& controller)
 	player_(nullptr),
 	wire_(nullptr),
 	lockpick_(nullptr),
+	frame_(0),
 	update_(&UnlockScene::AppearUpdate),
 	draw_(&UnlockScene::ProcessDraw)
 {
@@ -133,6 +134,7 @@ void UnlockScene::NormalUpdate(Input& input)
 	keyhole_->OnUpdate(time);
 
 	if (ins.IsTrgDown(KEY_INPUT_A) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)){
+
 		if (wire_->IsDifference()){
 			// ロックレベルを設定
 			lockpick_->SetLockLevel(wire_->GetLockLevel());
@@ -141,12 +143,19 @@ void UnlockScene::NormalUpdate(Input& input)
 			lockpick_->SetIsSuccess(true);
 			lockpick_->UpdateUnlock(time);
 
+
 			// クリア判定を出す
 			update_ = &UnlockScene::DisappearUpdate;
 			draw_ = &UnlockScene::ProcessDraw;
 			return;
 		}
+
 	}
+
+	//// 指定の角度に到達したら解錠完了
+	//lockpick_->UpdateUnlock(time);
+
+	//keyhole_->Update(time);
 }
 
 void UnlockScene::DisappearUpdate(Input& input)
@@ -178,7 +187,6 @@ void UnlockScene::ProcessDraw()
 		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), centerY + frameHalfHeight,
 		0xfffffff, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 	//白枠
 	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(centerY - frameHalfHeight),
 		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(centerY + frameHalfHeight),
@@ -190,25 +198,17 @@ void UnlockScene::NormalDraw()
 	const Config::WindowSize& wsize = Config::GetInstance().GetWindowSize();
 	//白っぽいセロファン
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 168);
-
 	DrawBox(static_cast<int>(wsize.width_ * 0.03125f), static_cast<int>(wsize.height_* 0.04166f),
 		static_cast<int>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<int>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xfffffff, true);
-
-#ifdef _DEBUG
-
 	wire_->DrawDebug();
 
-#endif // _DEBUG
-
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 	//白枠
 	DrawBoxAA(static_cast<float>(wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ * 0.04166f),
 		static_cast<float>(wsize.width_ - wsize.width_ * 0.03125f), static_cast<float>(wsize.height_ - wsize.height_ * 0.04166f),
 		0xfffffff, false, 3.0f);
-
-	// 解錠の描画
+	//DrawString(margin_size + 10, margin_size + 10, L"Pause Scene", 0x0000ff);
 	LockPickingDraw();
 }
 

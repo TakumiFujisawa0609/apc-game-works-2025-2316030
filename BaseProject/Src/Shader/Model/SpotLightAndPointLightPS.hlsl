@@ -17,7 +17,7 @@ cbuffer cbParam : register(b4)
 	float4 g_diff_color;
 	float4 g_ambient_color;
 	float g_blink_intensity;
-	float3 g_fog_color;
+	float3 padding1;
 }
 
 struct LightCalculationData {
@@ -116,7 +116,9 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 
 	//最終的なスポットライトの減衰率を返す
 	//return float4(lLightGen,lLightGen,lLightGen,1.0f);
-	
+
+	//------------------------------
+
 	//有効距離外だったら減衰率を最大にする処理
 	lightData.lLightGen *= step(lightData.lLightDistancePow2, spotL.rangePow2);
 
@@ -126,6 +128,10 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	//return float4(lLightGen, lLightGen, lLightGen, 1.0f);
 
 	//距離・スポットライト減衰計算----------------(終了)
+
+	//シャドウマップの処理
+
+	//------------------------------------------
 
 	//ディフューズ色計算--------------------------(開始)
 
@@ -184,14 +190,6 @@ float4 main(PS_INPUT PSInput) : SV_TARGET0
 	retColor.a = lightData.TextureDiffuseColor.a * material.diffuse.a * g_base.factorColor.a;
 
 	//出力カラー計算++++++++++++++++++++++++++++++++++++++++++++++++(終了)
-
-	return retColor;
-
-	// フォグ計算
-	float fog_amount = 1.0f - PSInput.fogFactor;
-	retColor.rgb = lerp(g_fog_color, retColor.rgb, fog_amount);
-
-	retColor.rgb *= PSInput.fogFactor;
 
 	//出力パラメータを返す
 	return retColor;

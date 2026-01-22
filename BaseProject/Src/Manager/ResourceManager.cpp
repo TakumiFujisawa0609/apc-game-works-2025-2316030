@@ -7,7 +7,8 @@ ResourceManager* ResourceManager::instance_ = nullptr;
 
 void ResourceManager::CreateInstance(void)
 {
-	if (instance_ == nullptr){
+	if (instance_ == nullptr)
+	{
 		instance_ = new ResourceManager();
 	}
 	instance_->Init();
@@ -34,7 +35,7 @@ void ResourceManager::Init(void)
 	// リソース登録
 
 	// ステージ
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/Horror_Game_Starter_Kit.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Stage/Scenes/horror-game-floor-generator-free/Horror_Game_Starter_Kit.mv1");
 	resourcesMap_.emplace(SRC::STAGE, res);
 
 	// フラッシュライトモデル
@@ -50,15 +51,15 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::WIRE, res);
 
 	// バッテリーモデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Battery/Battery.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Tools/battery.mv1");
 	resourcesMap_.emplace(SRC::BATTERY, res);
 
 	// 精神安定剤モデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Tranquilizer/Tranquilizer.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Tools/pills.mv1");
 	resourcesMap_.emplace(SRC::TRANQUILIZER, res);
 
 	// 止血モデル
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Hemostatic/Hemostatic.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Item/Tools/firstaid.mv1");
 	resourcesMap_.emplace(SRC::HEMOSTATIC, res);
 
 	// 鍵穴プレート
@@ -94,7 +95,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::WALK_SE, res);
 
 	// 敵
-	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Enemy/Y-bot/Y-bot.mv1");
+	res = std::make_shared<RES>(RES_T::MODEL, PATH_MDL + L"Enemy/Y-bot/Zombie.mv1");
 	resourcesMap_.emplace(SRC::ENEMY, res);
 
 	// 影
@@ -108,7 +109,8 @@ void ResourceManager::Init(void)
 
 void ResourceManager::Release(void)
 {
-	for (auto& p : loadedMap_){
+	for (auto& p : loadedMap_)
+	{
 		p.second.Release();
 	}
 
@@ -118,7 +120,8 @@ void ResourceManager::Release(void)
 void ResourceManager::Destroy(void)
 {
 	Release();
-	for (auto& res : resourcesMap_){
+	for (auto& res : resourcesMap_)
+	{
 		res.second->Release();
 		//delete res.second;
 	}
@@ -129,7 +132,8 @@ void ResourceManager::Destroy(void)
 const Resource& ResourceManager::Load(const SRC& src)
 {
 	Resource& res = _Load(src);
-	if (res.type_ == Resource::TYPE::NONE){
+	if (res.type_ == Resource::TYPE::NONE)
+	{
 		return dummy_;
 	}
 	return res;
@@ -138,7 +142,8 @@ const Resource& ResourceManager::Load(const SRC& src)
 int ResourceManager::LoadModelDuplicate(const SRC& src)
 {
 	Resource& res = _Load(src);
-	if (res.type_ == Resource::TYPE::NONE){
+	if (res.type_ == Resource::TYPE::NONE)
+	{
 		return -1;
 	}
 
@@ -157,13 +162,15 @@ Resource& ResourceManager::_Load(SRC src)
 
 	// ロード済みチェック
 	const auto& lPair = loadedMap_.find(src);
-	if (lPair != loadedMap_.end()){
+	if (lPair != loadedMap_.end())
+	{
 		return *resourcesMap_.find(src)->second;
 	}
 
 	// リソース登録チェック
 	const auto& rPair = resourcesMap_.find(src);
-	if (rPair == resourcesMap_.end()){
+	if (rPair == resourcesMap_.end())
+	{
 		// 登録されていない
 		return dummy_;
 	}

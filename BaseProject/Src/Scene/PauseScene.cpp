@@ -21,16 +21,17 @@ namespace {
 
 PauseScene::PauseScene(SceneController& controller) :
 	Scene(controller),
+	frame_(0),
 	update_(&PauseScene::AppearUpdate),
 	draw_(&PauseScene::ProcessDraw)
 {
 	menuList_ = {
-		L"コマンド表",
-		L"設定メニュー",
-		L"キーコンフィグ",
-		L"戻る",
-		L"タイトルに戻る",
-		L"ゲームを終了する"
+					//L"コマンド表",
+					L"戻る",
+					L"設定メニュー",
+					//L"キーコンフィグ",
+					L"タイトルに戻る",
+					L"ゲームを終了する"
 	};
 	menuFuncTable_ = {
 		{L"コマンド表",[this](Input& input) {
@@ -178,9 +179,9 @@ void PauseScene::DrawMenuList()
 		int lineX = line_start_x;
 		unsigned int col = 0x4444ff;
 		if (row == currentStr) {
-			DrawString(static_cast<int>(lineX - wsize.width_ * 0.03125f), lineY, L"⇒",0xff0000);
-			col = 0xff00ff;
-			lineX += static_cast<int>(wsize.width_ * 0.015625f);
+			//DrawString(static_cast<int>(lineX - wsize.width_ * 0.03125f), lineY, L"⇒",0xff0000);
+			col = 0xffffff;
+			//lineX += static_cast<int>(wsize.width_ * 0.015625f);
 		}
 		DrawFormatString(static_cast<int>(lineX+wsize.width_* 0.0015625f), static_cast<int>(lineY+wsize.height_* 0.0020833f), 0x000000, L"%s", row.c_str());
 		DrawFormatString(lineX, lineY, col, L"%s", row.c_str());

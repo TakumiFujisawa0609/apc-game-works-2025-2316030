@@ -12,7 +12,8 @@
 #include "../Enemy/Patrol/PatrolNode.h"
 #include "../Enemy/Patrol/PatrolPath.h"
 #include "../Enemy/AStar/NavGridManager.h"
-#include "../Renderer/LightRenderer.h"
+#include "../Renderer/ModelMaterial.h"
+#include "../Renderer/ModelRenderer.h"
 #include "Stage.h"
 
 Stage::Stage(Player& player, EnemyBase& enemyBase)
@@ -39,29 +40,18 @@ void Stage::Init(void)
 
 	transform_.MakeCollider(Collider::TYPE::STAGE);
 
-	for (int i = 0; i < 20; i++) {
-		MV1SetTextureSampleFilterMode(transform_.modelId, i, DX_DRAWMODE_NEAREST);
-		i++;
-	}
-
 	transform_.Update();
 
 	InitObstacles();
 	InitPatrolInfo();
-	InitAreaInfo();
 
-	// 敵にエリアマップを設定
-	if (fieldImpactMap_) {
-		//eBase_.SetFieldImpactMap(fieldImpactMap_);
-	}
 }
 
 void Stage::Update(float deltaTime)
 {
-	// 当たり判定の設定
-
 	player_.ClearCollider();
 	player_.AddCollider(transform_.collider);
+
 
 	eBase_.ClearCollider();
 	eBase_.AddCollider(transform_.collider);
@@ -70,18 +60,22 @@ void Stage::Update(float deltaTime)
 	eBase_.SetObstacle(obstacles_);
 	//eBase_.SetNavGridManagedr(navManager_);
 
+
 	OnUpdate(deltaTime);
 }
 
 void Stage::OnUpdate(float deltaTime)
 {
-	// ライトシェーダ―の更新バッファ
-	renderer_->UpdateRenderer(deltaTime, handLight_.lock().get()->IsActive());
+	//handLight_.UpdateRenderer(deltaTime);
+	handLight_.lock()->UpdateRenderer(deltaTime);
 }
 
 void Stage::Draw(void)
 {
-	renderer_->DrawRenderer();
+
+	//MV1DrawModel(transform_.modelId);
+	
+	handLight_.lock()->DrawRenderer();
 
 #ifdef _DEBUG
 
@@ -121,7 +115,20 @@ void Stage::Draw(void)
 	//	}
 	//}
 
+	//Transform hlt = handLight_.GetTransform();
+	//VECTOR forward = hlt.quaRot.GetForward();
+	//VECTOR dir = VNorm(forward);
+
+	//auto& windowSize_ = Application::GetInstance().GetWindowSize();
+	//DrawFormatString(0, 32, GetColor(255, 255, 255), L"hPos = (%.2f,%.2f,%.2f)", hlt.pos.x, hlt.pos.y, hlt.pos.z);
+	//DrawFormatString(0, 48, GetColor(255, 255, 255), L"spPos = (%.2f,%.2f,%.2f)", GetLightPosition().x, GetLightPosition().y, GetLightPosition().z);
+
+	//DrawFormatString(0, 64, GetColor(255, 255, 255), L"hdir = (%.2f,%.2f,%.2f)", dir.x, dir.y, dir.z);
+	//DrawFormatString(0, 80, GetColor(255, 255, 255), L"spdir = (%.2f,%.2f,%.2f)", GetLightDirection().x, GetLightDirection().y, GetLightDirection().z);
+
+
 #endif // _DEBUGe
+
 
 
 }
@@ -139,11 +146,6 @@ const std::shared_ptr<PatrolPath>& Stage::GetPatrolPath(const size_t& index) con
 std::shared_ptr<NavGridManager> Stage::GetNavGridMananger(void)
 {
 	return navManager_;
-}
-
-std::shared_ptr<FieldImpactMap> Stage::GetFieldImpactMap(void)
-{
-	return fieldImpactMap_;
 }
 
 void Stage::InitPatrolInfo(void)
@@ -175,14 +177,13 @@ void Stage::InitPatrolInfo(void)
 	
 	// 敵に巡回パスを設定
 	// paths_の0番目のパスを設定
-	if (!paths_.empty()){
+	if (!paths_.empty())
+	{
 		eBase_.SetPatrolPath(paths_[0]);
 	}
 
 	navManager_ = std::make_shared<NavGridManager>();
 	navManager_->InitGrid(100, 100, 200);
-
-	// 障害物判定の設定
 	//navManager_->CheckObstacles(obstacles_);
 }
 
@@ -191,43 +192,13 @@ void Stage::InitObstacles(void)
 	obstacles_.push_back(transform_);
 }
 
-void Stage::InitAreaInfo(void)
-{
-	fieldImpactMap_ = std::make_shared<FieldImpactMap>();
-
-	// 仮想的なエリアの定義 (Stage::InitPatrolInfo のノード座標からエリアを推測)
-	// 例えば、ノード 1-4 が Area 1、ノード 5-10 が Area 2、... のように分類
-
-	// Area 1: 左上の部屋または通路
-	Area area1(1, VECTOR{ -1000.0f, 120.0f, 4300.0f }, 2000.0f, 1000.0f);
-	fieldImpactMap_->AddArea(area1);
-
-	// Area 2: 右の通路
-	Area area2(2, VECTOR{ -2800.0f, 120.0f, 2500.0f }, 2000.0f, 1000.0f);
-	fieldImpactMap_->AddArea(area2);
-
-	// Area 3: 下の部屋
-	Area area3(3, VECTOR{ -2500.0f, 120.0f, 1000.0f }, 2000.0f, 1500.0f);
-	fieldImpactMap_->AddArea(area3);
-
-	// エリア間の接続 (ポータル) を定義
-	// Area 1 <-> Area 2 の接続 (例: ノード4とノード5の間)
-	VECTOR conn1_2_A = { -1969.0f, 120.0f, 3971.0f }; // Area 1 側の接続点
-	VECTOR conn1_2_B = { -1960.0f, 120.0f, 3167.0f }; // Area 2 側の接続点
-	fieldImpactMap_->AddConnection(1, 2, conn1_2_A, conn1_2_B);
-
-	// Area 2 <-> Area 3 の接続 (例: ノード13とノード14の間)
-	VECTOR conn2_3_A = { -2813.0f, 120.0f, 1840.0f };
-	VECTOR conn2_3_B = { -2830.0f, 120.0f, 1114.0f };
-	fieldImpactMap_->AddConnection(2, 3, conn2_3_A, conn2_3_B);
-
-	// ... 他のエリアや接続点の定義 ...
-}
-
 void Stage::InitRenderer(void)
 {
-	renderer_ = std::make_unique<LightRenderer>();
-	std::shared_ptr<HandLight> handLightPtr = handLight_.lock();
-	renderer_->SetHandLight(handLightPtr.get());
-	renderer_->InitLightRenderer(LightRenderer::TYPE::REGIDBODY, transform_.modelId);
+	//Transform hlt = handLight_.GetTransform();
+	Transform hlt = handLight_.lock()->GetTransform();
+	VECTOR forward = hlt.quaRot.GetForward();
+	VECTOR dir = VNorm(forward);
+
+	//handLight_.InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
+	handLight_.lock()->InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
 }

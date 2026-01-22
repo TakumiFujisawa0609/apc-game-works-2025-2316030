@@ -21,7 +21,8 @@ void PixelRenderer::MakeSquereVertex(Vector2 pos, Vector2 size)
 	float eY = static_cast<float>(pos.y + size.y);
 
 	// ４頂点の初期化
-	for (int i = 0; i < 4; i++){
+	for (int i = 0; i < 4; i++)
+	{
 		vertexs_[i].rhw = 1.0f;
 		vertexs_[i].dif = GetColorU8(255, 255, 255, 255);
 		vertexs_[i].spc = GetColorU8(255, 255, 255, 255);
@@ -110,7 +111,8 @@ void PixelRenderer::Draw(void)
 	// ピクセルシェーダにテクスチャを転送
 	const auto& textures = pixelMaterial_.GetTextures();
 	size = textures.size();
-	for (int i = 0; i < size; i++){
+	for (int i = 0; i < size; i++)
+	{
 		SetUseTextureToShader(i, textures[i]);
 	}
 
@@ -121,7 +123,8 @@ void PixelRenderer::Draw(void)
 	const auto& constBufs = pixelMaterial_.GetConstBufs();
 
 	size = constBufs.size();
-	for (int i = 0; i < size; i++){
+	for (int i = 0; i < size; i++)
+	{
 		if (i != 0)
 		{
 			constBufsPtr++;
@@ -157,7 +160,8 @@ void PixelRenderer::Draw(void)
 
 	// テクスチャ解除
 	size = textures.size();
-	for (int i = 0; i < size; i++){
+	for (int i = 0; i < size; i++)
+	{
 		SetUseTextureToShader(i, -1);
 	}
 

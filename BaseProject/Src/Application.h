@@ -14,11 +14,6 @@ class Application
 {
 public:
 
-	struct Fog{
-		// 始点、終点
-		float fogStart_,fogEnd_;
-	};
-
 	// スクリーンサイズ
 	static constexpr int SCREEN_SIZE_X = 1024;
 	static constexpr int SCREEN_SIZE_Y = 640;
@@ -91,9 +86,6 @@ public:
 	// フォントの取得
 	int GetFontHandle(void)const;
 
-	// フォグの取得
-	const Fog& GetFog(void) const;
-
 	// シーンコントローラーの取得
 	std::shared_ptr<SceneController> GetSceneController(void) const;
 
@@ -160,6 +152,6 @@ private:
 	// ドローコールの表示
 	void DrawDrawCall(void);
 
-	Fog fog_;
+
 };
 

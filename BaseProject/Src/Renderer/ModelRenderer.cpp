@@ -8,6 +8,11 @@ ModelRenderer::ModelRenderer(int modelId, ModelMaterial& modelMaterial)
 {
 }
 
+ModelRenderer::ModelRenderer(std::vector<Transform>& trans, ModelMaterial& modelMaterial)
+	:trans_(trans),modelMaterial_(modelMaterial)
+{
+}
+
 ModelRenderer::~ModelRenderer(void)
 {
 }
@@ -19,9 +24,8 @@ void ModelRenderer::Draw(void)
 	MV1SetUseOrigShader(true);
 
 	// 深度バッファへの書きこみ
-	if (modelMaterial_.IsWriteDepth()){
-
-		// 深度用スクリーンの取得
+	if (modelMaterial_.IsWriteDepth())
+	{
 		int depthScreen = Application::GetInstance().GetSceneController()->GetDepthScreen();
 
 		// マルチレンダーターゲット
@@ -53,12 +57,15 @@ void ModelRenderer::Draw(void)
 	// テクスチャ解除
 	const auto& textures = modelMaterial_.GetTextures();
 	size_t size = textures.size();
-	if (size == 0){
+	if (size == 0)
+	{
 		// 前回使用分のテクスチャを引き継がないように
 		SetUseTextureToShader(0, -1);
 	}
-	else{
-		for (const auto& pair : textures){
+	else
+	{
+		for (const auto& pair : textures)
+		{
 			SetUseTextureToShader(pair.first, -1);
 		}
 	}
@@ -78,6 +85,64 @@ void ModelRenderer::Draw(void)
 
 }
 
+void ModelRenderer::DrawModels(int num)
+{
+
+	// オリジナルシェーダ設定(ON)
+	MV1SetUseOrigShader(true);
+
+	// シェーダ設定(頂点)
+	SetReserveVS();
+
+	// シェーダ設定(ピクセル)
+	SetReservePS();
+
+	// テクスチャアドレスタイプの取得
+	auto texA = modelMaterial_.GetTextureAddress();
+	int texAType = static_cast<int>(texA);
+
+	// テクスチャアドレスタイプを変更
+	SetTextureAddressModeUV(texAType, texAType);
+
+	for (int i = 0; i < num; i++)
+	{
+		// 描画
+		MV1DrawModel(trans_[i].modelId);
+	}
+	// テクスチャアドレスタイプを元に戻す
+	SetTextureAddressModeUV(DX_TEXADDRESS_CLAMP, DX_TEXADDRESS_CLAMP);
+
+	// 後始末
+	//-----------------------------------------
+
+	// テクスチャ解除
+	const auto& textures = modelMaterial_.GetTextures();
+	size_t size = textures.size();
+	if (size == 0)
+	{
+		// 前回使用分のテクスチャを引き継がないように
+		SetUseTextureToShader(0, -1);
+	}
+	else
+	{
+		for (const auto& pair : textures)
+		{
+			SetUseTextureToShader(pair.first, -1);
+		}
+	}
+
+	// 頂点シェーダ解除
+	SetUseVertexShader(-1);
+
+	// ピクセルシェーダ解除
+	SetUsePixelShader(-1);
+
+	// オリジナルシェーダ設定(OFF)
+	MV1SetUseOrigShader(false);
+	//-----------------------------------------
+
+}
+
 void ModelRenderer::SetReserveVS(void)
 {
 
@@ -88,8 +153,10 @@ void ModelRenderer::SetReserveVS(void)
 	const auto& constBufs = modelMaterial_.GetConstBufsVS();
 
 	size_t size = constBufs.size();
-	for (int i = 0; i < size; i++){
-		if (i != 0){
+	for (int i = 0; i < size; i++)
+	{
+		if (i != 0)
+		{
 			constBufsPtr++;
 		}
 		constBufsPtr->x = constBufs[i].x;
@@ -116,12 +183,15 @@ void ModelRenderer::SetReservePS(void)
 	// ピクセルシェーダーにテクスチャを転送
 	const auto& textures = modelMaterial_.GetTextures();
 	size_t size = textures.size();
-	if (size == 0){
+	if (size == 0)
+	{
 		// 前回使用分のテクスチャを引き継がないように
 		SetUseTextureToShader(0, -1);
 	}
-	else{
-		for (const auto& pair : textures){
+	else
+	{
+		for (const auto& pair : textures)
+		{
 			SetUseTextureToShader(pair.first, pair.second);
 		}
 	}
@@ -133,8 +203,10 @@ void ModelRenderer::SetReservePS(void)
 	const auto& constBufs = modelMaterial_.GetConstBufsPS();
 
 	size = constBufs.size();
-	for (int i = 0; i < size; i++){
-		if (i != 0){
+	for (int i = 0; i < size; i++)
+	{
+		if (i != 0)
+		{
 			constBufsPtr++;
 		}
 		constBufsPtr->x = constBufs[i].x;

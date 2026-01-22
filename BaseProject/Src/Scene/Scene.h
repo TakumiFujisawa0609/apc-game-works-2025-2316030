@@ -8,6 +8,11 @@ class ResourceManager;
 /// </summary>
 class Scene
 {
+protected:
+	SceneController& controller_;	//持ち主の参照
+	ResourceManager& resMng_;		// リソース管理
+	int newRT_;						// scene画面の描画先
+
 public:
 	/// <summary>
 	/// シーン初期化(の際にシーンコントローラも代入)
@@ -22,7 +27,6 @@ public:
 	/// <param name="input">入力クラス</param>
 	virtual void Init(Input& input) = 0;
 
-
 	/// <summary>
 	/// 毎フレーム状態を更新する
 	/// </summary>
@@ -35,7 +39,7 @@ public:
 	virtual void Draw(void) = 0;
 
 	/// <summary>
-	/// 毎フレームUI描画する
+	/// 毎フレームUI画面を描画する
 	/// </summary>
 	/// <param name=""></param>
 	virtual void DrawUI(void) = 0;
@@ -52,20 +56,5 @@ public:
 	/// </summary>
 	/// <param name="handle"></param>
 	void SetRenderTarget(int handle);
-
-protected:
-
-	// 持ち主の参照
-	SceneController& controller_;
-
-	// リソース管理
-	ResourceManager& resMng_;
-
-	// scene画面の描画先
-	int newRT_;
-
-	// フレーム
-	int frame_ = 0;
-
 };
 

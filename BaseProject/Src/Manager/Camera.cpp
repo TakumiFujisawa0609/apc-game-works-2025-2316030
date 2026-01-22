@@ -60,22 +60,27 @@ void Camera::SetBeforeDraw(Input& input)
 		SetBeforeDrawFollow(input);
 		break;
 	case Camera::MODE::FOLLOW_MOUSE:
-		if (gameCamera_ == GAME_CAMERA::MOUSE){
+		if (gameCamera_ == GAME_CAMERA::MOUSE)
+		{
 			DINPUT_JOYSTATE input;
 
 			// 入力状態を取得
 			GetJoypadDirectInputState(DX_INPUT_PAD1, &input);
 
-			if (input.Rx > PAT_CAMERA_MAX_RX){
+			if (input.Rx > PAT_CAMERA_MAX_RX)
+			{
 				angles_.y += 1.5f;
 			}
-			if (input.Rx < PAT_CAMERA_MIN_RX){
+			if (input.Rx < PAT_CAMERA_MIN_RX)
+			{
 				angles_.y -= 1.5f;
 			}
-			if (input.Ry > PAT_CAMERA_MAX_RY && angles_.x < CAMERA_MAX_ANGLE_X){
+			if (input.Ry > PAT_CAMERA_MAX_RY && angles_.x < CAMERA_MAX_ANGLE_X)
+			{
 				angles_.x += 1.5f;
 			}
-			if (input.Ry < PAT_CAMERA_MIN_RY && angles_.x > CAMERA_MIN_ANGLE_X){
+			if (input.Ry < PAT_CAMERA_MIN_RY && angles_.x > CAMERA_MIN_ANGLE_X)
+			{
 				angles_.x -= 1.5f;
 			}
 			MouseMove(&angles_.y, &angles_.x, 1.f);
@@ -120,10 +125,12 @@ void Camera::MouseMove(float* x_m, float* y_m, const float fov_per)
 	*x_m += float(std::clamp(x_t - Config::GetInstance().GetWindowSize().width_ / 2, -120, 120)) * fov_per / GetFPS() * 5;
 	*y_m += float(std::clamp(y_t - Config::GetInstance().GetWindowSize().height_ / 2, -120, 120)) * fov_per / GetFPS() * 5;
 	SetMousePoint(Config::GetInstance().GetWindowSize().width_ / 2, Config::GetInstance().GetWindowSize().height_ / 2);
-	if (angles_.x > 10.0f){
+	if (angles_.x > 10.0f)
+	{
 		angles_.x = 10.0f;
 	}
-	if (angles_.x < -20.0f){
+	if (angles_.x < -20.0f)
+	{
 		angles_.x = -20.0f;
 	}
 }
@@ -204,7 +211,8 @@ void Camera::ChangeMode(MODE mode, VECTOR angle, bool isAngles)
 	changeCameraAngles_ = angle;
 
 	// 角度を保存した値に一度だけ復元する
-	if (isAngles){
+	if (isAngles)
+	{
 		RestoreAnglesOnce();
 	}
 	
@@ -298,27 +306,33 @@ void Camera::ProcessRot(Input& input)
 	float movePow = 5.0f;
 
 	// カメラ回転
-	if (ins.IsNew(KEY_INPUT_RIGHT)){
+	if (ins.IsNew(KEY_INPUT_RIGHT))
+	{
 		// 右回転
 		angles_.y += AsoUtility::Deg2RadF(1.0f);
 	}
-	if (ins.IsNew(KEY_INPUT_LEFT)){
+	if (ins.IsNew(KEY_INPUT_LEFT))
+	{
 		// 左回転
 		angles_.y += AsoUtility::Deg2RadF(-1.0f);
 	}
 
 	// 上回転
-	if (ins.IsNew(KEY_INPUT_UP)){
+	if (ins.IsNew(KEY_INPUT_UP))
+	{
 		angles_.x += AsoUtility::Deg2RadF(1.0f);
-		if (angles_.x > LIMIT_X_UP_RAD){
+		if (angles_.x > LIMIT_X_UP_RAD)
+		{
 			angles_.x = LIMIT_X_UP_RAD;
 		}
 	}
 
 	// 下回転
-	if (ins.IsNew(KEY_INPUT_DOWN)){
+	if (ins.IsNew(KEY_INPUT_DOWN))
+	{
 		angles_.x += AsoUtility::Deg2RadF(-1.0f);
-		if (angles_.x < -LIMIT_X_DW_RAD){
+		if (angles_.x < -LIMIT_X_DW_RAD)
+		{
 			angles_.x = -LIMIT_X_DW_RAD;
 		}
 	}
@@ -332,6 +346,7 @@ void Camera::SetBeforeDrawFixedPoint(void)
 
 void Camera::SetBeforeDrawFollow(Input& input)
 {
+
 	// カメラ操作
 	ProcessRot(input);
 
@@ -351,7 +366,8 @@ void Camera::SetBeforeDrawFollowMouse(Input& input)
 	bool nowRStickPressed = pad.Buttons[9] != 0;
 
 	bool isToggleTriggered = false;
-	if (nowRStickPressed && !prevRStickPressed){
+	if (nowRStickPressed && !prevRStickPressed)
+	{
 		isToggleTriggered = true;
 	}
 
@@ -398,18 +414,15 @@ void Camera::SetBeforeDrawFPSMouse(void)
 	float sensitivity = 0.002f;
 
 	// 操作可能時のみ
-	if (isOperable_){
+	if (isOperable_)
+	{
 		// 視点角度に反映
 		angles_.y += dx * sensitivity;	// 水平回転
 		angles_.x -= dy * sensitivity;	// 垂直回転
 
 		// 垂直回転の制限
-		if (angles_.x > AsoUtility::Deg2RadF(89.0f)) {
-			angles_.x = AsoUtility::Deg2RadF(89.0f);
-		}
-		if (angles_.x < AsoUtility::Deg2RadF(-89.0f)) {
-			angles_.x = AsoUtility::Deg2RadF(-89.0f);
-		}
+		if (angles_.x > AsoUtility::Deg2RadF(89.0f))angles_.x = AsoUtility::Deg2RadF(89.0f);
+		if (angles_.x < AsoUtility::Deg2RadF(-89.0f))angles_.x = AsoUtility::Deg2RadF(-89.0f);
 
 		// 位置(FPSなのでfollowTransformがあればそこを基準にする)
 		pos_ = followTransform_ ? followTransform_->pos : pos_;
@@ -434,24 +447,27 @@ void Camera::SetBeforeDrawFPSMouse(void)
 		// 値を小さくするほど、回転速度が遅くなります。
 		const float GAMEPAD_SENSITIVITY = 0.025f;
 
-		// スティックの最大値で割るための定数（-1000 ～ 1000 の範囲を想定）
+		// 【要定義】スティックの最大値で割るための定数（-1000 ～ 1000 の範囲を想定）
 		const float MAX_ANALOG_VALUE = 1000.0f;
 
-		// デッドゾーンの閾値（スティックの遊び、ノイズ対策）
+		// 【要定義】デッドゾーンの閾値（スティックの遊び、ノイズ対策）
 		const int DEADZONE_THRESHOLD = 200; // -200 から 200 の範囲は無視
 
 		DINPUT_JOYSTATE input;
 
 		// 入力状態を取得
-		if (GetJoypadDirectInputState(DX_INPUT_PAD1, &input) == 0){
+		if (GetJoypadDirectInputState(DX_INPUT_PAD1, &input) == 0)
+		{
 			int rx = input.Rx;
 
 			// デッドゾーン処理
-			if (abs(rx) < DEADZONE_THRESHOLD){
+			if (abs(rx) < DEADZONE_THRESHOLD)
+			{
 				rx = 0;
 			}
 
-			if (rx != 0){
+			if (rx != 0)
+			{
 				// スティック値を正規化 (-1.0f ～ 1.0f)
 				float normalizedRx = (float)rx / MAX_ANALOG_VALUE;
 
@@ -465,11 +481,13 @@ void Camera::SetBeforeDrawFPSMouse(void)
 			int ry = input.Ry;
 
 			// デッドゾーン処理
-			if (abs(ry) < DEADZONE_THRESHOLD){
+			if (abs(ry) < DEADZONE_THRESHOLD)
+			{
 				ry = 0;
 			}
 
-			if (ry != 0){
+			if (ry != 0)
+			{
 				// スティック値を正規化 (-1.0f ～ 1.0f)
 				float normalizedRy = (float)ry / MAX_ANALOG_VALUE;
 
@@ -487,13 +505,16 @@ void Camera::SetBeforeDrawFPSMouse(void)
 				float minRad = AsoUtility::Deg2RadF(-89.0f);
 				float maxRad = AsoUtility::Deg2RadF(89.0f);
 
-				if (newAngleX > maxRad){
+				if (newAngleX > maxRad)
+				{
 					angles_.x = maxRad;
 				}
-				else if (newAngleX < minRad){
+				else if (newAngleX < minRad)
+				{
 					angles_.x = minRad;
 				}
-				else{
+				else
+				{
 					angles_.x = newAngleX;
 				}
 			}

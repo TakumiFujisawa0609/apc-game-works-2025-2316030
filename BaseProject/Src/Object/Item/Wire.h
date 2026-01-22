@@ -4,33 +4,20 @@ class Wire :
     public ItemBase
 {
 public:
+    static constexpr VECTOR INIT_POS = { -500.0f, 150.0f, 150.0f };              // 初期座標
+    static constexpr VECTOR INIT_SCL = { 0.3f,0.3f,0.3f };           // 初期拡大率
+    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,90.0f,0.0f };    // 初期ローカル回転
 
-    // 初期座標
-    static constexpr VECTOR INIT_POS = { -500.0f, 150.0f, 150.0f };
 
-    // 初期拡大率
-    static constexpr VECTOR INIT_SCL = { 0.3f,0.3f,0.3f };
+    static constexpr float MOUSE_SENSITIVITY = 0.35f;                  // マウス感度
+    static constexpr float MAX_ROT_Z = 180.0f;                         // 最大回転度数
+    static constexpr float MIN_ROT_Z = 0.0f;                           // 最小回転度数
 
-    // 初期ローカル回転
-    static constexpr VECTOR INIT_QUAROTLOCAL = { 0.0f,90.0f,0.0f };
+    static constexpr float FIRST_LOCK = 20.f;                          // 一つ目のロック
+    static constexpr float SECOND_LOCK = 15.0f;                        // 2つ目のロック
+    static constexpr float THIRD_LOCK = 8.0f;                         // 3つ目のロック
 
-    // マウス感度
-    static constexpr float MOUSE_SENSITIVITY = 0.35f;
-
-    // 最大回転度数
-    static constexpr float MAX_ROT_Z = 180.0f;
-
-    // 最小回転度数
-    static constexpr float MIN_ROT_Z = 0.0f;
-
-    // 一つ目のロック
-    static constexpr float FIRST_LOCK = 20.f;
-
-    // 2つ目のロック
-    static constexpr float SECOND_LOCK = 15.0f;
-
-    // 3つ目のロック
-    static constexpr float THIRD_LOCK = 8.0f;
+    static constexpr VECTOR UNLOCK_POS = { 0.0f,0.0f,150.0f };
 
     // 調整用座標
     static constexpr VECTOR TARGET_POS = { 25.0f,-20.0f, 50.0f };
@@ -52,10 +39,13 @@ public:
     // ワイヤーを動かして探る
     void UpdateExplore(float deltaTime);
 
-    // 差分が0の時にtrueを返す
+    /// <summary>
+    /// 差分が0の時にtrueを返す
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
     bool IsDifference(void);
 
-    // ロックの段階取得
     int GetLockLevel(void);
 
     // 初期状態に戻すかどうか
@@ -64,10 +54,8 @@ public:
     // 初期状態を設定
     void SetIsDefault(bool flag);
 
-    // クリア判定の取得
     bool isGameClear(void);
 
-    // 鍵回転率の取得
     float GetLockRotationRate(void) const;
 
     void DrawDebug(void);

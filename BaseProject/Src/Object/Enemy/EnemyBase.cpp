@@ -1,7 +1,6 @@
 #include <unordered_set>
 #include <queue>
 #include "../../Application.h"
-#include "../../Manager/Config.h"
 #include "../../Utility/AsoUtility.h"
 #include "../../Manager/ResourceManager.h"
 #include "../Common/Collider.h"
@@ -12,13 +11,11 @@
 #include "Patrol/PatrolNode.h"
 #include "Patrol/PatrolPath.h"
 #include "AStar/NavGridManager.h"
-#include "AStar/FieldImpactMap.h"
-
-
 #include "../Player/Player.h"
 #include "EnemyBase.h"
 
-const std::map<EnemyBase::STATE, const wchar_t*>stateNames ={
+const std::map<EnemyBase::STATE, const wchar_t*>stateNames =
+{
     {EnemyBase::STATE::PATROL,L"PATROL"},
     {EnemyBase::STATE::CHASE,L"CHASE"},
     {EnemyBase::STATE::ATTACK,L"ATTACK"},
@@ -41,7 +38,8 @@ EnemyBase::EnemyBase(Player& player)
     currentNode_(0),
     isDamageCheckActive_(false),
     hasPlayerBeenHit_(false),
-    isAttack_(false)
+    isAttack_(false),
+    attackframe_(0)
 {
 }
 
@@ -58,8 +56,9 @@ void EnemyBase::Init(void)
     transform_.MakeCollider(Collider::TYPE::ENEMY);
 
     // 状態の初期化
-    moveSpeed_ = WALK_SPEED;
-    moveDir_ = AsoUtility::VECTOR_ZERO;
+
+    moveSpeed_ = 8.0f; // 移動速度
+    moveDir_ = AsoUtility::VECTOR_ZERO; // 移動方向
     movedPos_ = transform_.pos;
 
     state_ = STATE::IDLE;
@@ -108,22 +107,28 @@ void EnemyBase::OnUpdate(float deltaTime)
 
     bool isChase_ = false;
 
-    if (state_!=STATE::ATTACK&&(EyeSerch() || isHearingSound_)){
+    if (state_!=STATE::ATTACK&&(EyeSerch() || isHearingSound_))
+    {
         // 追跡状態への遷移条件
-        if (state_ != STATE::CHASE){
+        if (state_ != STATE::CHASE)
+        {
             ChangeState(STATE::CHASE);
         }
         isChase_ = true;
         frame_ = 0;
     }
-    else{
+    else
+    {
         isChase_ = false;
     }
 
-    if (!isChase_){
+    if (!isChase_)
+    {
         frame_++;
-        if (frame_ >= 180){
-            if (state_ == STATE::CHASE){
+        if (frame_ >= 180)
+        {
+            if (state_ == STATE::CHASE)
+            {
                 // CHASEからPATROLへ遷移する場合
                 ChangeState(STATE::PATROL);
 
@@ -134,7 +139,8 @@ void EnemyBase::OnUpdate(float deltaTime)
         }
     }
 
-    if ((state_ == STATE::CHASE) && isAttackRange() && !isAttack_){
+    if ((state_ == STATE::CHASE) && isAttackRange() && !isAttack_)
+    {
         ChangeState(STATE::ATTACK);
         isAttack_ = true;
     }
@@ -149,17 +155,24 @@ void EnemyBase::OnUpdate(float deltaTime)
         UpdateChase(deltaTime);
         break;
     case EnemyBase::STATE::ATTACK:
-        if (!animationController_->IsEnd()){
+        attackframe_++;
+        if (!animationController_->IsEnd()&&attackframe_>=38&&attackframe_<=50)
+        {
             HandleAttackCollsion(deltaTime);
         }
         state_;
 
-        if (animationController_->IsEnd()){
+        if (animationController_->IsEnd())
+        {
             // ダメージ判定を無効化し、追跡状態に戻す
             isDamageCheckActive_ = false;
             hasPlayerBeenHit_ = false;
             isAttack_ = false;
             ChangeState(STATE::CHASE);
+            attackframe_ = 0;
+            state_;
+
+            return;
         }
         break;
     case EnemyBase::STATE::IDLE:
@@ -184,8 +197,6 @@ void EnemyBase::Draw(void)
 
 #ifdef _DEBUG
 
-    //const auto& sizeW = Config::GetInstance().GetWindowSize();
-
     //const wchar_t* stateName = L"UNKONOWN";
     //auto it = stateNames.find(state_);
     //if (it != stateNames.end())
@@ -193,7 +204,7 @@ void EnemyBase::Draw(void)
     //    stateName = it->second;
     //}
 
-    //DrawFormatString(static_cast<int>(sizeW.width_ - sizeW.width_*0.1450f), 48, GetColor(255, 255, 255), L"state: %s", stateName);
+    //DrawFormatString(Application::GetInstance().GetWindowSize().width - 150, 48, GetColor(255, 255, 255), L"state: %s", stateName);
 
     //if (capsule_)capsule_->Draw();
 
@@ -219,14 +230,53 @@ void EnemyBase::SetPatrolPath(std::shared_ptr<PatrolPath> path)
     patrolPath_ = path;
 }
 
-void EnemyBase::SetNavGridManagedr(std::shared_ptr<NavGridManager> navGridManager)
+void EnemyBase::SetNavGridManager(std::shared_ptr<NavGridManager> navGridManager)
 {
     navGridManager_ = navGridManager;
 }
 
-void EnemyBase::SetFieldImpactMap(std::shared_ptr<FieldImapactMap> fieldImapactMap)
+void EnemyBase::CollisionPlayer(void)
 {
-    fieldImapctMap_ = fieldImapactMap;
+    MV1RefreshCollInfo(player_.GetTransform().modelId);
+
+    // カプセルとの衝突判定
+    auto hits = MV1CollCheck_Capsule(
+        player_.GetTransform().modelId, -1,
+        capsule_->GetPosTop(), capsule_->GetPosDown(), capsule_->GetRadius());
+
+    // 衝突した複数のポリゴンと衝突回避するまで、
+    // プレイヤーの位置を移動させる
+    for (int i = 0; i < hits.HitNum; i++)
+    {
+        auto hit = hits.Dim[i];
+        // 地面と異なり、衝突回避位置が不明なため、何度か移動させる
+        // この時、移動させる方向は、移動前座標に向いた方向であったり、
+        // 衝突したポリゴンの法線方向だったりする
+        for (int tryCnt = 0; tryCnt < 12; tryCnt++)
+        {
+            // 再度、モデル全体と衝突検出するには、効率が悪過ぎるので、
+            // 最初の衝突判定で検出した衝突ポリゴン1枚と衝突判定を取る
+            int pHit = HitCheck_Capsule_Triangle(
+                capsule_->GetPosTop(), capsule_->GetPosDown(), capsule_->GetRadius(),
+                hit.Position[0], hit.Position[1], hit.Position[2]);
+            if (pHit)
+            {
+                // 法線の方向にちょっとだけ移動させる
+                movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+                //// カプセルも一緒に移動させる
+                //transform_.topPos.x = movedPos_.x;
+                //transform_.topPos.z = movedPos_.z;
+                //transform_.downPos.x = movedPos_.x;
+                //transform_.downPos.z = movedPos_.z;
+                transform_.pos = movedPos_;
+                transform_.Update();
+                continue;
+            }
+            break;
+        }
+    }
+    // 検出したポリゴン情報の後始末
+    MV1CollResultPolyDimTerminate(hits);
 }
 
 void EnemyBase::InitModel(VECTOR pos, VECTOR scl, VECTOR quaRotLocal)
@@ -267,7 +317,7 @@ void EnemyBase::Collision(void)
 
     // 移動
     transform_.pos = movedPos_;
-    transform_.pos.y = 13.0f;
+    transform_.pos.y = 20.0f;
 }
 
 void EnemyBase::CollisionCapsule(void)
@@ -281,17 +331,22 @@ void EnemyBase::CollisionCapsule(void)
     Capsule cap = Capsule(*capsule_, &trans);
 
     // カプセルとの衝突判定
-    for (const auto& c : colliders_){
+    for (const auto& c : colliders_)
+    {
         auto hits = MV1CollCheck_Capsule(
             c->modelId_, -1,
             cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
-        for (int i = 0; i < hits.HitNum; i++){
+
+        for (int i = 0; i < hits.HitNum; i++)
+        {
             auto hit = hits.Dim[i];
-            for (int tryCnt = 0; tryCnt < 10; tryCnt++){
+            for (int tryCnt = 0; tryCnt < 10; tryCnt++)
+            {
                 int pHit = HitCheck_Capsule_Triangle(
                     cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
                     hit.Position[0], hit.Position[1], hit.Position[2]);
-                if (pHit){
+                if (pHit)
+                {
                     movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
 
                     // カプセルを移動させる
@@ -327,17 +382,9 @@ void EnemyBase::ChangeState(STATE state)
     {
     case EnemyBase::STATE::PATROL:
         animationController_->Play((int)ANIM::PATROL, true, 1.0f);
-        // Patrolに戻るときは、エリアキューをクリアにする
-        while (!areaRouteQueue_.empty()) {
-            areaRouteQueue_.pop();
-        };
-        currentLocalPath_.clear();
-        currentLocalPathIndex_ = 0;
         break;
     case EnemyBase::STATE::CHASE:
         animationController_->Play((int)ANIM::CHASE, true, 0.5f);
-        // 追跡開始時にグローバル経路(エリア間ルートを計算)
-        CalculateGlobalAreaRoute();
         break;
     case EnemyBase::STATE::ATTACK:
         animationController_->Play((int)ANIM::ATTACK, false, 0.5f);
@@ -362,18 +409,21 @@ bool EnemyBase::EyeSerch(void)
 
     // 視野範囲に入っているか判断
     float distance = std::pow(diff.x, 2.0f) + std::pow(diff.z, 2.0f);
-    if (distance <= (std::pow(EYE_VIEW_RANGE, 2.0f))){
+    if (distance <= (std::pow(EYE_VIEW_RANGE, 2.0f)))
+    {
         // 自分から見たプレイヤーの角度を求める
         float rad = atan2(pPos.x - transform_.pos.x, pPos.z - transform_.pos.z);
         float viewRad = rad - transform_.rot.y;
         float viewDeg = static_cast<float>(AsoUtility::DegIn360(AsoUtility::Rad2DegF(viewRad)));
 
         // 視野角内に入っているか判断
-        if (viewDeg <= VIEW_ANGLE || viewDeg >= (360.0f - VIEW_ANGLE)){
+        if (viewDeg <= VIEW_ANGLE || viewDeg >= (360.0f - VIEW_ANGLE))
+        {
             auto info = MV1CollCheck_Line(player_.GetTransform().modelId, -1,
                 { transform_.pos.x,transform_.pos.y,transform_.pos.z },
                 { player_.GetTransform().pos.x,player_.GetTransform().pos.y,player_.GetTransform().pos.z });
-            if (info.HitFlag == 0){
+            if (info.HitFlag == 0)
+            {
                 return true;
             }
         }
@@ -396,6 +446,7 @@ bool EnemyBase::HearingSound(void)
 
 void EnemyBase::DrawDebug(void)
 {
+
     // ラジアンに変換
     float viewRad = AsoUtility::Deg2RadF(VIEW_ANGLE);
 
@@ -459,6 +510,7 @@ void EnemyBase::DrawDebug(void)
     //DrawTriangle3D(pos0, Apos1, Apos2, 0xff4500, true);
     //DrawTriangle3D(pos0, Apos3, Apos1, 0xff4500, true);
 
+
 #pragma endregion
 }
 
@@ -475,21 +527,26 @@ void EnemyBase::UpdatePatrol(float deltaTime)
     // ----------------------------------------------------
     // 待機処理
     // ----------------------------------------------------
-    if (isWaiting_){
+    if (isWaiting_)
+    {
         currentWaitTime_ -= deltaTime;
-        if (currentWaitTime_ <= 0.0f){
+
+        if (currentWaitTime_ <= 0.0f)
+        {
             // 待機終了。次のノードへ進む
             isWaiting_ = false;
 
             // 状態をPATROL（移動）に戻す
             //enemyBase->ChangeState(EnemyBase::STATE::PATROL);
-            // 次のノードのインデックスを更新
+                      // 次のノードのインデックスを更新
             patrolPath_->GetNextNode(currentPatrolPathIndex_);
             currentNode_ = currentPatrolPathIndex_;
 
             return;
         }
-        else{
+        else
+        {
+  
             // 待機中は移動を停止
             moveDir_ = AsoUtility::VECTOR_ZERO;
 
@@ -513,7 +570,8 @@ void EnemyBase::UpdatePatrol(float deltaTime)
     dis_ = distance;
 
     // 目標位置に到達したかをチェック（許容誤差1.0f）
-    if (distance < 5.5f){
+    if (distance < 5.5f)
+    {
         // 目標に到達したら待機状態に遷移
         isWaiting_ = true;
         currentWaitTime_ = targetNode.GetWaitTime();
@@ -521,7 +579,8 @@ void EnemyBase::UpdatePatrol(float deltaTime)
         // 移動を停止
         moveDir_ = AsoUtility::VECTOR_ZERO;
     }
-    else{
+    else
+    {
         // 移動方向を設定 (出力)
         VECTOR moveDirection = VNorm(moveVector);
         moveDir_ = moveDirection;
@@ -591,8 +650,6 @@ void EnemyBase::UpdateChase(float deltaTime)
 
 #pragma endregion
 
-#pragma region 元々
-
     // 4. 移動方向と回転の設定
     // ノードの目標が更新されても、直前のノードから目標ノードへの移動方向を常に計算
     VECTOR moveDirection = VNorm(VSub(player_.GetTransform().pos, transform_.pos));
@@ -609,129 +666,12 @@ void EnemyBase::UpdateChase(float deltaTime)
     // 補間速度をCHASEに合わせて調整
     transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 7.0f * deltaTime); // 5.0fから7.0fに少し上げる
 
-#pragma endregion
 
-    //// ローカル経路探索の目標座標
-    //VECTOR finalTargetPos = AsoUtility::VECTOR_ZERO;
-    //bool needRecalcGlobal = true;   // グロ―バルルート
-
-    //// グローバル経路(エリア間ルート)の管理
-    //if (areaRouteQueue_.empty()) {
-    //    // エリアキューが空の場合：最終目的地(プレイヤー)を目標とする
-    //    finalTargetPos = player_.GetTransform().pos;
-
-    //    // グローバルルートが見つからない場合も、ローカルで直接プレイヤーを目指すA*を再計算する
-    //    if (currentLocalPath_.empty() || currentLocalPathIndex_ >= currentLocalPath_.size() || needRecalcGlobal) {
-    //        CalculateLocalPath(finalTargetPos);
-    //    }
-    //}
-    //else {
-    //    // エリアキューがある場合
-
-    //    // 次の目標エリアIDを取得(キューの先頭)
-    //    int nextAreaId = areaRouteQueue_.front();
-
-    //    // 【実装待ち】
-    //    // 次の目標エリアへの「接続点（ポータル）」の座標を取得するロジックが必要です
-    //    // finalTargetPos = fieldImpactMap_->GetConnectionPointToArea(transform_.pos, nextAreaId); 
-
-    //    // 仮の目標座標（ここではプレイヤー位置をそのまま使用しますが、実際は接続点の座標が入ります）
-    //    finalTargetPos = player_.GetTransform().pos;
-
-    //    // ローカル経路が終了した、または次の目標エリアが切り替わった場合
-    //    if (currentLocalPath_.empty() || currentLocalPathIndex_ >= currentLocalPath_.size() || needsRecalcGlobal) {
-    //        // 次の接続点（ポータル）までローカルA*を再計算
-    //        CalculateLocalPath(finalTargetPos);
-    //    }
-    //}
-
-    //// 2. ローカル経路（A*結果）の追跡
-    //if (currentLocalPath_.empty() || currentLocalPathIndex_ >= currentLocalPath_.size()) {
-    //    // 経路が見つからない、または経路の終点に到達した場合
-    //    moveDir_ = AsoUtility::VECTOR_ZERO;
-
-    //    // エリアを切り替える判定ロジック (キューをpop)
-    //    if (!areaRouteQueue_.empty()) {
-    //        // ローカル経路の目標が「接続点」で、そこに到達した場合
-    //        // 次のエリアに到達したとみなし、キューを Pop し、グローバル経路を再計算するフラグを立てる
-    //        areaRouteQueue_.pop();
-    //        // needsRecalcGlobal = true; // 次のフレームで再計算が走る
-
-    //        // ローカル経路をクリアし、次のローカル探索に備える
-    //        currentLocalPath_.clear();
-    //        currentLocalPathIndex_ = 0;
-    //        return;
-    //    }
-    //    return; // 最終目的地にも到達
-    //}
-
-    //// 3. 移動目標の設定と到達判定 (ローカルパスのウェイポイントを追跡)
-    //VECTOR targetPos = currentLocalPath_[currentLocalPathIndex_];
-
-    //VECTOR currentPos = transform_.pos;
-    //currentPos.y = targetPos.y;
-
-    //VECTOR moveVector = VSub(targetPos, currentPos);
-    //float distance = VSize(moveVector);
-
-    //// ノードに到達したら次のノードへ
-    //constexpr float NODE_REACH_THRESHOLD = 10.0f; // 閾値を調整
-
-    //if (distance < NODE_REACH_THRESHOLD) {
-    //    currentLocalPathIndex_++;
-    //    // 次のノードへの移動は次のフレームで実行
-    //}
-
-    //// 4. 移動方向と回転の設定
-    //// ノードの目標が更新されても、直前のノードから目標ノードへの移動方向を常に計算
-    //VECTOR moveDirection = VNorm(VSub(targetPos, transform_.pos));
-    //moveDir_ = moveDirection;
-
-    //// moveSpeedはPATROL時より速い値を使うことが多い
-    //movePow_ = VScale(moveDir_, 4.0f);
-
-    //// 回転処理
-    //float rotationY = atan2f(moveDirection.x, moveDirection.z);
-    //Quaternion targetRotation = Quaternion::Euler({ 0.0f, rotationY, 0.0f });
-
-    //// 滑らかに補間
-    //transform_.quaRot = Quaternion::Slerp(transform_.quaRot, targetRotation, 7.0f * deltaTime);
-}
-
-void EnemyBase::CalculateGlobalAreaRoute(void)
-{
-    if (!fieldImapctMap_) {
-        return;
-    }
-
-    //// 目標エリアの特定
-    //// プレイヤーの座標を目標座標とする
-    //VECTOR targetPosition = player_.GetTransform().pos;
-
-    //// 自身の現在位置とターゲット座標を基に、エリアIDのキューを計算
-    //areaRouteQueue_ = fieldImapctMap_->SearchAreaRouteIndices(transform_.pos, targetPosition);
-
-    //// エリアキューが空でないことを確認
-    //if (!areaRouteQueue_.empty()) {
-    //    // ローカル経路探索のインデックスをリセット
-    //    currentLocalPathIndex_ = 0;
-
-    //    // 最初の目標エリアへのローカル経路を計算する
-    //}
-}
-
-void EnemyBase::CalculateLocalPath(const VECTOR& targetPos) const
-{
-    //// 既存のグリットA*をローカル経路探索として再利用
-    //currentLocalPath_ = FindPath(transform_.pos, targetPos);
-    //currentLocalPathIndex_ = 0;
 }
 
 std::vector<VECTOR> EnemyBase::FindPath(VECTOR startPos, VECTOR endPos)
 {
-    if (!navGridManager_) {
-        return {};
-    }
+    if (!navGridManager_) return {};
 
     // 探索前のノードリセット
     navGridManager_->ResetAllNodes();
@@ -752,7 +692,8 @@ std::vector<VECTOR> EnemyBase::FindPath(VECTOR startPos, VECTOR endPos)
     startNode->H_Score_ = GetHCost(startNode, targetNode);
     openList.push(startNode);
 
-    while (!openList.empty()){
+    while (!openList.empty())
+    {
         AStarNode* currentNode = openList.top();
         openList.pop();
 
@@ -762,18 +703,22 @@ std::vector<VECTOR> EnemyBase::FindPath(VECTOR startPos, VECTOR endPos)
         closedList.insert(currentNode);
 
         // ゴールに到達
-        if (currentNode == targetNode){
+        if (currentNode == targetNode)
+        {
             return RetracePath(startNode, targetNode);
         }
 
-        for (AStarNode* neighbor : GetNeighbors(currentNode)){
-            if (!neighbor->isWalkable_ || closedList.count(neighbor)){
+        for (AStarNode* neighbor : GetNeighbors(currentNode))
+        {
+            if (!neighbor->isWalkable_ || closedList.count(neighbor))
+            {
                 continue;
             }
 
             float newGCost = currentNode->G_Score_ + GetDistance(currentNode, neighbor);
 
-            if (newGCost < neighbor->G_Score_){
+            if (newGCost < neighbor->G_Score_)
+            {
                 neighbor->G_Score_ = newGCost;
                 neighbor->H_Score_ = GetHCost(neighbor, targetNode);
                 neighbor->parent_ = currentNode;
@@ -802,14 +747,17 @@ std::vector<AStarNode*> EnemyBase::GetNeighbors(AStarNode* node)
     int checkX[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
     int checkZ[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 
-    for (int i = 0; i < 8; ++i){
+    for (int i = 0; i < 8; ++i)
+    {
         int neighborX = node->gridX_ + checkX[i];
         int neighborZ = node->gridZ_ + checkZ[i];
 
         if (navGridManager_ && neighborX >= 0 && neighborX < navGridManager_->GetGridSizeX() &&
-            neighborZ >= 0 && neighborZ < navGridManager_->GetGridSizeZ()){
+            neighborZ >= 0 && neighborZ < navGridManager_->GetGridSizeZ())
+        {
             AStarNode* neighborNode = navGridManager_->GetNode(neighborX, neighborZ);
-            if (neighborNode){
+            if (neighborNode)
+            {
                 neighbors.push_back(neighborNode);
             }
         }
@@ -828,7 +776,8 @@ std::vector<VECTOR> EnemyBase::RetracePath(AStarNode* start, AStarNode* end)
     std::vector<VECTOR> path;
     AStarNode* current = end;
 
-    while (current != start && current != nullptr){
+    while (current != start && current != nullptr)
+    {
         path.push_back(current->worldPos_);
         current = current->parent_;
     }
@@ -838,7 +787,8 @@ std::vector<VECTOR> EnemyBase::RetracePath(AStarNode* start, AStarNode* end)
 
 void EnemyBase::HandleAttackCollsion(float deltaTime)
 {
-    if (!isDamageCheckActive_ || hasPlayerBeenHit_){
+    if (!isDamageCheckActive_ || hasPlayerBeenHit_)
+    {
         return;
     }
 
@@ -848,9 +798,7 @@ void EnemyBase::HandleAttackCollsion(float deltaTime)
     // プレイヤーの現在のカプセル情報を取得
     const std::shared_ptr<Capsule> playerCap = player_.GetCapsule(); // PlayerにGetCapsule()がある前提
 
-    if (!enemyCap || !playerCap) {
-        return;
-    }
+    if (!enemyCap || !playerCap) return;
 
     // プレイヤーのカプセル座標を取得 (Player::GetCapsule()がTransformを考慮している前提)
     VECTOR pTop = playerCap->GetPosTop();
@@ -860,7 +808,15 @@ void EnemyBase::HandleAttackCollsion(float deltaTime)
     // 敵のカプセル座標を取得
     VECTOR eTop = enemyCap->GetPosTop();
     VECTOR eDown = enemyCap->GetPosDown();
-    float eRadius = enemyCap->GetRadius();
+    float eRadius = enemyCap->GetRadius()+30.0f;
+
+    // 敵のカプセルとプレイヤーのカプセルの距離を計算
+    // DXライブラリにはカプセル-カプセル衝突判定関数がないため、
+    // ここでは単純化して、カプセル間の最短距離を計算します。
+    // (または、カプセル軸線分間の最短距離 + 半径の合計をチェックする)
+
+    // ここでは、カプセル-カプセルの当たり判定関数を自作せずに、
+    // 簡易的に敵とプレイヤーの**中心点**の距離で判定します。
 
     VECTOR enemyCenter = VScale(VAdd(eTop, eDown), 0.5f);
     VECTOR playerCenter = VScale(VAdd(pTop, pDown), 0.5f);
@@ -870,13 +826,17 @@ void EnemyBase::HandleAttackCollsion(float deltaTime)
 
     // 簡易的な衝突許容距離の二乗（半径の合計の二乗）
     // 敵のカプセル半径 + プレイヤーのカプセル半径 = 20.0f + 20.0f = 40.0f
-    constexpr float COLLISION_RADIUS = 40.0f;
+    constexpr float COLLISION_RADIUS = 200.0f;
     constexpr float COLLISION_RADIUS_SQ = COLLISION_RADIUS * COLLISION_RADIUS;
 
     // 衝突判定
-    if (distanceSq <= COLLISION_RADIUS_SQ){
+    if (distanceSq <= COLLISION_RADIUS_SQ)
+    {
         // 攻撃がヒットした
-        player_.TakeDamage(30.0f);
+
+        // プレイヤーにダメージを与える関数を呼び出す
+        player_.TakeDamage(30.0f); // ★ Player::TakeDamage(float) が必要
+
         hasPlayerBeenHit_ = true;
     }
 }
@@ -891,18 +851,21 @@ bool EnemyBase::isAttackRange(void)
 
     // 視野範囲に入っているか判断
     float distance = std::pow(diff.x, 2.0f) + std::pow(diff.z, 2.0f);
-    if (distance <= (std::pow(ATTACK_RANGE, 2.0f))){
+    if (distance <= (std::pow(ATTACK_RANGE, 2.0f)))
+    {
         // 自分から見たプレイヤーの角度を求める
         float rad = atan2(pPos.x - transform_.pos.x, pPos.z - transform_.pos.z);
         float viewRad = rad - transform_.rot.y;
         float viewDeg = static_cast<float>(AsoUtility::DegIn360(AsoUtility::Rad2DegF(viewRad)));
 
         // 視野角内に入っているか判断
-        if (viewDeg <= VIEW_ANGLE || viewDeg >= (360.0f - VIEW_ANGLE)){
+        if (viewDeg <= VIEW_ANGLE || viewDeg >= (360.0f - VIEW_ANGLE))
+        {
             auto info = MV1CollCheck_Line(player_.GetTransform().modelId, -1,
                 { transform_.pos.x,transform_.pos.y,transform_.pos.z },
                 { player_.GetTransform().pos.x,player_.GetTransform().pos.y,player_.GetTransform().pos.z });
-            if (info.HitFlag == 0){
+            if (info.HitFlag == 0)
+            {
                 return true;
             }
         }
@@ -913,7 +876,8 @@ bool EnemyBase::isAttackRange(void)
 
 bool EnemyBase::CompareNode::operator()(const AStarNode* a, const AStarNode* b) const
 {
-    if (a->F_Score() != b->F_Score()){
+    if (a->F_Score() != b->F_Score())
+    {
         // Fスコアが低い方を優先するため、降順ソート
         return a->F_Score() > b->F_Score();
     }

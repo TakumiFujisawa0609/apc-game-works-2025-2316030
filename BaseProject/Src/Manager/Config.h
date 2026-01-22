@@ -1,11 +1,13 @@
 #pragma once
 
+
+
 class Config
 {
 public:
 
-	// ウィンドウサイズ
-	struct WindowSize{
+	struct WindowSize
+	{
 		int width_,
 			height_; 
 	};
@@ -54,19 +56,14 @@ public:
 
 private:
 
-	// デフォルトコンストラクタをprivateにして、
-	// 外部から生成できない様にする
 	Config(void);
 	~Config(void) = default;
 	
-	// インスタンス
 	static Config* instance_;
 
 	// グラフィック関係
 	WindowSize window_;
-
-	// フルスクリーンであるかどうか
-	bool isFullS_;	
+	bool isFullS_;	// フルスクリーンであるかどうか
 
 	// 解像度変更
 	int fullScreenWidth_, fullScreenHeight_;

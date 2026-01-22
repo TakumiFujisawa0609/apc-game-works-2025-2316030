@@ -27,19 +27,23 @@
 #include "../Object/Item/ComsumableItems/Battery.h"
 #include "../Object/Item/ComsumableItems/Hemostatic.h"
 #include "../Object/Item/ComsumableItems/Tranquilizer.h"
+
+
 #include "../Object/Item/Wire.h"
+
 #include "../Object/Components/Gameplay/OxygenComponent.h"
+
 #include "../Object/Item/ItemStrage/SlotBase.h"
+
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
+
 #include "../Object/Stage/Dummy.h"
+
 #include"../DrawUtil.h"
 
 namespace {
 	constexpr int fade_interval = 30;
 	float DegreeToRadian(float degree) {
-		//0～360→0～2π
-		//0～180→0～π
-		//÷180 x π
 		return (degree * DX_PI_F) / 180.0f;
 	}
 }
@@ -47,12 +51,14 @@ namespace {
 
 GameScene::GameScene(SceneController& controller) :Scene(controller)
 {
+
 	update_ = &GameScene::FadeInUpdate;
 	draw_ = &GameScene::FadeDraw;
 	frame_ = fade_interval;
+	isFps_ = true;
 	imgH_ = -1;
 	isHitItem_ = false;
-	progress_ = PROGRESS::MAINGAME;
+	state_ = STATE::MAINGAME;
 	int sw, sh, depth;
 	GetScreenState(&sw, &sh, &depth);
 
@@ -77,12 +83,14 @@ void GameScene::Init(Input& input)
 	// 敵の基底クラス
 	eBase_ = std::make_shared<EnemyBase>(*player_);
 
+	// ステージ
 	stage_ = std::make_shared<Stage>(*player_, *eBase_);
 
 	// ひとつの型でアイテムを管理する
 	const int INIT_POOL_SIZE = 6;
 	itemPool_.reserve(INIT_POOL_SIZE);
 
+	// ハンドライト
 	auto light = std::make_shared<HandLight>(*player_);
 	light->Init();
 	light->SetTargetPos(&player_->GetTransform());
@@ -91,11 +99,13 @@ void GameScene::Init(Input& input)
 	stage_->SetCurrentHandLight(light);
 	itemPool_.push_back(light);
 
+	// ロックピック
 	auto lockpick = std::make_shared<Lockpick>(*player_);
 	lockpick->Init();
 	lockpick->SetTargetPos(&player_->GetTransform());
 	itemPool_.push_back(lockpick);
 
+	// 針金
 	auto wire = std::make_shared<Wire>(*player_);
 	wire->Init();
 	wire->SetPos({ -3540.0f,150.0f,3250.0f });
@@ -104,15 +114,18 @@ void GameScene::Init(Input& input)
 	// ランダム生成のアイテム
 	randomItems_.reserve(3);
 
+	// 電池
 	auto battery = std::make_shared<Battery>(*player_);
 	battery->Init();
 	battery->SetHandLight(light);
 	randomItems_.push_back(battery);
 
+	// 回復
 	auto hemostatic = std::make_shared<Hemostatic>(*player_);
 	hemostatic->Init();
 	randomItems_.push_back(hemostatic);
 
+	// 正気度回復
 	auto tranquilizer = std::make_shared<Tranquilizer>(*player_);
 	tranquilizer->Init();
 	randomItems_.push_back(tranquilizer);
@@ -120,10 +133,9 @@ void GameScene::Init(Input& input)
 	unsigned seed = static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count());
 	std::default_random_engine  generator(seed);
 
-	for (auto& item : randomItems_)
-	{
-		if (spownPos_.empty())
-		{
+	// ランダム生成配置
+	for (auto& item : randomItems_){
+		if (spownPos_.empty()){
 			break;
 		}
 
@@ -139,11 +151,16 @@ void GameScene::Init(Input& input)
 	}
 	randomItems_.clear();
 
-	eBase_->SetNavGridManagedr(stage_->GetNavGridMananger());
+	// ナビゲートの設定
+	eBase_->SetNavGridManager(stage_->GetNavGridMananger());
 	eBase_->Init();
 
+	// 敵コンポーネントの初期化
 	eBase_->InitComponents();
+	// プレイヤーに敵情報の設定
+	player_->SetEnemyBase(eBase_);
 
+	// ステージの初期化
 	stage_->Init();
 	stage_->InitRenderer();
 
@@ -153,16 +170,21 @@ void GameScene::Init(Input& input)
 	// ステータス
 	status_ = std::make_shared<PlayerStatusUI>(player_, *player_);
 
+	// 当たり判定用のダミー
 	dummy_ = std::make_shared<Dummy>();
 	dummy_->Init();
 
+	// カメラの設定
 	Application::GetInstance().GetCamera()->SetFollow(&player_->GetTransform());
 	Application::GetInstance().GetCamera()->ChangeMode(Camera::MODE::FPS_MOUSE, AsoUtility::VECTOR_ZERO, false);
 	Application::GetInstance().GetCamera()->SetOperableCamera(true);
+	isFps_ = true;
 
+	// タスクの設定
 	UpdateTaskState(TASK::FIND_LIGHT);
 
-	ChangeProgress(PROGRESS::MAINGAME);
+	// ゲーム進行度の設定
+	ChangeState(STATE::MAINGAME);
 }
 
 void GameScene::Update(Input& input)
@@ -179,10 +201,8 @@ void GameScene::Draw()
 void GameScene::DrawUI(void)
 {
 	auto& size = Config::GetInstance().GetWindowSize();
-	if (draw_ = &GameScene::NormalDraw)
-	{
-		if (IsHitItems())
-		{
+	if (draw_ = &GameScene::NormalDraw){
+		if (IsHitItems()){
 			const TCHAR* text_to_display = _T("右クリック or Aボタン");
 			int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
@@ -192,6 +212,8 @@ void GameScene::DrawUI(void)
 			// Y座標: 画面全体の高さの 4分の3 の位置
 			int draw_y = (size.height_ * 3) / 4;
 
+			// 3. テキストを描画
+
 			// 赤色で描画
 			int color = GetColor(255, 255, 255);
 
@@ -199,8 +221,7 @@ void GameScene::DrawUI(void)
 			DrawString(draw_x, draw_y, text_to_display, color);
 		}
 
-		if (IsHitDoor())
-		{
+		if (IsHitDoor()){
 			const TCHAR* text_to_display = _T("Fキー or Aボタン");
 			int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
@@ -210,6 +231,8 @@ void GameScene::DrawUI(void)
 			// Y座標: 画面全体の高さの 4分の3 の位置
 			int draw_y = (size.height_ * 3) / 4;
 
+			// 3. テキストを描画
+
 			// 赤色で描画
 			int color = GetColor(255, 255, 255);
 
@@ -217,24 +240,22 @@ void GameScene::DrawUI(void)
 			DrawString(draw_x, draw_y, text_to_display, color);
 		}
 
-		int draw_x = static_cast<int>(size.width_ - size.width_ * DRAW_X); // 右端から300pxの位置
-		int draw_y = static_cast<int>(size.height_ * DRAW_Y);               // 上から20pxの位置
+		int draw_x = static_cast<int>(size.width_ - size.width_ * 0.26875f); // 右端から300pxの位置
+		int draw_y = static_cast<int>(size.height_ * 0.04166f);               // 上から20pxの位置
 		int color = GetColor(255, 255, 255);
 
 		// 完了メッセージの描画
-		if (clearMessageTimer_ > 0.0f)
-		{
+		if (clearMessageTimer_ > 0.0f){
 			// 完了メッセージは黄色で表示
 			int clearColor = GetColor(255, 255, 0);
 			DrawString(draw_x, draw_y, clearMessage_.c_str(), clearColor);
-			draw_y += static_cast<int>(size.height_ * CLEAR_DRAW_Y); // 次のメッセージ位置をずらす
+			draw_y += static_cast<int>(size.height_ * 0.0625f); // 次のメッセージ位置をずらす
 		}
 
 		// 現在のタスクの描画
-		if (!currentTaskMessage_.empty())
-		{
+		if (!currentTaskMessage_.empty()){
 			DrawString(draw_x, draw_y, L"--- Current Task ---", color);
-			DrawString(draw_x, static_cast<int>(draw_y + size.height_ * CURRENT_TASK_DRAW_Y), currentTaskMessage_.c_str(), color);
+			DrawString(draw_x, static_cast<int>(draw_y + size.height_ * 0.0625f), currentTaskMessage_.c_str(), color);
 		}
 
 		player_->DrawUI();
@@ -264,26 +285,27 @@ void GameScene::NormalUpdate(Input& input)
 	VECTOR prevAngle_ = {};
 	auto& ins = InputManager::GetInstance();
 
-	if (ins.IsNew(KEY_INPUT_ESCAPE))
-	{
+	// ゲーム一時停止
+	if (ins.IsNew(KEY_INPUT_ESCAPE)){
 		controller_.PushScene(std::make_shared<PauseScene>(controller_), input);
 		camera->SetOperableCamera(false);
 	}
 
-	if (player_->GetHp() <= 0 || player_->GetSanity() <= 0)
-	{
+	// ゲームオーバーへの遷移
+	if (player_->GetHp() <= 0 || player_->GetSanity() <= 0){
 		controller_.ChangeScene(std::make_shared<OverScene>(controller_), input);
 		return;
 	}
 
 	float time = Application::GetInstance().GetDeltaTime();
 
-	switch (progress_)
+	// ゲーム進行度の判断
+	switch (state_)
 	{
-	case GameScene::PROGRESS::TUTORIAL:
+	case GameScene::STATE::TUTORIAL:
 		UpdateTutorial(time, input);
 		break;
-	case GameScene::PROGRESS::MAINGAME:
+	case GameScene::STATE::MAINGAME:
 		UpdateMainGame(time, input);
 		break;
 	default:
@@ -302,19 +324,19 @@ void GameScene::FadeOutUpdate(Input& input)
 
 void GameScene::NormalDraw()
 {
-	switch (progress_)
+	switch (state_)
 	{
-	case GameScene::PROGRESS::TUTORIAL:
+	case GameScene::STATE::TUTORIAL:
 		DrawTutorial();
 		break;
-	case GameScene::PROGRESS::MAINGAME:
+	case GameScene::STATE::MAINGAME:
 		DrawMainGame();
 		break;
 	default:
 		break;
 	}
 
-#pragma region MyRegion
+#pragma region アイテムの当たり判定の表示
 
 	const auto& angles_ = Application::GetInstance().GetCamera()->GetAngles();
 
@@ -343,8 +365,7 @@ void GameScene::NormalDraw()
 	float DistanceSq = VSquareSize(DifferenceVector);
 
 	// 3. if文による衝突条件の判定
-	if (DistanceSq <= CombinedRadiusSq)
-	{
+	if (DistanceSq <= CombinedRadiusSq){
 		const TCHAR* text_to_display = _T("右クリック or Aボタン");
 		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
 
@@ -358,7 +379,7 @@ void GameScene::NormalDraw()
 		// 3. テキストを描画
 
 		// 赤色で描画
-		int color = GetColor(255, 255, 255); // 白にする場合は GetColor(255, 255, 255)
+		int color = GetColor(255, 255, 255);
 
 		// 描画関数でテキストを表示
 		DrawString(draw_x, draw_y, text_to_display, color);
@@ -366,8 +387,6 @@ void GameScene::NormalDraw()
 
 #pragma endregion
 
-	//DrawFormatString(0, 52, GetColor(0, 0, 0), L"cAngle=(%.2f,%.2f,%.2f)", angles_.x, angles_.y, angles_.z);
-	//DrawString(10, 0, L"Game Scene", 0xffffff);
 
 }
 
@@ -408,32 +427,28 @@ void GameScene::LoadLocationData()
 
 void GameScene::UpdateItemPool(float deltaTime)
 {
-	for (auto item : itemPool_)
-	{
+	for (auto item : itemPool_){
 		item->Update(deltaTime);
 	}
 }
 
 void GameScene::DrawItemPool(void)
 {
-	for (const auto& item : itemPool_)
-	{
+	for (const auto& item : itemPool_){
 		item->Draw();
 	}
 }
 
 void GameScene::DrawUIItemPool(void)
 {
-	for (const auto& item : itemPool_)
-	{
+	for (const auto& item : itemPool_){
 		item->DrawUI();
 	}
 }
 
 void GameScene::HandleMouseWheel(Input& input)
 {
-	if (!itemSlot_)
-	{
+	if (!itemSlot_){
 		return;
 	}
 
@@ -442,27 +457,22 @@ void GameScene::HandleMouseWheel(Input& input)
 	int wheelDelta = ins.GetWheelDelta();
 	wheelCounter += wheelDelta;
 
-	if (wheelCounter > 1)
-	{
+	if (wheelCounter > 1){
 		// マウスホイール上回転(アイテムを前に戻す/インデックスを減らす)
 		itemSlot_->CycleByWheel(true);
 		wheelCounter = 0;
 	}
-	else if (wheelDelta <= -1)
-	{
+	else if (wheelDelta <= -1){
 		// マウスホイール下回転(アイテムを後ろに進める/インデックスを増やす)
 		itemSlot_->CycleByWheel(false);
 		wheelCounter = 0;
 	}
 
-	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP))
-	{
+	if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::TOP)){
 		// 上ボタン: アイテムを前に戻す (インデックスを減らす)
 		itemSlot_->CycleByWheel(true);
 	}
-	// JOYPAD_BTN::DOWN を十字ボタンの下として使用
-	else if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
-	{
+	else if (ins.IsPadBtnTrgDown(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN)){
 		// 下ボタン: アイテムを後ろに進める (インデックスを増やす)
 		itemSlot_->CycleByWheel(false);
 	}
@@ -489,17 +499,16 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
-	if ((ins.IsTrgMouseRight() || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && IsHitItems())
-	{
+	// アイテムの取得
+	if ((ins.IsTrgMouseRight()|| ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && IsHitItems()){
 		ObtainItem();
 		isHitItem_ = false;
 		UpdateItemTasks();
 	}
 
-	if ((ins.IsTrgDown(KEY_INPUT_E) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && itemSlot_->GetCurrentItem() != nullptr)
-	{
-		if (itemSlot_)
-		{
+	// アクティブアイテム使用
+	if ((ins.IsTrgDown(KEY_INPUT_E) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && itemSlot_->GetCurrentItem() != nullptr){
+		if (itemSlot_){
 			itemSlot_->UseCurrentItem();
 
 			CleanUpItemPool();
@@ -507,36 +516,27 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 	}
 	auto camera = Application::GetInstance().GetCamera();
 
-	for (const auto& item : itemPool_)
-	{
-		if (auto lockpick = std::dynamic_pointer_cast<Wire>(item))
-		{
-			if (lockpick->GetState() == ItemBase::STATE::ININVENTORY)
-			{
-
-				if (ins.IsTrgDown(KEY_INPUT_F) && IsHitDoor())
-				{
+	for (const auto& item : itemPool_){
+		if (auto lockpick = std::dynamic_pointer_cast<Wire>(item)){
+			if (lockpick->GetState() == ItemBase::STATE::ININVENTORY){
+				// クリア判定に触れる条件
+				if (ins.IsTrgDown(KEY_INPUT_F) && IsHitDoor()){
 					auto unlickScene = std::make_shared<UnlockScene>(controller_);
 
 					std::shared_ptr<Wire> wire = nullptr;
 					std::shared_ptr<Lockpick> lockpick = nullptr;
 
 					// itemPool_からWireとLockpickを見つける
-					for (const auto& item : itemPool_)
-					{
-						if (auto w = std::dynamic_pointer_cast<Wire>(item))
-						{
+					for (const auto& item : itemPool_){
+						if (auto w = std::dynamic_pointer_cast<Wire>(item)){
 							wire = w;
 						}
-						if (auto lp = std::dynamic_pointer_cast<Lockpick>(item))
-						{
+						if (auto lp = std::dynamic_pointer_cast<Lockpick>(item)){
 							lockpick = lp;
 						}
 					}
-
 					// 見つかったアイテムをUnlickSceneに設定
-					if (player_ && wire && lockpick)
-					{
+					if (player_ && wire && lockpick){
 						unlickScene->SetPlayer(player_);
 						unlickScene->SetWire(wire);
 						unlickScene->SetLockPick(lockpick);
@@ -549,12 +549,10 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 		}
 	}
 
-	for (const auto& item : itemPool_)
-	{
-		if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(item))
-		{
-			if (lockpick->IsSuccess())
-			{
+	// クリア条件
+	for (const auto& item : itemPool_){
+		if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(item)){
+			if (lockpick->IsSuccess()){
 				controller_.ChangeScene(std::make_shared<ClearScene>(controller_), input);
 				return;
 			}
@@ -565,6 +563,11 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 	stage_->Update(deltaTime);
 	dummy_->Update(deltaTime);
 
+	// 敵・プレイヤー同士の当たり判定
+	player_->CollisionEnemy();
+	eBase_->CollisionPlayer();
+
+	// 敵・プレイヤーの更新
 	player_->Update(deltaTime);
 	eBase_->Update(deltaTime);
 
@@ -572,8 +575,10 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 	itemSlot_->Update(deltaTime);
 	HandleMouseWheel(input);
 
+	// 各アイテムの更新
 	UpdateItemPool(deltaTime);
 
+	// プレイヤーのステータス更新
 	status_->Update(deltaTime);
 }
 
@@ -584,34 +589,41 @@ void GameScene::DrawTutorial(void)
 	eBase_->Draw();
 	player_->Draw();
 
+	// 各アイテムごとの描画
 	DrawItemPool();
+
+	// UI描画
+	player_->DrawUI();
 
 	status_->Draw();
 }
 
 void GameScene::DrawMainGame(void)
 {
-
 	// オブジェクト
 	stage_->Draw();
+
 	//dummy_->Draw();
 	eBase_->Draw();
 
 	player_->Draw();
 
 	DrawItemPool();
+
+	// アイテムスロットの描画
+	itemSlot_->Draw();
 }
 
-void GameScene::ChangeProgress(PROGRESS progress)
+void GameScene::ChangeState(STATE state)
 {
-	progress_ = progress;
+	state_ = state;
 
-	switch (progress_)
+	switch (state_)
 	{
-	case GameScene::PROGRESS::TUTORIAL:
+	case GameScene::STATE::TUTORIAL:
 		ChangeTutorial();
 		break;
-	case GameScene::PROGRESS::MAINGAME:
+	case GameScene::STATE::MAINGAME:
 		ChangeMainGame();
 		break;
 	default:
@@ -631,39 +643,30 @@ void GameScene::ObtainItem(void)
 {
 	std::shared_ptr<ItemBase> obtainedItem = isObtainItems();
 
-	if (!obtainedItem)
-	{
+	if (!obtainedItem){
 		return;
 	}
 
+	// 取得されたアイテムの状態を変える
 	obtainedItem->ChangeState(ItemBase::STATE::ININVENTORY);
 
-
-	if (itemSlot_->GetSlots().size() <= 4) {
-		if (auto light = std::dynamic_pointer_cast<HandLight>(obtainedItem))
-		{
-			itemSlot_->AddItem(light);
-		}
-		if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(obtainedItem))
-		{
-			itemSlot_->AddItem(lockpick);
-		}
-		if (auto wire = std::dynamic_pointer_cast<Wire>(obtainedItem))
-		{
-			itemSlot_->AddItem(wire);
-		}
-		if (auto battery = std::dynamic_pointer_cast<Battery>(obtainedItem))
-		{
-			itemSlot_->AddItem(battery);
-		}
-		if (auto hemostatic = std::dynamic_pointer_cast<Hemostatic>(obtainedItem))
-		{
-			itemSlot_->AddItem(hemostatic);
-		}
-		if (auto tranquilizer = std::dynamic_pointer_cast<Tranquilizer>(obtainedItem))
-		{
-			itemSlot_->AddItem(tranquilizer);
-		}
+	if (auto light = std::dynamic_pointer_cast<HandLight>(obtainedItem)){
+		itemSlot_->AddItem(light);
+	}
+	if (auto lockpick = std::dynamic_pointer_cast<Lockpick>(obtainedItem)){
+		itemSlot_->AddItem(lockpick);
+	}
+	if (auto wire = std::dynamic_pointer_cast<Wire>(obtainedItem)){
+		itemSlot_->AddItem(wire);
+	}
+	if (auto battery = std::dynamic_pointer_cast<Battery>(obtainedItem)){
+		itemSlot_->AddItem(battery);
+	}
+	if (auto hemostatic = std::dynamic_pointer_cast<Hemostatic>(obtainedItem)){
+		itemSlot_->AddItem(hemostatic);
+	}
+	if (auto tranquilizer = std::dynamic_pointer_cast<Tranquilizer>(obtainedItem)){
+		itemSlot_->AddItem(tranquilizer);
 	}
 }
 
@@ -671,40 +674,36 @@ std::shared_ptr<ItemBase> GameScene::isObtainItems(void)
 {
 	const auto& camera = Application::GetInstance().GetCamera();
 	VECTOR cPos = camera->GetPos();
-	VECTOR tPos = camera->GetTargetPos(); // カメラ注視点
+	VECTOR tPos = camera->GetTargetPos();
 
-	std::shared_ptr<ItemBase> closestItem = nullptr; // 最も近いアイテムを保持するポインタ
-	float minItemDistanceSq = FLT_MAX; // 最小アイテム距離の二乗
+	// 最も近いアイテムを保持するポインタ
+	std::shared_ptr<ItemBase> closestItem = nullptr;
 
-	isHitItem_ = false; // ループ開始時にリセット
+	// 最小アイテム距離の二乗
+	float minItemDistanceSq = FLT_MAX;
 
-	for (const auto& item : itemPool_)
-	{
+	// ループ開始時にリセット
+	isHitItem_ = false;
+
+	for (const auto& item : itemPool_){
 		// ONSTAGE状態のアイテムのみを判定
-		if (item->GetState() == ItemBase::STATE::ONSTAGE)
-		{
+		if (item->GetState() == ItemBase::STATE::ONSTAGE){
 			// アイテムとステージの衝突情報を取得
 			auto itemHit = MV1CollCheck_Line(item->GetTransform().modelId, -1, cPos, tPos);
 			auto stageHit = MV1CollCheck_Line(stage_->GetTransform().modelId, -1, cPos, tPos);
 
-			// 1. アイテムにレイが当たったか
-			if (itemHit.HitFlag == 1)
-			{
+			// アイテムにレイが当たったか
+			if (itemHit.HitFlag == 1){
 				// カメラからアイテム衝突位置までの距離の二乗を計算
 				float itemDistSq = VSquareSize(VSub(itemHit.HitPosition, cPos));
 
 				// カメラからステージ衝突位置までの距離の二乗を計算
 				float stageDistSq = VSquareSize(VSub(stageHit.HitPosition, cPos));
 
-				// 2. アイテムがステージよりも手前にあるか、またはステージに当たっていないか
-				// (ステージに当たっていない場合は stageHit.HitFlag が 0 で、stageDistSq が大きい値になるはず)
-
-				// **重要な判定:** アイテムへの距離がステージへの距離より小さい、またはステージへの衝突がない
-				if (itemDistSq < stageDistSq || stageHit.HitFlag == 0)
-				{
+				// アイテムへの距離がステージへの距離より小さい、またはステージへの衝突がない
+				if (itemDistSq < stageDistSq || stageHit.HitFlag == 0){
 					// 有効なアイテム衝突。最も近いアイテムを更新
-					if (itemDistSq < minItemDistanceSq)
-					{
+					if (itemDistSq < minItemDistanceSq){
 						minItemDistanceSq = itemDistSq;
 						closestItem = item;
 					}
@@ -712,11 +711,9 @@ std::shared_ptr<ItemBase> GameScene::isObtainItems(void)
 			}
 		}
 	}
-	if (closestItem != nullptr)
-	{
+	if (closestItem != nullptr){
 		isHitItem_ = true;
 		return closestItem;
-
 	}
 
 	return nullptr;
@@ -729,12 +726,11 @@ bool GameScene::IsHitItems(void)
 
 void GameScene::CleanUpItemPool(void)
 {
-	// 対象のアイテムを配列から削除する
+	// アイテムの削除
 	itemPool_.erase(
 		std::remove_if(itemPool_.begin(), itemPool_.end(),
 			[](const std::shared_ptr<ItemBase>& item) {
-				if (item->IsDisabledItem())
-				{
+				if (item->IsDisabledItem()) {
 					return true;
 				}
 
@@ -747,31 +743,27 @@ bool GameScene::IsHitDoor(void) const
 {
 	const auto& camera = Application::GetInstance().GetCamera();
 	VECTOR cPos = camera->GetPos();
-	VECTOR tPos = camera->GetTargetPos(); // カメラ注視点
-	float minItemDistanceSq = FLT_MAX; // 最小アイテム距離の二乗
+	VECTOR tPos = camera->GetTargetPos();
+
+	// 最小アイテム距離の二乗
+	float minItemDistanceSq = FLT_MAX;
 
 	// アイテムとステージの衝突情報を取得
 	auto itemHit = MV1CollCheck_Line(dummy_->GetTransform().modelId, -1, cPos, tPos);
 	auto stageHit = MV1CollCheck_Line(stage_->GetTransform().modelId, -1, cPos, tPos);
 
 	// 1. アイテムにレイが当たったか
-	if (itemHit.HitFlag == 1)
-	{
+	if (itemHit.HitFlag == 1){
 		// カメラからアイテム衝突位置までの距離の二乗を計算
 		float itemDistSq = VSquareSize(VSub(itemHit.HitPosition, cPos));
 
 		// カメラからステージ衝突位置までの距離の二乗を計算
 		float stageDistSq = VSquareSize(VSub(stageHit.HitPosition, cPos));
 
-		// 2. アイテムがステージよりも手前にあるか、またはステージに当たっていないか
-		// (ステージに当たっていない場合は stageHit.HitFlag が 0 で、stageDistSq が大きい値になるはず)
-
 		// **重要な判定:** アイテムへの距離がステージへの距離より小さい、またはステージへの衝突がない
-		if (itemDistSq < stageDistSq || stageHit.HitFlag == 0)
-		{
+		if (itemDistSq < stageDistSq || stageHit.HitFlag == 0){
 			// 有効なアイテム衝突。最も近いアイテムを更新
-			if (itemDistSq < minItemDistanceSq)
-			{
+			if (itemDistSq < minItemDistanceSq){
 				minItemDistanceSq = itemDistSq;
 				return true;
 			}
@@ -828,8 +820,7 @@ void GameScene::UpdateTaskState(TASK task)
 	}
 
 	// 完了メッセージの表示時間をリセット
-	if (!clearMessage_.empty())
-	{
+	if (!clearMessage_.empty()){
 		clearMessageTimer_ = CLEAR_MSG_DURATION;
 	}
 }
@@ -839,25 +830,21 @@ void GameScene::UpdateItemTasks(void)
 	bool hasWire = false;
 	bool hasLockpick = false;
 
-	for (const auto& item : itemPool_)
-	{
-		if (auto w = std::dynamic_pointer_cast<Wire>(item))
-		{
+	for (const auto& item : itemPool_){
+		if (auto w = std::dynamic_pointer_cast<Wire>(item)){
 			if (w->GetState() == ItemBase::STATE::ININVENTORY) hasWire = true;
 		}
-		if (auto lp = std::dynamic_pointer_cast<Lockpick>(item))
-		{
+		if (auto lp = std::dynamic_pointer_cast<Lockpick>(item)){
 			if (lp->GetState() == ItemBase::STATE::ININVENTORY) hasLockpick = true;
 		}
 	}
 
-	if (task_ == TASK::FIND_LIGHT) // Lightを取得したか
-	{
+	// Lightを取得したか
+	if (task_ == TASK::FIND_LIGHT) {
 		// LightのININVENTORY状態のチェックが必要だが、ここでは簡略化し、次のタスクへ
 		UpdateTaskState(TASK::FIND_WIRE);
 	}
-	else if (task_ == TASK::FIND_WIRE && hasWire)
-	{
+	else if (task_ == TASK::FIND_WIRE && hasWire){
 		// Wireを取得した -> Door探しのタスクへ
 		UpdateTaskState(TASK::FIND_DOOR);
 	}

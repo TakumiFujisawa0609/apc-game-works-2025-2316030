@@ -7,7 +7,8 @@ class PatrolPath
 public:
 
 	// 巡回タイプ
-	enum class PATHTYPE{
+	enum class PATHTYPE
+	{
 		NONE,
 		LOOP,
 		ROUNDTRIP
@@ -35,15 +36,9 @@ public:
 	int FindClosestNodeIndex(const VECTOR& currentPos) const;
 
 private:
-
-	// 巡回ノードを格納したvector配列
-	std::vector<PatrolNode> nodes;
-
-	// 巡回タイプ
-	PATHTYPE pathType_;
-
-	// ROUNDTRIPタイプの進行方向
-	int direction_;
+	std::vector<PatrolNode> nodes;		// 巡回ノードを格納したvector配列
+	PATHTYPE pathType_;					// 巡回タイプ
+	int direction_;					// ROUNDTRIPタイプの進行方向
 
 };
 

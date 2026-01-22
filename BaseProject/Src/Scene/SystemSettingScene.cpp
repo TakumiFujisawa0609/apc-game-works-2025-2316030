@@ -8,9 +8,9 @@
 #include "../Manager/InputManager.h"
 #include"../Input.h"
 namespace {
-	constexpr int appear_interval = 20;			//出現までのフレーム
-	constexpr int input_list_row_height = 40;	//メニューの１つあたりの高さ
-	constexpr int margin_size = 20;				//ポーズメニュー枠の余白
+	constexpr int appear_interval = 20;//出現までのフレーム
+	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
+	constexpr int margin_size = 20;//ポーズメニュー枠の余白
 }
 
 
@@ -19,11 +19,9 @@ auto& ins = InputManager::GetInstance();
 SystemSettingScene::SystemSettingScene(SceneController& controller)
 	:
 	Scene(controller),
-	config_(Config::GetInstance()),
-	mouseSensitivity_(config_.GetMouseSensitivity()),
-	isVibration_(config_.isJoyPadVibrationFlag()),
-	bgmVolume_()
+	config_(Config::GetInstance())
 {
+	mouseSensitivity_ = config_.GetMouseSensitivity();
 	isVibration_ = config_.isJoyPadVibrationFlag();
 	bgmVolume_ = config_.GetBGMVolume();
 	seVolume_ = config_.GetSEVolume();
@@ -256,8 +254,7 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 	{
 	case SystemSettingScene::AdvancedSettingState::MainMenu:
 		if (asmList_[asMenuIndex_] == L"表示モード" && ins.IsTrgDown(KEY_INPUT_SPACE)) {
-			// フルスクリーン状態を切り替え
-			isFullS_ = !isFullS_;
+			isFullS_ = !isFullS_; // フルスクリーン状態を切り替え
 
 			// 設定をConfigに反映させるために、対応する関数を実行
 			auto it = asmTable_.find(L"表示モード");
@@ -266,8 +263,7 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 			}
 		}
 		if (asmList_[asMenuIndex_] == L"ウィンドウサイズ" && ins.IsTrgDown(KEY_INPUT_SPACE)) {
-			// フルスクリーン状態を切り替え
-			isFullS_ = !isFullS_;
+			isFullS_ = !isFullS_; // フルスクリーン状態を切り替え
 
 			// 設定をConfigに反映させるために、対応する関数を実行
 			auto it = asmTable_.find(L"ウィンドウサイズ");
@@ -301,8 +297,7 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 			const std::wstring& selectedSizeName = windowSizeList_[wMenuIndex_];
 			auto it = windowSizeTable_.find(selectedSizeName);
 			if (it != windowSizeTable_.end()) {
-				// サイズ変更とConfigへの適用を実行
-				it->second(input);
+				it->second(input); // サイズ変更とConfigへの適用を実行
 
 				// サイズ決定後、メインメニューに戻る
 				asState_ = AdvancedSettingState::MainMenu;

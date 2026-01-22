@@ -24,25 +24,22 @@ void SceneController::ChangeScene(std::shared_ptr<Scene> scene, Input& input)
 		scenes_.back() = scene;
 	}
 
-	const auto& sizeW = Config::GetInstance().GetWindowSize();
+	//// 深度バッファ用スクリーン
+	//// ( １チャンネル浮動小数点２４ビットテクスチャ )
+	//SetCreateDrawValidGraphChannelNum(1);
+	//SetDrawValidFloatTypeGraphCreateFlag(TRUE);
+	//SetCreateGraphChannelBitDepth(24);
 
-	// 新しいシーン用のスクリーンの作成
-	mainScreen_ = MakeScreen(sizeW.width_, sizeW.height_, true);
+	//auto sizeW = Application::GetInstance().GetWindowSize();
 
-	// 深度バッファ用スクリーン
-	// ( １チャンネル浮動小数点２４ビットテクスチャ )
-	SetCreateDrawValidGraphChannelNum(1);
-	SetDrawValidFloatTypeGraphCreateFlag(TRUE);
-	SetCreateGraphChannelBitDepth(24);
+	//// 新しいシーン用のスクリーンの作成
+	//newScreenH_ = MakeScreen(sizeW.width, sizeW.height, true);
 
-	depthScreen_ = MakeScreen(sizeW.width_, sizeW.height_, false);
+	//SetCreateDrawValidGraphChannelNum(0);
+	//SetDrawValidFloatTypeGraphCreateFlag(FALSE);
+	//SetCreateGraphChannelBitDepth(0);
 
-	SetCreateDrawValidGraphChannelNum(0);
-	SetDrawValidFloatTypeGraphCreateFlag(FALSE);
-	SetCreateGraphChannelBitDepth(0);
-
-	//シーンの初期化
-	scenes_.back()->Init(input);
+	scenes_.back()->Init(input);//シーンの初期化
 
 	Application::GetInstance().ResetDeltaTime();
 }
@@ -54,6 +51,7 @@ void SceneController::Update(Input& input)
 
 void SceneController::Draw(void)
 {
+	ClearDrawScreen();
 	for (auto& scene : scenes_) {
 		if (std::dynamic_pointer_cast<UnlockScene>(scene) != nullptr) {
 			continue;
@@ -77,19 +75,21 @@ void SceneController::DrawUI(void)
 
 void SceneController::PushScene(std::shared_ptr<Scene> scene, Input& input)
 {
-	const auto& size = Config::GetInstance().GetWindowSize();
+	auto size = Config::GetInstance().GetWindowSize();
 
-	// 新しい裏画面を作成
-	mainScreen_=MakeScreen(size.width_, size.height_, true);
+	//// 新しい裏画面を作成
+	//int newScreenH = MakeScreen(size.width, size.height, true);
 
-	// 作成した画面ハンドルをシーンに設定
-	scene->SetRenderTarget(mainScreen_);
+	//assert(newScreenH == -1);
+
+	//// 作成した画面ハンドルをシーンに設定
+	//scene->SetRenderTarget(newScreenH);
 
 	// シーンを積む
 	scenes_.push_back(scene);
 
-	// 描画先を裏画面に設定
-	SetDrawScreen(mainScreen_);
+	//// 描画先を裏画面に設定
+	//SetDrawScreen(newScreenH);
 
 	// 追加されたシーンの初期化
 	scenes_.back()->Init(input);
@@ -115,7 +115,7 @@ void SceneController::JumpScene(std::shared_ptr<Scene> scene, Input& input)
 	scenes_.clear();
 	scenes_.push_back(scene);
 
-	const auto& sizeW = Config::GetInstance().GetWindowSize();
+	auto sizeW = Config::GetInstance().GetWindowSize();
 	int newScreenH = MakeScreen(sizeW.width_, sizeW.height_);
 	scenes_.back()->SetRenderTarget(newScreenH);
 
@@ -143,5 +143,7 @@ void SceneController::DrawPushScene(void)
 
 int SceneController::GetDepthScreen(void) const
 {
-	return depthScreen_;
+	return newScreenH_;
 }
+
+

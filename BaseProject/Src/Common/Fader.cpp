@@ -17,7 +17,8 @@ bool Fader::IsEnd(void) const
 void Fader::SetFade(STATE state)
 {
 	state_ = state;
-	if (state_ != STATE::NONE){
+	if (state_ != STATE::NONE)
+	{
 		isPreEnd_ = false;
 		isEnd_ = false;
 	}
@@ -47,7 +48,8 @@ void Fader::Init(void)
 
 void Fader::Update(void)
 {
-	if (isEnd_){
+	if (isEnd_)
+	{
 		return;
 	}
 
@@ -57,6 +59,8 @@ void Fader::Update(void)
 	const int maxProgress = 100;
 	bool isLoadingComplete = (loadingBarFrame_ >= maxProgress);
 
+
+
 	switch (state_)
 	{
 	case STATE::NONE:
@@ -64,9 +68,11 @@ void Fader::Update(void)
 
 	case STATE::FADE_OUT:
 		alpha_ += SPEED_ALPHA;
-		if (alpha_ > 255){
+		if (alpha_ > 255)
+		{
 			alpha_ = 255;
-			if (isPreEnd_){
+			if (isPreEnd_)
+			{
 				// フェードアウト終了
 				isEnd_ = true;
 			}
@@ -76,14 +82,17 @@ void Fader::Update(void)
 
 	case STATE::FADE_IN:
 		// ローディングバーが終わってからフェードイン開始
-		if (!isLoadingComplete){
+		if (!isLoadingComplete)
+		{
 			return; // バーが100％になるまではフェードインを進めない
 		}
 
 		alpha_ -= SPEED_ALPHA;
-		if (alpha_ < 0){
+		if (alpha_ < 0)
+		{
 			alpha_ = 0;
-			if (isPreEnd_){
+			if (isPreEnd_)
+			{
 				isEnd_ = true;
 			}
 			isPreEnd_ = true;
@@ -114,7 +123,8 @@ void Fader::Draw(void)
 			0x000000, true);
 
 		// ローディングバー描画
-		if (!isEnd_){
+		if (!isEnd_)
+		{
 			const int barWidth = 400;
 			const int barHeight = 20;
 			const int cornerRadiusX = barHeight / 2;
@@ -135,8 +145,10 @@ void Fader::Draw(void)
 			// グレーの背景バー（角丸）
 			DrawRoundRect(x, y, x + barWidth, y + barHeight, cornerRadiusX, cornerRadiusY, GetColor(150, 150, 150), TRUE);
 
+
 			// 赤い進行バー（角丸 or 通常矩形）
-			if (filledWidth >= cornerRadiusX * 2){
+			if (filledWidth >= cornerRadiusX * 2)
+			{
 				// 丸みをつけた赤バー
 				DrawRoundRect(x, y, filledRight, y + barHeight, cornerRadiusX, cornerRadiusY, GetColor(255, 0, 0), TRUE);
 
@@ -149,7 +161,8 @@ void Fader::Draw(void)
 
 				SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha_));
 			}
-			else if (filledWidth > 0){
+			else if (filledWidth > 0)
+			{
 				// 幅が狭い → 通常矩形で描画（角丸だと崩れる）
 				DrawBox(x, y, filledRight, y + barHeight, GetColor(255, 0, 0), TRUE);
 

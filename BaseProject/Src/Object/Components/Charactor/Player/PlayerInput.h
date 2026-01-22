@@ -21,17 +21,9 @@ public:
 	float GetMouseDeltaY(void) const;
 
 private:
-
-	// 前後移動
-	float moveForward_;
-
-	// 左右移動
-	float moveRight_;
-
-	// マウス水平移動
-	float mouseDeltaX_;
-
-	// マウス垂直移動
-	float mouseDeltaY_;
+	float moveForward_;	// 前後移動
+	float moveRight_;	// 左右移動
+	float mouseDeltaX_; // マウス水平移動
+	float mouseDeltaY_; // マウス垂直移動
 };
 

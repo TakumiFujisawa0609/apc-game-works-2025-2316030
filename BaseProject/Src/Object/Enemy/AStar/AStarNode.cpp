@@ -8,10 +8,6 @@ AStarNode::AStarNode(void)
 #ifdef max
 #undef max
 #endif
-    gridX_(0),
-    gridZ_(0),
-    isWalkable_(false),
-    worldPos_({}),
     G_Score_(std::numeric_limits<float>::max()),
     H_Score_(0),
     parent_(nullptr)

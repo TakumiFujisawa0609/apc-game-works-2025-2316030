@@ -12,6 +12,7 @@
 #include "../../Object/Components/Gameplay/OxygenComponent.h"
 #include "../../Object/Components/Charactor/Player/PlayerInput.h"
 #include "../Item/PermanentItems/HandLight.h"
+#include "../Enemy/EnemyBase.h"
 
 
 Player::Player(void)
@@ -249,6 +250,11 @@ void Player::SetHandLight(std::weak_ptr<HandLight> handLight)
     light_ = handLight.lock();
 }
 
+void Player::SetEnemyBase(std::weak_ptr<EnemyBase> enemy)
+{
+    enemy_ = enemy;
+}
+
 void Player::DrawUI(void)
 {
 
@@ -435,4 +441,43 @@ void Player::CollisionGravity(void)
 void Player::CalcGravityPow(void)
 {
     Charactor::CalcGravityPow();
+}
+
+void Player::CollisionEnemy(void)
+{
+    MV1RefreshCollInfo(enemy_.lock()->GetTransform().modelId);
+    // カプセルとの衝突判定
+    auto hits = MV1CollCheck_Capsule(
+        enemy_.lock()->GetTransform().modelId, -1,
+        capsule_->GetPosTop(), capsule_->GetPosDown(), capsule_->GetRadius());
+
+    // 衝突した複数のポリゴンと衝突回避するまで、
+    // プレイヤーの位置を移動させる
+    for (int i = 0; i < hits.HitNum; i++)
+    {
+        auto hit = hits.Dim[i];
+        // 地面と異なり、衝突回避位置が不明なため、何度か移動させる
+        // この時、移動させる方向は、移動前座標に向いた方向であったり、
+        // 衝突したポリゴンの法線方向だったりする
+        for (int tryCnt = 0; tryCnt < 12; tryCnt++)
+        {
+            // 再度、モデル全体と衝突検出するには、効率が悪過ぎるので、
+            // 最初の衝突判定で検出した衝突ポリゴン1枚と衝突判定を取る
+            int pHit = HitCheck_Capsule_Triangle(
+                capsule_->GetPosTop(), capsule_->GetPosDown(), capsule_->GetRadius(),
+                hit.Position[0], hit.Position[1], hit.Position[2]);
+            if (pHit)
+            {
+                // 法線の方向にちょっとだけ移動させる
+                movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
+                //// カプセルも一緒に移動させる
+                transform_.pos = movedPos_;
+                transform_.Update();
+                continue;
+            }
+            break;
+        }
+    }
+    // 検出したポリゴン情報の後始末
+    MV1CollResultPolyDimTerminate(hits);
 }

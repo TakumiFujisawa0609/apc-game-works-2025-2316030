@@ -9,7 +9,12 @@ class Input;
 /// 毎フレーム手持ちのシーンの更新を行う
 /// </summary>
 class SceneController
-{		
+{
+private:
+	std::list<std::shared_ptr<Scene>> scenes_;//次はここをlist化します
+	
+	int newScreenH_;			// 最初の描画先
+
 public:
 	/// <summary>
 	/// 実行すべきシーンを切り替えます
@@ -48,25 +53,9 @@ public:
 	/// <param name="scene">ジャンプ先シーン</param>
 	void JumpScene(std::shared_ptr<Scene> scene,Input& input);
 
-
-	/// <summary>
-	/// 最後に追加したシーンを描画する
-	/// </summary>
-	/// <param name=""></param>
 	void DrawPushScene(void);
 
-	// 深度バッファ描画スクリーンを取得する
+	// 描画スクリーンを取得する
 	int GetDepthScreen(void) const;
-
-private:
-
-	// Sceneは配列のlistで管理する
-	std::list<std::shared_ptr<Scene>> scenes_;
-
-	// 最初の描画先
-	int mainScreen_ = -1;
-
-	// 深度マップ
-	int depthScreen_ = -1;
 };
 

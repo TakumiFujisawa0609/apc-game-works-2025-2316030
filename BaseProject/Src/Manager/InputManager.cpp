@@ -5,7 +5,8 @@ InputManager* InputManager::instance_ = nullptr;
 
 void InputManager::CreateInstance(void)
 {
-	if (instance_ == nullptr){
+	if (instance_ == nullptr)
+	{
 		instance_ = new InputManager();
 	}
 	instance_->Init();
@@ -13,7 +14,8 @@ void InputManager::CreateInstance(void)
 
 InputManager& InputManager::GetInstance(void)
 {
-	if (instance_ == nullptr){
+	if (instance_ == nullptr)
+	{
 		InputManager::CreateInstance();
 	}
 	return *instance_;
@@ -89,7 +91,8 @@ void InputManager::Update(void)
 {
 
 	// キーボード検知
-	for (auto& p : keyInfos_){
+	for (auto& p : keyInfos_)
+	{
 		p.second.keyOld = p.second.keyNew;
 		p.second.keyNew = CheckHitKey(p.second.key);
 		p.second.keyTrgDown = p.second.keyNew && !p.second.keyOld;
@@ -100,7 +103,8 @@ void InputManager::Update(void)
 	mouseInput_ = GetMouseInput();
 	GetMousePoint(&mousePos_.x, &mousePos_.y);
 
-	for (auto& p : mouseInfos_){
+	for (auto& p : mouseInfos_)
+	{
 		p.second.keyOld = p.second.keyNew;
 		p.second.keyNew = mouseInput_ == p.second.key;
 		p.second.keyTrgDown = p.second.keyNew && !p.second.keyOld;
@@ -207,7 +211,8 @@ const InputManager::Info& InputManager::Find(int key) const
 {
 
 	auto it = keyInfos_.find(key);
-	if (it != keyInfos_.end()){
+	if (it != keyInfos_.end())
+	{
 		return it->second;
 	}
 
@@ -218,7 +223,8 @@ const InputManager::Info& InputManager::Find(int key) const
 const InputManager::MouseInfo& InputManager::FindMouse(int key) const
 {
 	auto it = mouseInfos_.find(key);
-	if (it != mouseInfos_.end()){
+	if (it != mouseInfos_.end())
+	{
 		return it->second;
 	}
 
@@ -252,7 +258,8 @@ void InputManager::SetJPadInState(JOYPAD_NO jpNo)
 	auto& stateNow = padInfos_[no];
 
 	int max = static_cast<int>(JOYPAD_BTN::MAX);
-	for (int i = 0; i < max; i++){
+	for (int i = 0; i < max; i++)
+	{
 
 		stateNow.ButtonsOld[i] = stateNow.ButtonsNew[i];
 		stateNow.ButtonsNew[i] = stateNew.ButtonsNew[i];
@@ -402,3 +409,5 @@ int InputManager::GetWheelDelta() const
 {
 	return wheelDelta_;
 }
+
+

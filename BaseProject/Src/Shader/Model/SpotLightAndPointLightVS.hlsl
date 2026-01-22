@@ -12,10 +12,6 @@
 // 定数バッファ：スロット4番目
 cbuffer cbParam : register(b4)
 {
-	float4 g_camera_pos;
-	float g_fog_start;
-	float g_fog_end;
-	float2 padding;
 }
 
 VS_OUTPUT main(VS_INPUT VSInput)
@@ -66,44 +62,6 @@ VS_OUTPUT main(VS_INPUT VSInput)
 
 	// ライトから見た座標
 	ret.lightAtPos = float3(1.0f, 1.0f, 1.0f);
-
-
-	// フォグ
-	VsFog fog;
-
-	// フォグの距離
-	float fogRange = g_fog_end - g_fog_start;
-
-	// フォグend
-	if (fogRange > 0.0001f)
-	{
-		fog.linearAdd = g_fog_end / fogRange;
-		fog.linearDiv = -1.0f / fogRange;
-	}
-	else{
-		fog.linearAdd = 1.0f;
-		fog.linearDiv = 0.0f;
-	}
-	
-
-	// フォグの強さ
-	// カメラ位置と頂点位置の距離を求める (ワールド座標)
-	float distance = length(lWorldPosition.xyz - g_camera_pos.xyz);
-
-	// フォグの距離範囲 (ゼロ除算対策も兼ねる)
-	float fog_density = g_fog_end - g_fog_start;
-
-	// Start == End など、フォグが定義されていない場合はフォグを適用しない (1.0)
-	if (fog_density <= 0.0001f)
-	{
-		ret.fogFactor = 1.0f;
-	}
-	else
-	{
-		// ユーザーの計算式: (終了距離 - 距離) / (終了距離 - 開始距離) を適用し、[0.0, 1.0] にクランプ
-		// distance <= start の時 1.0、distance >= end の時 0.0 となる
-		ret.fogFactor = clamp((g_fog_end - distance) / fog_density, 0.0f, 1.0f);
-	}
 
 	return ret;
 }

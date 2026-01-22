@@ -1,4 +1,4 @@
-#include "../../../Application.h"
+ï»¿#include "../../../Application.h"
 #include "../../../Common/Quaternion.h"
 #include "../Manager/InputManager.h"
 #include "../../../Manager/ResourceManager.h"
@@ -20,15 +20,15 @@ Battery::~Battery(void)
 void Battery::Init(void)
 {
 
-	// ƒ‚ƒfƒ‹î•ñ
+	// ãƒ¢ãƒ‡ãƒ«æƒ…å ±
 	transform_.SetModel(resMng_.LoadModelDuplicate(
 		ResourceManager::SRC::BATTERY));
 	InitModel(
 		INIT_POS,
 		INIT_SCL,
 		INIT_QUAROTLOCAL);
-
-	// ó‘Ô‚Ì‰Šú‰»
+	assert(transform_.modelId != -1);
+	// çŠ¶æ…‹ã®åˆæœŸåŒ–
 	isOnStage_ = true;
 	isEquipment_ = false;
 	isEfficacy_ = false;
@@ -36,16 +36,18 @@ void Battery::Init(void)
 
 	ChangeState(STATE::ONSTAGE);
 
-	// ƒ‚ƒfƒ‹‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
 	transform_.Update();
 }
 
 void Battery::Update(float deltaTime)
 {
-	// ‚»‚ê‚¼‚ê‚Ìó‘Ô‚Å‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«æƒ…å ±ã®å‹•æ©Ÿ
+
+	// ãã‚Œãžã‚Œã®çŠ¶æ…‹ã§ã®æ›´æ–°
 	UpdateState(deltaTime);
 
-	// ƒ‚ƒfƒ‹‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
 	transform_.Update();
 }
 
@@ -54,15 +56,17 @@ void Battery::Draw(void)
 	if (GetState() == STATE::ONSTAGE ||
 		GetUse() != USE::NONE)
 	{
+
 		MV1DrawModel(transform_.modelId);
 		return;
 	}
+	//DrawSphere3D(transform_.pos, 32, 16, GetColor(255, 0, 255), GetColor(255, 0, 255), false);
 }
 
 void Battery::Use(void)
 {
-	hLight_.lock()->ChangeBattery(BATTERY_RECOVERY);
 	isDisabled_ = true;
+	hLight_.lock()->ChangeBattery(100);
 }
 
 void Battery::SetHandLight(std::shared_ptr<HandLight> light)
@@ -85,6 +89,7 @@ void Battery::UpdateInVentory(float deltaTime)
 void Battery::UpdateInUse(float deltaTime)
 {
 	ItemBase::FollowTarget(deltaTime, TARGET_POS);
+
 }
 
 void Battery::UpdateUsedUp(float deltaTime)

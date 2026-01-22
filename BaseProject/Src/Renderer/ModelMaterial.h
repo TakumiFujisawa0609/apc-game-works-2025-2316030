@@ -64,9 +64,6 @@ public:
 	// テクスチャアドレスを設定
 	void SetTextureAddress(TEXADDRESS texA);
 
-	// 深度バッファへの書き込みの設定
-	void SetWriteDepth(bool isWriteDepth);
-
 	// 深度バッファへの書き込み
 	bool IsWriteDepth(void);
 
@@ -102,6 +99,4 @@ private:
 	// 画像
 	std::map<int, int> textures_;
 
-	// 深度バッファへの書き込みをするかどうか
-	bool isWriteDepth_;
 };

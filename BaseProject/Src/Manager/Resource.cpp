@@ -98,7 +98,8 @@ void Resource::Release(void)
 	case Resource::TYPE::IMGS:
 	{
 		int num = numX_ * numY_;
-		for (int i = 0; i < num; i++){
+		for (int i = 0; i < num; i++)
+		{
 			DeleteGraph(handleIds_[i]);
 		}
 		delete[] handleIds_;
@@ -109,7 +110,8 @@ void Resource::Release(void)
 	{
 		MV1DeleteModel(handleId_);
 		auto ids = duplicateModelIds_;
-		for (auto id : ids){
+		for (auto id : ids)
+		{
 			MV1DeleteModel(id);
 		}
 	}
@@ -131,12 +133,14 @@ void Resource::Release(void)
 void Resource::CopyHandle(int* imgs)
 {
 
-	if (handleIds_ == nullptr){
+	if (handleIds_ == nullptr)
+	{
 		return;
 	}
 
 	int num = numX_ * numY_;
-	for (int i = 0; i < num; i++){
+	for (int i = 0; i < num; i++)
+	{
 		imgs[i] = handleIds_[i];
 	}
 

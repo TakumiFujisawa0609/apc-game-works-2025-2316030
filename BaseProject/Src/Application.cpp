@@ -9,6 +9,7 @@
 #include"Manager/SceneController.h"
 #include"Scene/TitleScene.h"
 #include"Scene/GameScene.h"
+
 #include "Application.h"
 
 Application* Application::instance_ = nullptr;
@@ -29,8 +30,7 @@ Application::Application()
     lastTime_(-1),
     deltaTime_(0.0f),
     startTime_(-1),
-    fontHandle_(-1),
-    fog_({})
+    fontHandle_(-1)
 {
 }
 
@@ -124,9 +124,6 @@ void Application::Run()
         controller_->Update(*input_);
         camera_->Update();
 
-        SetDrawScreen(DX_SCREEN_BACK);
-        ClearDrawScreen();
-
         // カメラ設定
         camera_->SetBeforeDraw(*input_);
 
@@ -151,8 +148,8 @@ void Application::Run()
 
 #ifdef _DEBUG
 
-        //DrawFrameRate();
-        //DrawDrawCall();
+        // DrawFrameRate();
+        ////DrawDrawCall();
 
 #endif // DEBUG
 
@@ -228,11 +225,6 @@ int Application::GetFontHandle(void) const
     return fontHandle_;
 }
 
-const Application::Fog& Application::GetFog(void) const
-{
-    return fog_;
-}
-
 std::shared_ptr<SceneController> Application::GetSceneController(void) const
 {
     return controller_;
@@ -262,17 +254,14 @@ void Application::Init3D(void)
 
     SetLightEnable(true);
 
-    //// ライトの設定
-    //ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
+    // ライトの設定
+    ChangeLightTypeDir({ -0.4f, -0.7f, 0.5f });
 
     // フォグ設定
-    SetFogEnable(true);
+    SetFogEnable(false);
+    //SetFogColor(255, 255, 255);
     SetFogColor(0, 0, 0);
-    fog_.fogStart_ = 100.0f;
-    fog_.fogEnd_ = 2000.0f;
-    SetFogStartEnd(fog_.fogStart_, fog_.fogEnd_);
-    GetFogStartEnd(&fog_.fogStart_, &fog_.fogEnd_);
-
+    SetFogStartEnd(100.0f, 20000.0f);
 }
 
 void Application::InitEffekseer(void)

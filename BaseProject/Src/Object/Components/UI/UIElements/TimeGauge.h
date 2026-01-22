@@ -14,16 +14,10 @@ public:
     void Draw(void) override;
 
 private:
-
-    // ŠÔ§ŒÀ
-    TimeLimitComponent& tLimit_;
+    TimeLimitComponent& tLimit_;        // ŠÔ§ŒÀ
     
     // UI•`‰æÀ•W
-
-    // ƒQ[ƒW•”•ª
-    float gaugeCenterX_, gaugeCenterY_;
-    
-    // ƒQ[ƒW”¼Œa
-    float gaugeRadius_;
+    float gaugeCenterX_, gaugeCenterY_;     // ƒQ[ƒW•”•ª
+    float gaugeRadius_;                     // ƒQ[ƒW”¼Œa
 };
 

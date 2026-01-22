@@ -122,7 +122,8 @@ Quaternion Quaternion::AngleAxis(double rad, VECTOR axis)
     ret.x = ret.y = ret.z = 0.0;
 
     norm = (double)axis.x * (double)axis.x + (double)axis.y * (double)axis.y + (double)axis.z * (double)axis.z;
-    if (norm <= 0.0f){
+    if (norm <= 0.0f)
+    {
         return ret;
     }
 
@@ -273,7 +274,8 @@ Quaternion Quaternion::LookRotation(VECTOR dir, VECTOR up)
 
     float num8 = (m00 + m11) + m22;
     auto quaternion = Quaternion();
-    if (num8 > 0.0f){
+    if (num8 > 0.0f)
+    {
         double num = sqrt(num8 + 1.0);
         quaternion.w = num * 0.5;
         num = 0.5 / num;
@@ -282,7 +284,8 @@ Quaternion Quaternion::LookRotation(VECTOR dir, VECTOR up)
         quaternion.z = ((double)m01 - m10) * num;
         return quaternion.Normalized();
     }
-    if ((m00 >= m11) && (m00 >= m22)){
+    if ((m00 >= m11) && (m00 >= m22))
+    {
         auto num7 = sqrt(((1.0f + m00) - m11) - m22);
         auto num4 = 0.5f / num7;
         quaternion.x = ((double)m12 - m21) * num4;
@@ -291,7 +294,8 @@ Quaternion Quaternion::LookRotation(VECTOR dir, VECTOR up)
         quaternion.w = 0.5 * num7;
         return quaternion.Normalized();
     }
-    if (m11 > m22){
+    if (m11 > m22)
+    {
         auto num6 = sqrt(((1.0f + m11) - m00) - m22);
         auto num3 = 0.5f / num6;
         quaternion.x = ((double)m10 + m01) * num3;
@@ -316,18 +320,21 @@ Quaternion Quaternion::GetRotation(MATRIX mat)
 
     float s;
     float tr = mat.m[0][0] + mat.m[1][1] + mat.m[2][2] + 1.0f;
-    if (tr >= 1.0f){
+    if (tr >= 1.0f)
+    {
         s = 0.5f / sqrtf(tr);
         ret.w = 0.25f / s;
         ret.x = (mat.m[1][2] - mat.m[2][1]) * s;
         ret.y = (mat.m[2][0] - mat.m[0][2]) * s;
         ret.z = (mat.m[0][1] - mat.m[1][0]) * s;
     }
-    else{
+    else
+    {
         float max;
         max = mat.m[1][1] > mat.m[2][2] ? mat.m[1][1] : mat.m[2][2];
 
-        if (max < mat.m[0][0]){
+        if (max < mat.m[0][0])
+        {
             s = sqrtf(mat.m[0][0] - (mat.m[1][1] + mat.m[2][2]) + 1.0f);
 
             float x = s * 0.5f;
@@ -338,7 +345,8 @@ Quaternion Quaternion::GetRotation(MATRIX mat)
             ret.w = (mat.m[1][2] - mat.m[2][1]) * s;
         }
         else
-            if (max == mat.m[1][1]){
+            if (max == mat.m[1][1])
+            {
                 s = sqrtf(mat.m[1][1] - (mat.m[2][2] + mat.m[0][0]) + 1.0f);
 
                 float y = s * 0.5f;
@@ -348,7 +356,8 @@ Quaternion Quaternion::GetRotation(MATRIX mat)
                 ret.z = (mat.m[1][2] + mat.m[2][1]) * s;
                 ret.w = (mat.m[2][0] - mat.m[0][2]) * s;
             }
-            else{
+            else
+            {
                 s = sqrtf(mat.m[2][2] - (mat.m[0][0] + mat.m[1][1]) + 1.0f);
 
                 float z = s * 0.5f;
@@ -466,12 +475,14 @@ Quaternion Quaternion::FromToRotation(VECTOR fromDir, VECTOR toDir)
 
 	VECTOR axis = VCross(fromDir, toDir);
 	double angle = AsoUtility::AngleDeg(fromDir, toDir);
-	if (angle >= 179.9196){
+	if (angle >= 179.9196)
+	{
 		auto r = VCross(fromDir, AsoUtility::DIR_R);
 		axis = VCross(r, fromDir);
 		//if (axis.sqrMagnitude < 0.000001f)
 		float len = axis.x * axis.x + axis.y * axis.y + axis.z * axis.z;
-		if (len < 0.000001f){
+		if (len < 0.000001f)
+		{
 			axis = AsoUtility::DIR_U;
 		}
 	}
@@ -484,7 +495,8 @@ Quaternion Quaternion::FromToRotation(VECTOR fromDir, VECTOR toDir)
 Quaternion Quaternion::RotateTowards(const Quaternion& from, const Quaternion& to, float maxDegreesDelta)
 {
     double num = Quaternion::Angle(from, to);
-    if (num == 0.0){
+    if (num == 0.0)
+    {
         return to;
     }
     float t = min(1.0f, maxDegreesDelta / (float)num);
@@ -502,24 +514,29 @@ Quaternion Quaternion::SlerpUnclamped(Quaternion a, Quaternion b, float t)
 {
 
     // if either input is zero, return the other.
-    if (a.LengthSquared() == 0.0f){
-        if (b.LengthSquared() == 0.0f){
+    if (a.LengthSquared() == 0.0f)
+    {
+        if (b.LengthSquared() == 0.0f)
+        {
             return Identity();
         }
         return b;
     }
-    else if (b.LengthSquared() == 0.0f){
+    else if (b.LengthSquared() == 0.0f)
+    {
         return a;
     }
 
 
     float cosHalfAngle = (float)(a.w * b.w) + VDot(a.xyz(), b.xyz());
 
-    if (cosHalfAngle >= 1.0f || cosHalfAngle <= -1.0f){
+    if (cosHalfAngle >= 1.0f || cosHalfAngle <= -1.0f)
+    {
         // angle = 0.0f, so just return one input.
         return a;
     }
-    else if (cosHalfAngle < 0.0f){
+    else if (cosHalfAngle < 0.0f)
+    {
         //b.xyz() = -b.xyz();
 		b.x = b.x * -1.0f;
 		b.y = b.y * -1.0f;
@@ -530,7 +547,8 @@ Quaternion Quaternion::SlerpUnclamped(Quaternion a, Quaternion b, float t)
 
     float blendA;
     float blendB;
-    if (cosHalfAngle < 0.99f){
+    if (cosHalfAngle < 0.99f)
+    {
         // do proper slerp for big angles
         float halfAngle = acosf(cosHalfAngle);
         float sinHalfAngle = sinf(halfAngle);
@@ -538,7 +556,8 @@ Quaternion Quaternion::SlerpUnclamped(Quaternion a, Quaternion b, float t)
         blendA = sinf(halfAngle * (1.0f - t)) * oneOverSinHalfAngle;
         blendB = sinf(halfAngle * t) * oneOverSinHalfAngle;
     }
-    else{
+    else
+    {
         // do lerp if angle is really small.
         blendA = 1.0f - t;
         blendB = t;
@@ -548,10 +567,12 @@ Quaternion Quaternion::SlerpUnclamped(Quaternion a, Quaternion b, float t)
     VECTOR v = VAdd(VScale(a.xyz(), blendA), VScale(b.xyz(), blendB));
     //Quaternion result = Quaternion(v.x, v.y, v.z, blendA * a.w + blendB * b.w);
 	Quaternion result = Quaternion(blendA * a.w + blendB * b.w, v.x, v.y, v.z);
-    if (result.LengthSquared() > 0.0f){
+    if (result.LengthSquared() > 0.0f)
+    {
         return Normalize(result);
     }
-    else{
+    else
+    {
         return Identity();
     }
 
@@ -580,24 +601,28 @@ VECTOR Quaternion::xyz(void) const
 void Quaternion::ToAngleAxis(float* angle, VECTOR* axis)
 {
 
-	if (abs(this->w) > 1.0f){
+	if (abs(this->w) > 1.0f)
+	{
 		this->Normalize();
 	}
 	*angle = 2.0f * acosf((float)this->w); // angle
 
-    if (x == 0 && y == 0 && z == 0){
+    if (x == 0 && y == 0 && z == 0)
+    {
         *angle = 0.0f;
     }
 
 	float den = sqrtf(1.0f - (float)(this->w * this->w));
-	if (den > 0.0001f){
+	if (den > 0.0001f)
+	{
 		//axis = q->xyz / den;
 		auto v = this->xyz();
 		axis->x = v.x / den;
 		axis->y = v.y / den;
 		axis->z = v.z / den;
 	}
-	else{
+	else
+	{
 		// This occurs when the angle is zero. 
 		// Not a problem: just set an arbitrary normalized axis.
 		*axis = { 1.0f, 0.0f, 0.0f };
