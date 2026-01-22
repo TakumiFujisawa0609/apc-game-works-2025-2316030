@@ -17,7 +17,7 @@ public:
     virtual void DrawUI(void)override;
 
 private:
-    int frame_ = 0;
+
     int currentIndex_ = 0;
     //メニューの文字列と関数のテーブル
     using MenuFunc_t = std::function<void(Input&)>;
