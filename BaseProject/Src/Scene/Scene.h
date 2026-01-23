@@ -9,9 +9,24 @@ class ResourceManager;
 class Scene
 {
 protected:
-	SceneController& controller_;	//持ち主の参照
-	ResourceManager& resMng_;		// リソース管理
-	int newRT_;						// scene画面の描画先
+
+	//持ち主の参照
+	SceneController& controller_;
+
+	// リソース管理
+	ResourceManager& resMng_;
+
+	// scene画面の描画先
+	int newRT_;
+
+	// 画像ハンドル
+	int imgH_ = 0;
+
+	// 毎フレーム計算用
+	int frame_ = 0;
+
+	// 音ハンドル
+	int soundH_;
 
 public:
 	/// <summary>

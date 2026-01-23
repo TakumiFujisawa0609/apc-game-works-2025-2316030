@@ -14,17 +14,18 @@
 using namespace std;
 
 namespace {
-	constexpr int appear_interval = 20;//出現までのフレーム
-	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
-	constexpr int margin_size = 20;//ポーズメニュー枠の余白
+	constexpr int appear_interval = 20;			//出現までのフレーム
+	constexpr int input_list_row_height = 40;	//メニューの１つあたりの高さ
+	constexpr int margin_size = 20;				//ポーズメニュー枠の余白
 }
 
-PauseScene::PauseScene(SceneController& controller) :
+PauseScene::PauseScene(SceneController& controller) 
+	:
 	Scene(controller),
-	frame_(0),
 	update_(&PauseScene::AppearUpdate),
 	draw_(&PauseScene::ProcessDraw)
 {
+	// メニューリスト
 	menuList_ = {
 					//L"コマンド表",
 					L"戻る",
@@ -179,13 +180,10 @@ void PauseScene::DrawMenuList()
 		int lineX = line_start_x;
 		unsigned int col = 0x4444ff;
 		if (row == currentStr) {
-			//DrawString(static_cast<int>(lineX - wsize.width_ * 0.03125f), lineY, L"⇒",0xff0000);
 			col = 0xffffff;
-			//lineX += static_cast<int>(wsize.width_ * 0.015625f);
 		}
 		DrawFormatString(static_cast<int>(lineX+wsize.width_* 0.0015625f), static_cast<int>(lineY+wsize.height_* 0.0020833f), 0x000000, L"%s", row.c_str());
 		DrawFormatString(lineX, lineY, col, L"%s", row.c_str());
 		lineY += input_list_row_height;
-	}
-	
+	}	
 }

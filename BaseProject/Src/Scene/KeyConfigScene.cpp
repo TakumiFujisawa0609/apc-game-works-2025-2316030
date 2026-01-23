@@ -9,17 +9,18 @@
 #include<algorithm>
 
 namespace {
-	constexpr int appear_interval = 20;//出現までのフレーム
-	constexpr int input_list_row_height = 40;//イベントの１つあたりの高さ
-	constexpr int input_list_col_width = 150;//割り当てコード列に要する幅
-	constexpr int margin_size = 20;//ポーズメニュー枠の余白
-	constexpr int input_list_top = 100;//入力情報の上端
-	constexpr int input_list_left = 70;//入力情報の左端
-	constexpr int analog_lever_threshold = 10000;//アナログレバーを倒した閾値
-	constexpr int analog_trigger_threshold = 128;//アナログトリガーの閾値
+	constexpr int appear_interval = 20;				//出現までのフレーム
+	constexpr int input_list_row_height = 40;		//イベントの１つあたりの高さ
+	constexpr int input_list_col_width = 150;		//割り当てコード列に要する幅
+	constexpr int margin_size = 20;					//ポーズメニュー枠の余白
+	constexpr int input_list_top = 100;				//入力情報の上端
+	constexpr int input_list_left = 70;				//入力情報の左端
+	constexpr int analog_lever_threshold = 10000;	//アナログレバーを倒した閾値
+	constexpr int analog_trigger_threshold = 128;	//アナログトリガーの閾値
 }
 
-KeyConfigScene::KeyConfigScene(SceneController& controller, Input& input) :
+KeyConfigScene::KeyConfigScene(SceneController& controller, Input& input) 
+	:
 	Scene(controller),
 	input_(input),
 	update_(&KeyConfigScene::NormalUpdate)
@@ -135,15 +136,15 @@ void KeyConfigScene::DrawUI(void)
 
 void KeyConfigScene::DrawInputList()
 {
-	int rowY = input_list_top;//最初のY座標
-	constexpr uint32_t normal_text_color = 0x000000;//文字の通常カラー
-	constexpr uint32_t selected_text_color = 0x0000aa;//現在選択中の文字カラー
-	constexpr uint32_t editting_text_color = 0xcc0000;//現在編集中の文字カラー
-	constexpr uint32_t indicator_offset = 20;//矢印のオフセット
+	int rowY = input_list_top;								//最初のY座標
+	constexpr uint32_t normal_text_color = 0x000000;		//文字の通常カラー
+	constexpr uint32_t selected_text_color = 0x0000aa;		//現在選択中の文字カラー
+	constexpr uint32_t editting_text_color = 0xcc0000;		//現在編集中の文字カラー
+	constexpr uint32_t indicator_offset = 20;				//矢印のオフセット
 	
 	for (const auto& keyStr : input_.inputListForDisplay_) {
 		auto eventColor = normal_text_color;
-		auto eventName = StringUtiligy::GetWStringFromString(keyStr);//イベント名	
+		auto eventName = StringUtiligy::GetWStringFromString(keyStr);	//イベント名	
 		int colX = input_list_left;
 		//現在のインデックスがイベントをさしていれば、その行の色を選択中に変更する
 		if (currentIndex_ < input_.inputListForDisplay_.size()) {
@@ -165,7 +166,7 @@ void KeyConfigScene::DrawInputList()
 		colX += 70;
 		
 		for (auto& record : tempInputTable_[keyStr]) {
-			std::wstring periName = GetPeriphString(record.type);//周辺機器名
+			std::wstring periName = GetPeriphString(record.type);
 			if (record.type == PeripheralType::keyboard) {
 				DrawFormatString(colX, rowY, eventColor,
 					L"%s:%s", periName.c_str(), keyboardNameTable_[record.code].c_str());
@@ -187,7 +188,7 @@ void KeyConfigScene::DrawInputList()
 		rowY += input_list_row_height;
 	}
 
-	rowY += 30;//システムメニューはキーコンフィグ部分からちょっと離す
+	rowY += 30;
 
 	//キーコンフィグシステムメニューを表示
 	for (const auto& menuName : systemMenuStringList_) {
@@ -281,7 +282,9 @@ void KeyConfigScene::EdittingUpdate(Input& input)
 	XINPUT_STATE xinputState = {};
 	AnalogInputType pressedAnalogCode = AnalogInputType::none;
 	GetJoypadXInputState(DX_INPUT_PAD1, &xinputState);
-	if (abs(xinputState.ThumbLX) > analog_lever_threshold) {//左レバーチェック
+	
+	//左レバーチェック
+	if (abs(xinputState.ThumbLX) > analog_lever_threshold) {
 		pressedAnalogCode = xinputState.ThumbLX > 0 ? AnalogInputType::l_right : AnalogInputType::l_left;
 	}else if (abs(xinputState.ThumbLY) > analog_lever_threshold) {
 		pressedAnalogCode = xinputState.ThumbLY > 0 ? AnalogInputType::l_up : AnalogInputType::l_down;
@@ -295,11 +298,8 @@ void KeyConfigScene::EdittingUpdate(Input& input)
 		pressedAnalogCode = AnalogInputType::r_trigger;
 	}
 
-	
 	auto& record = tempInputTable_[input.inputListForDisplay_[currentIndex_]];
-
 	
-	//for (auto& state : record) {
 	for (int i = 0; i < (int)PeripheralType::end; ++i) {
 		auto it = std::find_if(record.begin(), record.end(), [i](const Input::InputState& state) {
 			return PeripheralType(i) == state.type;

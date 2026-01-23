@@ -6,41 +6,26 @@ class OverScene :
 public:
 	OverScene(SceneController& controller);
 	~OverScene();
-	/// <summary>
-	/// シーン開始時に一度だけ呼ばれる初期化関数
-	/// </summary>
-	/// <param name="input">入力クラス</param>
+
 	virtual void Init(Input& input)override;
-
-	/// <summary>
-	/// 毎フレーム状態を更新する
-	/// </summary>
-	/// <param name="input">入力クラス</param>
 	virtual void Update(Input& input)override;
-
-	/// <summary>
-	/// 毎フレーム描画する
-	/// </summary>
 	virtual void Draw(void)override;
-
 	virtual void DrawUI(void)override;
 
 private:
-		int imgH_ = 0;
-		int frame_ = 0;
-		int soundH_;
-		using UpdateFunc_t = void(OverScene::*)(Input& input);
-		using DrawFunc_t = void(OverScene::*)();
 
-		UpdateFunc_t update_;
-		DrawFunc_t draw_;
+	using UpdateFunc_t = void(OverScene::*)(Input& input);
+	using DrawFunc_t = void(OverScene::*)();
 
-		void FadeInUpadte(Input&);
-		void NormalUpadte(Input&);
-		void FadeOutUpadte(Input&);
+	UpdateFunc_t update_;
+	DrawFunc_t draw_;
 
-		void NormalDraw();
-		void FadeDraw();
+	void FadeInUpadte(Input&);
+	void NormalUpadte(Input&);
+	void FadeOutUpadte(Input&);
+
+	void NormalDraw();
+	void FadeDraw();
 
 };
 

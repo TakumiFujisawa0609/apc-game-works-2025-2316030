@@ -93,6 +93,7 @@ public:
 	std::shared_ptr<Input> GetInput(void) const;
 
 private:
+
 	Application();//コンストラクタをprivateに
 	//コピー＆代入の禁止
 	Application(const Application& app) = delete;

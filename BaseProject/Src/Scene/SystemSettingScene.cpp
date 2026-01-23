@@ -8,11 +8,10 @@
 #include "../Manager/InputManager.h"
 #include"../Input.h"
 namespace {
-	constexpr int appear_interval = 20;//出現までのフレーム
-	constexpr int input_list_row_height = 40;//メニューの１つあたりの高さ
-	constexpr int margin_size = 20;//ポーズメニュー枠の余白
+	constexpr int appear_interval = 20;			//出現までのフレーム
+	constexpr int input_list_row_height = 40;	//メニューの１つあたりの高さ
+	constexpr int margin_size = 20;				//ポーズメニュー枠の余白
 }
-
 
 auto& ins = InputManager::GetInstance();
 
@@ -42,7 +41,6 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 		L"詳細設定",
 		L"入力"
 	};
-
 	mainMenuFuncTable_ = {
 		{L"詳細設定",[this](Input& input) {
 				update_ = &SystemSettingScene::AdvancedSettingUpdate;
@@ -68,7 +66,6 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 		L"適用",
 		L"戻る"
 	};
-
 	prefeMenuTable_ = {
 		{L"マウス感度",[this](Input&) {
 				config_.SetMouseSensitivity(mouseSensitivity_);
@@ -106,7 +103,6 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 		L"ウィンドウサイズ",
 		L"戻る"
 	};
-
 	asmTable_ = {
 		{L"表示モード",[this](Input&) {
 				config_.SetFullScreen(isFullS_);
@@ -124,6 +120,7 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 		}
 	};
 
+	// ウィンドウメニューの設定
 	windowSizeList_ = {
 		L"1280×720",
 		L"1920×1080"
@@ -219,7 +216,7 @@ void SystemSettingScene::PreferencesUpdate(Input& input)
 		// 現在選択されているメインメニューの項目名を取得
 		const std::wstring& selectedMenuName = prefeMenuList_[prefMenuIndex_];
 
-		// 関数テーブルから対応する関数を探して実行 (サブメニューへの遷移)
+		// 関数テーブルから対応する関数を探して実行
 		auto it = prefeMenuTable_.find(selectedMenuName);
 		if (it != prefeMenuTable_.end()) {
 			it->second(input);
@@ -227,7 +224,6 @@ void SystemSettingScene::PreferencesUpdate(Input& input)
 		return;
 	}
 
-	// 操作系の設定
 	static int wheelCounter = 0;
 	int wheelDelta = ins.GetWheelDelta();
 	wheelCounter += wheelDelta;
@@ -245,7 +241,6 @@ void SystemSettingScene::PreferencesUpdate(Input& input)
 
 void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 {
-	// スクリーン系の設定
 	static int wheelCounter = 0;
 	int wheelDelta = ins.GetWheelDelta();
 	wheelCounter += wheelDelta;
@@ -254,7 +249,8 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 	{
 	case SystemSettingScene::AdvancedSettingState::MainMenu:
 		if (asmList_[asMenuIndex_] == L"表示モード" && ins.IsTrgDown(KEY_INPUT_SPACE)) {
-			isFullS_ = !isFullS_; // フルスクリーン状態を切り替え
+			// フルスクリーン状態を切り替え
+			isFullS_ = !isFullS_;
 
 			// 設定をConfigに反映させるために、対応する関数を実行
 			auto it = asmTable_.find(L"表示モード");
@@ -263,7 +259,8 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 			}
 		}
 		if (asmList_[asMenuIndex_] == L"ウィンドウサイズ" && ins.IsTrgDown(KEY_INPUT_SPACE)) {
-			isFullS_ = !isFullS_; // フルスクリーン状態を切り替え
+			// フルスクリーン状態を切り替え
+			isFullS_ = !isFullS_;
 
 			// 設定をConfigに反映させるために、対応する関数を実行
 			auto it = asmTable_.find(L"ウィンドウサイズ");
@@ -297,7 +294,8 @@ void SystemSettingScene::AdvancedSettingUpdate(Input& input)
 			const std::wstring& selectedSizeName = windowSizeList_[wMenuIndex_];
 			auto it = windowSizeTable_.find(selectedSizeName);
 			if (it != windowSizeTable_.end()) {
-				it->second(input); // サイズ変更とConfigへの適用を実行
+				// サイズ変更とConfigへの適用を実行
+				it->second(input);
 
 				// サイズ決定後、メインメニューに戻る
 				asState_ = AdvancedSettingState::MainMenu;
@@ -350,7 +348,7 @@ void SystemSettingScene::AdvancedSettingDraw(void)
 	auto& size = Config::GetInstance().GetWindowSize();
 	int line_start_y = static_cast<int>(size.height_ * 0.25f);
 	int line_start_x = static_cast<int>(size.width_ * 0.03125f + size.width_ * 0.390625f);
-	int lineY = line_start_y; // 描画開始Y座標
+	int lineY = line_start_y; 
 
 	auto& currentStr = asmList_[asMenuIndex_];
 	for (auto& row : asmList_) {
@@ -394,8 +392,8 @@ void SystemSettingScene::AdvancedSettingDraw(void)
 	}
 
 	if (asState_ == AdvancedSettingState::WindowSize) {
-		int wLineY = static_cast<int>(lineY + size.height_ * 0.02f); // lineYは既に最後の項目の次の位置になっているため、少しだけマージンを加える
-		int wLineX = static_cast<int>(line_start_x + size.width_ * 0.05f); // メインメニューから少し右にずらす
+		int wLineY = static_cast<int>(lineY + size.height_ * 0.02f);			// lineYは既に最後の項目の次の位置になっているため、少しだけマージンを加える
+		int wLineX = static_cast<int>(line_start_x + size.width_ * 0.05f);		// メインメニューから少し右にずらす
 
 		auto& currentWStr = windowSizeList_[wMenuIndex_];
 

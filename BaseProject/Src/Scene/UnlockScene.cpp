@@ -30,11 +30,9 @@ UnlockScene::UnlockScene(SceneController& controller)
 	player_(nullptr),
 	wire_(nullptr),
 	lockpick_(nullptr),
-	frame_(0),
 	update_(&UnlockScene::AppearUpdate),
 	draw_(&UnlockScene::ProcessDraw)
 {
-
 }
 
 UnlockScene::~UnlockScene(void)
@@ -104,6 +102,7 @@ void UnlockScene::NormalUpdate(Input& input)
 {
 	auto& ins = InputManager::GetInstance();
 
+	// 遷移
 	if (ins.IsTrgDown(KEY_INPUT_SPACE) || ins.IsClickMouseLeft()){
 		update_ = &UnlockScene::DisappearUpdate;
 		draw_ = &UnlockScene::ProcessDraw;

@@ -22,35 +22,47 @@ private:
     // 設定
     Config& config_;
 
-    // 
+    // 詳細設定
     enum class AdvancedSettingState {
         MainMenu,
         WindowSize
     };
 
-    int frame_;
+    // メイン設定のインデックス
+    int mainMenuIndex_;
 
-    int mainMenuIndex_;                 // メイン設定のインデックス
-    int prefMenuIndex_;                 // 
-    int asMenuIndex_;                   // 
-    int wMenuIndex_;                    // 
+    // 環境設定のインデックス
+    int prefMenuIndex_;
 
-    bool isInitialize_;                 // 初期化するかどうか
+    // 詳細設定のインデックス
+    int asMenuIndex_;
 
-    AdvancedSettingState asState_;      // 設定状態
+    // ウィンドウメニューのインデックス
+    int wMenuIndex_;
 
-    bool isFullS_;	                    // フルスクリーンであるかどうか
-    int width_, height_;                // ウィンドウのサイズの縦、横
+    // 初期化するかどうか
+    bool isInitialize_;
+
+    // 設定状態
+    AdvancedSettingState asState_;
+
+    // フルスクリーンであるかどうか
+    bool isFullS_;
+
+    // ウィンドウのサイズの縦、横
+    int width_, height_;
 
     // マウス感度
-    float mouseSensitivity_;            // マウス感度
+    float mouseSensitivity_;
 
-    // パッド操作
-    bool isVibration_;                  // パッドを振動させるかどうか
+    // パッドを振動させるかどうか
+    bool isVibration_;
 
-    // サウンド関係
-    int bgmVolume_;                     // bgmの音量
-    int seVolume_;                      // seの音量
+    // bgmの音量
+    int bgmVolume_;
+
+    // seの音量
+    int seVolume_;
 
     // メインメニューの文字列と関数テーブル
     using Menufunc_t = std::function<void(Input&)>;
@@ -67,25 +79,40 @@ private:
     std::vector<std::wstring> asmList_;
     std::map<std::wstring, AdvancedSetting_t> asmTable_;
 
-    //メンバ関数ポインタ型の別名を定義
+    // メンバ関数ポインタ型の別名を定義
     using UpdateFunc_t = void (SystemSettingScene::*)(Input&);
-    using DrawFunc_t = void(SystemSettingScene::*)();
+    using DrawFunc_t = void (SystemSettingScene::*)();
 
-    UpdateFunc_t update_;                       //Update用のメンバ関数ポインタ
-    DrawFunc_t draw_;                           //Draw用のメンバ関数ポインタ
+    // Update用のメンバ関数ポインタ
+    UpdateFunc_t update_;
 
-    void PreferencesUpdate(Input& input);       //設定(環境系)
-    void AdvancedSettingUpdate(Input& input);   //設定(PC詳細設定)
+    // Draw用のメンバ関数ポインタ
+    DrawFunc_t draw_;
 
-    void PreferencesDraw(void);                 // 描画(環境)
-    void AdvancedSettingDraw(void);             // 描画(PC詳細設定)
+    // 設定(環境系)
+    void PreferencesUpdate(Input& input);
+
+    // 設定(PC詳細設定)
+    void AdvancedSettingUpdate(Input& input);
+
+    // 描画(環境)
+    void PreferencesDraw(void);
+
+    // 描画(PC詳細設定)
+    void AdvancedSettingDraw(void);
 
     // メニューリストの初期化
     void InitMenuName(std::wstring menuListIndex, std::map<std::wstring, std::function<void(Input&)>> table, Input& input);
 
     // ウインドウサイズ切り替え
-    using WindowSize_t = std::function<void(Input&)>;           // ウィンドウ設定の関数ポインタ
-    std::vector<std::wstring> windowSizeList_;                  // ウィンドウ設定のリスト
-    std::map<std::wstring, WindowSize_t> windowSizeTable_;      // ウィンドウ設定のテーブル
+
+    // ウィンドウ設定の関数ポインタ
+    using WindowSize_t = std::function<void(Input&)>;
+    
+    // ウィンドウ設定のリスト
+    std::vector<std::wstring> windowSizeList_;
+
+    // ウィンドウ設定のテーブル
+    std::map<std::wstring, WindowSize_t> windowSizeTable_;
 };
 

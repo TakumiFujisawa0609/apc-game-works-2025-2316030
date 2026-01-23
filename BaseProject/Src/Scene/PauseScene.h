@@ -17,8 +17,10 @@ public:
     virtual void DrawUI(void)override;
 
 private:
-    int frame_ = 0;
+    
+    // 現在のインデックス
     int currentIndex_ = 0;
+
     //メニューの文字列と関数のテーブル
     using MenuFunc_t = std::function<void(Input&)>;
     std::vector<std::wstring> menuList_;
@@ -27,20 +29,30 @@ private:
     using UpdateFunc_t = void (PauseScene::*)(Input& input);
     using DrawFunc_t = void (PauseScene::*)();
 
-    UpdateFunc_t update_;//毎フレーム更新関数ポインタ
-    DrawFunc_t draw_;//毎フレーム描画関数ポインタ
+    // 毎フレーム更新関数ポインタ
+    UpdateFunc_t update_;
 
-    //更新関数
-    void AppearUpdate(Input& input);//枠を広げて表示する関数
-    void NormalUpdate(Input& input);//枠およびメニューを表示する関数
-    void DisappearUpdate(Input& input);//枠を縮小して消す関数
+    // 毎フレーム描画関数ポインタ
+    DrawFunc_t draw_;
+
+    // 更新関数
+    // 枠を広げて表示する関数
+    void AppearUpdate(Input& input);
+
+    // 枠およびメニューを表示する関数
+    void NormalUpdate(Input& input);
+
+    // 枠を縮小して消す関数
+    void DisappearUpdate(Input& input);
    
     //描画関数
-    void ProcessDraw();//枠の出現・消滅時の演出描画
-    void NormalDraw();//通常のポーズメニュー描画
+    // 枠の出現・消滅時の演出描画
+    void ProcessDraw();
 
-    //メニューのリストを表示する
+    // 通常のポーズメニュー描画
+    void NormalDraw();
+
+    // メニューのリストを表示する
     void DrawMenuList();
-
 };
 

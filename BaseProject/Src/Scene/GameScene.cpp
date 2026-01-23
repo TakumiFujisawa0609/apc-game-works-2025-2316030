@@ -20,25 +20,16 @@
 #include"../Object/Player/Player.h"
 #include"../Object/Enemy/EnemyBase.h"
 #include"../Object/Stage/Stage.h"
-
 #include "../Object/Item/PermanentItems/Lockpick.h"
 #include "../Object/Item/PermanentItems/HandLight.h"
-
 #include "../Object/Item/ComsumableItems/Battery.h"
 #include "../Object/Item/ComsumableItems/Hemostatic.h"
 #include "../Object/Item/ComsumableItems/Tranquilizer.h"
-
-
 #include "../Object/Item/Wire.h"
-
 #include "../Object/Components/Gameplay/OxygenComponent.h"
-
 #include "../Object/Item/ItemStrage/SlotBase.h"
-
 #include "../Object/Components/UI/Components/PlayerStatusUI.h"
-
 #include "../Object/Stage/Dummy.h"
-
 #include"../DrawUtil.h"
 
 namespace {
@@ -49,7 +40,9 @@ namespace {
 }
 
 
-GameScene::GameScene(SceneController& controller) :Scene(controller)
+GameScene::GameScene(SceneController& controller)
+	:
+	Scene(controller)
 {
 
 	update_ = &GameScene::FadeInUpdate;
@@ -70,7 +63,6 @@ GameScene::GameScene(SceneController& controller) :Scene(controller)
 
 GameScene::~GameScene()
 {
-
 }
 
 void GameScene::Init(Input& input)
@@ -95,6 +87,7 @@ void GameScene::Init(Input& input)
 	light->Init();
 	light->SetTargetPos(&player_->GetTransform());
 	player_->SetHandLight(light);
+	
 	// ステージで適応させるライトを設定する
 	stage_->SetCurrentHandLight(light);
 	itemPool_.push_back(light);
@@ -144,6 +137,7 @@ void GameScene::Init(Input& input)
 
 		VECTOR selectedPos = spownPos_[randomIndex];
 
+		// アイテムの生成位置の設定
 		item->SetPos(selectedPos);
 
 		spownPos_.erase(spownPos_.begin() + randomIndex);
@@ -157,6 +151,7 @@ void GameScene::Init(Input& input)
 
 	// 敵コンポーネントの初期化
 	eBase_->InitComponents();
+
 	// プレイヤーに敵情報の設定
 	player_->SetEnemyBase(eBase_);
 
@@ -209,10 +204,8 @@ void GameScene::DrawUI(void)
 			// X座標: 画面中央 (画面幅 / 2) からテキスト幅の半分を引く
 			int draw_x = (size.width_ / 2) - (text_width / 2);
 
-			// Y座標: 画面全体の高さの 4分の3 の位置
+			// Y座標: 画面全体の高さの4分の3の位置
 			int draw_y = (size.height_ * 3) / 4;
-
-			// 3. テキストを描画
 
 			// 赤色で描画
 			int color = GetColor(255, 255, 255);
@@ -231,8 +224,6 @@ void GameScene::DrawUI(void)
 			// Y座標: 画面全体の高さの 4分の3 の位置
 			int draw_y = (size.height_ * 3) / 4;
 
-			// 3. テキストを描画
-
 			// 赤色で描画
 			int color = GetColor(255, 255, 255);
 
@@ -240,8 +231,8 @@ void GameScene::DrawUI(void)
 			DrawString(draw_x, draw_y, text_to_display, color);
 		}
 
-		int draw_x = static_cast<int>(size.width_ - size.width_ * 0.26875f); // 右端から300pxの位置
-		int draw_y = static_cast<int>(size.height_ * 0.04166f);               // 上から20pxの位置
+		int draw_x = static_cast<int>(size.width_ - size.width_ * 0.26875f);	// 右端から300pxの位置
+		int draw_y = static_cast<int>(size.height_ * 0.04166f);					// 上から20pxの位置
 		int color = GetColor(255, 255, 255);
 
 		// 完了メッセージの描画
@@ -249,7 +240,7 @@ void GameScene::DrawUI(void)
 			// 完了メッセージは黄色で表示
 			int clearColor = GetColor(255, 255, 0);
 			DrawString(draw_x, draw_y, clearMessage_.c_str(), clearColor);
-			draw_y += static_cast<int>(size.height_ * 0.0625f); // 次のメッセージ位置をずらす
+			draw_y += static_cast<int>(size.height_ * 0.0625f);					// 次のメッセージ位置をずらす
 		}
 
 		// 現在のタスクの描画
@@ -347,24 +338,23 @@ void GameScene::NormalDraw()
 	VECTOR targetPos = { -2317.0f,189.0f,-1558.0f };
 	// 球体1 (標的) の情報
 	VECTOR TargetCenter = VGet(-2317.0f, 189.0f, -1558.0f);
-	const float TargetRadius = 120.0f; // 標的の半径
+	const float TargetRadius = 120.0f;	// 標的の半径
 
 	// 球体2 (カメラ注視点の代わり、あるいは別の標的) の情報
 	VECTOR OtherCenter = camera->GetTargetPos();
-	const float OtherRadius = 10.0f; // もう一方の球体の半径
+	const float OtherRadius = 10.0f;	// もう一方の球体の半径
 
 	// 判定に必要な、半径の合計を事前に計算
 	const float CombinedRadius = TargetRadius + OtherRadius;
 	// 最適化のため、半径の合計の二乗も計算
 	const float CombinedRadiusSq = CombinedRadius * CombinedRadius;
-	// 1. 中心点間のベクトルの差を計算 (V2 - V1)
+	// 中心点間のベクトルの差を計算 (V2 - V1)
 	VECTOR DifferenceVector = VSub(OtherCenter, TargetCenter);
 
-	// 2. 中心点間の距離の二乗を計算
-	//    VSizeSq はベクトルの長さの二乗を返します。
+	// ベクトルの長さの二乗を返します。
 	float DistanceSq = VSquareSize(DifferenceVector);
 
-	// 3. if文による衝突条件の判定
+	// if文による衝突条件の判定
 	if (DistanceSq <= CombinedRadiusSq){
 		const TCHAR* text_to_display = _T("右クリック or Aボタン");
 		int text_width = GetDrawStringWidth(text_to_display, static_cast<int>(_tcslen(text_to_display)));
@@ -376,29 +366,23 @@ void GameScene::NormalDraw()
 		// Y座標: 画面全体の高さの 4分の3 の位置
 		int draw_y = (size.height_ * 3) / 4;
 
-		// 3. テキストを描画
-
 		// 赤色で描画
 		int color = GetColor(255, 255, 255);
 
 		// 描画関数でテキストを表示
 		DrawString(draw_x, draw_y, text_to_display, color);
 	}
-
 #pragma endregion
-
 
 }
 
 void GameScene::FadeDraw()
 {
-
 	float rate = static_cast<float>(frame_) /
 		static_cast<float>(fade_interval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(rate * 255));
 	DrawBox(0, 0, 640, 480, 0x000000, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 }
 
 void GameScene::LoadLocationData()
@@ -752,7 +736,7 @@ bool GameScene::IsHitDoor(void) const
 	auto itemHit = MV1CollCheck_Line(dummy_->GetTransform().modelId, -1, cPos, tPos);
 	auto stageHit = MV1CollCheck_Line(stage_->GetTransform().modelId, -1, cPos, tPos);
 
-	// 1. アイテムにレイが当たったか
+	// アイテムにレイが当たったか
 	if (itemHit.HitFlag == 1){
 		// カメラからアイテム衝突位置までの距離の二乗を計算
 		float itemDistSq = VSquareSize(VSub(itemHit.HitPosition, cPos));
@@ -760,7 +744,7 @@ bool GameScene::IsHitDoor(void) const
 		// カメラからステージ衝突位置までの距離の二乗を計算
 		float stageDistSq = VSquareSize(VSub(stageHit.HitPosition, cPos));
 
-		// **重要な判定:** アイテムへの距離がステージへの距離より小さい、またはステージへの衝突がない
+		// アイテムへの距離がステージへの距離より小さい、またはステージへの衝突がない
 		if (itemDistSq < stageDistSq || stageHit.HitFlag == 0){
 			// 有効なアイテム衝突。最も近いアイテムを更新
 			if (itemDistSq < minItemDistanceSq){
@@ -838,7 +822,6 @@ void GameScene::UpdateItemTasks(void)
 			if (lp->GetState() == ItemBase::STATE::ININVENTORY) hasLockpick = true;
 		}
 	}
-
 	// Lightを取得したか
 	if (task_ == TASK::FIND_LIGHT) {
 		// LightのININVENTORY状態のチェックが必要だが、ここでは簡略化し、次のタスクへ

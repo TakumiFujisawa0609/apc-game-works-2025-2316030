@@ -24,12 +24,12 @@ namespace {
 TitleScene::TitleScene(SceneController& controller)
 	:
 	Scene(controller),
-	titleH_(-1),
 	prevPOVDirection_(-1)
 {
 	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
 	ChangeVolumeSoundMem(255, soundH_);
 
+	// メニュー表
 	menuList_ = {
 		L"continue",
 		L"config",
@@ -60,7 +60,7 @@ void TitleScene::Init(Input& input)
 	update_ = &TitleScene::FadeInUpdate;
 	draw_ = &TitleScene::FadeDraw;
 	frame_ = fade_interval;
-	titleH_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
+	imgH_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
 	soundH_ = resMng_.Load(ResourceManager::SRC::DECIDE_SE).handleId_;
 	ChangeVolumeSoundMem(255, soundH_);
 }
@@ -197,7 +197,7 @@ void TitleScene::NormalDraw()
 {
 	auto& size = Config::GetInstance().GetWindowSize();
 	// タイトル画像の描画
-	DrawRotaGraph(size.width_ / 2, static_cast<int>(size.height_ / 2 * 0.8f), 0.4, 0.0, titleH_, true);
+	DrawRotaGraph(size.width_ / 2, static_cast<int>(size.height_ / 2 * 0.8f), 0.4, 0.0, imgH_, true);
 
 	// アクションボタンの表示
 	DrawMenuList();
@@ -211,7 +211,7 @@ void TitleScene::DrawMenuList(void)
 	int lineY = line_start_y;
 	auto& currentStr = menuList_[currentIndex_];
 
-	// 点滅表示判定 (例: 30フレーム周期のうち、前半15フレームは表示、後半15フレームは非表示)
+	// 点滅表示判定
 	bool isVisible = (blinkCounter_ < 20);
 
 	for (auto& row : menuList_) {
