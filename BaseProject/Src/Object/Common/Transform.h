@@ -12,14 +12,11 @@
 /// </summary>
 class Transform
 {
-
 public:
 
-	// コンストラクタ
 	Transform(void);
 	Transform(int model);
 
-	// デストラクタ
 	~Transform(void);
 
 	// モデルのハンドルID

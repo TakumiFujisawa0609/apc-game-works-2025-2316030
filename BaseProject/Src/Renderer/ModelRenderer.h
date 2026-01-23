@@ -15,10 +15,13 @@ public:
 	// ピクセルシェーダ用オリジナル定数バッファの使用開始スロット
 	static constexpr int CONSTANT_BUF_SLOT_BEGIN_PS = 4;
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="modelId_">モデルのハンドルID</param>
+	/// <param name="modelMaterial">シェーダーのロード、バッファを設定するクラス</param>
 	ModelRenderer(int modelId_, ModelMaterial& modelMaterial);
 
-	// デストラクタ
 	~ModelRenderer(void);
 
 	// 描画

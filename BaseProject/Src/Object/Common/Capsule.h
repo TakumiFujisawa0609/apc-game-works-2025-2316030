@@ -4,18 +4,24 @@ class Transform;
 
 class Capsule
 {
-
 public :
 
 	// デバッグ時の簡易カプセル表示の色
 	static constexpr int COLOR = 0xffffff;
 
-	// コンストラクタ
-	// カプセルをつけるオブジェクトを指定する
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="parent">カプセルを付けるオブジェクトを指定する</param>
 	Capsule(const Transform* parent);
+	
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="base">カプセルを複数組み合わせる場合</param>
+	/// <param name="parent">カプセルを付けるオブジェクトを指定する</param>
 	Capsule(const Capsule& base, const Transform* parent);
 
-	// デストラクタ
 	~Capsule(void);
 
 	// 描画

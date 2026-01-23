@@ -44,7 +44,6 @@ Transform::~Transform(void)
 
 void Transform::Update(void)
 {
-
 	// 大きさ
 	matScl = MGetScale(scl);
 
@@ -63,17 +62,14 @@ void Transform::Update(void)
 	mat = MMult(mat, matPos);
 
 	// 行列をモデルに判定
-	if (modelId != -1)
-	{
+	if (modelId != -1){
 		MV1SetMatrix(modelId, mat);
 	}
 
 	// 衝突判定の更新
-	if (collider != nullptr)
-	{
+	if (collider != nullptr){
 		MV1RefreshCollInfo(modelId);
 	}
-
 }
 
 void Transform::Release(void)
@@ -88,15 +84,12 @@ void Transform::SetModel(int model)
 
 void Transform::MakeCollider(Collider::TYPE type)
 {
-
-	if (modelId == -1)
-	{
+	if (modelId == -1){
 		return;
 	}
 
 	collider = std::make_shared<Collider>(type, modelId);
 	int ret = MV1SetupCollInfo(modelId, -1, 1, 1, 1);
-
 }
 
 VECTOR Transform::GetForward(void) const

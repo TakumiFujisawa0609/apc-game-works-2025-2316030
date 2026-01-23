@@ -19,10 +19,12 @@ public:
 	// ポリゴン数
 	static constexpr int NUM_POLYGON = 2;
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="pixelMaterial">シェーダーのロードバッファの設定をするクラス</param>
 	PixelRenderer(PixelMaterial& pixelMaterial);
 
-	// デストラクタ
 	~PixelRenderer(void);
 
 	// 描画矩形の生成

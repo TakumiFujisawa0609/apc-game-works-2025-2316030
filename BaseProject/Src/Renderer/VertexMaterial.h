@@ -28,7 +28,6 @@ public:
 	/// <param name="constBufFloat4Size">定数バッファの確保サイズ(FLOAT4をいくつ作るか)</param>
 	VertexMaterial(std::wstring shaderFileName, int constBufFloat4Size);
 
-	// デストラクタ
 	~VertexMaterial(void);
 
 	// 定数バッファを追加

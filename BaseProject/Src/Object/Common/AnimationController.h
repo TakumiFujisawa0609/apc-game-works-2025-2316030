@@ -5,7 +5,6 @@ class SceneController;
 
 class AnimationController
 {
-	
 public :
 
 	// アニメーションデータ
@@ -19,15 +18,32 @@ public :
 		float step = 0.0f;
 	};
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="modelId">モデルのハンドルID</param>
 	AnimationController(int modelId);
-	// デストラクタ
+
 	~AnimationController(void);
 
-	// アニメーション追加
+	/// <summary>
+	/// アニメーション追加
+	/// </summary>
+	/// <param name="type">どの状態に追加するか</param>
+	/// <param name="path">アニメーションのファイル名</param>
+	/// <param name="speed">アニメーションの再生速度</param>
 	void Add(int type, const std::wstring& path, float speed);
 
-	// アニメーション再生
+	/// <summary>
+	/// アニメーション再生
+	/// </summary>
+	/// <param name="type">どの状態のアニメーションか</param>
+	/// <param name="isLoop">ループ生成するかどうか</param>
+	/// <param name="blendRate">アニメーションブレンド率の指定</param>
+	/// <param name="startStep">再生されるアニメーションの再生開始位置</param>
+	/// <param name="endStep">再生されるアニメーションの再生終了位置</param>
+	/// <param name="isStop">アニメーションの停止させるかどうか</param>
+	/// <param name="isForce">強制的にに再生させるかどうか</param>
 	void Play(int type, bool isLoop = true,float blendRate=1.0f,
 		float startStep = 0.0f, float endStep = -1.0f, bool isStop = false, bool isForce = false);
 
@@ -51,7 +67,10 @@ private :
 	// 種類別のアニメーションデータ
 	std::map<int, Animation> animations_;
 
+	// 再生されるアニメーション種別
 	int playType_;
+
+	// アニメーションデータ
 	Animation playAnim_;
 
 	// アニメーションをループするかしないか

@@ -23,13 +23,18 @@ public:
 		MAX
 	};
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="shaderFileNameVS">頂点シェーダ―のファイル名</param>
+	/// <param name="constBufFloat4SizeVS">頂点シェーダ―のバッファサイズ</param>
+	/// <param name="shaderFileNamePS">ピクセルシェーダーのファイル名</param>
+	/// <param name="constBufFloat4SizePS">ピクセルシェーダーのバッファサイズ</param>
 	ModelMaterial(
 		std::wstring shaderFileNameVS, int constBufFloat4SizeVS,
 		std::wstring shaderFileNamePS, int constBufFloat4SizePS
 	);
 
-	// デストラクタ
 	~ModelMaterial(void);
 
 	// 定数バッファを追加

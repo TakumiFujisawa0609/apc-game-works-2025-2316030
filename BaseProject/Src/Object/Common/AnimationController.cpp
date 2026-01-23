@@ -18,48 +18,36 @@ AnimationController::AnimationController(int modelId)
 
 AnimationController::~AnimationController(void)
 {
-	for (const auto& anim : animations_)
-	{
+	for (const auto& anim : animations_){
 		MV1DeleteModel(anim.second.model);
 	}
 }
 
 void AnimationController::Add(int type, const std::wstring& path, float speed)
 {
-
 	Animation anim;
 
 	anim.model = MV1LoadModel(path.c_str());
 	anim.animIndex = type;
 	anim.speed = speed;
 
-	if (animations_.count(type) == 0)
-	{
+	if (animations_.count(type) == 0){
 		// 入れ替え
 		animations_.emplace(type, anim);
 	}
-	else
-	{
+	else{
 		// 追加
 		animations_[type].model = anim.model;
 		animations_[type].animIndex = anim.animIndex;
 		animations_[type].totalTime = anim.totalTime;
 	}
-
-
-	//std::wstring filePath = L"Data/Model/Enemy/Y-bot/";
-	//int animIndex = MV1AttachAnim(anim.model, 0, playAnim_.model);
-	//if (animIndex == -1) {
-	//	printfDx(L"アニメーション追加失敗: %s\n", filePath.c_str());
-	//}
 }
 
 void AnimationController::Play(int type, bool isLoop, float blendRate, float startStep, float endStep, bool isStop, bool isForce)
 {
 	if (playType_ != type || isForce) {
 
-		if (playType_ != -1)
-		{
+		if (playType_ != -1){
 			// モデルからアニメーションを外す
 			playAnim_.attachNo = MV1DetachAnim(modelId_, playAnim_.attachNo);
 		}
@@ -73,20 +61,17 @@ void AnimationController::Play(int type, bool isLoop, float blendRate, float sta
 
 		// モデルにアニメーションを付ける
 		int animIdx = 0;
-		if (MV1GetAnimNum(playAnim_.model) > 1)
-		{
+		if (MV1GetAnimNum(playAnim_.model) > 1){
 			// アニメーションが複数保存されていたら、番号1を指定
 			animIdx = 1;
 		}
 		playAnim_.attachNo = MV1AttachAnim(modelId_, animIdx, playAnim_.model);
 
 		// アニメーション総時間の取得
-		if (endStep > 0.0f)
-		{
+		if (endStep > 0.0f){
 			playAnim_.totalTime = endStep;
 		}
-		else
-		{
+		else{
 			playAnim_.totalTime = MV1GetAttachAnimTotalTime(modelId_, playAnim_.attachNo);
 		}
 
@@ -107,76 +92,59 @@ void AnimationController::Play(int type, bool isLoop, float blendRate, float sta
 
 void AnimationController::Update(void)
 {
-
 	// 経過時間の取得
 	float deltaTime = Application::GetInstance().GetDeltaTime();
 
-	if (!isStop_)
-	{
+	if (!isStop_){
 		// 再生
 		playAnim_.step += (deltaTime * playAnim_.speed * switchLoopReverse_);
 
 		// アニメーション終了判定
 		bool isEnd = false;
-		if (switchLoopReverse_ > 0.0f)
-		{
+		if (switchLoopReverse_ > 0.0f){
 			// 通常再生の場合
-			if (playAnim_.step > playAnim_.totalTime)
-			{
+			if (playAnim_.step > playAnim_.totalTime){
 				isEnd = true;
 			}
 		}
-		else
-		{
+		else{
 			// 逆再生の場合
-			if (playAnim_.step < playAnim_.totalTime)
-			{
+			if (playAnim_.step < playAnim_.totalTime){
 				isEnd = true;
 			}
 		}
 
-		if (isEnd)
-		{
+		if (isEnd){
 			// アニメーションが終了したら
-			if (isLoop_)
-			{
+			if (isLoop_){
 				// ループ再生
-				if (stepEndLoopStart_ > 0.0f)
-				{
+				if (stepEndLoopStart_ > 0.0f){
 					// アニメーション終了後の指定フレーム再生
 					switchLoopReverse_ *= -1.0f;
-					if (switchLoopReverse_ > 0.0f)
-					{
+					if (switchLoopReverse_ > 0.0f){
 						playAnim_.step = stepEndLoopStart_;
 						playAnim_.totalTime = stepEndLoopEnd_;
 					}
-					else
-					{
+					else{
 						playAnim_.step = stepEndLoopEnd_;
 						playAnim_.totalTime = stepEndLoopStart_;
 					}
 					playAnim_.speed = endLoopSpeed_;
-					
 				}
-				else
-				{
+				else{
 					// 通常のループ再生
 					playAnim_.step = 0.0f;
 				}
 			}
-			else
-			{
+			else{
 				// ループしない
 				playAnim_.step = playAnim_.totalTime;
 			}
-
 		}
-
 	}
 
 	// アニメーション設定
 	MV1SetAttachAnimTime(modelId_, playAnim_.attachNo, playAnim_.step);
-
 }
 
 void AnimationController::SetEndLoop(float startStep, float endStep, float speed)
@@ -193,22 +161,18 @@ int AnimationController::GetPlayType(void) const
 
 bool AnimationController::IsEnd(void) const
 {
-
 	bool ret = false;
 
-	if (isLoop_)
-	{
+	if (isLoop_){
 		// ループ設定されているなら、
 		// 無条件で終了しないを返す
 		return ret;
 	}
 
-	if (playAnim_.step >= playAnim_.totalTime)
-	{
+	if (playAnim_.step >= playAnim_.totalTime){
 		// 再生時間を過ぎたらtrue
 		return true;
 	}
 
 	return ret;
-
 }
