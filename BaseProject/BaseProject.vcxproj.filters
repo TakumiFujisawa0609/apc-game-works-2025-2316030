@@ -222,18 +222,6 @@
     <ClCompile Include="Src\Object\Stage\Dummy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Renderer\LightRenderer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Enemy\AStar\Area.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Object\Enemy\AStar\FieldImpactMap.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Manager\SoundManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Application.h">
@@ -578,18 +566,6 @@
     <ClInclude Include="Src\Object\Stage\Dummy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Renderer\LightRenderer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Enemy\AStar\Area.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Object\Enemy\AStar\FieldImpactMap.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Manager\SoundManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Src\Shader\Common\Pixel\PixelShader2DHeader.hlsli" />
@@ -601,8 +577,7 @@
     <None Include="Src\Shader\Common\VertexToPixelHeader.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\Shader\Model\NormalMeshSpotLightVS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\SpotLightPS.hlsl" />
-    <FxCompile Include="Src\Shader\Model\SkinMeshSpotLightVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\SpotLightAndPointLightVS.hlsl" />
+    <FxCompile Include="Src\Shader\Model\SpotLightAndPointLightPS.hlsl" />
   </ItemGroup>
 </Project>
