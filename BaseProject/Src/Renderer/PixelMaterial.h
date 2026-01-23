@@ -5,7 +5,6 @@
 
 class PixelMaterial
 {
-
 public:
 
 	// 設定できる最大のテクスチャの数

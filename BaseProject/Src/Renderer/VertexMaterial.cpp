@@ -1,6 +1,13 @@
 #include "VertexMaterial.h"
 
 VertexMaterial::VertexMaterial(std::wstring shaderFileName, int constBufFloat4Size)
+    :
+    shader_(-1),
+    constBufFloat4Size_(-1),
+    constBuf_(-1),
+    texAddress_(TEXADDRESS::NONE),
+    constBufs_{},
+    textures_{}
 {
 }
 

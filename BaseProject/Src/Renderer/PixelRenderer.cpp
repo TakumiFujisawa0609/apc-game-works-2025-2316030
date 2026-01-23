@@ -1,6 +1,8 @@
 #include "PixelRenderer.h"
 
-PixelRenderer::PixelRenderer(PixelMaterial& pixelMaterial) : pixelMaterial_(pixelMaterial)
+PixelRenderer::PixelRenderer(PixelMaterial& pixelMaterial)
+	: 
+	pixelMaterial_(pixelMaterial)
 {
 }
 
@@ -10,7 +12,6 @@ PixelRenderer::~PixelRenderer(void)
 
 void PixelRenderer::MakeSquereVertex(Vector2 pos, Vector2 size)
 {
-
 	pos_ = pos;
 	size_ = size;
 
@@ -21,8 +22,7 @@ void PixelRenderer::MakeSquereVertex(Vector2 pos, Vector2 size)
 	float eY = static_cast<float>(pos.y + size.y);
 
 	// ４頂点の初期化
-	for (int i = 0; i < 4; i++)
-	{
+	for (int i = 0; i < 4; i++){
 		vertexs_[i].rhw = 1.0f;
 		vertexs_[i].dif = GetColorU8(255, 255, 255, 255);
 		vertexs_[i].spc = GetColorU8(255, 255, 255, 255);
@@ -82,7 +82,6 @@ void PixelRenderer::MakeSquereVertex(Vector2 pos, Vector2 size)
 	indexes_[cnt++] = 1;
 	indexes_[cnt++] = 2;
 	indexes_[cnt++] = 3;
-
 }
 
 void PixelRenderer::MakeSquereVertex(void)
@@ -102,7 +101,6 @@ void PixelRenderer::SetSize(Vector2 size)
 
 void PixelRenderer::Draw(void)
 {
-
 	// ピクセルシェーダ設定
 	SetUsePixelShader(pixelMaterial_.GetShader());
 
@@ -111,8 +109,7 @@ void PixelRenderer::Draw(void)
 	// ピクセルシェーダにテクスチャを転送
 	const auto& textures = pixelMaterial_.GetTextures();
 	size = textures.size();
-	for (int i = 0; i < size; i++)
-	{
+	for (int i = 0; i < size; i++){
 		SetUseTextureToShader(i, textures[i]);
 	}
 
@@ -123,10 +120,8 @@ void PixelRenderer::Draw(void)
 	const auto& constBufs = pixelMaterial_.GetConstBufs();
 
 	size = constBufs.size();
-	for (int i = 0; i < size; i++)
-	{
-		if (i != 0)
-		{
+	for (int i = 0; i < size; i++){
+		if (i != 0){
 			constBufsPtr++;
 		}
 		constBufsPtr->x = constBufs[i].x;
@@ -160,8 +155,7 @@ void PixelRenderer::Draw(void)
 
 	// テクスチャ解除
 	size = textures.size();
-	for (int i = 0; i < size; i++)
-	{
+	for (int i = 0; i < size; i++){
 		SetUseTextureToShader(i, -1);
 	}
 
@@ -171,7 +165,6 @@ void PixelRenderer::Draw(void)
 	// オリジナルシェーダ設定(OFF)
 	MV1SetUseOrigShader(false);
 	//-----------------------------------------
-
 }
 
 void PixelRenderer::Draw(int x, int y)

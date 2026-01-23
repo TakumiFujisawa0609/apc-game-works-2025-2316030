@@ -5,7 +5,6 @@
 
 class PixelRenderer
 {
-
 public:
 
 	// ピクセルシェーダ用オリジナル定数バッファの使用開始スロット

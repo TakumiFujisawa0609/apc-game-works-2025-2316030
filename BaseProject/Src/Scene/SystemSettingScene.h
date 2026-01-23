@@ -9,9 +9,10 @@ class Config;
 class SystemSettingScene :
     public Scene
 {
-
 public:
+
     SystemSettingScene(SceneController& controller);
+    ~SystemSettingScene(void);
     virtual void Init(Input& input)override;
     virtual void Update(Input& input)override;
     virtual void Draw(void)override;

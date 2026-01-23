@@ -7,7 +7,6 @@ class Transform;
 
 class ModelRenderer
 {
-
 public:
 
 	// 頂点シェーダ用オリジナル定数バッファの使用開始スロット
@@ -19,23 +18,16 @@ public:
 	// コンストラクタ
 	ModelRenderer(int modelId_, ModelMaterial& modelMaterial);
 
-	// 配列用
-	ModelRenderer(std::vector<Transform>& trans, ModelMaterial& modelMaterial);
-
 	// デストラクタ
 	~ModelRenderer(void);
 
 	// 描画
 	void Draw(void);
 
-	void DrawModels(int num);
-
 private:
 
 	// モデルのハンドルID
 	int modelId_;
-
-	std::vector<Transform> trans_;
 
 	// 深度バッファ用のスクリーン
 	int depthScreen_;

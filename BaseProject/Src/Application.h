@@ -32,7 +32,7 @@ public:
 	static const std::wstring PATH_SOUND;
 	//-------------------------------------------
 
-	~Application();//デストラクタ
+	~Application();
 
 	// 明示的にインスタンスを生成する
 	static void CreateInstance(void);
@@ -94,7 +94,8 @@ public:
 
 private:
 
-	Application();//コンストラクタをprivateに
+	Application();
+
 	//コピー＆代入の禁止
 	Application(const Application& app) = delete;
 	void operator=(const Application& app) = delete;

@@ -141,6 +141,10 @@ SystemSettingScene::SystemSettingScene(SceneController& controller)
 	};
 }
 
+SystemSettingScene::~SystemSettingScene(void)
+{
+}
+
 void SystemSettingScene::Init(Input& input)
 {
 	isInitialize_ = true;
