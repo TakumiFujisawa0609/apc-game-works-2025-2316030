@@ -7,6 +7,7 @@ class EnemyPatrolComponent :
     public EnemyComponent
 {
 public:
+
     EnemyPatrolComponent(std::shared_ptr<Charactor> owner, Player& player);
     virtual ~EnemyPatrolComponent(void);
 
@@ -40,15 +41,18 @@ public:
    void DrawDebug(std::shared_ptr<PatrolPath> path, int currentIndex);
 
 private:
-    bool isWaiting_;            // 待機中かどうか
-    float currentWaitTime_;     // 現在の待機残り時間
-    Quaternion outRotation_;    // 回転角度
+
+    // 待機中かどうか
+    bool isWaiting_;
+
+    // 現在の待機残り時間
+    float currentWaitTime_;
+
+    // 回転角度
+    Quaternion outRotation_;
 
     float dis_;
     int currentNode_;
 
-    // 周囲を見回す
-    // 待機アニメーション
-    // 
 };
 

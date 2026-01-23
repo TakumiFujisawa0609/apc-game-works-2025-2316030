@@ -9,6 +9,7 @@ class PlayerStatusUI :
     public UIComponent
 {
 public:
+
     PlayerStatusUI(std::shared_ptr<ActorBase> owner, Player& player);
     ~PlayerStatusUI(void);
 
@@ -24,4 +25,3 @@ private:
     TimeGauge* tGauge_;
 
 };
-

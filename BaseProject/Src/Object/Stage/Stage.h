@@ -4,12 +4,9 @@
 class Player;
 class EnemyBase;
 class HandLight;
-
 class PatrolNode;
 class PatrolPath;
-
 class NavGridManager;
-
 class ModelMaterial;
 class ModelRenderer;
 

@@ -57,5 +57,3 @@ float TimeLimitComponent::GetDepletionRate(void) const
 {
 	return depletionRate_;
 }
-
-
