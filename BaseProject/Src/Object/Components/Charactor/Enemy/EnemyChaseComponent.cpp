@@ -60,14 +60,12 @@ std::vector<AStarNode*> EnemyChaseComponent::GetNeighbors(AStarNode* node)
     int checkX[] = { -1, 0, 1, -1, 1, -1, 0, 1 };
     int checkZ[] = { -1, -1, -1, 0, 0, 1, 1, 1 };
 
-    for (int i = 0; i < 8; ++i)
-    {
+    for (int i = 0; i < 8; ++i){
         int neighborX = node->gridX_ + checkX[i];
         int neighborZ = node->gridZ_ + checkZ[i];
 
         if (navGridManager_ && neighborX >= 0 && neighborX < navGridManager_->GetGridSizeX() &&
-            neighborZ >= 0 && neighborZ < navGridManager_->GetGridSizeZ())
-        {
+            neighborZ >= 0 && neighborZ < navGridManager_->GetGridSizeZ()){
             AStarNode* neighborNode = navGridManager_->GetNode(neighborX, neighborZ);
             if (neighborNode)
             {
@@ -83,8 +81,7 @@ std::vector<VECTOR> EnemyChaseComponent::RetracePath(AStarNode* start, AStarNode
     std::vector<VECTOR> path;
     AStarNode* current = end;
 
-    while (current != start && current != nullptr)
-    {
+    while (current != start && current != nullptr){
         path.push_back(current->worldPos_);
         current = current->parent_;
     }
@@ -181,16 +178,14 @@ void EnemyChaseComponent::Chase(float deltaTime, Transform& transform,
     // 1. A*ÇÃçƒåvéZ
     pathRecalcTimer_ -= deltaTime;
     SetTime(pathRecalcTimer_);
-    if (pathRecalcTimer_ <= 0.0f)
-    {
+    if (pathRecalcTimer_ <= 0.0f){
         currentPath_ = FindPath(transform.pos, player_.GetTransform().pos);
         currentPathIndex_ = 0;
         pathRecalcTimer_ = 0.3f; // 0.5ïbÇ≤Ç∆Ç…çƒåvéZ
     }
 
     // 2. åoòHÇ™ë∂ç›ÇµÇ»Ç¢èÍçá
-    if (currentPath_.empty() || currentPathIndex_ >= currentPath_.size())
-    {
+    if (currentPath_.empty() || currentPathIndex_ >= currentPath_.size()){
         moveDir = AsoUtility::VECTOR_ZERO;
         return;
     }
@@ -206,11 +201,9 @@ void EnemyChaseComponent::Chase(float deltaTime, Transform& transform,
     float distance = VSize(moveVector);
 
     // ÉmÅ[ÉhÇ…ìûíBÇµÇΩÇÁéüÇÃÉmÅ[ÉhÇ÷
-    if (distance < 20.0f)
-    {
+    if (distance < 20.0f){
         currentPathIndex_++;
-        if (currentPathIndex_ >= currentPath_.size())
-        {
+        if (currentPathIndex_ >= currentPath_.size()){
             moveDir = AsoUtility::VECTOR_ZERO;
             return;
         }

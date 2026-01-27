@@ -28,6 +28,7 @@ public:
     float GetTime(void);
 
 private:
+
     // A*‚ÌƒƒCƒ“ŠÖ”
     std::vector<VECTOR> FindPath(VECTOR startPos, VECTOR endPos);
 
@@ -44,6 +45,7 @@ private:
     //};
 
 private:
+
     std::vector<VECTOR> currentPath_;
     int currentPathIndex_ = 0;
     float pathRecalcTimer_ = 0.0f;

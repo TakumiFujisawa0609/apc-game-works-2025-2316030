@@ -9,7 +9,7 @@ public:
     virtual ~PlazzleElementBase(void);
 
     virtual void Init(void) = 0;
-    void Update(float deltaTime) override;
+    virtual void Update(float deltaTime) override;
     virtual void OnUpdate(float deltaTime) = 0;
     virtual void Draw(void) = 0;
 
@@ -31,15 +31,23 @@ public:
 
 protected:
 
+    // モデルの初期化
     void InitModel(float distance, VECTOR size, Quaternion quaRot, VECTOR quaLocal);
 
     // 画像側の初期化
     void InitImg(float posX, float posY, float scale, float angle);
 
-    int imgH_;              // 画像ハンドル
-    float posX_, posY_;     //　スクリーン座標
-    float scale_;            // 描画拡大率
-    float angle_;           // 角度
+    // 画像ハンドル
+    int imgH_;
+
+    //　スクリーン座標
+    float posX_, posY_;
+
+    // 描画拡大率
+    float scale_;
+
+    // 角度
+    float angle_;
 
 private:
 

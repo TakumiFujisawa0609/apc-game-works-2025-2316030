@@ -5,6 +5,10 @@
 
 class UIElement;
 
+/// <summary>
+/// 単一のUI描画を管理する
+/// コンポーネント
+/// </summary>
 class UIComponent :
     public Component
 {

@@ -303,6 +303,40 @@ void GameScene::NormalUpdate(Input& input)
 		break;
 	}
 
+	auto camera = Application::GetInstance().GetCamera();
+
+	for (const auto& item : itemPool_) {
+		if (auto lockpick = std::dynamic_pointer_cast<Wire>(item)) {
+			if (lockpick->GetState() == ItemBase::STATE::ININVENTORY) {
+				// クリア判定に触れる条件
+				if (ins.IsTrgDown(KEY_INPUT_F) && IsHitDoor()) {
+					auto unlickScene = std::make_shared<UnlockScene>(controller_);
+
+					std::shared_ptr<Wire> wire = nullptr;
+					std::shared_ptr<Lockpick> lockpick = nullptr;
+
+					// itemPool_からWireとLockpickを見つける
+					for (const auto& item : itemPool_) {
+						if (auto w = std::dynamic_pointer_cast<Wire>(item)) {
+							wire = w;
+						}
+						if (auto lp = std::dynamic_pointer_cast<Lockpick>(item)) {
+							lockpick = lp;
+						}
+					}
+					// 見つかったアイテムをUnlickSceneに設定
+					if (player_ && wire && lockpick) {
+						unlickScene->SetPlayer(player_);
+						unlickScene->SetWire(wire);
+						unlickScene->SetLockPick(lockpick);
+
+						controller_.PushScene(unlickScene, input);
+						camera->SetOperableCamera(false);
+					}
+				}
+			}
+		}
+	}
 }
 
 void GameScene::FadeOutUpdate(Input& input)
@@ -493,8 +527,11 @@ void GameScene::UpdateMainGame(float deltaTime, Input& input)
 	// アクティブアイテム使用
 	if ((ins.IsTrgDown(KEY_INPUT_E) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)) && itemSlot_->GetCurrentItem() != nullptr){
 		if (itemSlot_){
+
+			// スロットにあてはめられているアイテムの仕様
 			itemSlot_->UseCurrentItem();
 
+			// 使用後のアイテムの削除
 			CleanUpItemPool();
 		}
 	}

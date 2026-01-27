@@ -1,5 +1,9 @@
 #pragma once
 
+/// <summary>
+/// UIの単一要素の描画
+/// コンポーネント基底クラス
+/// </summary>
 class UIElement
 {
 public:
@@ -11,7 +15,6 @@ public:
     virtual void Draw(void) = 0;
 
 private:
-
 
 };
 

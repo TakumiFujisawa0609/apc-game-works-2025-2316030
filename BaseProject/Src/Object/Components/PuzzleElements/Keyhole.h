@@ -29,7 +29,10 @@ public:
 
 private:
 
-    bool isSuccess_; // 解錠成功フラグ
+    // 解錠成功フラグ
+    bool isSuccess_;
+
+    // 解除アングル
     float goalAngle_;
 };
 

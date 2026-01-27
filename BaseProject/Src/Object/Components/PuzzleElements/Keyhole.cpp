@@ -30,9 +30,12 @@ void Keyhole::OnUpdate(float deltaTime)
 {
     // 現在の回転角度
     float currentRotZ = angle_;
-    float goalRotZ = goalAngle_; // 新しい目標角度
 
-    const float LERP_RATE = 5.0f * deltaTime; // deltaTimeを考慮して速度を固定
+    // 新しい目標角度
+    float goalRotZ = goalAngle_;
+
+    // deltaTimeを考慮して速度を固定
+    const float LERP_RATE = 5.0f * deltaTime;
 
     // Lerpで回転
     float diff = goalRotZ - currentRotZ;

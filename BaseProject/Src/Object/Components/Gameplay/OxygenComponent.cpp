@@ -26,7 +26,9 @@ void TimeLimitComponent::Update(float deltaTime)
 	value_ -= depletionRate_ * deltaTime;
 	if (value_ < 0.0f) {
 		value_ = 0.0f;
-		isDepleted_ = true; // Ž_‘fØ‚ê
+
+		// Ž_‘fØ‚ê
+		isDepleted_ = true;
 	}
 
 }

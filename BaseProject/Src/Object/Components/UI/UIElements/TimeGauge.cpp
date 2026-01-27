@@ -15,7 +15,6 @@ TimeGauge::TimeGauge(TimeLimitComponent& tLimit)
 	gaugeCenterX_ = static_cast<float>(Config::GetInstance().GetWindowSize().width_ * 0.05);
 	gaugeCenterY_ = static_cast<float>(Config::GetInstance().GetWindowSize().height_ * 0.68);
 	gaugeRadius_ = std::min(gaugeCenterX_, gaugeCenterY_) * 0.5f;
-
 }
 
 TimeGauge::~TimeGauge()
@@ -48,7 +47,6 @@ void TimeGauge::Draw(void)
 	DrawCircle(static_cast<int>(gaugeCenterX_), static_cast<int>(gaugeCenterY_), static_cast<int>(gaugeRadius_), GetColor(0, 255, 255), false);
 
 	// 酸素値のテキスト描画
-	//----------------------------------------------------------------------------------------------
 	wchar_t oxygenTextBuff[16];
 	swprintf_s(oxygenTextBuff, L"%d", static_cast<int>(tLimit_.GetTimeValue()));
 	std::wstring oxygenText(oxygenTextBuff);
@@ -59,5 +57,4 @@ void TimeGauge::Draw(void)
 
 	// ワイド文字列描画関数を使用
 	DrawStringToHandle(textX, static_cast<int>(gaugeCenterY_ - 12), oxygenText.c_str(), GetColor(0, 0, 0), Application::GetInstance().GetFontHandle());
-	//----------------------------------------------------------------------------------------------
 }
