@@ -10,22 +10,31 @@ class Charactor :
 {
 public:
 
-	static constexpr float TIME_ROT = 1.0f;		// 回転完了するまでの時間
+	// 回転完了するまでの時間
+	static constexpr float TIME_ROT = 1.0f;		
 
 	Charactor(void);
 	virtual ~Charactor();
 
 	virtual void Init(void) = 0;
-	virtual void InitComponents(void) = 0; // コンポーネント初期化
+
+	// コンポーネント初期化
+	virtual void InitComponents(void) = 0;
+	
 	virtual void Update(float deltaTime) = 0;
 	virtual void Draw(void) = 0;
 
-	virtual void AddCollider(std::shared_ptr<Collider> collider);	// コライダ追加
-	virtual void ClearCollider(void);								// コライダ全削除
+	// コライダ追加
+	virtual void AddCollider(std::shared_ptr<Collider> collider);
+
+	// コライダ全削除
+	virtual void ClearCollider(void);
 
 
 	void InitializeCapsule(VECTOR top, VECTOR down, float radius);
-	virtual const std::shared_ptr<Capsule> GetCapsule(void) const;	// 衝突用カプセルの取得
+
+	// 衝突用カプセルの取得
+	virtual const std::shared_ptr<Capsule> GetCapsule(void) const;
 
 	std::shared_ptr<Charactor> shared_from_this()
 	{
@@ -50,21 +59,40 @@ public:
 
 protected:
 
-	float moveSpeed_;	    // 移動速度
-	VECTOR moveDir_;		// 移動方向
-	VECTOR movePow_;		// 移動量
-	VECTOR movedPos_;		// 移動後座標
+	// 移動速度
+	float moveSpeed_;
+
+	// 移動方向
+	VECTOR moveDir_;
+
+	// 移動量
+	VECTOR movePow_;
+
+	// 移動後座標
+	VECTOR movedPos_;
 
 	// 回転
-	Quaternion startRotY_;			// 回転の始点
-	Quaternion goalQuaRot_;			// 回転の終点
-	float stepRotTime_;				// 回転時間
 
-	std::vector<std::shared_ptr<Collider>> colliders_;		// 衝突判定に用いられるコライダ
-	std::shared_ptr<Capsule> capsule_;						// プレイヤー当たり判定カプセル
+	// 回転の始点
+	Quaternion startRotY_;
 
-	VECTOR gravHitPosDown_;				// 下方向の接地判定座標
-	VECTOR gravHitPosUp_;				// 上方向の接地判定座標
+	// 回転の終点
+	Quaternion goalQuaRot_;
+
+	// 回転時間
+	float stepRotTime_;
+
+	// 衝突判定に用いられるコライダ
+	std::vector<std::shared_ptr<Collider>> colliders_;
+
+	// プレイヤー当たり判定カプセル
+	std::shared_ptr<Capsule> capsule_;
+
+	// 下方向の接地判定座標
+	VECTOR gravHitPosDown_;
+
+	// 上方向の接地判定座標
+	VECTOR gravHitPosUp_;
 
 	// y軸方向の変化移動量
 	VECTOR velocityY_;
@@ -78,11 +106,17 @@ protected:
 	// 回転処理
 	virtual void Rotate(void);
 
-	virtual void Collision(void);               // 衝突判定
-	virtual void CollisionCapsule(void);        // カプセルとの衝突判定
-	virtual void CollisionGravity(void);        // 重力との衝突判定
-	virtual void CalcGravityPow(void);          // 重力加算処理
+	// 衝突判定
+	virtual void Collision(void);
 
+	// カプセルとの衝突判定
+	virtual void CollisionCapsule(void);
+
+	// 重力との衝突判定
+	virtual void CollisionGravity(void);
+
+	// 重力加算処理
+	virtual void CalcGravityPow(void);
 
 private:
 

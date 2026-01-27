@@ -31,7 +31,10 @@ public:
 private:
 
 	std::vector<std::vector<AStarNode>> navGrid_;
-	int gridSizeX_ = 50, gridSizeZ_ = 50;			// X,Z方向のグリッド数
-	float nodeSize_ = 100.0f;					// １グリット当たりのワールドサイズ
-};
 
+	// X,Z方向のグリッド数
+	int gridSizeX_ = 50, gridSizeZ_ = 50;
+
+	// １グリット当たりのワールドサイズ
+	float nodeSize_ = 100.0f;
+};

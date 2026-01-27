@@ -34,8 +34,13 @@ public:
 
 private:
 
-	VECTOR pos_;		//	ワールド座標
-	float waitTime_;	// 到達した後、次に移動を開始するまでの時間
-	ACTTYPE actionType_;	// このノードで実行する特殊行動
+	//	ワールド座標
+	VECTOR pos_;
+
+	// 到達した後、次に移動を開始するまでの時間
+	float waitTime_;
+
+	// このノードで実行する特殊行動
+	ACTTYPE actionType_;
 };
 

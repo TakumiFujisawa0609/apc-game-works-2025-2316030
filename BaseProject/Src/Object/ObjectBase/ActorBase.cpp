@@ -37,4 +37,3 @@ void ActorBase::OnUpdate(float deltaTime)
 {
     // Šî’êƒNƒ‰ƒX‚Å‚Í‰½‚à‘‚©‚È‚¢
 }
-

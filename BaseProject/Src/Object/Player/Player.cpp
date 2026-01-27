@@ -44,16 +44,22 @@ void Player::Init(void)
     SetMousePoint(Config::GetInstance().GetWindowSize().width_ / 2,
         Config::GetInstance().GetWindowSize().height_ / 2);
 
-    moveSpeed_ = MOVE_WALK_SPEED; // 移動速度
-    moveDir_ = AsoUtility::VECTOR_ZERO; // 移動方向
+    // 移動速度
+    moveSpeed_ = MOVE_WALK_SPEED;
+
+    // 移動方向
+    moveDir_ = AsoUtility::VECTOR_ZERO;
     movedPos_ = transform_.pos;
 
     startRotY_ = Quaternion();
     goalQuaRot_ = Quaternion();
     stepRotTime_ = 0.0f;
 
-    yaw = 0.0f;       // 水平回転（ヨー）
-    pitch = 0.0f;     // 垂直回転（ピッチ）
+    // 水平回転（ヨー）
+    yaw = 0.0f;
+
+    // 垂直回転（ピッチ）
+    pitch = 0.0f;
 
     // カプセルの初期化
     InitializeCapsule({ 0.0f, 180.0f, 0.0f }, { 0.0f, -20.0f, 0.0f }, 20.0f);
@@ -84,20 +90,16 @@ void Player::OnUpdate(float deltaTime)
 {
     //SetMousePoint(Config::GetInstance().GetWindowSize().width_ / 2, Config::GetInstance().GetWindowSize().height_ / 2);
 
-    if (!light_.lock()->IsActive())
-    {
+    if (!light_.lock()->IsActive()){
         sanV_ -= Application::GetInstance().GetDeltaTime();
     }
-    else
-    {
-        if (sanV_ < MAX_SAN_VALUE)
-        {
+    else{
+        if (sanV_ < MAX_SAN_VALUE){
             sanV_ += Application::GetInstance().GetDeltaTime();
         }
     }
 
-    if (sanV_ >= MAX_SAN_VALUE)
-    {
+    if (sanV_ >= MAX_SAN_VALUE){
         sanV_ = MAX_SAN_VALUE;
     }
 
@@ -144,13 +146,11 @@ void Player::OnUpdate(float deltaTime)
 
     moveSpeed_ = MOVE_WALK_SPEED;
 
-    if (ins.IsNew(KEY_INPUT_LSHIFT) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
-    {
+    if (ins.IsNew(KEY_INPUT_LSHIFT) || ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)){
         moveSpeed_ = MOVE_RUN_SPEED;
     }
 
-    if (!AsoUtility::EqualsVZero(moveDir_))
-    {
+    if (!AsoUtility::EqualsVZero(moveDir_)){
         moveDir_ = VNorm(moveDir_);
         rotRad = std::atan2(moveDir_.x, moveDir_.z);
 
@@ -163,27 +163,22 @@ void Player::OnUpdate(float deltaTime)
         // 回転処理
         SetGoalRotate(static_cast<float>(rotRad));
 
-        if (moveSpeed_ == MOVE_RUN_SPEED)
-        {
-            if (!isRunSH_)
-            {
+        if (moveSpeed_ == MOVE_RUN_SPEED){
+            if (!isRunSH_){
                 StopSoundMem(walkSH_);
                 PlaySoundMem(runSH_, DX_PLAYTYPE_LOOP, true);
                 isRunSH_ = true;
             }
         }
-        else
-        {
-            if (!isWalkSH_)
-            {
+        else{
+            if (!isWalkSH_){
                 StopSoundMem(runSH_);
                 PlaySoundMem(walkSH_, DX_PLAYTYPE_LOOP, true);
                 isWalkSH_ = true;
             }
         }
     }
-    else
-    {
+    else{
         movePow_ = AsoUtility::VECTOR_ZERO;
 
         StopSoundMem(runSH_);
@@ -199,7 +194,6 @@ void Player::OnUpdate(float deltaTime)
 
     // Transform更新
     transform_.Update();
-
 }
 
 void Player::Draw(void)
@@ -212,7 +206,7 @@ void Player::Draw(void)
 
     //DrawFormatString(0, 36, GetColor(255, 255, 255), L"quaRot=(%.2f,%.2f,%.2f)", transform_.quaRot.x, transform_.quaRot.y, transform_.quaRot.z);
 
-    auto& size = Config::GetInstance().GetWindowSize();
+    //auto& size = Config::GetInstance().GetWindowSize();
     //DrawFormatString(size.width - 150, 176, GetColor(255, 255, 255), L"sanV = %.2f", sanV_);
 
 
@@ -257,7 +251,6 @@ void Player::SetEnemyBase(std::weak_ptr<EnemyBase> enemy)
 
 void Player::DrawUI(void)
 {
-
     auto& size = Config::GetInstance().GetWindowSize();
 
     // 画面左上隅の開始座標
@@ -269,7 +262,8 @@ void Player::DrawUI(void)
     int spacing = static_cast<int>(size.height_ * 0.0375f);
 
     // --- HP ゲージ (左上) ---
-    float hpRatio = GetHealthRatio(); // PlayerクラスからHP比率を取得すると仮定
+    // PlayerクラスからHP比率を取得すると仮定
+    float hpRatio = GetHealthRatio();
     int hpDrawY = baseY;
 
     // HPゲージ描画ロジック (赤色)
@@ -278,7 +272,8 @@ void Player::DrawUI(void)
     DrawBox(baseX, hpDrawY, baseX + (int)(gaugeWidth * hpRatio), hpDrawY + gaugeHeight, GetColor(255, 0, 0), TRUE);
 
     // --- 正気度ゲージ (HPの下) ---
-    float sanityRatio = GetSanityRatio(); // Playerクラスから正気度比率を取得すると仮定
+    // Playerクラスから正気度比率を取得すると仮定
+    float sanityRatio = GetSanityRatio(); 
     int sanityDrawY = hpDrawY + gaugeHeight + spacing;
 
     // 正気度ゲージ描画ロジック (青色)
@@ -334,8 +329,7 @@ void Player::SetHitPoint(float value)
 {
     hp_ += value;
 
-    if (hp_ >= MAX_HP)
-    {
+    if (hp_ >= MAX_HP){
         hp_ = MAX_HP;
     }
 }
@@ -344,8 +338,7 @@ void Player::TakeDamage(float damege)
 {
     hp_ -= damege;
 
-    if (hp_ < 0.0f)
-    {
+    if (hp_ < 0.0f){
         hp_ = 0.0f;
     }
 }
@@ -371,8 +364,7 @@ void Player::SetGoalRotate(float rotRad)
     double angleDiff = Quaternion::Angle(axis, goalQuaRot_);
 
     // しきい値
-    if (angleDiff > 0.1)
-    {
+    if (angleDiff > 0.1){
         stepRotTime_ = 0.3f;
     }
 
@@ -403,22 +395,18 @@ void Player::CollisionCapsule(void)
     Capsule cap = Capsule(*capsule_, &trans);
 
     // カプセルとの衝突判定
-    for (const auto& c : colliders_)
-    {
+    for (const auto& c : colliders_){
         auto hits = MV1CollCheck_Capsule(
             c->modelId_, -1,
             cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius());
 
-        for (int i = 0; i < hits.HitNum; i++)
-        {
+        for (int i = 0; i < hits.HitNum; i++){
             auto hit = hits.Dim[i];
-            for (int tryCnt = 0; tryCnt < 10; tryCnt++)
-            {
+            for (int tryCnt = 0; tryCnt < 10; tryCnt++){
                 int pHit = HitCheck_Capsule_Triangle(
                     cap.GetPosTop(), cap.GetPosDown(), cap.GetRadius(),
                     hit.Position[0], hit.Position[1], hit.Position[2]);
-                if (pHit)
-                {
+                if (pHit){
                     movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 0.10f));
 
                     // カプセルを移動させる
@@ -453,21 +441,18 @@ void Player::CollisionEnemy(void)
 
     // 衝突した複数のポリゴンと衝突回避するまで、
     // プレイヤーの位置を移動させる
-    for (int i = 0; i < hits.HitNum; i++)
-    {
+    for (int i = 0; i < hits.HitNum; i++){
         auto hit = hits.Dim[i];
         // 地面と異なり、衝突回避位置が不明なため、何度か移動させる
         // この時、移動させる方向は、移動前座標に向いた方向であったり、
         // 衝突したポリゴンの法線方向だったりする
-        for (int tryCnt = 0; tryCnt < 12; tryCnt++)
-        {
+        for (int tryCnt = 0; tryCnt < 12; tryCnt++){
             // 再度、モデル全体と衝突検出するには、効率が悪過ぎるので、
             // 最初の衝突判定で検出した衝突ポリゴン1枚と衝突判定を取る
             int pHit = HitCheck_Capsule_Triangle(
                 capsule_->GetPosTop(), capsule_->GetPosDown(), capsule_->GetRadius(),
                 hit.Position[0], hit.Position[1], hit.Position[2]);
-            if (pHit)
-            {
+            if (pHit){
                 // 法線の方向にちょっとだけ移動させる
                 movedPos_ = VAdd(movedPos_, VScale(hit.Normal, 1.0f));
                 //// カプセルも一緒に移動させる

@@ -24,11 +24,19 @@ class Player
 {
 public:
 
-	static constexpr float MOVE_WALK_SPEED = 5.0f;				// 歩きスピード
-	static constexpr float MOVE_RUN_SPEED = 10.0f;				// 走りスピード
-	static constexpr float MOUSE_SENSITIVITY = 0.002f;			// マウス感度
+	// 歩きスピード
+	static constexpr float MOVE_WALK_SPEED = 5.0f;				
 
+	// 走りスピード
+	static constexpr float MOVE_RUN_SPEED = 10.0f;
+	
+	// マウス感度
+	static constexpr float MOUSE_SENSITIVITY = 0.002f;
+
+	// 最大正気度
 	static constexpr float MAX_SAN_VALUE = 50.0f;
+	
+	// 最大HP
 	static constexpr float MAX_HP = 100.0f;
 
 	Player(void);
@@ -59,6 +67,7 @@ public:
 
 	void DrawUI(void);
 
+	// 正気度の回復
 	void SetSanityLevel(float value);
 
 	float GetHealthRatio(void) const;
@@ -67,8 +76,8 @@ public:
 
 	void SetHitPoint(float value);
 
+	// 攻撃判定があるものからダメージを受ける
 	void TakeDamage(float damege);
-
 
 	float GetHp(void);
 
@@ -78,23 +87,39 @@ public:
 
 private:
 
-	TimeLimitComponent* tLimit_;		// 酸素コンポーネント
-	PlayerInput* input_;			// 入力コンポーネント
+	// 酸素コンポーネント
+	TimeLimitComponent* tLimit_;
+
+	// 入力コンポーネント
+	PlayerInput* input_;
 
 	std::weak_ptr<HandLight> light_;
 
 	std::weak_ptr<EnemyBase> enemy_;
 
-	float yaw;			// 水平回転（ヨー）
-	float pitch;		// 垂直回転（ピッチ）
+	// 水平回転（ヨー）
+	float yaw;
 
-	int walkSH_;		// 歩きの音
-	bool isWalkSH_;		// 歩きの音を再生するかどうか
-	int runSH_;			// 走るの音
-	bool isRunSH_;		// 走るの音を再生するかどうか
+	// 垂直回転（ピッチ）
+	float pitch;
 
+	// 歩きの音
+	int walkSH_;
+
+	// 歩きの音を再生するかどうか
+	bool isWalkSH_;
+
+	// 走るの音
+	int runSH_;
+
+	// 走るの音を再生するかどうか
+	bool isRunSH_;
+
+	// 体力
 	float hp_;
-	float sanV_;		// san値
+
+	// 正気度値
+	float sanV_;
 
 	void SetGoalRotate(float rotRad);
 
@@ -102,7 +127,4 @@ private:
 	virtual void CollisionCapsule(void);
 	virtual void CollisionGravity(void);
 	virtual void CalcGravityPow(void);
-
-
 };
-

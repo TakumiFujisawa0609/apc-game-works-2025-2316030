@@ -34,7 +34,6 @@ public:
 
     // 視野の広さ
     static constexpr float EYE_VIEW_RANGE = 250.0f;
-    //static constexpr float ATTACK_RANGE = 100.0f;
 
     // 攻撃範囲の広さ
     static constexpr float ATTACK_RANGE = 175.0f;
@@ -80,6 +79,7 @@ public:
     // グリッドマネージャーをステージから取得する
     void SetNavGridManager(std::shared_ptr<NavGridManager> navGridManager);
 
+    // プレイヤーとの押出判定
     void CollisionPlayer(void);
 
 protected:
@@ -98,25 +98,39 @@ protected:
     int frame_;
     int attackframe_;
 
-    EnemyPatrolComponent* patrolComponent_;     // 移動
-    EnemyChaseComponent* chaseComponent_;   // 追跡
+    // 移動
+    EnemyPatrolComponent* patrolComponent_;
 
-    STATE state_;       // 現在の行動パターン
+    // 追跡
+    EnemyChaseComponent* chaseComponent_;
+
+    // 現在の行動パターン
+    STATE state_;
 
     // 巡回パスの情報
     std::shared_ptr<PatrolPath> patrolPath_;
-    int currentPatrolPathIndex_;                // 現在のパスの番号
 
-    std::unique_ptr<AnimationController> animationController_;  // アニメーション
+    // 現在のパスの番号
+    int currentPatrolPathIndex_;
+
+    // アニメーション
+    std::unique_ptr<AnimationController> animationController_;  
 
     // アニメーションの初期化
     virtual void InitAnimation(void);
 
     std::shared_ptr<NavGridManager> navGridManager_;
 
-    bool isWaiting_;            // 待機中かどうか
-    float currentWaitTime_;     // 現在の待機残り時間
+    // 待機中かどうか
+    bool isWaiting_;
+
+    // 現在の待機残り時間
+    float currentWaitTime_;
+    
+    // 対象との距離
     float dis_;
+
+    // 現在の探索ノード
     int currentNode_;
 
 private:
@@ -124,10 +138,17 @@ private:
     // 回転処理
     void Rotate(void);
 
-    void Collision(void);               // 衝突判定
-    void CollisionCapsule(void);        // カプセルとの衝突判定
-    void CollisionGravity(void);        // 重力との衝突判定
-    void CalcGravityPow(void);          // 重力加算処理
+    // 衝突判定
+    void Collision(void);
+
+    // カプセルとの衝突判定
+    void CollisionCapsule(void);
+
+    // 重力との衝突判定
+    void CollisionGravity(void);
+
+    // 重力加算処理
+    void CalcGravityPow(void);
 
     void ChangeState(STATE state);
 
@@ -169,4 +190,3 @@ private:
 
     bool isAttack_;
 };
-

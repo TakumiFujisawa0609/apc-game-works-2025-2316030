@@ -9,19 +9,30 @@ public:
 	AStarNode(void);
 	~AStarNode(void);
 
-	// 物理情報
-	VECTOR worldPos_;		// ワールド座標
-	int gridX_, gridZ_;		// グリッドのXZ座標
-	bool isWalkable_;		// 通過可能か
+	// ワールド座標
+	VECTOR worldPos_;
+
+	// グリッドのXZ座標
+	int gridX_, gridZ_;
+
+	// 通過可能か
+	bool isWalkable_;
 
 	// A*計算用
 
-	float G_Score_;			// スタートからゴールまでの実コスト
-	float H_Score_;			// このノードからゴールまでの推定コスト(ヒューリスティック)
-	float F_Score(void) const; // 合計コスト
+	// スタートからゴールまでの実コスト
+	float G_Score_;
 
-	AStarNode* parent_;		// 復元のための親ノード
+	// このノードからゴールまでの推定コスト(ヒューリスティック)
+	float H_Score_;
 
-	void Reset(void);	// A*探索開始にリセットするための関数
+	// 合計コスト
+	float F_Score(void) const;
+
+	// 復元のための親ノード
+	AStarNode* parent_;
+
+	// A*探索開始にリセットするための関数
+	void Reset(void);
 };
 

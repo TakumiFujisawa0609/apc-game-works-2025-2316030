@@ -38,13 +38,16 @@ private:
 
 	Player& player_;
 	EnemyBase& eBase_;
-	//HandLight& handLight_;
 	std::weak_ptr<HandLight> handLight_;
 
-	std::vector<PatrolNode> nodes_;		// 巡回用のノード
-	std::vector<std::shared_ptr<PatrolPath>> paths_;		// 巡回用のパス
+	// 巡回用のノード
+	std::vector<PatrolNode> nodes_;
 
-	std::vector<Transform> obstacles_;	// 障害物として認識されるもの
+	// 巡回用のパス
+	std::vector<std::shared_ptr<PatrolPath>> paths_;
+
+	// 障害物として認識されるもの
+	std::vector<Transform> obstacles_;
 
 	// 巡回情報の初期化
 	void InitPatrolInfo(void);
@@ -54,4 +57,3 @@ private:
 
 	std::shared_ptr<NavGridManager> navManager_;
 };
-

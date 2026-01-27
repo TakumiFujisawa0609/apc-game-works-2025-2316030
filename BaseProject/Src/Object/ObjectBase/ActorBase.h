@@ -11,6 +11,7 @@ class ActorBase : public std::enable_shared_from_this<ActorBase>
 {
 public:
 
+	// 頂点シェーダータイプの識別用
 	enum class TYPE
 	{	
 		NONE,

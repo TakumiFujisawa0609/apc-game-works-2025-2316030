@@ -60,21 +60,16 @@ void Stage::Update(float deltaTime)
 	eBase_.SetObstacle(obstacles_);
 	//eBase_.SetNavGridManagedr(navManager_);
 
-
 	OnUpdate(deltaTime);
 }
 
 void Stage::OnUpdate(float deltaTime)
 {
-	//handLight_.UpdateRenderer(deltaTime);
 	handLight_.lock()->UpdateRenderer(deltaTime);
 }
 
 void Stage::Draw(void)
 {
-
-	//MV1DrawModel(transform_.modelId);
-	
 	handLight_.lock()->DrawRenderer();
 
 #ifdef _DEBUG
@@ -194,11 +189,8 @@ void Stage::InitObstacles(void)
 
 void Stage::InitRenderer(void)
 {
-	//Transform hlt = handLight_.GetTransform();
 	Transform hlt = handLight_.lock()->GetTransform();
 	VECTOR forward = hlt.quaRot.GetForward();
 	VECTOR dir = VNorm(forward);
-
-	//handLight_.InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
 	handLight_.lock()->InitLightRenderer(HandLight::TYPE::REGIDBODY, transform_.modelId);
 }
